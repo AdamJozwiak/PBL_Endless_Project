@@ -9,25 +9,43 @@ int CALLBACK WinMain(
 	LPSTR lpCmdLine,
 	int nCmdShow)
 {
-	// ------------------------------ Window Instance Creation ------------------------------ //
+	try {
 
-	Window wnd(800, 300, "PBL_ENGINE");
+		// ------------------------------ Window Instance Creation ------------------------------ //
 
-	// ------------------------------ Message Handler ------------------------------ //
+		Window wnd(800, 300, "PBL_ENGINE");
 
-	MSG msg;
-	BOOL getResult;
+		// ------------------------------ Message Handler ------------------------------ //
 
-	while ((getResult = GetMessage(&msg, nullptr, 0, 0)) > 0)
+		MSG msg;
+		BOOL getResult;
+
+		while ((getResult = GetMessage(&msg, nullptr, 0, 0)) > 0)
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+
+		if (getResult == -1)
+		{
+			return -1;
+		}
+
+		return msg.wParam;
+	}
+	catch (const ExceptionHandler & e)
 	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+		MessageBox(nullptr, e.what(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);
+	}
+	catch (const std::exception & e)
+	{
+		MessageBox(nullptr, e.what(), "Standard Exception", MB_OK | MB_ICONEXCLAMATION);
+	}
+	catch (...)
+	{
+		MessageBox(nullptr, "No details available", "Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
 	}
 
-	if (getResult == -1)
-	{
-		return -1;
-	}
-
-	return msg.wParam;
-};
+	return -1;
+	
+}
