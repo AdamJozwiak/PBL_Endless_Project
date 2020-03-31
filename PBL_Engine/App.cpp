@@ -1,6 +1,6 @@
 #include "App.h"
 
-App::App() : wnd(800, 300, "PBL_ENGINE")
+App::App() : wnd(800, 600, "PBL_ENGINE")
 {
 
 }
