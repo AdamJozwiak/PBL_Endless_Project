@@ -1,8 +1,12 @@
 #include "App.h"
+#include "assimp/include/assimp/Importer.hpp"
+#include "assimp/include/assimp/scene.h"
+#include "assimp/include/assimp/postprocess.h"
 
 App::App() : wnd(800, 600, "PBL_ENGINE")
 {
-
+	Assimp::Importer imp;
+	auto model = imp.ReadFile("Models\\suzanne.obj", aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 }
 
 int App::Go()
@@ -15,7 +19,7 @@ int App::Go()
 			// if return optional has value, means we're quitting so return exit code
 			return *exitCode;
 		}
-		DoFrame();
+		//DoFrame();
 	}
 }
 
