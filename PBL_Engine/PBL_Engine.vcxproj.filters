@@ -34,6 +34,12 @@
     <Filter Include="Pliki źródłowe\Renderable">
       <UniqueIdentifier>{b3b4e101-36cf-449a-8d70-00ae4c982b1e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pliki nagłówkowe\ECS">
+      <UniqueIdentifier>{a244f9e5-68c3-400f-9049-32eb2b3e79ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki źródłowe\ECS">
+      <UniqueIdentifier>{ac146d09-c47a-4b55-b4b8-dd49919fd4b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -101,6 +107,21 @@
     </ClCompile>
     <ClCompile Include="Melon.cpp">
       <Filter>Pliki źródłowe\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\ComponentManager.cpp">
+      <Filter>Pliki źródłowe\ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\EntityManager.cpp">
+      <Filter>Pliki źródłowe\ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\SystemManager.cpp">
+      <Filter>Pliki źródłowe\ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\Registry.cpp">
+      <Filter>Pliki źródłowe\ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\EventManager.cpp">
+      <Filter>Pliki źródłowe\ECS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +229,39 @@
     </ClInclude>
     <ClInclude Include="Melon.h">
       <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Component.hpp">
+      <Filter>Pliki nagłówkowe\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\ComponentArray.hpp">
+      <Filter>Pliki nagłówkowe\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\ComponentManager.hpp">
+      <Filter>Pliki nagłówkowe\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\EntityManager.hpp">
+      <Filter>Pliki nagłówkowe\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Event.hpp">
+      <Filter>Pliki nagłówkowe\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\EventManager.hpp">
+      <Filter>Pliki nagłówkowe\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Registry.hpp">
+      <Filter>Pliki nagłówkowe\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\System.hpp">
+      <Filter>Pliki nagłówkowe\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\SystemManager.hpp">
+      <Filter>Pliki nagłówkowe\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Utilities.hpp">
+      <Filter>Pliki nagłówkowe\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Entity.hpp">
+      <Filter>Pliki nagłówkowe\ECS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
