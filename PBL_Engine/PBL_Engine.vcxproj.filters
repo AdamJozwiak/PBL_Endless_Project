@@ -19,6 +19,21 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{462b0ef3-ef01-49af-b7cc-40c18501dbd7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pliki nagłówkowe\Macros">
+      <UniqueIdentifier>{e783c35a-9196-4240-8a0d-e84be582f8a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki nagłówkowe\Bindable">
+      <UniqueIdentifier>{9668f3dd-5738-494f-a275-dcc1be37ed54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki nagłówkowe\Renderable">
+      <UniqueIdentifier>{83926010-1fc7-4f1c-8099-8b1ed18720a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki źródłowe\Bindable">
+      <UniqueIdentifier>{f72fa6ab-2a80-4888-b11d-94a130a09906}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki źródłowe\Renderable">
+      <UniqueIdentifier>{b3b4e101-36cf-449a-8d70-00ae4c982b1e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -50,6 +65,42 @@
     </ClCompile>
     <ClCompile Include="DxgiInfoManager.cpp">
       <Filter>DxErr</Filter>
+    </ClCompile>
+    <ClCompile Include="Bindable.cpp">
+      <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Topology.cpp">
+      <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="InputLayout.cpp">
+      <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformCbuf.cpp">
+      <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderable.cpp">
+      <Filter>Pliki źródłowe\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>Pliki źródłowe\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="Pyramid.cpp">
+      <Filter>Pliki źródłowe\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="Melon.cpp">
+      <Filter>Pliki źródłowe\Renderable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +137,78 @@
     <ClInclude Include="DxgiInfoManager.h">
       <Filter>DxErr</Filter>
     </ClInclude>
+    <ClInclude Include="WindowsThrowMacros.h">
+      <Filter>Pliki nagłówkowe\Macros</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsThrowMacros.h">
+      <Filter>Pliki nagłówkowe\Macros</Filter>
+    </ClInclude>
+    <ClInclude Include="Bindable.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Topology.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="BindableBase.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffers.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="InputLayout.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformCbuf.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderable.h">
+      <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderableBase.h">
+      <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexedTriangleList.h">
+      <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="PBLMath.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Cone.h">
+      <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="Prism.h">
+      <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="Pyramid.h">
+      <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="Melon.h">
+      <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="PBL_Engine.rc">
@@ -109,10 +232,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="VertexShader.hlsl">
+    <FxCompile Include="ColorBlendPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="PixelShader.hlsl">
+    <FxCompile Include="ColorBlendVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ColorIndexPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ColorIndexVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

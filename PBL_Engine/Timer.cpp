@@ -15,7 +15,7 @@ float Timer::Mark()
 	return frameTime.count();
 }
 
-float Timer::Peak() const
+float Timer::Peek() const
 {
 	return duration<float>(steady_clock::now() - last).count();
 }
