@@ -297,12 +297,12 @@
     <LibraryPath>C:\Users\Maciej Pracucik\Desktop\Repo\PBL_Endless_Project\PBL_Engine\assimp\lib;C:\Users\Maciej Pracucik\Desktop\Repo\PBL_Endless_Project\PBL_Engine\assimp\include\assimp\Compiler;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)assimp\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)assimp\include\assimp\Compiler;$(ProjectDir)assimp\lib;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)assimp\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)assimp\include\assimp\Compiler;$(ProjectDir)assimp\lib;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
