@@ -34,6 +34,8 @@ class SystemManager {
 
         systems.insert({typeIndex, std::make_shared<SystemType>()});
         signatures.insert({typeIndex, Signature{}});
+
+        systems[typeIndex]->filters();
     }
 
     template <typename SystemType>
