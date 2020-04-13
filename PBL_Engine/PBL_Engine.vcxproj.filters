@@ -326,8 +326,14 @@
     <ClInclude Include="ECS\Entity.hpp">
       <Filter>Pliki nagłówkowe\ECS</Filter>
     </ClInclude>
+    <ClInclude Include="Components\Transform.hpp">
+      <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
     <ClInclude Include="Surface.h">
       <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Renderer.hpp">
+      <Filter>Pliki nagłówkowe\Components</Filter>
     </ClInclude>
     <ClInclude Include="GDIPlusManager.h">
       <Filter>Pliki nagłówkowe</Filter>
@@ -376,6 +382,9 @@
     </ClInclude>
     <ClInclude Include="ECS\ECS.hpp">
       <Filter>Pliki nagłówkowe\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Components.hpp">
+      <Filter>Pliki nagłówkowe\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
