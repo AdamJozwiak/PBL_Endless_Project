@@ -75,6 +75,7 @@
     <ClInclude Include="ECS\Component.hpp" />
     <ClInclude Include="ECS\ComponentArray.hpp" />
     <ClInclude Include="ECS\ComponentManager.hpp" />
+    <ClInclude Include="ECS\ECS.hpp" />
     <ClInclude Include="ECS\Entity.hpp" />
     <ClInclude Include="ECS\EntityManager.hpp" />
     <ClInclude Include="ECS\Event.hpp" />
