@@ -43,6 +43,24 @@
     <Filter Include="imgui">
       <UniqueIdentifier>{de13fcbb-5b77-435c-bd21-4aafa4548b42}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pliki nagłówkowe\Components">
+      <UniqueIdentifier>{dee12db2-df74-45f3-a278-108090d31d97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki nagłówkowe\Systems">
+      <UniqueIdentifier>{6e1e5099-0e1b-4ab1-ab63-d1675905b7dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki źródłowe\Systems">
+      <UniqueIdentifier>{33a5028f-5d41-4125-b6a4-43acba6f1f9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki źródłowe\Components">
+      <UniqueIdentifier>{0f342a4a-cfe6-4733-88f5-7dea673438a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki nagłówkowe\Events">
+      <UniqueIdentifier>{4fe7b63a-c60f-418e-9df9-64192a2d47dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki źródłowe\Events">
+      <UniqueIdentifier>{c2179392-6f2d-4887-804a-96d72285687b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
