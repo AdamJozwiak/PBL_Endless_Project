@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="App.cpp" />
     <ClCompile Include="Bindable.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -30,6 +29,7 @@
     <ClCompile Include="ECS\EventManager.cpp" />
     <ClCompile Include="ECS\Registry.cpp" />
     <ClCompile Include="ECS\SystemManager.cpp" />
+    <ClCompile Include="Engine.cpp" />
     <ClCompile Include="ExceptionHandler.cpp" />
     <ClCompile Include="GDIPlusManager.cpp" />
     <ClCompile Include="Graphics.cpp" />
@@ -53,6 +53,7 @@
     <ClCompile Include="SkinnedBox.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Systems\RenderSystem.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Topology.cpp" />
     <ClCompile Include="TransformCbuf.cpp" />
@@ -62,7 +63,6 @@
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="App.h" />
     <ClInclude Include="Bindable.h" />
     <ClInclude Include="BindableBase.h" />
     <ClInclude Include="Box.h" />
@@ -87,6 +87,7 @@
     <ClInclude Include="ECS\System.hpp" />
     <ClInclude Include="ECS\SystemManager.hpp" />
     <ClInclude Include="ECS\Utilities.hpp" />
+    <ClInclude Include="Engine.hpp" />
     <ClInclude Include="ExceptionHandler.h" />
     <ClInclude Include="GDIPlusManager.h" />
     <ClInclude Include="Graphics.h" />
@@ -120,6 +121,8 @@
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Systems\RenderSystem.hpp" />
+    <ClInclude Include="Systems\Systems.hpp" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Topology.h" />
     <ClInclude Include="TransformCbuf.h" />

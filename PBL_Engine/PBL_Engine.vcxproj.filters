@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Pliki źródłowe">
@@ -81,9 +81,6 @@
     <ClCompile Include="Graphics.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="App.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
@@ -144,6 +141,9 @@
     <ClCompile Include="ECS\EventManager.cpp">
       <Filter>Pliki źródłowe\ECS</Filter>
     </ClCompile>
+    <ClCompile Include="Systems\RenderSystem.cpp">
+      <Filter>Pliki źródłowe\Systems</Filter>
+    </ClCompile>
     <ClCompile Include="Surface.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
@@ -186,6 +186,9 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -207,9 +210,6 @@
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="Graphics.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-    <ClInclude Include="App.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
@@ -329,6 +329,9 @@
     <ClInclude Include="Components\Transform.hpp">
       <Filter>Pliki nagłówkowe\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Systems\RenderSystem.hpp">
+      <Filter>Pliki nagłówkowe\Systems</Filter>
+    </ClInclude>
     <ClInclude Include="Surface.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
@@ -385,6 +388,12 @@
     </ClInclude>
     <ClInclude Include="Components\Components.hpp">
       <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\Systems.hpp">
+      <Filter>Pliki nagłówkowe\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.hpp">
+      <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
