@@ -5,7 +5,7 @@
 
 // ///////////////////////////////////////////////////// Usings and constants //
 using EntityId = unsigned int;
-constexpr EntityId MAX_ENTITIES = 256u;
+constexpr EntityId MAX_ENTITIES = 1024u;
 
 using ComponentId = unsigned int;
 constexpr ComponentId MAX_COMPONENTS = 32u;
