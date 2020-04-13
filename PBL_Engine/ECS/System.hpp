@@ -34,6 +34,8 @@ class SystemWrapper {
 struct System {
     // ========================================================= Behaviour == //
     virtual ~System() = default;
+    virtual void filters() = 0;
+    virtual void setup() = 0;
     virtual void update(float deltaTime) = 0;
 
     // ============================================================== Data == //
