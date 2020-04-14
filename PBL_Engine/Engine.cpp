@@ -1,14 +1,18 @@
+// ///////////////////////////////////////////////////////////////// Includes //
 #include "Engine.hpp"
-#include "Window.h"
 
 #include <algorithm>
 #include <memory>
 
 #include "Systems/Systems.hpp"
+#include "Window.h"
 
+// //////////////////////////////////////////////////////////////////// Class //
+// ============================================================= Behaviour == //
 Engine::Engine()
     : registry(Registry::instance()),
-      systems{registry.system<RenderSystem>()} {}
+      systems{registry.system<RenderSystem>(), registry.system<SceneSystem>()} {
+}
 
 int Engine::run() {
     for (auto &system : systems) {
@@ -16,15 +20,15 @@ int Engine::run() {
     }
 
     while (true) {
-        auto const &deltaTime = timer.Mark();
-
-        // process all messages pending, but to not block for new messages
         if (auto const exitCode = Window::ProcessMessages()) {
             return *exitCode;
         }
 
+        auto const &deltaTime = timer.Mark();
         for (auto &system : systems) {
             system->update(deltaTime);
         }
     }
 }
+
+// ////////////////////////////////////////////////////////////////////////// //

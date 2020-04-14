@@ -189,6 +189,9 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="Systems\SceneSystem.cpp">
+      <Filter>Pliki źródłowe\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -394,6 +397,9 @@
     </ClInclude>
     <ClInclude Include="Engine.hpp">
       <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\SceneSystem.hpp">
+      <Filter>Pliki nagłówkowe\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

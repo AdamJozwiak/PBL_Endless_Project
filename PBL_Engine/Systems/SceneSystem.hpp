@@ -1,26 +1,21 @@
 #pragma once
 
 // ///////////////////////////////////////////////////////////////// Includes //
-#include <vector>
-
-#include "ECS/Registry.hpp"
+// ECS
+#include "Components/Components.hpp"
 #include "ECS/System.hpp"
-#include "Timer.h"
-#include "Window.h"
 
-// //////////////////////////////////////////////////////////////////// Class //
-class Engine {
+// /////////////////////////////////////////////////////////////////// System //
+ECS_SYSTEM(SceneSystem) {
   public:
     // ========================================================= Behaviour == //
-    Engine();
-    int run();
+    // ------------------------------------- System's virtual functions -- == //
+    void filters() override;
+    void setup() override;
+    void update(float deltaTime) override;
 
   private:
     // ============================================================== Data == //
-    Registry &registry;
-    std::vector<std::shared_ptr<System>> systems;
-
-    Timer timer;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

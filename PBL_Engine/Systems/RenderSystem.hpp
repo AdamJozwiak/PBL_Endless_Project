@@ -2,9 +2,11 @@
 
 // ///////////////////////////////////////////////////////////////// Includes //
 #include "Camera.h"
+#include "ImguiManager.h"
+
+// ECS
 #include "Components/Components.hpp"
 #include "ECS/System.hpp"
-#include "ImguiManager.h"
 
 // ///////////////////////////////////////////////////// Forward declarations //
 class Window;
@@ -18,9 +20,11 @@ ECS_SYSTEM(RenderSystem) {
     void setup() override;
     void update(float deltaTime) override;
 
-  private:
     // ============================================================== Data == //
     std::unique_ptr<Window> window;
+
+  private:
+    // ============================================================== Data == //
     std::unique_ptr<Camera> camera;
     ImguiManager imgui;
     float speed_factor = 1.0f;
