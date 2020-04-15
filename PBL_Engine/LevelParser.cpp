@@ -48,7 +48,7 @@ void LevelParser::load() {
         if (nodes[i]["GameObject"]) {
             if (nodes[i]["GameObject"]["m_Name"]) {
                 level[j].nazwa =
-                    nodes[i]["GameObject"]["m_Nazwa"].as<std::string>();
+                    nodes[i]["GameObject"]["m_Name"].as<std::string>();
             }
         }
         if (nodes[i]["Transform"]) {
