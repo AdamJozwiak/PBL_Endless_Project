@@ -1,5 +1,6 @@
 #include "LevelParser.h"
 
+#include <unordered_map>
 #include <vector>
 
 #include "yaml-cpp/include/yaml-cpp/yaml.h"
@@ -27,7 +28,19 @@ LevelParser::LevelParser() {}
 LevelParser::~LevelParser() {}
 
 void LevelParser::load() {
-    std::vector<YAML::Node> nodes = YAML::LoadAllFromFile("1.unity");
+    std::vector<YAML::Node> nodes = YAML::LoadAllFromFile("1.yaml");
+
+    // Map all possible nodes with corresponding identifiers
+    std::unordered_map<std::string, YAML::Node> map;
+    for (auto const &document : nodes) {
+        for (YAML::const_iterator i = document.begin(); i != document.end();
+             ++i) {
+            if (!i->second["id"]) {
+                continue;
+            }
+            map.insert({i->second["id"].as<std::string>(), document});
+        }
+    }
 
     GameObject level[10];
     int j = 0;
