@@ -42,7 +42,7 @@ void LevelParser::load() {
         }
     }
 
-    GameObject level[10];
+    GameObject level[100];
     int j = 0;
     for (int i = 0; i < nodes.size(); i++) {
         if (nodes[i]["GameObject"]) {
