@@ -140,6 +140,70 @@ void LevelParser::load() {
                 }
             }
         }
+
+        if (auto const& nodeBoxCollider = node["BoxCollider"]; nodeBoxCollider) {
+            assert(nodeBoxCollider["m_Size"] &&
+                nodeBoxCollider["m_Center"] &&
+                "Every property inside Transform component must be valid!");
+
+            auto& boxCollider =
+                Entity(entityIdsWithTransform[fileId]).get<BoxCollider>();
+
+            yamlLoop(it, nodeBoxCollider["m_Size"]) {
+                auto const key = it->first.as<std::string>();
+                auto const value = it->second.as<float>();
+
+                if (key == "x") {
+                    boxCollider.size_x = value;
+                }
+                if (key == "y") {
+                    boxCollider.size_y = value;
+                }
+                if (key == "z") {
+                    boxCollider.size_z = value;
+                }
+            }
+
+            yamlLoop(it, nodeBoxCollider["m_Center"]) {
+                auto const key = it->first.as<std::string>();
+                auto const value = it->second.as<float>();
+
+                if (key == "x") {
+                    boxCollider.center_x = value;
+                }
+                if (key == "y") {
+                    boxCollider.center_y = value;
+                }
+                if (key == "z") {
+                    boxCollider.center_z = value;
+                }
+            }
+        }
+        if (auto const& nodeSphereCollider = node["SphereCollider"]; nodeSphereCollider) {
+            assert(nodeSphereCollider["m_Radius"] &&
+                nodeSphereCollider["m_Center"] &&
+                "Every property inside Transform component must be valid!");
+
+            auto& sphereCollider =
+                Entity(entityIdsWithTransform[fileId]).get<SphereCollider>();
+
+            sphereCollider.radius = nodeSphereCollider["m_Radius"].as<float>();
+
+            yamlLoop(it, nodeSphereCollider["m_Center"]) {
+                auto const key = it->first.as<std::string>();
+                auto const value = it->second.as<float>();
+
+                if (key == "x") {
+                   sphereCollider.center_x = value;
+                }
+                if (key == "y") {
+                    sphereCollider.center_y = value;
+                }
+                if (key == "z") {
+                    sphereCollider.center_z = value;
+                }
+            }
+        }
     }
 
     // After creating Transform components, update parent references

@@ -701,6 +701,12 @@
     <ClInclude Include="LevelParser.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="Components\SphereCollider.h">
+      <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\BoxCollider.h">
+      <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="PBL_Engine.rc">

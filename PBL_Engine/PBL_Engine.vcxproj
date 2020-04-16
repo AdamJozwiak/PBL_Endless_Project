@@ -101,7 +101,9 @@
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Components\Components.hpp" />
+    <ClInclude Include="Components\BoxCollider.h" />
     <ClInclude Include="Components\Renderer.hpp" />
+    <ClInclude Include="Components\SphereCollider.h" />
     <ClInclude Include="Components\Transform.hpp" />
     <ClInclude Include="Cone.h" />
     <ClInclude Include="ConstantBuffers.h" />
