@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "App.h"
 #include <sstream>
 
 const LPCSTR WINDOW_NAME = "Engine Prototype";
@@ -11,27 +12,8 @@ int CALLBACK WinMain(
 {
 	try {
 
-		// ------------------------------ Window Instance Creation ------------------------------ //
+		return App{}.Go();
 
-		Window wnd(800, 300, "PBL_ENGINE");
-
-		// ------------------------------ Message Handler ------------------------------ //
-
-		MSG msg;
-		BOOL getResult;
-
-		while ((getResult = GetMessage(&msg, nullptr, 0, 0)) > 0)
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-
-		if (getResult == -1)
-		{
-			return -1;
-		}
-
-		return msg.wParam;
 	}
 	catch (const ExceptionHandler & e)
 	{

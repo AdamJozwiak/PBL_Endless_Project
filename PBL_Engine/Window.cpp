@@ -65,8 +65,10 @@ Window::Window(int width, int height, const char* name)
 	{
 		throw HWND_LAST_EXCEPTION();
 	}
-
+	// new windows start as hidden
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
+	// create graphics object
+	pGfx = std::make_unique<Graphics>(hWnd);
 }
 
 Window::~Window()
@@ -74,7 +76,28 @@ Window::~Window()
 	DestroyWindow(hWnd);
 }
 
-// ------------------------------ Set Up Pointer To The Window ------------------------------ //
+std::optional<int> Window::ProcessMessages()
+{
+	MSG msg;
+
+	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+	{
+		if (msg.message == WM_QUIT)
+		{
+			return msg.wParam;
+		}
+
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+
+	return {};
+}
+
+Graphics& Window::Gfx()
+{
+	return *pGfx;
+}
 
 LRESULT WINAPI Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
