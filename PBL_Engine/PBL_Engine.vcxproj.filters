@@ -126,11 +126,20 @@
     <ClCompile Include="ECS\EventManager.cpp">
       <Filter>Pliki źródłowe\ECS</Filter>
     </ClCompile>
+    <ClCompile Include="Surface.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>Pliki źródłowe\Bindable</Filter>
     </ClCompile>
+    <ClCompile Include="Sheet.cpp">
+      <Filter>Pliki źródłowe\Renderable</Filter>
+    </ClCompile>
     <ClCompile Include="Sampler.cpp">
       <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedBox.cpp">
+      <Filter>Pliki źródłowe\Renderable</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
       <Filter>imgui</Filter>
@@ -293,11 +302,20 @@
     <ClInclude Include="ECS\Entity.hpp">
       <Filter>Pliki nagłówkowe\ECS</Filter>
     </ClInclude>
+    <ClInclude Include="Surface.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Pliki nagłówkowe\Bindable</Filter>
     </ClInclude>
+    <ClInclude Include="Sheet.h">
+      <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
     <ClInclude Include="Sampler.h">
       <Filter>Pliki nagłówkowe\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedBox.h">
+      <Filter>Pliki nagłówkowe\Renderable</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
       <Filter>imgui</Filter>
