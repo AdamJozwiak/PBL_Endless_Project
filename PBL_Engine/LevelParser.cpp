@@ -39,13 +39,13 @@ void LevelParser::load() {
     }
 
     // Go through all game objects in scene file and create entities
-    std::unordered_map<FileId, EntityId> entities;
+    std::unordered_map<FileId, EntityId> entityIds;
     for (auto const &fileId : sceneFileIds) {
         auto node{nodes[fileId]};
 
         if (node["GameObject"]) {
             auto entity{registry.createEntity()};
-            entities.insert({fileId, entity.id});
+            entityIds.insert({fileId, entity.id});
         }
     }
 
@@ -67,13 +67,13 @@ void LevelParser::load() {
 
             yamlLoop(i, nodeTransform["m_GameObject"]) {
                 auto gameObjectFileId = i->second.Scalar();
-                Entity(entities[gameObjectFileId]).add<Transform>({});
+                Entity(entityIds[gameObjectFileId]).add<Transform>({});
+                entityIds.insert({fileId, entityIds[gameObjectFileId]});
                 entityIdsWithTransform.insert(
-                    {fileId, entities[gameObjectFileId]});
+                    {fileId, entityIds[gameObjectFileId]});
             }
 
-            auto &transform =
-                Entity(entityIdsWithTransform[fileId]).get<Transform>();
+            auto &transform = Entity(entityIds[fileId]).get<Transform>();
 
             yamlLoop(it, nodeTransform["m_LocalRotation"]) {
                 auto const key = it->first.as<std::string>();
@@ -141,13 +141,19 @@ void LevelParser::load() {
             }
         }
 
-        if (auto const& nodeBoxCollider = node["BoxCollider"]; nodeBoxCollider) {
-            assert(nodeBoxCollider["m_Size"] &&
-                nodeBoxCollider["m_Center"] &&
-                "Every property inside Transform component must be valid!");
+        if (auto const &nodeBoxCollider = node["BoxCollider"];
+            nodeBoxCollider) {
+            assert(
+                nodeBoxCollider["m_Size"] && nodeBoxCollider["m_Center"] &&
+                "Every property inside BoxCollider component must be valid!");
 
-            auto& boxCollider =
-                Entity(entityIdsWithTransform[fileId]).get<BoxCollider>();
+            yamlLoop(i, nodeBoxCollider["m_GameObject"]) {
+                auto gameObjectFileId = i->second.Scalar();
+                Entity(entityIds[gameObjectFileId]).add<BoxCollider>({});
+                entityIds.insert({fileId, entityIds[gameObjectFileId]});
+            }
+
+            auto &boxCollider = Entity(entityIds[fileId]).get<BoxCollider>();
 
             yamlLoop(it, nodeBoxCollider["m_Size"]) {
                 auto const key = it->first.as<std::string>();
@@ -179,13 +185,22 @@ void LevelParser::load() {
                 }
             }
         }
-        if (auto const& nodeSphereCollider = node["SphereCollider"]; nodeSphereCollider) {
-            assert(nodeSphereCollider["m_Radius"] &&
-                nodeSphereCollider["m_Center"] &&
-                "Every property inside Transform component must be valid!");
 
-            auto& sphereCollider =
-                Entity(entityIdsWithTransform[fileId]).get<SphereCollider>();
+        if (auto const &nodeSphereCollider = node["SphereCollider"];
+            nodeSphereCollider) {
+            assert(nodeSphereCollider["m_Radius"] &&
+                   nodeSphereCollider["m_Center"] &&
+                   "Every property inside SphereCollider component must be "
+                   "valid!");
+
+            yamlLoop(i, nodeSphereCollider["m_GameObject"]) {
+                auto gameObjectFileId = i->second.Scalar();
+                Entity(entityIds[gameObjectFileId]).add<SphereCollider>({});
+                entityIds.insert({fileId, entityIds[gameObjectFileId]});
+            }
+
+            auto &sphereCollider =
+                Entity(entityIds[fileId]).get<SphereCollider>();
 
             sphereCollider.radius = nodeSphereCollider["m_Radius"].as<float>();
 
@@ -194,7 +209,7 @@ void LevelParser::load() {
                 auto const value = it->second.as<float>();
 
                 if (key == "x") {
-                   sphereCollider.center_x = value;
+                    sphereCollider.center_x = value;
                 }
                 if (key == "y") {
                     sphereCollider.center_y = value;
