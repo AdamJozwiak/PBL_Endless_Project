@@ -126,6 +126,12 @@
     <ClCompile Include="ECS\EventManager.cpp">
       <Filter>Pliki źródłowe\ECS</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Sampler.cpp">
+      <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
@@ -287,6 +293,12 @@
     <ClInclude Include="ECS\Entity.hpp">
       <Filter>Pliki nagłówkowe\ECS</Filter>
     </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Sampler.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
+    </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
       <Filter>imgui</Filter>
     </ClInclude>
@@ -347,6 +359,12 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="ColorIndexVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="TextureVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="TexturePS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>
