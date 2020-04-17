@@ -3,6 +3,7 @@
 #include <vector>
 #include <wrl.h>
 #include <dxgidebug.h>
+#include <string>
 
 class DxgiInfoManager
 {
