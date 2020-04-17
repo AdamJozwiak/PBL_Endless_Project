@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "WindowsThrowMacros.h"
 #include <sstream>
+#include "imgui/imgui_impl_win32.h"
 #include "resource.h"
 
 Window::WindowClass Window::WindowClass::wndClass;

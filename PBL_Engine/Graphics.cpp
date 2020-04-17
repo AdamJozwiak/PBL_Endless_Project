@@ -1,6 +1,8 @@
 #include "Graphics.h"
 #include "GraphicsThrowMacros.h"
 #include "dxerr.h"
+#include "imgui/imgui_impl_dx11.h"
+#include "imgui/imgui_impl_win32.h"
 
 namespace WRL = Microsoft::WRL;
 namespace dx = DirectX;
@@ -142,21 +144,30 @@ DirectX::XMMATRIX Graphics::GetProjection() const noexcept
 	return projection;
 }
 
-// Graphics exception
-Graphics::HrException::HrException(int line, const char* file, HRESULT hr, std::vector<std::string> infoMsgs) noexcept
-	: Exception(line, file), hr(hr)
-{
-	// join all info messages with newlines into single string
-	for (const auto& m : infoMsgs)
-	{
-		info += m;
-		info.push_back('\n');
-	}
-	// remove final newline if exists
-	if (!info.empty())
-	{
-		info.pop_back();
-	}
+void Graphics::SetCamera(DirectX::FXMMATRIX cam) noexcept { camera = cam; }
+
+DirectX::XMMATRIX Graphics::GetCamera() const noexcept { return camera; }
+
+void Graphics::EnableImgui() noexcept { imguiEnabled = true; }
+
+void Graphics::DisableImgui() noexcept { imguiEnabled = false; }
+
+bool Graphics::IsImguiEnabled() const noexcept { return imguiEnabled; }
+
+// ------------------------ Graphics exception ---------------------------- //
+
+Graphics::HrException::HrException(int line, const char* file, HRESULT hr,
+                                   std::vector<std::string> infoMsgs) noexcept
+    : Exception(line, file), hr(hr) {
+    // join all info messages with newlines into single string
+    for (const auto& m : infoMsgs) {
+        info += m;
+        info.push_back('\n');
+    }
+    // remove final newline if exists
+    if (!info.empty()) {
+        info.pop_back();
+    }
 }
 
 const char* Graphics::HrException::what() const noexcept

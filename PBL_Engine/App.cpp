@@ -8,6 +8,7 @@
 #include "assimp/include/assimp/Importer.hpp"
 #include "assimp/include/assimp/scene.h"
 #include "assimp/include/assimp/postprocess.h"
+#include "imgui/imgui.h"
 
 App::App() : wnd(800, 600, "PBL_ENGINE")
 {
@@ -73,6 +74,14 @@ void App::DoFrame()
 		d->Update(dt);
 		d->Draw(wnd.Gfx());
 	}
+    // imgui window to control simulation speed
+    if (ImGui::Begin("Simulation Speed")) {
+        ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+                    1000.0f / ImGui::GetIO().Framerate,
+                    ImGui::GetIO().Framerate);
+    }
+    ImGui::End();
 	wnd.Gfx().EndFrame();
 }
 
