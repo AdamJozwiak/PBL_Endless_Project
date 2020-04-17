@@ -309,6 +309,9 @@
     <ClCompile Include="yaml-cpp\src\tag.cpp">
       <Filter>yaml-cpp\src</Filter>
     </ClCompile>
+    <ClCompile Include="LevelParser.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -694,6 +697,9 @@
     </ClInclude>
     <ClInclude Include="yaml-cpp\include\yaml-cpp\yaml.h">
       <Filter>yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelParser.h">
+      <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
