@@ -312,6 +312,9 @@
     <ClCompile Include="LevelParser.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="Systems\ScriptSystem.cpp">
+      <Filter>Pliki źródłowe\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -706,6 +709,9 @@
     </ClInclude>
     <ClInclude Include="Components\BoxCollider.h">
       <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\ScriptSystem.hpp">
+      <Filter>Pliki nagłówkowe\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

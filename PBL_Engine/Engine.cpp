@@ -11,8 +11,8 @@
 // ============================================================= Behaviour == //
 Engine::Engine()
     : registry(Registry::instance()),
-      systems{registry.system<RenderSystem>(), registry.system<SceneSystem>()} {
-}
+      systems{registry.system<RenderSystem>(), registry.system<SceneSystem>(),
+              registry.system<ScriptSystem>()} {}
 
 int Engine::run() {
     for (auto &system : systems) {
