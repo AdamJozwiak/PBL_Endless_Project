@@ -365,3 +365,6 @@ compile_commands.json
 
 # Shader build objects
 *.cso
+
+# Imgui configuration files
+imgui.ini
