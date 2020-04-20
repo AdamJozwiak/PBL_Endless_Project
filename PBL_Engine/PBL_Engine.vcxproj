@@ -147,6 +147,7 @@
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="LevelParser.h" />
     <ClInclude Include="Melon.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="PBLMath.h" />
     <ClInclude Include="PixelShader.h" />
