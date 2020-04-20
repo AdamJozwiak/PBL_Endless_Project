@@ -16,7 +16,6 @@ class TransformCbuf : public Bindable {
     void Bind(Graphics& gfx) noexcept override;
 
   private:
-    static std::unique_ptr<VertexConstantBuffer<Transforms>>
-        pVcbuf;  // dynamically allocated pointer to ConstantBuffer
+    static std::unique_ptr<VertexConstantBuffer<Transforms>> pVcbuf;
     const Renderable& parent;
 };

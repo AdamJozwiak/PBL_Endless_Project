@@ -3,8 +3,7 @@
 TransformCbuf::TransformCbuf(Graphics& gfx, const Renderable& parent, UINT slot)
     : parent(parent) {
     if (!pVcbuf) {
-        pVcbuf = std::make_unique<VertexConstantBuffer<Transforms>>(
-            gfx, slot);
+        pVcbuf = std::make_unique<VertexConstantBuffer<Transforms>>(gfx, slot);
     }
 }
 
