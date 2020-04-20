@@ -3,6 +3,7 @@
 #include <assimp/scene.h>
 
 #include <assimp/Importer.hpp>
+#include <optional>
 
 #include "BindableBase.h"
 #include "RenderableBase.h"
@@ -21,30 +22,34 @@ class Mesh : public RenderableBase<Mesh> {
 
 class Node {
     friend class Model;
+    friend class ModelWindow;
 
   public:
     Node(const std::string& name, std::vector<Mesh*> meshPtrs,
          const DirectX::XMMATRIX& transform) noexcept(!IS_DEBUG);
     void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const
         noexcept(!IS_DEBUG);
-    void RenderTree() const noexcept;
+    void SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept;
 
   private:
     void AddChild(std::unique_ptr<Node> pChild) noexcept(!IS_DEBUG);
+    void ShowTree(int& nodeIndex, std::optional<int>& selectedIndex,
+                  Node*& pSelectedNode) const noexcept;
 
   private:
     std::string name;
     std::vector<std::unique_ptr<Node>> childPtrs;
     std::vector<Mesh*> meshPtrs;
-    DirectX::XMFLOAT4X4 transform;
+    DirectX::XMFLOAT4X4 baseTransform;
+    DirectX::XMFLOAT4X4 appliedTransform;
 };
 
 class Model {
   public:
     Model(Graphics& gfx, const std::string fileName);
-    ~Model() noexcept;
-    void Draw(Graphics& gfx) const;
+    void Draw(Graphics& gfx) const noexcept(!IS_DEBUG);
     void ShowWindow(const char* windowName = nullptr) noexcept;
+    ~Model() noexcept;
 
   private:
     static std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh);
@@ -53,12 +58,16 @@ class Model {
   private:
     std::unique_ptr<Node> pRoot;
     std::vector<std::unique_ptr<Mesh>> meshPtrs;
-    struct {
-        float roll = 0.0f;
-        float pitch = 0.0f;
-        float yaw = 0.0f;
-        float x = 0.0f;
-        float y = 0.0f;
-        float z = 0.0f;
-    } pos;
+    std::unique_ptr<class ModelWindow> pWindow;
+};
+
+class ModelException : public ExceptionHandler {
+  public:
+    ModelException(int line, const char* file, std::string note) noexcept;
+    const char* what() const noexcept override;
+    const char* GetType() const noexcept override;
+    const std::string& GetNote() const noexcept;
+
+  private:
+    std::string note;
 };

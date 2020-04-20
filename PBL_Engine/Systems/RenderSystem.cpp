@@ -36,7 +36,7 @@ void RenderSystem::setup() {
 
     // imgui = std::make_unique<ImguiManager>();
     test = new Model(window->Gfx(), "Models\\suzanne.obj");
-    nano = new Model(window->Gfx(), "Models\\Wolf_dae.dae");
+    nano = new Model(window->Gfx(), "Models\\nano.gltf");
     window->Gfx().SetProjection(
         dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
 }
@@ -58,7 +58,7 @@ void RenderSystem::update(float deltaTime) {
     }
     //test->Draw(window->Gfx());
     nano->Draw(window->Gfx());
-    //light->Draw(window->Gfx());
+    light->Draw(window->Gfx());
 
     // imgui window to control simulation speed
     if (ImGui::Begin("Simulation Speed")) {
@@ -74,6 +74,7 @@ void RenderSystem::update(float deltaTime) {
     camera->SpawnControlWindow();
     light->SpawnControlWindow();
     nano->ShowWindow();
+    //test->ShowWindow();
 
     // present
     window->Gfx().EndFrame();
