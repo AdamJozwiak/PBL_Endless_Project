@@ -516,6 +516,10 @@
       <Command>
       </Command>
     </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>xcopy /D /Y "$(ProjectDir)*.cso" "$(SolutionDir)Executable" &amp;
+xcopy /D /Y "$(ProjectDir)*.cso" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -546,8 +550,8 @@
       </Command>
     </PreLinkEvent>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>xcopy /D /Y "$(ProjectDir)*.cso" "$(SolutionDir)Executable" &amp;
+xcopy /D /Y "$(ProjectDir)*.cso" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -604,6 +608,10 @@
       <Command>
       </Command>
     </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>xcopy /D /Y "$(ProjectDir)*.cso" "$(SolutionDir)Executable" &amp;
+xcopy /D /Y "$(ProjectDir)*.cso" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -637,6 +645,10 @@
       <Command>
       </Command>
     </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>xcopy /D /Y "$(ProjectDir)*.cso" "$(SolutionDir)Executable" &amp;
+xcopy /D /Y "$(ProjectDir)*.cso" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
