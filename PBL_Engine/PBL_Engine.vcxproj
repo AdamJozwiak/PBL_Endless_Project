@@ -47,11 +47,13 @@
     <ClCompile Include="LevelParser.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="PixelShader.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Pyramid.cpp" />
     <ClCompile Include="Renderable.cpp" />
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="Sheet.cpp" />
     <ClCompile Include="SkinnedBox.cpp" />
+    <ClCompile Include="SolidSphere.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Systems\SceneSystem.cpp" />
     <ClCompile Include="Systems\BehaviourSystem.cpp" />
@@ -150,6 +152,7 @@
     <ClInclude Include="PBLMath.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Plane.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="Prism.h" />
     <ClInclude Include="Pyramid.h" />
     <ClInclude Include="Renderable.h" />
@@ -159,6 +162,7 @@
     <ClInclude Include="Script.hpp" />
     <ClInclude Include="Sheet.h" />
     <ClInclude Include="SkinnedBox.h" />
+    <ClInclude Include="SolidSphere.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Systems\SceneSystem.hpp" />
@@ -318,6 +322,14 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="PhongVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="SolidPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="SolidVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>

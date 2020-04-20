@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "BehaviourSystem.hpp"
+#include "PointLight.h"
 #include "Model.h"
 #include "Box.h"
 #include "PBLMath.h"

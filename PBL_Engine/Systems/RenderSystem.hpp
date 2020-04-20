@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "ImguiManager.h"
 #include "Model.h"
+#include "PointLight.h"
 
 // ECS
 #include "Components/Components.hpp"
