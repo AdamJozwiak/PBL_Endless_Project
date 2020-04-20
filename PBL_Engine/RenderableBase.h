@@ -6,7 +6,7 @@ template<class T>
 class RenderableBase : public Renderable
 {
 protected:
-	bool IsStaticInitialized() const noexcept
+	bool IsStaticInitialized() noexcept
 	{
 		return !staticBinds.empty();
 	}
