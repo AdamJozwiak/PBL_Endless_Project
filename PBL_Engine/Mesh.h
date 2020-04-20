@@ -3,6 +3,7 @@
 #include <assimp/scene.h>
 
 #include <assimp/Importer.hpp>
+#include <map>
 #include <optional>
 
 #include "BindableBase.h"
@@ -11,12 +12,31 @@
 
 class Mesh : public RenderableBase<Mesh> {
   public:
-    Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bindable>> bindPtrs);
+    struct VertexBoneData {
+        UINT IDs[4];
+        float weights[4];
+        VertexBoneData() = default;
+        void AddBoneData(UINT boneID, float boneWeight);
+    };
+    struct Bone {
+        aiMatrix4x4 boneOffset;
+        DirectX::XMMATRIX FinalTransform;
+        Bone() = default;
+    };
+    Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bindable>> bindPtrs,
+         std::vector<Mesh::VertexBoneData> Bones = {},
+         std::vector<std::pair<std::string, Mesh::Bone>> bonesMap = {});
     void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const
         noexcept(!IS_DEBUG);
     DirectX::XMMATRIX GetTransformXM() const noexcept override;
+    static void LoadBones(UINT meshIndex, aiMesh* pMesh,
+                          std::vector<Mesh::VertexBoneData>& Bones,
+                          std::vector<std::pair<std::string, Bone>>& bonesMap);
 
   private:
+    std::vector<std::pair<std::string, Bone>> bonesMap;
+    std::vector<VertexBoneData> Bones;
+
     mutable DirectX::XMFLOAT4X4 transform;
 };
 
@@ -30,6 +50,7 @@ class Node {
     void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const
         noexcept(!IS_DEBUG);
     void SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept;
+    const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnim);
 
   private:
     void AddChild(std::unique_ptr<Node> pChild) noexcept(!IS_DEBUG);
@@ -52,12 +73,12 @@ class Model {
     ~Model() noexcept;
 
   private:
-    static std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh);
+    static std::shared_ptr<Mesh> ParseMesh(Graphics& gfx, aiMesh& mesh);
     std::unique_ptr<Node> ParseNode(const aiNode& node) noexcept;
 
   private:
     std::unique_ptr<Node> pRoot;
-    std::vector<std::unique_ptr<Mesh>> meshPtrs;
+    std::vector<std::shared_ptr<Mesh>> meshPtrs;
     std::unique_ptr<class ModelWindow> pWindow;
 };
 

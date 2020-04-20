@@ -85,6 +85,12 @@
     <Filter Include="yaml-cpp\src\contrib">
       <UniqueIdentifier>{b60cb699-c62e-4b45-b97c-8f91d5149442}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pliki nagłówkowe\Animation">
+      <UniqueIdentifier>{e0e4116b-30b2-4fa8-a9b2-62bfaec02574}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki źródłowe\Animation">
+      <UniqueIdentifier>{302bc15f-ba8d-48cd-b60a-b98a4ce642bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -325,7 +331,7 @@
       <Filter>Pliki źródłowe\Renderable</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
-      <Filter>Pliki źródłowe</Filter>
+      <Filter>Pliki źródłowe\Renderable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -750,7 +756,7 @@
       <Filter>Pliki nagłówkowe\Renderable</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
-      <Filter>Pliki nagłówkowe</Filter>
+      <Filter>Pliki nagłówkowe\Renderable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -7,8 +7,22 @@
 
 namespace dx = DirectX;
 
+void Mesh::VertexBoneData::AddBoneData(UINT boneID, float boneWeight) {
+    int size = sizeof(IDs) / sizeof(*IDs);
+    for (UINT i = 0; i < size; i++) {
+        if (weights[i] == 0.0) {
+            IDs[i] = boneID;
+            weights[i] = boneWeight;
+            return;
+        }
+    }
+}
+
 // Mesh
-Mesh::Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bindable>> bindPtrs) {
+Mesh::Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bindable>> bindPtrs,
+           std::vector<Mesh::VertexBoneData> Bones,
+           std::vector<std::pair<std::string, Mesh::Bone>> bonesMap)
+    : Bones(Bones), bonesMap(bonesMap) {
     if (!IsStaticInitialized()) {
         AddStaticBind(std::make_unique<Topology>(
             gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
@@ -32,6 +46,38 @@ void Mesh::Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const
 }
 DirectX::XMMATRIX Mesh::GetTransformXM() const noexcept {
     return DirectX::XMLoadFloat4x4(&transform);
+}
+
+void Mesh::LoadBones(UINT meshIndex, aiMesh* pMesh,
+                     std::vector<Mesh::VertexBoneData>& Bones,
+                     std::vector<std::pair<std::string, Bone>>& bonesMap) {
+    for (UINT i = 0; i < pMesh->mNumVertices; i++) {
+        Bones.push_back(VertexBoneData());
+    }
+    for (UINT i = 0; i < pMesh->mNumBones; i++) {
+        int boneIndex = -1;
+        std::string BoneName(pMesh->mBones[i]->mName.data);
+        int tmpIndex = 0;
+        for (const auto& p : bonesMap) {
+            if (p.first == BoneName) {
+                boneIndex = tmpIndex;
+                break;
+            }
+            tmpIndex++;
+        }
+        if (boneIndex < 0) {
+            boneIndex = (int)bonesMap.size();
+            Bone bone;
+            bone.boneOffset = pMesh->mBones[boneIndex]->mOffsetMatrix;
+            bonesMap.emplace_back(std::make_pair(BoneName, bone));
+        }
+        const aiBone* pBone = pMesh->mBones[boneIndex];
+        for (UINT j = 0; j < pBone->mNumWeights; j++) {
+            UINT vertexID = pBone->mWeights[j].mVertexId;
+            float weight = pBone->mWeights[j].mWeight;
+            Bones[vertexID].AddBoneData(boneIndex, weight);
+        }
+    }
 }
 
 // Node
@@ -92,6 +138,15 @@ void Node::ShowTree(int& nodeIndexTracked, std::optional<int>& selectedIndex,
 
 void Node::SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept {
     dx::XMStoreFloat4x4(&appliedTransform, transform);
+}
+
+const aiNodeAnim* Node::FindNodeAnim(const aiAnimation* pAnim) {
+    for (UINT i = 0; i < pAnim->mNumChannels; i++) {
+        const aiNodeAnim* pNodeAnim = pAnim->mChannels[i];
+        if (std::string(pNodeAnim->mNodeName.data) == name) {
+            return pNodeAnim;
+        }
+    }
 }
 
 // Model
@@ -155,7 +210,8 @@ Model::Model(Graphics& gfx, const std::string fileName)
         throw ModelException(__LINE__, __FILE__, imp.GetErrorString());
     }
     for (size_t i = 0; i < pScene->mNumMeshes; i++) {
-        meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i]));
+        auto pMesh = ParseMesh(gfx, *pScene->mMeshes[i]);
+        meshPtrs.push_back(pMesh);
     }
 
     pRoot = ParseNode(*pScene->mRootNode);
@@ -174,17 +230,36 @@ void Model::ShowWindow(const char* windowName) noexcept {
 
 Model::~Model() noexcept {}
 
-std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh) {
+std::shared_ptr<Mesh> Model::ParseMesh(Graphics& gfx, aiMesh& mesh) {
     namespace dx = DirectX;
     using pblexp::VertexLayout;
+    std::vector<std::pair<std::string, Mesh::Bone>> bonesMap;
+    std::vector<Mesh::VertexBoneData> Bones;
+    std::vector<UINT> bonesID;
+    std::vector<float> weights;
+    VertexLayout vl;
+    vl.Append(VertexLayout::Position3D).Append(VertexLayout::Normal);
+    if (mesh.HasBones()) {
+        Mesh::LoadBones(1, &mesh, Bones, bonesMap);
+        for (auto it : Bones) {
+            for (UINT i = 0; i < 4; i++) {
+                bonesID.push_back(it.IDs[i]);
+                weights.push_back(it.weights[i]);
+            }
+        }
+        vl.Append(VertexLayout::BoneID).Append(VertexLayout::BoneWeight);
+    }
 
-    pblexp::VertexBuffer vbuf(std::move(VertexLayout{}
-                                            .Append(VertexLayout::Position3D)
-                                            .Append(VertexLayout::Normal)));
+    // bones need to be added into vbuffer
+    pblexp::VertexBuffer vbuf(std::move(vl));
 
     for (unsigned int i = 0; i < mesh.mNumVertices; i++) {
         vbuf.EmplaceBack(*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mVertices[i]),
                          *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]));
+        if (mesh.HasBones()) {
+            vbuf.EmplaceBack(*reinterpret_cast<dx::XMUINT4*>(bonesID.data()),
+                             *reinterpret_cast<dx::XMFLOAT4*>(weights.data()));
+        }
     }
 
     std::vector<unsigned short> indices;
@@ -222,7 +297,8 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh) {
         std::make_unique<PixelConstantBuffer<PSMaterialConstant>>(gfx, pmc,
                                                                   1u));
 
-    return std::make_unique<Mesh>(gfx, std::move(bindablePtrs));
+    return std::make_unique<Mesh>(gfx, std::move(bindablePtrs), Bones,
+                                  bonesMap);
 }
 std::unique_ptr<Node> Model::ParseNode(const aiNode& node) noexcept {
     namespace dx = DirectX;

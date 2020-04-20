@@ -23,6 +23,8 @@ class VertexLayout {
         Float4Color,
         BGRAColor,
         Count,
+        BoneID,
+        BoneWeight,
     };
     template <ElementType>
     struct Map;
@@ -69,7 +71,18 @@ class VertexLayout {
         static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
         static constexpr const char* semantic = "Color";
     };
-
+    template <>
+    struct Map<BoneID> {
+        using SysType = DirectX::XMUINT4;
+        static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32_UINT;
+        static constexpr const char* semantic = "Bone";
+    };
+    template <>
+    struct Map<BoneWeight> {
+        using SysType = DirectX::XMFLOAT4;
+        static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32_FLOAT;
+        static constexpr const char* semantic = "Bone";
+    };
     class Element {
       public:
         Element(ElementType type, size_t offset) : type(type), offset(offset) {}
@@ -94,6 +107,10 @@ class VertexLayout {
                     return sizeof(Map<Float4Color>::SysType);
                 case BGRAColor:
                     return sizeof(Map<BGRAColor>::SysType);
+                case BoneID:
+                    return sizeof(Map<BoneID>::SysType);
+                case BoneWeight:
+                    return sizeof(Map<BoneWeight>::SysType);
             }
             assert("Invalid element type" && false);
             return 0u;
@@ -115,6 +132,10 @@ class VertexLayout {
                     return GenerateDesc<Float4Color>(GetOffset());
                 case BGRAColor:
                     return GenerateDesc<BGRAColor>(GetOffset());
+                case BoneID:
+                    return GenerateDesc<BoneID>(GetOffset());
+                case BoneWeight:
+                    return GenerateDesc<BoneWeight>(GetOffset());
             }
             assert("Invalid element type" && false);
             return {"INVALID", 0, DXGI_FORMAT_UNKNOWN,
@@ -217,6 +238,14 @@ class Vertex {
                 break;
             case VertexLayout::BGRAColor:
                 SetAttribute<VertexLayout::BGRAColor>(pAttribute,
+                                                      std::forward<T>(val));
+                break;
+            case VertexLayout::BoneID:
+                SetAttribute<VertexLayout::BoneID>(pAttribute,
+                                                      std::forward<T>(val));
+                break;
+            case VertexLayout::BoneWeight:
+                SetAttribute<VertexLayout::BoneWeight>(pAttribute,
                                                       std::forward<T>(val));
                 break;
             default:

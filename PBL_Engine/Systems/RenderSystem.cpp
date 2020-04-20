@@ -56,7 +56,7 @@ void RenderSystem::update(float deltaTime) {
             window->keyboard.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
         renderer.renderable->Draw(window->Gfx());
     }
-    //test->Draw(window->Gfx());
+    test->Draw(window->Gfx());
     nano->Draw(window->Gfx());
     light->Draw(window->Gfx());
 
