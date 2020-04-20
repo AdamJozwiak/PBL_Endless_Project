@@ -30,7 +30,7 @@ PointLight* light;
 void RenderSystem::filters() { filter<Renderer>(); }
 
 void RenderSystem::setup() {
-    window = std::make_unique<Window>(800, 600, "PBL_ENGINE");
+    window = std::make_unique<Window>(1280, 720, "PBL_ENGINE");
     camera = std::make_unique<Camera>();
     light = new PointLight(window->Gfx());
 
@@ -38,7 +38,7 @@ void RenderSystem::setup() {
     test = new Model(window->Gfx(), "Models\\suzanne.obj");
     nano = new Model(window->Gfx(), "Models\\nano.gltf");
     window->Gfx().SetProjection(
-        dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+        dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 40.0f));
 }
 
 void RenderSystem::update(float deltaTime) {
