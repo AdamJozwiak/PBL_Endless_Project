@@ -31,6 +31,11 @@ class Entity {
     }
 
     template <typename ComponentType>
+    ComponentType const& get() const {
+        return registry.component<ComponentType>(id);
+    }
+
+    template <typename ComponentType>
     Entity& set(ComponentType const& component) {
         get<ComponentType>() = component;
         return *this;
