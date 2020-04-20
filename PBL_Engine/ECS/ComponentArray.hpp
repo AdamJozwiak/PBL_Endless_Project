@@ -37,8 +37,11 @@ class ComponentArray : public IComponentArray {
     }
 
     void remove(EntityId entityId) {
-        assert(componentExists(entityId) &&
-               "Component must exist before removing!");
+        if (!componentExists(entityId)) {
+            return;
+        }
+        // assert(componentExists(entityId) &&
+        //       "Component must exist before removing!");
 
         size_t lastIndex = size - 1;
         size_t removedIndex = indicies[entityId];
@@ -64,8 +67,8 @@ class ComponentArray : public IComponentArray {
     }
 
     void destroyEntity(EntityId entityId) override {
-        assert(componentExists(entityId) &&
-               "Component doesn't exist for given entity!");
+        // assert(componentExists(entityId) &&
+        //       "Component doesn't exist for given entity!");
 
         remove(entityId);
     }
