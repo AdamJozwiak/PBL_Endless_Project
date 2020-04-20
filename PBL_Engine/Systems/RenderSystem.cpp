@@ -4,14 +4,10 @@
 #include <algorithm>
 #include <memory>
 
-#include "Model.h"
 #include "Box.h"
 #include "GDIPlusManager.h"
-#include "Melon.h"
+#include "Model.h"
 #include "PBLMath.h"
-#include "Pyramid.h"
-#include "Sheet.h"
-#include "SkinnedBox.h"
 #include "Surface.h"
 #include "Window.h"
 #include "imgui/imgui.h"

@@ -147,9 +147,6 @@
     <ClCompile Include="Pyramid.cpp">
       <Filter>Pliki źródłowe\Renderable</Filter>
     </ClCompile>
-    <ClCompile Include="Melon.cpp">
-      <Filter>Pliki źródłowe\Renderable</Filter>
-    </ClCompile>
     <ClCompile Include="ECS\ComponentManager.cpp">
       <Filter>Pliki źródłowe\ECS</Filter>
     </ClCompile>
@@ -417,9 +414,6 @@
       <Filter>Pliki nagłówkowe\Renderable</Filter>
     </ClInclude>
     <ClInclude Include="Pyramid.h">
-      <Filter>Pliki nagłówkowe\Renderable</Filter>
-    </ClInclude>
-    <ClInclude Include="Melon.h">
       <Filter>Pliki nagłówkowe\Renderable</Filter>
     </ClInclude>
     <ClInclude Include="ECS\Component.hpp">

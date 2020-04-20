@@ -45,7 +45,6 @@
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="LevelParser.cpp" />
-    <ClCompile Include="Melon.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="Pyramid.cpp" />
@@ -146,7 +145,6 @@
     <ClInclude Include="IsDebug.hpp" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="LevelParser.h" />
-    <ClInclude Include="Melon.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="PBLMath.h" />
