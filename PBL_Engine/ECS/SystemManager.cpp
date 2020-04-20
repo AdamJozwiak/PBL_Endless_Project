@@ -24,7 +24,7 @@ void SystemManager::changeEntitySignature(EntityId entityId,
                                           Signature const& entitySignature) {
     for (auto const& [typeIndex, system] : systems) {
         auto const& systemSignature = signatures[typeIndex];
-        //assert(systemSignature.any() &&
+        // assert(systemSignature.any() &&
         //       "Each system must have a non-empty signature!");
 
         if ((entitySignature & systemSignature) == systemSignature) {
