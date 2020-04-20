@@ -5,6 +5,7 @@
 #include <string>
 
 #include "ExceptionHandler.h"
+#include "IsDebug.hpp"
 #include "WinHeader.h"
 
 class Surface {

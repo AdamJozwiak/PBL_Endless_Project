@@ -11,6 +11,7 @@
 
 #include "DxgiInfoManager.h"
 #include "ExceptionHandler.h"
+#include "IsDebug.hpp"
 #include "WinHeader.h"
 
 class Graphics {
