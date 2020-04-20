@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "BehaviourSystem.hpp"
+#include "Model.h"
 #include "Box.h"
 #include "Melon.h"
 #include "PBLMath.h"

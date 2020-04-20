@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <memory>
 
+#include "Model.h"
 #include "Box.h"
 #include "GDIPlusManager.h"
 #include "Melon.h"
@@ -18,14 +19,10 @@
 // ECS
 #include "ECS/ECS.hpp"
 
-// Assimp
-//#include "assimp/include/assimp/Importer.hpp"
-//#include "assimp/include/assimp/postprocess.h"
-//#include "assimp/include/assimp/scene.h"
-
 namespace dx = DirectX;
 
 GDIPlusManager gdipm;
+Model* nano;
 
 // /////////////////////////////////////////////////////////////////// System //
 // ============================================================= Behaviour == //
@@ -36,12 +33,9 @@ void RenderSystem::setup() {
     window = std::make_unique<Window>(800, 600, "PBL_ENGINE");
     camera = std::make_unique<Camera>();
     // imgui = std::make_unique<ImguiManager>();
-
+    nano = new Model(window->Gfx(), "Models\\suzanne.obj");
     window->Gfx().SetProjection(
         dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
-    // Assimp::Importer imp;
-    // auto model = imp.ReadFile("Models\\suzanne.obj", aiProcess_Triangulate |
-    // aiProcess_JoinIdenticalVertices);
 }
 
 void RenderSystem::update(float deltaTime) {
@@ -58,6 +52,7 @@ void RenderSystem::update(float deltaTime) {
             window->keyboard.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
         renderer.renderable->Draw(window->Gfx());
     }
+    //nano->Draw(registry.system<RenderSystem>()->window->Gfx());
 
     // imgui window to control simulation speed
     if (ImGui::Begin("Simulation Speed")) {

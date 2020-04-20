@@ -3,6 +3,7 @@
 // ///////////////////////////////////////////////////////////////// Includes //
 #include "Camera.h"
 #include "ImguiManager.h"
+#include "Model.h"
 
 // ECS
 #include "Components/Components.hpp"
