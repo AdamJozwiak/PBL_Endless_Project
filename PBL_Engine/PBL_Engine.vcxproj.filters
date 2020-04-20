@@ -312,8 +312,11 @@
     <ClCompile Include="LevelParser.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="Systems\ScriptSystem.cpp">
+    <ClCompile Include="Systems\BehaviourSystem.cpp">
       <Filter>Pliki źródłowe\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TestScript\dllmain.cpp">
+      <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -710,8 +713,20 @@
     <ClInclude Include="Components\BoxCollider.h">
       <Filter>Pliki nagłówkowe\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Systems\ScriptSystem.hpp">
+    <ClInclude Include="Script.hpp">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Behaviour.hpp">
+      <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\BehaviourSystem.hpp">
       <Filter>Pliki nagłówkowe\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineAPI.hpp">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="IsDebug.hpp">
+      <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -737,6 +752,7 @@
     <None Include="yaml-cpp\src\contrib\yaml-cpp.natvis.md">
       <Filter>yaml-cpp\src\contrib</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ColorBlendPS.hlsl">

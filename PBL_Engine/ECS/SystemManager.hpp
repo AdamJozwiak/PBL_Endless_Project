@@ -8,13 +8,14 @@
 #include <unordered_map>
 
 #include "ComponentManager.hpp"
+#include "EngineAPI.hpp"
 #include "Utilities.hpp"
 
 // ///////////////////////////////////////////////////// Forward declarations //
-struct System;
+struct ENGINE_API System;
 
 // //////////////////////////////////////////////////////////////////// Class //
-class SystemManager {
+class ENGINE_API SystemManager {
   public:
     // ========================================================= Behaviour == //
     // ------------------------------------------------------ Singleton -- == //

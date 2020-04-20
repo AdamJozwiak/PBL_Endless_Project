@@ -4,16 +4,17 @@
 #include <memory>
 
 #include "ComponentManager.hpp"
+#include "EngineAPI.hpp"
 #include "EntityManager.hpp"
 #include "EventManager.hpp"
 #include "SystemManager.hpp"
 #include "Utilities.hpp"
 
 // ///////////////////////////////////////////////////// Forward declarations //
-class Entity;
+class ENGINE_API Entity;
 
 // //////////////////////////////////////////////////////////////////// Class //
-class Registry {
+class ENGINE_API Registry {
   public:
     // ========================================================= Behaviour == //
     // ------------------------------------------------------ Singleton -- == //

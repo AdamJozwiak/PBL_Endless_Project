@@ -1,14 +1,16 @@
 // ///////////////////////////////////////////////////////////////// Includes //
 #include "SceneSystem.hpp"
-#include "RenderSystem.hpp"
 
 #include <algorithm>
 #include <memory>
 
+#include "BehaviourSystem.hpp"
 #include "Box.h"
 #include "Melon.h"
 #include "PBLMath.h"
 #include "Pyramid.h"
+#include "RenderSystem.hpp"
+#include "Script.hpp"
 #include "Sheet.h"
 #include "SkinnedBox.h"
 #include "Surface.h"
@@ -63,12 +65,22 @@ class Factory {
 void SceneSystem::filters() {}
 
 void SceneSystem::setup() {
-    Factory renderableFactory(registry.system<RenderSystem>()->window->Gfx());
+    auto renderSystem = registry.system<RenderSystem>();
+    auto behaviourSystem = registry.system<BehaviourSystem>();
+
+    Factory renderableFactory(renderSystem->window->Gfx());
 
     constexpr size_t NUMBER_OF_RENDERABLES = 18;
     for (int i = 0; i < NUMBER_OF_RENDERABLES; ++i) {
-        registry.createEntity().add<Renderer>(
-            {.renderable = renderableFactory()});
+        auto entity = registry.createEntity();
+        entity.add<Renderer>({.renderable = renderableFactory()})
+            .add<Behaviour>(behaviourSystem->behaviour(
+                "TestScript" + (i % 2 ? std::string("2") : std::string("")),
+                entity));
+    }
+
+    for (auto entity : entities) {
+        entity.get<Behaviour>().script->setup();
     }
 }
 

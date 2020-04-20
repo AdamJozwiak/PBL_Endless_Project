@@ -1,10 +1,11 @@
 #pragma once
 
 // ///////////////////////////////////////////////////////////////// Includes //
+#include "EngineAPI.hpp"
 #include "Registry.hpp"
 
 // //////////////////////////////////////////////////////////////////// Class //
-class Entity {
+class ENGINE_API Entity {
   public:
     // ========================================================= Behaviour == //
     Entity(EntityId entityId) : id(entityId) {}

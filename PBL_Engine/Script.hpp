@@ -1,27 +1,22 @@
 #pragma once
 
 // ///////////////////////////////////////////////////////////////// Includes //
-#include <vector>
-
-#include "ECS/Registry.hpp"
-#include "ECS/System.hpp"
+#include "ECS/Entity.hpp"
 #include "EngineAPI.hpp"
-#include "Timer.h"
-#include "Window.h"
 
 // //////////////////////////////////////////////////////////////////// Class //
-class Engine {
+class ENGINE_API Script {
   public:
     // ========================================================= Behaviour == //
-    Engine();
-    ENGINE_API int run();
+    Script(Entity const &entity) : entity(entity) {}
+    virtual ~Script() = default;
 
-  private:
+    virtual void setup(){};
+    virtual void update(float const deltaTime){};
+
+  protected:
     // ============================================================== Data == //
-    Registry &registry;
-    std::vector<std::shared_ptr<System>> systems;
-
-    Timer timer;
+    Entity entity;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

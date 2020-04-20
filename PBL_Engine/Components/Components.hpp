@@ -5,5 +5,6 @@
 #include "Transform.hpp"
 #include "BoxCollider.h"
 #include "SphereCollider.h"
+#include "Behaviour.hpp"
 
 // ////////////////////////////////////////////////////////////////////////// //

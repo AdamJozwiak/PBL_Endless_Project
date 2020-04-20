@@ -5,10 +5,11 @@
 #include <cassert>
 #include <unordered_map>
 
+#include "EngineAPI.hpp"
 #include "Utilities.hpp"
 
 // //////////////////////////////////////////////////////////////// Interface //
-class IComponentArray {
+class ENGINE_API IComponentArray {
   public:
     // ========================================================= Behaviour == //
     virtual ~IComponentArray() = default;
@@ -17,7 +18,7 @@ class IComponentArray {
 
 // //////////////////////////////////////////////////////////////////// Class //
 template <typename Component>
-class ComponentArray : public IComponentArray {
+class ENGINE_API ComponentArray : public IComponentArray {
   public:
     // ========================================================= Behaviour == //
     void insert(EntityId entityId, Component const &component) {

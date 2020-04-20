@@ -2,10 +2,11 @@
 
 // ///////////////////////////////////////////////////////////////// Includes //
 #include "ComponentManager.hpp"
+#include "EngineAPI.hpp"
 
 // /////////////////////////////////////////////////////////////// Registrant //
 template <typename ComponentType>
-class ComponentRegistrant {
+class ENGINE_API ComponentRegistrant {
     // This will be called only once when instantiating the template
     static inline struct Registrant {
         Registrant() {
@@ -15,6 +16,6 @@ class ComponentRegistrant {
 };
 
 // /////////////////////////////////////////////////////////////////// Macros //
-#define ECS_COMPONENT(T) struct T : public ComponentRegistrant<T>
+#define ECS_COMPONENT(T) struct ENGINE_API T : public ComponentRegistrant<T>
 
 // ////////////////////////////////////////////////////////////////////////// //

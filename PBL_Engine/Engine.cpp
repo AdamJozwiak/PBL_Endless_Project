@@ -7,14 +7,19 @@
 #include "Systems/Systems.hpp"
 #include "Window.h"
 
+// ///////////////////////////////////////////////////////// Factory function //
+extern "C" ENGINE_API void create(std::shared_ptr<Engine> &engine) {
+    engine = std::make_shared<Engine>();
+}
+
 // //////////////////////////////////////////////////////////////////// Class //
 // ============================================================= Behaviour == //
 Engine::Engine()
     : registry(Registry::instance()),
       systems{registry.system<RenderSystem>(), registry.system<SceneSystem>(),
-              registry.system<ScriptSystem>()} {}
+              registry.system<BehaviourSystem>()} {}
 
-int Engine::run() {
+ENGINE_API int Engine::run() {
     for (auto &system : systems) {
         system->setup();
     }

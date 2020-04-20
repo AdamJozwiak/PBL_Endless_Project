@@ -3,13 +3,14 @@
 // ///////////////////////////////////////////////////////////////// Includes //
 #include <set>
 
+#include "EngineAPI.hpp"
 #include "Entity.hpp"
 #include "Registry.hpp"
 #include "SystemManager.hpp"
 
 // /////////////////////////////////////////////////////////////// Registrant //
 template <typename SystemType>
-class SystemRegistrant {
+class ENGINE_API SystemRegistrant {
     // This will be called only once when instantiating the template
     static inline struct Registrant {
         Registrant() {
@@ -20,7 +21,7 @@ class SystemRegistrant {
 
 // ////////////////////////////////////////////////////////////////// Wrapper //
 template <typename SystemType>
-class SystemWrapper {
+class ENGINE_API SystemWrapper {
   public:
     template <typename ComponentType>
     SystemWrapper& filter(bool const active = true) {
@@ -31,7 +32,9 @@ class SystemWrapper {
 };
 
 // //////////////////////////////////////////////////////////////////// Class //
-struct System {
+struct ENGINE_API System {
+    friend SystemManager;
+
     // ========================================================= Behaviour == //
     virtual ~System() = default;
     virtual void filters() = 0;
@@ -43,9 +46,9 @@ struct System {
 };
 
 // /////////////////////////////////////////////////////////////////// Macros //
-#define ECS_SYSTEM(T)                   \
-    struct T : public System,           \
-               public SystemWrapper<T>, \
-               public SystemRegistrant<T>
+#define ECS_SYSTEM(T)                              \
+    struct ENGINE_API T : public System,           \
+                          public SystemWrapper<T>, \
+                          public SystemRegistrant<T>
 
 // ////////////////////////////////////////////////////////////////////////// //

@@ -9,10 +9,11 @@
 #include <unordered_map>
 
 #include "ComponentArray.hpp"
+#include "EngineAPI.hpp"
 #include "Utilities.hpp"
 
 // //////////////////////////////////////////////////////////////////// Class //
-class ComponentManager {
+class ENGINE_API ComponentManager {
   public:
     // ========================================================= Behaviour == //
     // ------------------------------------------------------ Singleton -- == //

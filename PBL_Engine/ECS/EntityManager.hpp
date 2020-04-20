@@ -4,10 +4,11 @@
 #include <array>
 #include <queue>
 
+#include "EngineAPI.hpp"
 #include "Utilities.hpp"
 
 // //////////////////////////////////////////////////////////////////// Class //
-class EntityManager {
+class ENGINE_API EntityManager {
   public:
     // ========================================================= Behaviour == //
     // ------------------------------------------------------ Singleton -- == //

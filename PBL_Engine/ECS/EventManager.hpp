@@ -7,11 +7,12 @@
 #include <typeindex>
 #include <unordered_map>
 
+#include "EngineAPI.hpp"
 #include "Event.hpp"
 #include "Utilities.hpp"
 
 // //////////////////////////////////////////////////////////////////// Class //
-class EventManager {
+class ENGINE_API EventManager {
   public:
     // ========================================================= Behaviour == //
     // ------------------------------------------------------ Singleton -- == //
