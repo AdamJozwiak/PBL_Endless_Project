@@ -6,7 +6,7 @@
 
 #include "Box.h"
 #include "GDIPlusManager.h"
-#include "Model.h"
+#include "Mesh.h"
 #include "PBLMath.h"
 #include "Surface.h"
 #include "Window.h"
@@ -18,9 +18,11 @@
 namespace dx = DirectX;
 
 GDIPlusManager gdipm;
+
+//testing models
 Model* nano;
+Model* test;
 PointLight* light;
-Box* box;
 
 // /////////////////////////////////////////////////////////////////// System //
 // ============================================================= Behaviour == //
@@ -33,7 +35,8 @@ void RenderSystem::setup() {
     light = new PointLight(window->Gfx());
 
     // imgui = std::make_unique<ImguiManager>();
-    nano = new Model(window->Gfx(), "Models\\suzanne.obj");
+    test = new Model(window->Gfx(), "Models\\suzanne.obj");
+    nano = new Model(window->Gfx(), "Models\\Wolf_dae.dae");
     window->Gfx().SetProjection(
         dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
 }
@@ -53,8 +56,9 @@ void RenderSystem::update(float deltaTime) {
             window->keyboard.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
         renderer.renderable->Draw(window->Gfx());
     }
+    //test->Draw(window->Gfx());
     nano->Draw(window->Gfx());
-    light->Draw(window->Gfx());
+    //light->Draw(window->Gfx());
 
     // imgui window to control simulation speed
     if (ImGui::Begin("Simulation Speed")) {
@@ -69,6 +73,8 @@ void RenderSystem::update(float deltaTime) {
     // imgui window to control camera
     camera->SpawnControlWindow();
     light->SpawnControlWindow();
+    nano->ShowWindow();
+
     // present
     window->Gfx().EndFrame();
 };

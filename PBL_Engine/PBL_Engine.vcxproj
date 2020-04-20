@@ -46,6 +46,7 @@
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="LevelParser.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PointLight.cpp" />
@@ -148,8 +149,8 @@
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="IsDebug.hpp" />
     <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="LevelParser.h" />
-    <ClInclude Include="Model.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="PBLMath.h" />
     <ClInclude Include="PixelShader.h" />

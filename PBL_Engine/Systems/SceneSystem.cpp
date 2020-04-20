@@ -5,11 +5,11 @@
 #include <memory>
 
 #include "BehaviourSystem.hpp"
-#include "Model.h"
 #include "Box.h"
 #include "Cylinder.h"
 #include "Pyramid.h"
 #include "SkinnedBox.h"
+#include "Mesh.h"
 #include "PBLMath.h"
 #include "RenderSystem.hpp"
 #include "Script.hpp"

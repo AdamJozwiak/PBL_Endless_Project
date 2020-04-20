@@ -324,6 +324,9 @@
     <ClCompile Include="Cylinder.cpp">
       <Filter>Pliki źródłowe\Renderable</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -734,9 +737,6 @@
     <ClInclude Include="Vertex.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
     <ClInclude Include="PointLight.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
@@ -748,6 +748,9 @@
     </ClInclude>
     <ClInclude Include="Cylinder.h">
       <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
