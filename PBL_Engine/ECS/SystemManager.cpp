@@ -16,7 +16,10 @@ SystemManager& SystemManager::instance() {
 
 void SystemManager::destroyEntity(EntityId entityId) {
     for (auto const& [typeIndex, system] : systems) {
-        system->entities.erase(Entity(entityId));
+        if (auto entity = Entity{entityId};
+            system->entities.find(entity) != system->entities.end()) {
+            system->entities.erase(entity);
+        }
     }
 }
 
