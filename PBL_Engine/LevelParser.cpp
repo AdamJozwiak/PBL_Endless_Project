@@ -4,10 +4,18 @@
 #include <set>
 #include <unordered_map>
 #include <vector>
+#include <filesystem>
 
 #include "Components/Components.hpp"
 #include "ECS/ECS.hpp"
 #include "yaml-cpp/include/yaml-cpp/yaml.h"
+
+namespace fs = std::filesystem;
+
+std::vector<std::string> prefabs;
+std::vector<std::string> materials;
+std::vector<std::string> metas;
+
 
 auto &registry = Registry::instance();
 
@@ -24,6 +32,27 @@ void LevelParser::load() {
 
     auto const &sceneNodes = YAML::LoadAllFromFile("1.yaml");
 
+    //Creating vectors of files with .prefab, .mat, .meta extensions
+    std::string path = ".";
+    std::string prefab(".prefab");
+    std::string mat(".mat");
+    std::string meta(".meta");
+
+    for (const auto& entry : fs::recursive_directory_iterator(path)) {
+
+        if (entry.path().extension() == prefab)
+        {
+            prefabs.push_back(entry.path().string());
+        }
+        if (entry.path().extension() == mat)
+        {
+            materials.push_back(entry.path().string());
+        }
+        if(entry.path().extension == meta){
+            metas.push_back(entry.path().string());
+        }
+    }
+
     // Map all possible nodes with corresponding identifiers and make a set of
     // all identifiers in scene file
     std::unordered_map<FileId, YAML::Node> nodes;
@@ -35,6 +64,48 @@ void LevelParser::load() {
             }
             nodes.insert({i->second["id"].as<FileId>(), node});
             sceneFileIds.insert(i->second["id"].as<FileId>());
+        }
+    }
+    
+    for (int i = 0; i < prefabs.size(); i++) {
+        std::vector<YAML::Node> pref = YAML::LoadAllFromFile(prefabs[i]);
+        for (auto const &node :pref)
+        {
+            yamlLoop(j, node) {
+                if (!j->second["id"])
+                {
+                    continue;
+                }
+                nodes.insert({j->second["id"].as<FileId>(), node});
+            }
+        }
+    }
+
+    for (int i = 0; i < materials.size(); i++) {
+        std::vector<YAML::Node> mats = YAML::LoadAllFromFile(materials[i]);
+        for (auto const& node : mats)
+        {
+            yamlLoop(j, node) {
+                if (!j->second["id"])
+                {
+                    continue;
+                }
+                nodes.insert({ j->second["id"].as<FileId>(), node });
+            }
+        }
+    }
+
+    for (int i = 0; i < metas.size(); i++) {
+        std::vector<YAML::Node> met = YAML::LoadAllFromFile(metas[i]);
+        for (auto const& node : met)
+        {
+            yamlLoop(j, node) {
+                if (!j->second["id"])
+                {
+                    continue;
+                }
+                nodes.insert({ j->second["id"].as<FileId>(), node });
+            }
         }
     }
 
