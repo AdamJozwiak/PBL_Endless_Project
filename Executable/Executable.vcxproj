@@ -188,6 +188,9 @@ xcopy /D /Y "$(ProjectDir)*.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClCompile Include="Executable.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Executable.rc" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

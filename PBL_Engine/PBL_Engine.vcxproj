@@ -244,12 +244,6 @@
     <ClInclude Include="yaml-cpp\src\token.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="PBL_Engine.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\Graphics\WIP_Icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="cpp.hint" />
     <None Include="DXGetErrorDescription.inl" />
     <None Include="DXGetErrorString.inl" />

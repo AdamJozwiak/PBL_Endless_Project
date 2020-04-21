@@ -760,16 +760,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="PBL_Engine.rc">
-      <Filter>Pliki zasobów</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\Graphics\WIP_Icon.ico">
-      <Filter>Pliki zasobów</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="DXTrace.inl">
       <Filter>DxErr</Filter>
     </None>
