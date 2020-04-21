@@ -108,6 +108,7 @@
     </Link>
     <PostBuildEvent>
       <Command>echo D | xcopy /S /I /D /Y "$(ProjectDir)Models" "$(OutDir)Models" &amp;
+echo D | xcopy /S /I /D /Y "$(ProjectDir)Graphics" "$(OutDir)Graphics" &amp;
 xcopy /D /Y "$(ProjectDir)*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -130,6 +131,7 @@ xcopy /D /Y "$(ProjectDir)*.dll" "$(OutDir)"</Command>
     </Link>
     <PostBuildEvent>
       <Command>echo D | xcopy /S /I /D /Y "$(ProjectDir)Models" "$(OutDir)Models" &amp;
+echo D | xcopy /S /I /D /Y "$(ProjectDir)Graphics" "$(OutDir)Graphics" &amp;
 xcopy /D /Y "$(ProjectDir)*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -156,6 +158,7 @@ xcopy /D /Y "$(ProjectDir)*.dll" "$(OutDir)"</Command>
     </Link>
     <PostBuildEvent>
       <Command>echo D | xcopy /S /I /D /Y "$(ProjectDir)Models" "$(OutDir)Models" &amp;
+echo D | xcopy /S /I /D /Y "$(ProjectDir)Graphics" "$(OutDir)Graphics" &amp;
 xcopy /D /Y "$(ProjectDir)*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -182,6 +185,7 @@ xcopy /D /Y "$(ProjectDir)*.dll" "$(OutDir)"</Command>
     </Link>
     <PostBuildEvent>
       <Command>echo D | xcopy /S /I /D /Y "$(ProjectDir)Models" "$(OutDir)Models" &amp;
+echo D | xcopy /S /I /D /Y "$(ProjectDir)Graphics" "$(OutDir)Graphics" &amp;
 xcopy /D /Y "$(ProjectDir)*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
