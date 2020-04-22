@@ -216,6 +216,21 @@ void LevelParser::load() {
             }
         }
 
+        if (auto const &nodeMeshRenderer = node["MeshRenderer"];
+            nodeMeshRenderer) {
+            assert(
+                nodeMeshRenderer["m_GameObject"] &&
+                "Every property inside MeshRenderer component must be valid!");
+
+            yamlLoop(i, nodeMeshRenderer["m_GameObject"]) {
+                auto gameObjectFileId = i->second.Scalar();
+                Entity(entityIds[gameObjectFileId]).add<Renderer>({});
+                entityIds.insert({fileId, entityIds[gameObjectFileId]});
+            }
+
+            auto &renderer = Entity(entityIds[fileId]).get<Renderer>();
+        }
+
         if (auto const &nodeBoxCollider = node["BoxCollider"];
             nodeBoxCollider) {
             assert(
