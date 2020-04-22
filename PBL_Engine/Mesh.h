@@ -68,7 +68,8 @@ class Node {
 class Model {
   public:
     Model(Graphics& gfx, const std::string fileName);
-    void Draw(Graphics& gfx) const noexcept(!IS_DEBUG);
+    void Draw(Graphics& gfx, DirectX::XMMATRIX transform) const
+        noexcept(!IS_DEBUG);
     void ShowWindow(const char* windowName = nullptr) noexcept;
     ~Model() noexcept;
 

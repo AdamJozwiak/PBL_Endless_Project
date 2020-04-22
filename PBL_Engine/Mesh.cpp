@@ -217,11 +217,12 @@ Model::Model(Graphics& gfx, const std::string fileName)
     pRoot = ParseNode(*pScene->mRootNode);
 }
 
-void Model::Draw(Graphics& gfx) const noexcept(!IS_DEBUG) {
+void Model::Draw(Graphics& gfx, DirectX::XMMATRIX transform) const
+    noexcept(!IS_DEBUG) {
     if (auto node = pWindow->GetSelectedNode()) {
         node->SetAppliedTransform(pWindow->GetTransform());
     }
-    pRoot->Draw(gfx, dx::XMMatrixIdentity());
+    pRoot->Draw(gfx, transform);
 }
 
 void Model::ShowWindow(const char* windowName) noexcept {
