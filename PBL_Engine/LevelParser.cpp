@@ -24,6 +24,7 @@ LevelParser::~LevelParser() {}
 
 void LevelParser::load() {
     using FileId = std::string;
+    using FileGuid = std::string;
     using Path = std::string;
     using FileExtension = std::string;
 
@@ -31,6 +32,7 @@ void LevelParser::load() {
         YAML::LoadAllFromFile("SceneFiles/SampleScene/SampleScene.unity");
 
     std::unordered_map<FileExtension, std::vector<Path>> assetPaths;
+    std::unordered_map<FileGuid, Path> guidPaths;
 
     // Creating vectors of files with .prefab, .mat, .meta extensions
     Path searchedDirectory{"SceneFiles/SampleScene"};
@@ -65,6 +67,14 @@ void LevelParser::load() {
         for (auto const &path : paths) {
             std::vector<YAML::Node> assetNodes = YAML::LoadAllFromFile(path);
             for (auto const &node : assetNodes) {
+                if (extension == ".meta") {
+                    auto const pathWithoutExtension{
+                        fs::path(path).parent_path().string() + "/" +
+                        fs::path(path).stem().string()};
+                    guidPaths.insert(
+                        {node["guid"].as<FileGuid>(), pathWithoutExtension});
+                    break;
+                }
                 yamlLoop(i, node) {
                     if (!i->second["id"]) {
                         continue;
