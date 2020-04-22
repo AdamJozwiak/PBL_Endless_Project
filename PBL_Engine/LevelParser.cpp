@@ -8,6 +8,7 @@
 
 #include "Components/Components.hpp"
 #include "ECS/ECS.hpp"
+#include "Systems/Systems.hpp"
 #include "yaml-cpp/include/yaml-cpp/yaml.h"
 
 namespace fs = std::filesystem;
@@ -184,6 +185,33 @@ void LevelParser::load() {
                 }
                 if (key == "z") {
                     transform.eulerAngle_z = value;
+                }
+            }
+        }
+
+        if (auto const &nodeMonoBehaviour = node["MonoBehaviour"];
+            nodeMonoBehaviour) {
+            assert(
+                nodeMonoBehaviour["m_GameObject"] &&
+                nodeMonoBehaviour["m_Script"] &&
+                "Every property inside MonoBehaviour component must be valid!");
+
+            yamlLoop(i, nodeMonoBehaviour["m_GameObject"]) {
+                auto gameObjectFileId = i->second.Scalar();
+                Entity(entityIds[gameObjectFileId]).add<Behaviour>({});
+                entityIds.insert({fileId, entityIds[gameObjectFileId]});
+            }
+
+            auto &behaviour = Entity(entityIds[fileId]).get<Behaviour>();
+
+            yamlLoop(it, nodeMonoBehaviour["m_Script"]) {
+                auto const key = it->first.as<std::string>();
+                auto const value = it->second.as<std::string>();
+
+                if (key == "guid") {
+                    behaviour = registry.system<BehaviourSystem>()->behaviour(
+                        fs::path(guidPaths[value]).stem().string(),
+                        Entity(entityIds[fileId]));
                 }
             }
         }
