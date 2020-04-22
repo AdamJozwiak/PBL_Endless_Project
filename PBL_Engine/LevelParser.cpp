@@ -8,7 +8,9 @@
 
 #include "Components/Components.hpp"
 #include "ECS/ECS.hpp"
+#include "Mesh.h"
 #include "Systems/Systems.hpp"
+#include "Window.h"
 #include "yaml-cpp/include/yaml-cpp/yaml.h"
 
 namespace fs = std::filesystem;
@@ -229,6 +231,30 @@ void LevelParser::load() {
             }
 
             auto &renderer = Entity(entityIds[fileId]).get<Renderer>();
+        }
+
+        if (auto const &nodeMeshFilter = node["MeshFilter"]; nodeMeshFilter) {
+            assert(nodeMeshFilter["m_GameObject"] && nodeMeshFilter["m_Mesh"] &&
+                   "Every property inside MeshFilter component must be valid!");
+
+            yamlLoop(i, nodeMeshFilter["m_GameObject"]) {
+                auto gameObjectFileId = i->second.Scalar();
+                Entity(entityIds[gameObjectFileId]).add<MeshFilter>({});
+                entityIds.insert({fileId, entityIds[gameObjectFileId]});
+            }
+
+            auto &meshFilter = Entity(entityIds[fileId]).get<MeshFilter>();
+
+            yamlLoop(it, nodeMeshFilter["m_Mesh"]) {
+                auto const key = it->first.as<std::string>();
+                auto const value = it->second.as<std::string>();
+
+                if (key == "guid") {
+                    meshFilter.model = std::make_shared<Model>(
+                        registry.system<RenderSystem>()->window->Gfx(),
+                        guidPaths[value]);
+                }
+            }
         }
 
         if (auto const &nodeBoxCollider = node["BoxCollider"];
