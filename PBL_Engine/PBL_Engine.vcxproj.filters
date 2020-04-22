@@ -761,6 +761,9 @@
     <ClInclude Include="Mesh.h">
       <Filter>Pliki nagłówkowe\Renderable</Filter>
     </ClInclude>
+    <ClInclude Include="Components\MeshFilter.hpp">
+      <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXTrace.inl">
