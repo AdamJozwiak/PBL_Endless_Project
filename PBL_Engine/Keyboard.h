@@ -2,6 +2,8 @@
 #include <bitset>
 #include <queue>
 
+#include "EngineAPI.hpp"
+
 class Keyboard {
     friend class Window;
 
@@ -28,7 +30,7 @@ class Keyboard {
     Keyboard(const Keyboard&) = delete;
     Keyboard& operator=(const Keyboard&) = delete;
     // Key event
-    bool KeyIsPressed(unsigned char keycode) const noexcept;
+    ENGINE_API bool KeyIsPressed(unsigned char keycode) const noexcept;
     Event ReadKey() noexcept;
     bool KeyIsEmpty() const noexcept;
     void FlushKey() noexcept;

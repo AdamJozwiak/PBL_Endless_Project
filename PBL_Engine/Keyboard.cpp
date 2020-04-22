@@ -1,6 +1,6 @@
 #include "Keyboard.h"
 
-bool Keyboard::KeyIsPressed(unsigned char keycode) const noexcept {
+ENGINE_API bool Keyboard::KeyIsPressed(unsigned char keycode) const noexcept {
     return keystates[keycode];
 }
 
