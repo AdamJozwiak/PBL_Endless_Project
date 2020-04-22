@@ -4,6 +4,7 @@
 // ECS
 #include "Components/Components.hpp"
 #include "ECS/System.hpp"
+#include "LevelParser.h"
 
 // /////////////////////////////////////////////////////////////////// System //
 ECS_SYSTEM(SceneSystem) {
@@ -16,6 +17,7 @@ ECS_SYSTEM(SceneSystem) {
 
   private:
     // ============================================================== Data == //
+    LevelParser levelParser;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

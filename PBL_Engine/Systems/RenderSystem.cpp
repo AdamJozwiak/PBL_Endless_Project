@@ -27,7 +27,9 @@ PointLight* light;
 // /////////////////////////////////////////////////////////////////// System //
 // ============================================================= Behaviour == //
 // ----------------------------------------- System's virtual functions -- == //
-void RenderSystem::filters() { filter<Renderer>(); }
+void RenderSystem::filters() {
+    filter<Renderer>().filter<MeshFilter>().filter<Transform>();
+}
 
 void RenderSystem::setup() {
     window = std::make_unique<Window>(1280, 720, "PBL_ENGINE");
@@ -51,10 +53,28 @@ void RenderSystem::update(float deltaTime) {
 
     for (Entity entity : entities) {
         auto& renderer = entity.get<Renderer>();
+        auto& meshFilter = entity.get<MeshFilter>();
+        auto& transform = entity.get<Transform>();
 
-        renderer.renderable->Update(
-            window->keyboard.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
-        renderer.renderable->Draw(window->Gfx());
+        // renderer.renderable->Update(
+        //     window->keyboard.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
+        // renderer.renderable->Draw(window->Gfx());
+        dx::XMMATRIX transformMatrix =
+            dx::XMMatrixScaling(transform.scale_x, transform.scale_y,
+                                transform.scale_z) *
+            dx::XMMatrixRotationRollPitchYaw(dx::XMConvertToRadians(270.0f),
+                                             dx::XMConvertToRadians(180.0f),
+                                             dx::XMConvertToRadians(0.0f)) *
+            dx::XMMatrixRotationRollPitchYaw(
+                dx::XMConvertToRadians(transform.eulerAngle_x),
+                dx::XMConvertToRadians(transform.eulerAngle_y),
+                dx::XMConvertToRadians(transform.eulerAngle_z)) *
+            // dx::XMMatrixRotationQuaternion(dx::XMLoadFloat4(
+            //     &dx::XMFLOAT4{transform.rotation_x, transform.rotation_y,
+            //                   transform.rotation_z, transform.rotation_w})) *
+            dx::XMMatrixTranslation(transform.position_x, transform.position_y,
+                                    transform.position_z);
+        meshFilter.model->Draw(window->Gfx(), transformMatrix);
     }
     // test->Draw(window->Gfx());
     // nano->Draw(window->Gfx());

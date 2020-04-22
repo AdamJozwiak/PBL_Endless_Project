@@ -64,19 +64,20 @@ class Factory {
 void SceneSystem::filters() {}
 
 void SceneSystem::setup() {
-    auto renderSystem = registry.system<RenderSystem>();
-    auto behaviourSystem = registry.system<BehaviourSystem>();
+    // auto renderSystem = registry.system<RenderSystem>();
+    // auto behaviourSystem = registry.system<BehaviourSystem>();
 
-    Factory renderableFactory(renderSystem->window->Gfx());
+    // Factory renderableFactory(renderSystem->window->Gfx());
 
-    constexpr size_t NUMBER_OF_RENDERABLES = 18;
-    for (int i = 0; i < NUMBER_OF_RENDERABLES; ++i) {
-        auto entity = registry.createEntity();
-        entity.add<Renderer>({.renderable = renderableFactory()})
-            .add<Behaviour>(behaviourSystem->behaviour(
-                "TestScript" + (i % 2 ? std::string("2") : std::string("")),
-                entity));
-    }
+    // constexpr size_t NUMBER_OF_RENDERABLES = 18;
+    // for (int i = 0; i < NUMBER_OF_RENDERABLES; ++i) {
+    //     auto entity = registry.createEntity();
+    //     entity.add<Renderer>({.renderable = renderableFactory()})
+    //         .add<Behaviour>(behaviourSystem->behaviour(
+    //             "TestScript" + (i % 2 ? std::string("2") : std::string("")),
+    //             entity));
+    // }
+    levelParser.load();
 
     for (auto entity : registry.system<BehaviourSystem>()->entities) {
         entity.get<Behaviour>().script->setup();
