@@ -78,7 +78,7 @@ void SceneSystem::setup() {
                 entity));
     }
 
-    for (auto entity : entities) {
+    for (auto entity : registry.system<BehaviourSystem>()->entities) {
         entity.get<Behaviour>().script->setup();
     }
 }
