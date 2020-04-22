@@ -19,7 +19,7 @@ namespace dx = DirectX;
 
 GDIPlusManager gdipm;
 
-//testing models
+// testing models
 Model* nano;
 Model* test;
 PointLight* light;
@@ -56,8 +56,8 @@ void RenderSystem::update(float deltaTime) {
             window->keyboard.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
         renderer.renderable->Draw(window->Gfx());
     }
-    test->Draw(window->Gfx());
-    nano->Draw(window->Gfx());
+    // test->Draw(window->Gfx());
+    // nano->Draw(window->Gfx());
     light->Draw(window->Gfx());
 
     // imgui window to control simulation speed
@@ -74,7 +74,7 @@ void RenderSystem::update(float deltaTime) {
     camera->SpawnControlWindow();
     light->SpawnControlWindow();
     nano->ShowWindow();
-    //test->ShowWindow();
+    // test->ShowWindow();
 
     // present
     window->Gfx().EndFrame();

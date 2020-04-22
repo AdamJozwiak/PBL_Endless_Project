@@ -1,10 +1,10 @@
 #pragma once
 
 // ////////////////////////////////////////////// Includes for all components //
-#include "Renderer.hpp"
-#include "Transform.hpp"
-#include "BoxCollider.h"
-#include "SphereCollider.h"
 #include "Behaviour.hpp"
+#include "BoxCollider.h"
+#include "Renderer.hpp"
+#include "SphereCollider.h"
+#include "Transform.hpp"
 
 // ////////////////////////////////////////////////////////////////////////// //
