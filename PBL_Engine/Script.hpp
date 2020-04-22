@@ -17,6 +17,8 @@ class ENGINE_API Script {
   protected:
     // ============================================================== Data == //
     Entity entity;
+
+    static inline Registry& registry = Registry::instance();
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
