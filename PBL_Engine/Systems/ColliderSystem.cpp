@@ -223,8 +223,10 @@ SphereCollider ColliderSystem::AddSphereCollider(
 
     // Compute radius (distance between min and max bounding box vertices)
     // radius = sqrt(distX*distX + distY*distY + distZ*distZ) / 2.0f;
-    sphereCollider.radius = DirectX::XMVectorGetX(DirectX::XMVector3Length(
-        DirectX::XMVectorSet(distX, distY, distZ, 0.0f)));
+    sphereCollider.radius =
+        DirectX::XMVectorGetX(DirectX::XMVector3Length(
+            DirectX::XMVectorSet(distX, distY, distZ, 0.0f))) /
+        2.0f;
 
     return sphereCollider;
 }

@@ -258,7 +258,7 @@ std::shared_ptr<Mesh> Model::ParseMesh(
 
     for (unsigned int i = 0; i < mesh.mNumVertices; i++) {
         dx::XMFLOAT3 v;
-        float s = 0.5f;
+        float s = 1.0f;
         v.x = s * mesh.mVertices[i].x;
         v.y = s * mesh.mVertices[i].y;
         v.z = s * mesh.mVertices[i].z;
