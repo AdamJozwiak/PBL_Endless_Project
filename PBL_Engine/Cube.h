@@ -28,6 +28,26 @@ class Cube {
                  4, 5, 7, 4, 7, 6, 0, 4, 2, 2, 4, 6, 0, 1, 4, 1, 5, 4}};
     }
     template <class V>
+    static IndexedTriangleList<V> MakeUsunMnie() {
+        namespace dx = DirectX;
+
+        constexpr float side = 1.0f / 2.0f;
+
+        std::vector<V> vertices(8);
+        vertices[0] = {-side, -side, -side};
+        vertices[1] = {side, -side, -side};
+        vertices[2] = {-side, side, -side};
+        vertices[3] = {side, side, -side};
+        vertices[4] = {-side, -side, side};
+        vertices[5] = {side, -side, side};
+        vertices[6] = {-side, side, side};
+        vertices[7] = {side, side, side};
+
+        return {std::move(vertices),
+                {0, 2, 1, 2, 3, 1, 1, 3, 5, 3, 7, 5, 2, 6, 3, 3, 6, 7,
+                 4, 5, 7, 4, 7, 6, 0, 4, 2, 2, 4, 6, 0, 1, 4, 1, 5, 4}};
+    }
+    template <class V>
     static IndexedTriangleList<V> MakeSkinned() {
         namespace dx = DirectX;
 
