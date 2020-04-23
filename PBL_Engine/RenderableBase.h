@@ -43,8 +43,5 @@ private:
 		return staticBinds;
 	}
 private:
-	static std::vector<std::unique_ptr<Bindable>> staticBinds;
+	inline static std::vector<std::unique_ptr<Bindable>> staticBinds;
 };
-
-template<class T>
-std::vector<std::unique_ptr<Bindable>> RenderableBase<T>::staticBinds;
