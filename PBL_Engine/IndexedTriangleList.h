@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "IsDebug.hpp"
+
 template <class T>
 class IndexedTriangleList {
   public:
