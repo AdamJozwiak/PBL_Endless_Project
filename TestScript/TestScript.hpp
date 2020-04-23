@@ -6,6 +6,7 @@
 #include "ECS/Entity.hpp"
 #include "Script.hpp"
 #include "TestScriptAPI.hpp"
+#include "Events/OnCollisionEnter.hpp"
 
 // //////////////////////////////////////////////////////////////////// Class //
 class TESTSCRIPT_API TestScript : public Script {
@@ -17,12 +18,16 @@ class TESTSCRIPT_API TestScript : public Script {
     void setup() override;
     void update(float const deltaTime) override;
 
+    // --------------------------------------------------------- Events -- == //
+    void onCollisionEnter(OnCollisionEnter const &event);
+
     // -------------------------------------------------------- Methods -- == //
     void method();
 
   private:
     // ============================================================== Data == //
     bool (*isKeyPressed)(int const key);
+    float lastX, lastY, lastZ;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
