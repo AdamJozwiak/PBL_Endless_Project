@@ -24,8 +24,8 @@ ECS_SYSTEM(ColliderSystem) {
     DirectX::XMVECTOR GetColliderMax();
 
     // Sphere Collider
-    template <class V>
-    SphereCollider AddSphereCollider(std::vector<V> objectVertPos);
+    SphereCollider AddSphereCollider(
+        std::vector<DirectX::XMFLOAT3> objectVertPos);
     bool CheckSpheresCollision(
         SphereCollider sphereCollider, DirectX::XMMATRIX const& worldSpace,
         SphereCollider differentSphereCollider,

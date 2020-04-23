@@ -192,8 +192,8 @@ bool ColliderSystem::CheckBoxesCollision(BoxCollider boxCollider,
     return false;
 }
 
-template <class V>
-SphereCollider ColliderSystem::AddSphereCollider(std::vector<V> objectVertPos) {
+SphereCollider ColliderSystem::AddSphereCollider(
+    std::vector<DirectX::XMFLOAT3> objectVertPos) {
     SphereCollider sphereCollider;
     DirectX::XMFLOAT3 minVertex = DirectX::XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
     DirectX::XMFLOAT3 maxVertex =
