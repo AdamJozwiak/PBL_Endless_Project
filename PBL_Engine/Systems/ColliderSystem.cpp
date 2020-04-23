@@ -269,7 +269,7 @@ void ColliderSystem::update(float deltaTime) {
     auto& collider1 = Entity((*entities.begin()).id).get<SphereCollider>();
     auto& collider2 = Entity((*(++entities.begin())).id).get<SphereCollider>();
 
-    auto debugID = (*entities.begin()).id;
+    /*auto debugID = (*entities.begin()).id;
 
     auto debugID1 = (*(++entities.begin())).id;
 
@@ -278,7 +278,7 @@ void ColliderSystem::update(float deltaTime) {
                         .renderable->GetTransformXM();
     auto debugCol2 = Entity((*(++entities.begin())).id)
                          .get<Renderer>()
-                         .renderable->GetTransformXM();
+                         .renderable->GetTransformXM();*/
 
     /*CalculateAABB(collider1, Entity((*entities.begin()).id)
                                  .get<Renderer>()
