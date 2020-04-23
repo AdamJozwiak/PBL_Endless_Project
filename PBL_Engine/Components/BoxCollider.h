@@ -11,6 +11,10 @@ ECS_COMPONENT(BoxCollider) {
     float center_x;
     float center_y;
     float center_z;
+
+    DirectX::XMVECTOR boxColliderMin;
+    DirectX::XMVECTOR boxColliderMax;
+    std::vector<DirectX::XMFLOAT3> boxColliderVerts;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
