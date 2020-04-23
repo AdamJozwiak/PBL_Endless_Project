@@ -40,6 +40,12 @@ void TestScript::update(float const deltaTime) {
     if (isKeyPressed('D')) {
         transform.position.x += 5.0f * deltaTime;
     }
+    if (isKeyPressed('K')) {
+        transform.position.y += 5.0f * deltaTime;
+    }
+    if (isKeyPressed('J')) {
+        transform.position.y -= 5.0f * deltaTime;
+    }
     if (isKeyPressed('W')) {
         transform.position.z += 5.0f * deltaTime;
     }
