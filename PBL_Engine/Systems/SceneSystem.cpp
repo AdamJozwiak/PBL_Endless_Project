@@ -86,8 +86,8 @@ void SceneSystem::setup() {
     levelParser.load();
 
     for (auto entity : registry.system<ColliderSystem>()->entities) {
-        entity.get<BoxCollider>() = 
-            registry.system<ColliderSystem>()->AddBoxCollider(
+        entity.get<SphereCollider>() = 
+            registry.system<ColliderSystem>()->AddSphereCollider(
                 entity.get<MeshFilter>().model->verticesForCollision);
     }
 
