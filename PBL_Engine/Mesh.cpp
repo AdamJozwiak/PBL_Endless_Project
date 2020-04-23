@@ -210,7 +210,7 @@ Model::Model(Graphics& gfx, const std::string fileName)
         throw ModelException(__LINE__, __FILE__, imp.GetErrorString());
     }
     for (size_t i = 0; i < pScene->mNumMeshes; i++) {
-        auto pMesh = ParseMesh(gfx, *pScene->mMeshes[i]);
+        auto pMesh = ParseMesh(gfx, *pScene->mMeshes[i], verticesForCollision);
         meshPtrs.push_back(pMesh);
     }
 
@@ -231,7 +231,9 @@ void Model::ShowWindow(const char* windowName) noexcept {
 
 Model::~Model() noexcept {}
 
-std::shared_ptr<Mesh> Model::ParseMesh(Graphics& gfx, aiMesh& mesh) {
+std::shared_ptr<Mesh> Model::ParseMesh(
+    Graphics& gfx, aiMesh& mesh,
+    std::vector<DirectX::XMFLOAT3>& verticesForColl) {
     namespace dx = DirectX;
     using pblexp::VertexLayout;
     std::vector<std::pair<std::string, Mesh::Bone>> bonesMap;
@@ -255,6 +257,13 @@ std::shared_ptr<Mesh> Model::ParseMesh(Graphics& gfx, aiMesh& mesh) {
     pblexp::VertexBuffer vbuf(std::move(vl));
 
     for (unsigned int i = 0; i < mesh.mNumVertices; i++) {
+        dx::XMFLOAT3 v;
+        float s = 0.5f;
+        v.x = s * mesh.mVertices[i].x;
+        v.y = s * mesh.mVertices[i].y;
+        v.z = s * mesh.mVertices[i].z;
+        verticesForColl.emplace_back(v);
+
         vbuf.EmplaceBack(*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mVertices[i]),
                          *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]));
         if (mesh.HasBones()) {

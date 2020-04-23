@@ -73,8 +73,12 @@ class Model {
     void ShowWindow(const char* windowName = nullptr) noexcept;
     ~Model() noexcept;
 
+    std::vector<DirectX::XMFLOAT3> verticesForCollision;
+
   private:
-    static std::shared_ptr<Mesh> ParseMesh(Graphics& gfx, aiMesh& mesh);
+    static std::shared_ptr<Mesh> ParseMesh(
+        Graphics& gfx, aiMesh& mesh,
+        std::vector<DirectX::XMFLOAT3>& verticesForColl);
     std::unique_ptr<Node> ParseNode(const aiNode& node) noexcept;
 
   private:

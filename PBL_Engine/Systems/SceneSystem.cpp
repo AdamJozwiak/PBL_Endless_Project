@@ -88,7 +88,7 @@ void SceneSystem::setup() {
     for (auto entity : entities) {
         entity.add<SphereCollider>(
             registry.system<ColliderSystem>()->AddSphereCollider(
-                Sphere::Make<DirectX::XMFLOAT3>().vertices));
+                entity.get<MeshFilter>().model->verticesForCollision);
     }
 
     for (auto entity : registry.system<BehaviourSystem>()->entities) {
