@@ -22,6 +22,8 @@ ECS_SYSTEM(RenderSystem) {
     void setup() override;
     void update(float deltaTime) override;
 
+    DirectX::XMMATRIX transformMatrix(Entity entity);
+
     // ============================================================== Data == //
     std::unique_ptr<Window> window;
 

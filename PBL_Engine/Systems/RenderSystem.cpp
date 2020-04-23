@@ -59,22 +59,7 @@ void RenderSystem::update(float deltaTime) {
         // renderer.renderable->Update(
         //     window->keyboard.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
         // renderer.renderable->Draw(window->Gfx());
-        dx::XMMATRIX transformMatrix =
-            dx::XMMatrixScaling(transform.scale_x, transform.scale_y,
-                                transform.scale_z) *
-            dx::XMMatrixRotationRollPitchYaw(dx::XMConvertToRadians(270.0f),
-                                             dx::XMConvertToRadians(180.0f),
-                                             dx::XMConvertToRadians(0.0f)) *
-            dx::XMMatrixRotationRollPitchYaw(
-                dx::XMConvertToRadians(transform.eulerAngle_x),
-                dx::XMConvertToRadians(transform.eulerAngle_y),
-                dx::XMConvertToRadians(transform.eulerAngle_z)) *
-            // dx::XMMatrixRotationQuaternion(dx::XMLoadFloat4(
-            //     &dx::XMFLOAT4{transform.rotation_x, transform.rotation_y,
-            //                   transform.rotation_z, transform.rotation_w})) *
-            dx::XMMatrixTranslation(transform.position_x, transform.position_y,
-                                    transform.position_z);
-        meshFilter.model->Draw(window->Gfx(), transformMatrix);
+        meshFilter.model->Draw(window->Gfx(), transformMatrix(entity));
     }
     // test->Draw(window->Gfx());
     // nano->Draw(window->Gfx());
@@ -99,5 +84,24 @@ void RenderSystem::update(float deltaTime) {
     // present
     window->Gfx().EndFrame();
 };
+
+DirectX::XMMATRIX RenderSystem::transformMatrix(Entity entity) {
+    auto& transform = entity.get<Transform>();
+
+    return dx::XMMatrixScaling(transform.scale_x, transform.scale_y,
+                               transform.scale_z) *
+           dx::XMMatrixRotationRollPitchYaw(dx::XMConvertToRadians(270.0f),
+                                            dx::XMConvertToRadians(180.0f),
+                                            dx::XMConvertToRadians(0.0f)) *
+           dx::XMMatrixRotationRollPitchYaw(
+               dx::XMConvertToRadians(transform.eulerAngle_x),
+               dx::XMConvertToRadians(transform.eulerAngle_y),
+               dx::XMConvertToRadians(transform.eulerAngle_z)) *
+           // dx::XMMatrixRotationQuaternion(dx::XMLoadFloat4(
+           //     &dx::XMFLOAT4{transform.rotation_x, transform.rotation_y,
+           //                   transform.rotation_z, transform.rotation_w})) *
+           dx::XMMatrixTranslation(transform.position_x, transform.position_y,
+                                   transform.position_z);
+}
 
 // ////////////////////////////////////////////////////////////////////////// //
