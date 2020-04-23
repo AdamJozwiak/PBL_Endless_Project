@@ -137,6 +137,7 @@ GameObject:
   - component: {fileID: 45455722}
   - component: {fileID: 45455721}
   - component: {fileID: 45455720}
+  - component: {fileID: 45455723}
   m_Layer: 0
   m_Name: Suzanne 2
   m_TagString: Untagged
@@ -208,6 +209,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: -90.00001, y: 0, z: -230.168}
+--- !u!65 &45455723
+BoxCollider:
+  id: 45455723
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 45455719}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.7343748, y: 1.7031254, z: 1.96875}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
   id: 705507993
@@ -716,6 +731,7 @@ GameObject:
   - component: {fileID: 4044710140962596731}
   - component: {fileID: 7718390322722839426}
   - component: {fileID: 8296172669387616095}
+  - component: {fileID: 8296172669387616096}
   m_Layer: 0
   m_Name: Suzanne 1
   m_TagString: Untagged
@@ -736,3 +752,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e94501f82131694290c91c43c2d55f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &8296172669387616096
+BoxCollider:
+  id: 8296172669387616096
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8296172669387616094}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.734375, y: 1.7031258, z: 1.968751}
+  m_Center: {x: 0, y: 0, z: 0}
