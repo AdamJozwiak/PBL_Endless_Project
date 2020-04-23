@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "Box.h"
+#include "Cube.h"
 #include "Cylinder.h"
 #include "Mesh.h"
 #include "PBLMath.h"
@@ -12,11 +13,13 @@
 #include "Pyramid.h"
 #include "Script.hpp"
 #include "SkinnedBox.h"
+#include "Sphere.h"
 #include "Surface.h"
 #include "Window.h"
 
 // ECS
 #include "BehaviourSystem.hpp"
+#include "ColliderSystem.hpp"
 #include "ECS/ECS.hpp"
 #include "RenderSystem.hpp"
 
@@ -69,13 +72,16 @@ void SceneSystem::setup() {
 
     // Factory renderableFactory(renderSystem->window->Gfx());
 
-    // constexpr size_t NUMBER_OF_RENDERABLES = 18;
+    // constexpr size_t NUMBER_OF_RENDERABLES = 2;
     // for (int i = 0; i < NUMBER_OF_RENDERABLES; ++i) {
     //     auto entity = registry.createEntity();
     //     entity.add<Renderer>({.renderable = renderableFactory()})
     //         .add<Behaviour>(behaviourSystem->behaviour(
     //             "TestScript" + (i % 2 ? std::string("2") : std::string("")),
-    //             entity));
+    //             entity))
+    //         .add<SphereCollider>(
+    //             registry.system<ColliderSystem>()->AddSphereCollider(
+    //                 Sphere::Make<DirectX::XMFLOAT3>().vertices));
     // }
     levelParser.load();
 
