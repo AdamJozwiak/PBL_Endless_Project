@@ -264,37 +264,30 @@ void ColliderSystem::setup() {}
 
 void ColliderSystem::update(float deltaTime) {
     // Collider Test
-
     const auto dt = deltaTime * speed_factor;
-    auto& collider1 = Entity((*entities.begin()).id).get<SphereCollider>();
-    auto& collider2 = Entity((*(++entities.begin())).id).get<SphereCollider>();
 
-    /*auto debugID = (*entities.begin()).id;
+    std::vector<std::vector<bool>> checkedCollisions;
+    for (int i = 0; i < entities.size(); i++) {
+        std::vector<bool> tempik;
+        for (int j = 0; j < i + 1; j++) {
+            tempik.push_back(false);
+        }
+        checkedCollisions.push_back(tempik);
+    }
 
-    auto debugID1 = (*(++entities.begin())).id;
-
-    auto debugCol = Entity((*entities.begin()).id)
+    for (int i = 1; i < checkedCollisions.size(); i++) {
+        for (int j = 0; j < checkedCollisions[i].size() - 1; j++) {			// Triangle array
+            if (CheckSpheresCollision(
+                    Entity((*entities.find(i)).id).get<SphereCollider>(),
+                    Entity((*entities.find(i)).id)
                         .get<Renderer>()
-                        .renderable->GetTransformXM();
-    auto debugCol2 = Entity((*(++entities.begin())).id)
-                         .get<Renderer>()
-                         .renderable->GetTransformXM();*/
-
-    /*CalculateAABB(collider1, Entity((*entities.begin()).id)
-                                 .get<Renderer>()
-                                 .renderable->GetTransformXM());
-    CalculateAABB(collider2, Entity((*(++entities.begin())).id)
-                                 .get<Renderer>()
-                                 .renderable->GetTransformXM());*/
-
-    if (CheckSpheresCollision(collider1,
-                              Entity((*entities.begin()).id)
-                                  .get<Renderer>()
-                                  .renderable->GetTransformXM(),
-                              collider2,
-                              Entity((*(++entities.begin())).id)
-                                  .get<Renderer>()
-                                  .renderable->GetTransformXM())) {
-        int hejka = 1;
+                        .renderable->GetTransformXM(),
+                    Entity((*entities.find(j)).id).get<SphereCollider>(),
+                    Entity((*entities.find(j)).id)
+                        .get<Renderer>()
+                        .renderable->GetTransformXM())) {
+                checkedCollisions[i][j] = true;
+            }
+        }
     }
 }
