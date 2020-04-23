@@ -15,7 +15,7 @@ BoxCollider ColliderSystem::AddBoxCollider(
         DirectX::XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
     BoxCollider boxCollider;
     // Look for the smallest and largest vertex
-    for (UINT i = 0; i < objectVertPos.size(); i++) {
+    for (size_t i = 0; i < objectVertPos.size(); i++) {
         minVertex.x = std::min(minVertex.x, objectVertPos[i].x);
         minVertex.y = std::min(minVertex.y, objectVertPos[i].y);
         minVertex.z = std::min(minVertex.z, objectVertPos[i].z);
@@ -112,7 +112,7 @@ void ColliderSystem::CalculateAABB(BoxCollider& boxCollider,
     DirectX::XMFLOAT3 maxVertex =
         DirectX::XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
     // Loop through the 8 vertices describing the bounding box
-    for (UINT i = 0; i < 8; i++) {
+    for (size_t i = 0; i < 8; i++) {
         // Transform the bounding boxes vertices to the objects world space
         DirectX::XMVECTOR Vert =
             DirectX::XMVectorSet(boxCollider.boxColliderVerts[i].x,
@@ -198,7 +198,7 @@ SphereCollider ColliderSystem::AddSphereCollider(
     DirectX::XMFLOAT3 minVertex = DirectX::XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
     DirectX::XMFLOAT3 maxVertex =
         DirectX::XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
-    for (UINT i = 0; i < objectVertPos.size(); i++) {
+    for (size_t i = 0; i < objectVertPos.size(); i++) {
         minVertex.x = std::min(minVertex.x, objectVertPos[i].x);
         minVertex.y = std::min(minVertex.y, objectVertPos[i].y);
         minVertex.z = std::min(minVertex.z, objectVertPos[i].z);
