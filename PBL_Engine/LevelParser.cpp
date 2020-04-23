@@ -325,13 +325,13 @@ void LevelParser::load() {
                 auto const value = it->second.as<float>();
 
                 if (key == "x") {
-                    sphereCollider.center_x = value;
+                    sphereCollider.center.x = value;
                 }
                 if (key == "y") {
-                    sphereCollider.center_y = value;
+                    sphereCollider.center.y = value;
                 }
                 if (key == "z") {
-                    sphereCollider.center_z = value;
+                    sphereCollider.center.z = value;
                 }
             }
         }

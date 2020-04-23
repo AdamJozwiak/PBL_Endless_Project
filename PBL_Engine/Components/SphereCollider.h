@@ -1,15 +1,14 @@
 #pragma once
 
 // ///////////////////////////////////////////////////////////////// Includes //
+#include <DirectXMath.h>
+
 #include "ECS/Component.hpp"
 
 // //////////////////////////////////////////////////////////////// Component //
 ECS_COMPONENT(SphereCollider) {
     float radius;
-    float center_x;
-    float center_y;
-    float center_z;
-
+    DirectX::XMFLOAT3 center;
 	DirectX::XMVECTOR objectCenterOffset;
 };
 
