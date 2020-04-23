@@ -2,9 +2,14 @@
 #include "ColliderSystem.hpp"
 
 #include "Cube.h"
+#include "Renderable.h"
+#include "Window.h"
 
 // ECS
+#include "Components/Components.hpp"
 #include "ECS/ECS.hpp"
+#include "Events/OnCollisionEnter.hpp"
+#include "Systems/RenderSystem.hpp"
 
 // /////////////////////////////////////////////////////////////////// System //
 // ============================================================= Behaviour == //
@@ -275,18 +280,20 @@ void ColliderSystem::update(float deltaTime) {
         checkedCollisions.push_back(tempik);
     }
 
-    for (int i = 1; i < checkedCollisions.size(); i++) {
-        for (int j = 0; j < checkedCollisions[i].size() - 1; j++) {			// Triangle array
-            if (CheckSpheresCollision(
-                    Entity((*entities.find(i)).id).get<SphereCollider>(),
-                    Entity((*entities.find(i)).id)
-                        .get<Renderer>()
-                        .renderable->GetTransformXM(),
-                    Entity((*entities.find(j)).id).get<SphereCollider>(),
-                    Entity((*entities.find(j)).id)
-                        .get<Renderer>()
-                        .renderable->GetTransformXM())) {
-                checkedCollisions[i][j] = true;
+    for (auto iEntity : entities) {
+        for (auto jEntity : entities) {
+            if (iEntity.id == jEntity.id) {
+                break;
+            }
+            auto iTransform =
+                registry.system<RenderSystem>()->transformMatrix(iEntity);
+            auto jTransform =
+                registry.system<RenderSystem>()->transformMatrix(jEntity);
+            if (CheckSpheresCollision(iEntity.get<SphereCollider>(), iTransform,
+                                      jEntity.get<SphereCollider>(),
+                                      jTransform)) {
+                //checkedCollisions[i][j] = true;
+                registry.send(OnCollisionEnter{.a = iEntity, .b = jEntity});
             }
         }
     }
