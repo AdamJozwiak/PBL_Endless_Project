@@ -130,16 +130,16 @@ void LevelParser::load() {
                 auto const value = it->second.as<float>();
 
                 if (key == "x") {
-                    transform.rotation_x = value;
+                    transform.rotation.x = value;
                 }
                 if (key == "y") {
-                    transform.rotation_y = value;
+                    transform.rotation.y = value;
                 }
                 if (key == "z") {
-                    transform.rotation_z = value;
+                    transform.rotation.z = value;
                 }
                 if (key == "w") {
-                    transform.rotation_w = value;
+                    transform.rotation.w = value;
                 }
             }
 
@@ -148,13 +148,13 @@ void LevelParser::load() {
                 auto const value = it->second.as<float>();
 
                 if (key == "x") {
-                    transform.position_x = value;
+                    transform.position.x = value;
                 }
                 if (key == "y") {
-                    transform.position_y = value;
+                    transform.position.y = value;
                 }
                 if (key == "z") {
-                    transform.position_z = value;
+                    transform.position.z = value;
                 }
             }
 
@@ -163,13 +163,13 @@ void LevelParser::load() {
                 auto const value = it->second.as<float>();
 
                 if (key == "x") {
-                    transform.scale_x = value;
+                    transform.scale.x = value;
                 }
                 if (key == "y") {
-                    transform.scale_y = value;
+                    transform.scale.y = value;
                 }
                 if (key == "z") {
-                    transform.scale_z = value;
+                    transform.scale.z = value;
                 }
             }
 
@@ -180,13 +180,13 @@ void LevelParser::load() {
                 auto const value = it->second.as<float>();
 
                 if (key == "x") {
-                    transform.eulerAngle_x = value;
+                    transform.euler.x = value;
                 }
                 if (key == "y") {
-                    transform.eulerAngle_y = value;
+                    transform.euler.y = value;
                 }
                 if (key == "z") {
-                    transform.eulerAngle_z = value;
+                    transform.euler.z = value;
                 }
             }
         }

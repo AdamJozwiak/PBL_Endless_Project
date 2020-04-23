@@ -28,23 +28,23 @@ void TestScript::setup() {
 
 void TestScript::update(float const deltaTime) {
     auto& transform = entity.get<Transform>();
-    //transform.eulerAngle_y += 45.0f * deltaTime;
+    // transform.eulerAngle_y += 45.0f * deltaTime;
 
-    lastX = transform.position_x;
-    lastY = transform.position_y;
-    lastZ = transform.position_z;
+    lastX = transform.position.x;
+    lastY = transform.position.y;
+    lastZ = transform.position.z;
 
     if (isKeyPressed('A')) {
-        transform.position_x -= 5.0f * deltaTime;
+        transform.position.x -= 5.0f * deltaTime;
     }
     if (isKeyPressed('D')) {
-        transform.position_x += 5.0f * deltaTime;
+        transform.position.x += 5.0f * deltaTime;
     }
     if (isKeyPressed('W')) {
-        transform.position_z += 5.0f * deltaTime;
+        transform.position.z += 5.0f * deltaTime;
     }
     if (isKeyPressed('S')) {
-        transform.position_z -= 5.0f * deltaTime;
+        transform.position.z -= 5.0f * deltaTime;
     }
 };
 
@@ -52,9 +52,9 @@ void TestScript::update(float const deltaTime) {
 void TestScript::onCollisionEnter(OnCollisionEnter const& event) {
     if (event.a.id == entity.id || event.b.id == entity.id) {
         auto& transform = entity.get<Transform>();
-        transform.position_x = lastX;
-        transform.position_y = lastY;
-        transform.position_z = lastZ;
+        transform.position.x = lastX;
+        transform.position.y = lastY;
+        transform.position.z = lastZ;
     }
 }
 
