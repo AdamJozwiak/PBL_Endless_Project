@@ -28,7 +28,7 @@ void TestScript::setup() {
 
 void TestScript::update(float const deltaTime) {
     auto& transform = entity.get<Transform>();
-    transform.eulerAngle_y += 45.0f * deltaTime;
+    //transform.eulerAngle_y += 45.0f * deltaTime;
 
     lastX = transform.position_x;
     lastY = transform.position_y;
