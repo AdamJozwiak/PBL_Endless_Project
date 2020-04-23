@@ -85,8 +85,14 @@ void SceneSystem::setup() {
     // }
     levelParser.load();
 
+    for (auto entity : entities) {
+        entity.add<SphereCollider>(
+            registry.system<ColliderSystem>()->AddSphereCollider(
+                Sphere::Make<DirectX::XMFLOAT3>().vertices));
+    }
+
     for (auto entity : registry.system<BehaviourSystem>()->entities) {
-        entity.get<Behaviour>().script->setup();       
+        entity.get<Behaviour>().script->setup();
     }
 }
 
