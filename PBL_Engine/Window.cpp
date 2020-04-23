@@ -142,6 +142,8 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam,
         // break
         case WM_CLOSE:
             PostQuitMessage(0);
+            break;
+        case WM_DESTROY:
             return 0;
         // clear keystate when window loses focus to prevent input getting
         // "stuck"
