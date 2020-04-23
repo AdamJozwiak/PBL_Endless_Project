@@ -4,21 +4,21 @@
 #include <algorithm>
 #include <memory>
 
-#include "BehaviourSystem.hpp"
 #include "Box.h"
 #include "Cylinder.h"
 #include "Mesh.h"
 #include "PBLMath.h"
 #include "PointLight.h"
 #include "Pyramid.h"
-#include "RenderSystem.hpp"
 #include "Script.hpp"
 #include "SkinnedBox.h"
 #include "Surface.h"
 #include "Window.h"
 
 // ECS
+#include "BehaviourSystem.hpp"
 #include "ECS/ECS.hpp"
+#include "RenderSystem.hpp"
 
 // ////////////////////////////////////////////////////////////////////////// //
 class Factory {
