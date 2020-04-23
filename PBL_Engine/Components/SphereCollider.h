@@ -9,6 +9,8 @@ ECS_COMPONENT(SphereCollider) {
     float center_x;
     float center_y;
     float center_z;
+
+	DirectX::XMVECTOR objectCenterOffset;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
