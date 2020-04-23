@@ -336,6 +336,9 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Pliki źródłowe\Renderable</Filter>
     </ClCompile>
+    <ClCompile Include="Systems\ColliderSystem.cpp">
+      <Filter>Pliki źródłowe\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -763,6 +766,9 @@
     </ClInclude>
     <ClInclude Include="Components\MeshFilter.hpp">
       <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\ColliderSystem.hpp">
+      <Filter>Pliki nagłówkowe\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

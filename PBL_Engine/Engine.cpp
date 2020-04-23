@@ -17,7 +17,8 @@ extern "C" ENGINE_API void create(std::shared_ptr<Engine> &engine) {
 Engine::Engine()
     : registry(Registry::instance()),
       systems{registry.system<RenderSystem>(), registry.system<SceneSystem>(),
-              registry.system<BehaviourSystem>()} {}
+              registry.system<BehaviourSystem>(),
+              registry.system<ColliderSystem>()} {}
 
 ENGINE_API int Engine::run() {
     for (auto &system : systems) {

@@ -2,6 +2,7 @@
 
 // ///////////////////////////////////////////////// Includes for all systems //
 #include "BehaviourSystem.hpp"
+#include "ColliderSystem.hpp"
 #include "RenderSystem.hpp"
 #include "SceneSystem.hpp"
 
