@@ -13,7 +13,7 @@ public:
 		assert(latDiv >= 3);
 		assert(longDiv >= 3);
 
-		constexpr float radius = 1.0f;
+		constexpr float radius = 0.35f;
 		const auto base = dx::XMVectorSet(0.0f, 0.0f, radius, 0.0f);
 		const float lattitudeAngle = PI / latDiv;
 		const float longitudeAngle = 2.0f * PI / longDiv;
