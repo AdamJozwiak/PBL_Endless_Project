@@ -78,7 +78,7 @@ void RenderSystem::update(float deltaTime) {
     // imgui window to control camera
     camera->SpawnControlWindow();
     light->SpawnControlWindow();
-    nano->ShowWindow();
+    // nano->ShowWindow();
     // test->ShowWindow();
 
     // present
