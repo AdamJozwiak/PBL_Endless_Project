@@ -276,13 +276,13 @@ void LevelParser::load() {
                 auto const value = it->second.as<float>();
 
                 if (key == "x") {
-                    boxCollider.size_x = value;
+                    boxCollider.size.x = value;
                 }
                 if (key == "y") {
-                    boxCollider.size_y = value;
+                    boxCollider.size.y = value;
                 }
                 if (key == "z") {
-                    boxCollider.size_z = value;
+                    boxCollider.size.z = value;
                 }
             }
 
@@ -291,13 +291,13 @@ void LevelParser::load() {
                 auto const value = it->second.as<float>();
 
                 if (key == "x") {
-                    boxCollider.center_x = value;
+                    boxCollider.center.x = value;
                 }
                 if (key == "y") {
-                    boxCollider.center_y = value;
+                    boxCollider.center.y = value;
                 }
                 if (key == "z") {
-                    boxCollider.center_z = value;
+                    boxCollider.center.z = value;
                 }
             }
         }
