@@ -5,6 +5,7 @@
 #include "ImguiManager.h"
 #include "Mesh.h"
 #include "PointLight.h"
+#include "SolidSphere.h"
 
 // ECS
 #include "Components/Components.hpp"
@@ -32,6 +33,7 @@ ECS_SYSTEM(RenderSystem) {
     std::unique_ptr<Camera> camera;
     ImguiManager imgui;
     float speed_factor = 1.0f;
+    std::unique_ptr<SolidSphere> sphere;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

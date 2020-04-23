@@ -1,6 +1,8 @@
 // ///////////////////////////////////////////////////////////////// Includes //
 #include "RenderSystem.hpp"
 
+#include <DirectXMath.h>
+
 #include <algorithm>
 #include <memory>
 
@@ -8,11 +10,13 @@
 #include "GDIPlusManager.h"
 #include "Mesh.h"
 #include "PBLMath.h"
+#include "SolidSphere.h"
 #include "Surface.h"
 #include "Window.h"
 #include "imgui/imgui.h"
 
 // ECS
+#include "ColliderSystem.hpp"
 #include "ECS/ECS.hpp"
 
 namespace dx = DirectX;
@@ -34,6 +38,7 @@ void RenderSystem::filters() {
 void RenderSystem::setup() {
     window = std::make_unique<Window>(1280, 720, "PBL_ENGINE");
     camera = std::make_unique<Camera>();
+    sphere = std::make_unique<SolidSphere>(window->Gfx(), 1.0f);
     light = new PointLight(window->Gfx());
 
     // imgui = std::make_unique<ImguiManager>();
@@ -61,9 +66,35 @@ void RenderSystem::update(float deltaTime) {
         // renderer.renderable->Draw(window->Gfx());
         meshFilter.model->Draw(window->Gfx(), transformMatrix(entity));
     }
+
+    static bool showColliders = false;
+    for (auto entity : registry.system<ColliderSystem>()->entities) {
+        auto& transform = entity.get<Transform>();
+        auto& sphereCollider = entity.get<SphereCollider>();
+
+        DirectX::XMFLOAT4 center;
+        DirectX::XMStoreFloat4(&center, sphereCollider.objectCenterOffset);
+
+        sphere->SetPos({center.x + transform.position.x,
+                        center.y + transform.position.y,
+                        center.z + transform.position.z});
+        sphere->scale = 3 * transform.scale.x * sphereCollider.radius;
+        if (!showColliders) {
+            sphere->scale = 0.0f;
+        }
+        sphere->Draw(window->Gfx());
+    }
+
     // test->Draw(window->Gfx());
     // nano->Draw(window->Gfx());
     light->Draw(window->Gfx());
+
+    if (ImGui::Begin("Colliders")) {
+        if (ImGui::Button("Dummies")) {
+            showColliders = !showColliders;
+        }
+    }
+    ImGui::End();
 
     // imgui window to control simulation speed
     if (ImGui::Begin("Simulation Speed")) {
