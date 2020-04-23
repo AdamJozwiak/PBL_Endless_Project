@@ -32,17 +32,17 @@ public:
 					latBase,
 					dx::XMMatrixRotationZ(longitudeAngle * iLong)
 				);
-				dx::XMStoreFloat3(&vertices.back().pos, v);
+				dx::XMStoreFloat3((dx::XMFLOAT3*)&vertices.back(), v);
 			}
 		}
 
 		// add the cap vertices
 		const auto iNorthPole = (unsigned short)vertices.size();
 		vertices.emplace_back();
-		dx::XMStoreFloat3(&vertices.back().pos, base);
+		dx::XMStoreFloat3((dx::XMFLOAT3*)&vertices.back(), base);
 		const auto iSouthPole = (unsigned short)vertices.size();
 		vertices.emplace_back();
-		dx::XMStoreFloat3(&vertices.back().pos, dx::XMVectorNegate(base));
+		dx::XMStoreFloat3((dx::XMFLOAT3*)&vertices.back(), dx::XMVectorNegate(base));
 
 		const auto calcIdx = [latDiv, longDiv](unsigned short iLat, unsigned short iLong)
 		{ return iLat * longDiv + iLong; };
