@@ -28,6 +28,7 @@ class TESTSCRIPT_API TestScript : public Script {
     // ============================================================== Data == //
     bool (*isKeyPressed)(int const key);
     float lastX, lastY, lastZ;
+    float lastDeltaTime;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

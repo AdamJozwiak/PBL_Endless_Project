@@ -27,6 +27,7 @@ void TestScript::setup() {
 };
 
 void TestScript::update(float const deltaTime) {
+    lastDeltaTime = deltaTime;
     auto& transform = entity.get<Transform>();
     // transform.eulerAngle_y += 45.0f * deltaTime;
 
@@ -58,9 +59,22 @@ void TestScript::update(float const deltaTime) {
 void TestScript::onCollisionEnter(OnCollisionEnter const& event) {
     if (event.a.id == entity.id || event.b.id == entity.id) {
         auto& transform = entity.get<Transform>();
-        transform.position.x = lastX;
-        transform.position.y = lastY;
-        transform.position.z = lastZ;
+        auto other = Entity(event.a.id == entity.id ? event.b.id : event.a.id);
+        auto& otherTransform = other.get<Transform>();
+
+        if (isKeyPressed(VK_SHIFT)) {
+            otherTransform.euler.x += 45.0f * lastDeltaTime;
+        }
+
+        if (isKeyPressed(VK_SPACE)) {
+            otherTransform.position.x += transform.position.x - lastX;
+            otherTransform.position.y += transform.position.y - lastY;
+            otherTransform.position.z += transform.position.z - lastZ;
+        } else {
+            transform.position.x = lastX;
+            transform.position.y = lastY;
+            transform.position.z = lastZ;
+        }
     }
 }
 
