@@ -4,9 +4,9 @@
 #include <memory>
 
 #include "ECS/Entity.hpp"
+#include "Events/OnCollisionEnter.hpp"
 #include "Script.hpp"
 #include "TestScriptAPI.hpp"
-#include "Events/OnCollisionEnter.hpp"
 
 // //////////////////////////////////////////////////////////////////// Class //
 class TESTSCRIPT_API TestScript : public Script {
