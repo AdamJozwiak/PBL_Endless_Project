@@ -36,7 +36,6 @@ class Mesh : public RenderableBase<Mesh> {
   private:
     std::vector<std::pair<std::string, Bone>> bonesMap;
     std::vector<VertexBoneData> Bones;
-
     mutable DirectX::XMFLOAT4X4 transform;
 };
 

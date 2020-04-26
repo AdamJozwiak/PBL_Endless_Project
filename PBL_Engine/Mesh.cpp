@@ -150,8 +150,7 @@ const aiNodeAnim* Node::FindNodeAnim(const aiAnimation* pAnim) {
 }
 
 // Model
-class ModelWindow  // pImpl idiom, only defined in this .cpp
-{
+class ModelWindow {
   public:
     void Show(const char* windowName, const Node& root) noexcept {
         // window name defaults to "Model"
@@ -324,6 +323,7 @@ std::unique_ptr<Node> Model::ParseNode(const aiNode& node) noexcept {
 
     auto pNode = std::make_unique<Node>(node.mName.C_Str(),
                                         std::move(curMeshPtrs), transform);
+
     for (size_t i = 0; i < node.mNumChildren; i++) {
         pNode->AddChild(ParseNode(*node.mChildren[i]));
     }
