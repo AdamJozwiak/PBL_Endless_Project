@@ -74,14 +74,15 @@ class VertexLayout {
     template <>
     struct Map<BoneID> {
         using SysType = DirectX::XMUINT4;
-        static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32_UINT;
-        static constexpr const char* semantic = "Bone";
+        static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32A32_UINT;
+        static constexpr const char* semantic = "BoneID";
     };
     template <>
     struct Map<BoneWeight> {
         using SysType = DirectX::XMFLOAT4;
-        static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32_FLOAT;
-        static constexpr const char* semantic = "Bone";
+        static constexpr DXGI_FORMAT dxgiFormat =
+            DXGI_FORMAT_R32G32B32A32_FLOAT;
+        static constexpr const char* semantic = "BoneWeight";
     };
     class Element {
       public:
@@ -242,11 +243,11 @@ class Vertex {
                 break;
             case VertexLayout::BoneID:
                 SetAttribute<VertexLayout::BoneID>(pAttribute,
-                                                      std::forward<T>(val));
+                                                   std::forward<T>(val));
                 break;
             case VertexLayout::BoneWeight:
                 SetAttribute<VertexLayout::BoneWeight>(pAttribute,
-                                                      std::forward<T>(val));
+                                                       std::forward<T>(val));
                 break;
             default:
                 assert("Bad element type" && false);
