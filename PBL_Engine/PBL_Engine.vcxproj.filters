@@ -764,6 +764,9 @@
     <ClInclude Include="Mesh.h">
       <Filter>Pliki nagłówkowe\Renderable</Filter>
     </ClInclude>
+    <ClInclude Include="Animator.h">
+      <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
     <ClInclude Include="Components\MeshFilter.hpp">
       <Filter>Pliki nagłówkowe\Components</Filter>
     </ClInclude>
