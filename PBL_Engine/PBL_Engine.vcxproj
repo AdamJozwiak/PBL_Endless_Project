@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\TestScript\dllmain.cpp" />
     <ClCompile Include="Bindable.cpp" />
+    <ClCompile Include="BonesCbuf.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cylinder.cpp" />
@@ -105,6 +106,7 @@
     <ClInclude Include="Animator.h" />
     <ClInclude Include="Bindable.h" />
     <ClInclude Include="BindableBase.h" />
+    <ClInclude Include="BonesCbuf.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Components\Behaviour.hpp" />
