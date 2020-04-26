@@ -8,10 +8,9 @@ TransformCbuf::TransformCbuf(Graphics& gfx, const Renderable& parent, UINT slot)
 }
 
 void TransformCbuf::Bind(Graphics& gfx) noexcept {
-    const auto modelView = parent.GetTransformXM() * gfx.GetCamera();
     const Transforms tf = {
-        DirectX::XMMatrixTranspose(modelView),
-        DirectX::XMMatrixTranspose(modelView * gfx.GetProjection())};
+        DirectX::XMMatrixTranspose(parent.GetTransformXM()),
+        DirectX::XMMatrixTranspose(gfx.GetCamera() * gfx.GetProjection())};
     pVcbuf->Update(gfx, tf);
     pVcbuf->Bind(gfx);
 }

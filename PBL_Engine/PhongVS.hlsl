@@ -1,6 +1,6 @@
 cbuffer CBuf {
-    matrix modelView;
-    matrix modelViewProj;
+    matrix model;
+    matrix viewProj;
 };
 
 struct VSOut {
