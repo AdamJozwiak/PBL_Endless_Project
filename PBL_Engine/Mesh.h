@@ -9,7 +9,13 @@
 #include "BindableBase.h"
 #include "RenderableBase.h"
 #include "Vertex.h"
-
+class Bone {
+  public:
+    aiMatrix4x4 boneOffset;
+    DirectX::XMMATRIX FinalTransform;
+    Bone() = default;
+};
+class Model;
 class Mesh : public RenderableBase<Mesh> {
   public:
     struct VertexBoneData {
@@ -18,28 +24,24 @@ class Mesh : public RenderableBase<Mesh> {
         VertexBoneData() = default;
         void AddBoneData(UINT boneID, float boneWeight);
     };
-    struct Bone {
-        aiMatrix4x4 boneOffset;
-        DirectX::XMMATRIX FinalTransform;
-        Bone() = default;
-    };
     Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bindable>> bindPtrs,
-         std::vector<Mesh::VertexBoneData> Bones = {},
-         std::vector<std::pair<std::string, Mesh::Bone>> bonesMap = {});
+         Model& parent, float* animationTime,
+         std::vector<Mesh::VertexBoneData> Bones = {});
     void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const
         noexcept(!IS_DEBUG);
     DirectX::XMMATRIX GetTransformXM() const noexcept override;
     static void LoadBones(UINT meshIndex, aiMesh* pMesh,
                           std::vector<Mesh::VertexBoneData>& Bones,
                           std::vector<std::pair<std::string, Bone>>& bonesMap);
+    std::vector<VertexBoneData> getBones();
 
   private:
-    std::vector<std::pair<std::string, Bone>> bonesMap;
     std::vector<VertexBoneData> Bones;
     mutable DirectX::XMFLOAT4X4 transform;
 };
 
 class Node {
+    friend class Mesh;
     friend class Model;
     friend class ModelWindow;
 
@@ -49,7 +51,6 @@ class Node {
     void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const
         noexcept(!IS_DEBUG);
     void SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept;
-    const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnim);
 
   private:
     void AddChild(std::unique_ptr<Node> pChild) noexcept(!IS_DEBUG);
@@ -66,24 +67,48 @@ class Node {
 
 class Model {
   public:
-    Model(Graphics& gfx, const std::string fileName);
+    Model(Graphics& gfx, const std::string fileName,
+          float* animationTime = nullptr);
     void Draw(Graphics& gfx, DirectX::XMMATRIX transform) const
         noexcept(!IS_DEBUG);
     void ShowWindow(const char* windowName = nullptr) noexcept;
     ~Model() noexcept;
+    void BoneTransform(float time,
+                       std::vector<DirectX::XMFLOAT4X4>& transforms);
 
     std::vector<DirectX::XMFLOAT3> verticesForCollision;
 
   private:
-    static std::shared_ptr<Mesh> ParseMesh(
+    std::shared_ptr<Mesh> ParseMesh(
         Graphics& gfx, aiMesh& mesh,
         std::vector<DirectX::XMFLOAT3>& verticesForColl);
     std::unique_ptr<Node> ParseNode(const aiNode& node) noexcept;
+    void ReadNodeHierarchy(float animationTime, aiNode* pNode,
+                           const DirectX::XMMATRIX& parentTransform);
+
+    aiNodeAnim* FindNodeAnim(aiAnimation* pAnim, std::string nodeName);
+    UINT FindPos(float animationTime, aiNodeAnim* pNodeAnim);
+    UINT FindRotation(float animationTime, aiNodeAnim* pNodeAnim);
+    UINT FindScaling(float animationTime, aiNodeAnim* pNodeAnim);
+    void CalcInterpolatedPos(aiVector3D& Out, float animationTime,
+                             aiNodeAnim* pNodeAnim);
+    void CalcInterpolatedRotation(aiQuaternion& Out, float animationTime,
+                                  aiNodeAnim* pNodeAnim);
+    void CalcInterpolatedScaling(aiVector3D& Out, float animationTime,
+                                 aiNodeAnim* pNodeAnim);
+    DirectX::XMMATRIX aiMatrixToXMMATRIX(aiMatrix4x4 aiM);
+    std::vector<std::pair<std::string, Bone>> getBonesMap();
 
   private:
+    float* animationTime;
     std::unique_ptr<Node> pRoot;
+    aiNode* root;
+    UINT numBones = 0;
+    std::vector<std::pair<std::string, Bone>> bonesMap;
     std::vector<std::shared_ptr<Mesh>> meshPtrs;
+    std::vector<aiAnimation*> animPtrs;
     std::unique_ptr<class ModelWindow> pWindow;
+    std::unique_ptr<Assimp::Importer> importer;
 };
 
 class ModelException : public ExceptionHandler {

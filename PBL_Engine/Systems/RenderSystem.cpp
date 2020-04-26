@@ -86,7 +86,10 @@ void RenderSystem::update(float deltaTime) {
     }
 
     // test->Draw(window->Gfx());
-    // nano->Draw(window->Gfx());
+    /* nano->Draw(window->Gfx(),
+               dx::XMMatrixRotationRollPitchYaw(dx::XMConvertToRadians(270.0f),
+                                                dx::XMConvertToRadians(180.0f),
+                                                dx::XMConvertToRadians(0.0f))); */
     light->Draw(window->Gfx());
 
     if (ImGui::Begin("Colliders")) {
