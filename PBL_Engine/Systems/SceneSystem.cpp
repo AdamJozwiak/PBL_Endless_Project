@@ -83,7 +83,7 @@ void SceneSystem::setup() {
     //             registry.system<ColliderSystem>()->AddSphereCollider(
     //                 Cube::MakeUsunMnie<DirectX::XMFLOAT3>().vertices));
     // }
-    levelParser.load();
+    //levelParser.load();
 
     for (auto entity : registry.system<ColliderSystem>()->entities) {
         entity.get<SphereCollider>() = 

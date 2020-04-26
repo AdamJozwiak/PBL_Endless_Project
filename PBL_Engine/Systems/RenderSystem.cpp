@@ -25,7 +25,7 @@ GDIPlusManager gdipm;
 
 // testing models
 Model* nano;
-Model* test;
+Animator animator;
 PointLight* light;
 
 // /////////////////////////////////////////////////////////////////// System //
@@ -40,10 +40,10 @@ void RenderSystem::setup() {
     camera = std::make_unique<Camera>();
     sphere = std::make_unique<SolidSphere>(window->Gfx(), 1.0f);
     light = new PointLight(window->Gfx());
-
+    animator.animationTime = 0;
     // imgui = std::make_unique<ImguiManager>();
-    test = new Model(window->Gfx(), "Models\\suzanne.obj");
-    nano = new Model(window->Gfx(), "Models\\nano.gltf");
+    nano = new Model(window->Gfx(), "Models\\Wolf_One_dae.dae",
+                     &animator.animationTime);
     window->Gfx().SetProjection(
         dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 40.0f));
 }
@@ -53,7 +53,7 @@ void RenderSystem::update(float deltaTime) {
     window->Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
     window->Gfx().SetCamera(camera->GetMatrix());
     light->Bind(window->Gfx(), camera->GetMatrix());
-
+    animator.animationTime += dt;
     // window->Gfx().ClearBuffer(0.07f, 0.0f, 0.12f);
 
     for (Entity entity : entities) {
@@ -86,10 +86,10 @@ void RenderSystem::update(float deltaTime) {
     }
 
     // test->Draw(window->Gfx());
-    /* nano->Draw(window->Gfx(),
+    nano->Draw(window->Gfx(),
                dx::XMMatrixRotationRollPitchYaw(dx::XMConvertToRadians(270.0f),
                                                 dx::XMConvertToRadians(180.0f),
-                                                dx::XMConvertToRadians(0.0f))); */
+                                                dx::XMConvertToRadians(0.0f)));
     light->Draw(window->Gfx());
 
     if (ImGui::Begin("Colliders")) {
