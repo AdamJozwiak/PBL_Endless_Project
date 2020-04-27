@@ -393,6 +393,7 @@ void Model::BoneTransform(float time,
     ReadNodeHierarchy(animationTime, root, identity);
 
     // transforms.resize(numBones);
+    transforms.clear();
     for (auto& [name, bone] : bonesMap) {
         DirectX::XMFLOAT4X4 tmp;
         DirectX::XMStoreFloat4x4(&tmp, bone.FinalTransform);
