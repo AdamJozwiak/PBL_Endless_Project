@@ -1,8 +1,8 @@
 #pragma once
 #include <DirectXMath.h>
 
-#include "PBLMath.h"
 #include "IndexedTriangleList.h"
+#include "PBLMath.h"
 
 class Prism {
   public:

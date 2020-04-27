@@ -63,7 +63,7 @@ Window::Window(int width, int height, const char* name)
     // Init ImGui Win32 Impl
     ImGui_ImplWin32_Init(hWnd);
     // create graphics object
-    pGfx = std::make_unique<Graphics>(hWnd , width, height);
+    pGfx = std::make_unique<Graphics>(hWnd, width, height);
 }
 
 Window::~Window() {
@@ -214,7 +214,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam,
             }
             const POINTS pt = MAKEPOINTS(lParam);
             mouse.OnLeftPressed(pt.x, pt.y);
-            //SetForegroundWindow(hWnd);
+            // SetForegroundWindow(hWnd);
             break;
         }
         case WM_RBUTTONDOWN: {
