@@ -42,6 +42,7 @@ Mesh::Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bindable>> bindPtrs,
     AddBind(std::make_unique<TransformCbuf>(gfx, *this));
     AddBind(std::make_unique<BonesCbuf>(gfx, parent, animationTime));
 }
+
 void Mesh::Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const
     noexcept(!IS_DEBUG) {
     DirectX::XMStoreFloat4x4(&transform, accumulatedTransform);
