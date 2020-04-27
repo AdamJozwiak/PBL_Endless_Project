@@ -386,6 +386,9 @@ void Model::ReadNodeHierarchy(float animationTime, aiNode* pNode,
 void Model::BoneTransform(float time,
                           std::vector<DirectX::XMFLOAT4X4>& transforms) {
     DirectX::XMMATRIX identity = DirectX::XMMatrixIdentity();
+    if (animPtrs.empty()) {
+        return;
+    }
     float ticksPreSecond =
         (float)(animPtrs[0]->mTicksPerSecond != 0 ? animPtrs[0]->mTicksPerSecond
                                                   : 25.0f);
