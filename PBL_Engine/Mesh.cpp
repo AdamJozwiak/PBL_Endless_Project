@@ -40,7 +40,9 @@ Mesh::Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bindable>> bindPtrs,
     }
 
     AddBind(std::make_unique<TransformCbuf>(gfx, *this));
-    AddBind(std::make_unique<BonesCbuf>(gfx, parent, animationTime));
+    if (animationTime) {
+        AddBind(std::make_unique<BonesCbuf>(gfx, parent, animationTime));
+    }
 }
 
 void Mesh::Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const
@@ -295,6 +297,9 @@ std::shared_ptr<Mesh> Model::ParseMesh(
     bindablePtrs.push_back(std::make_unique<IndexBuffer>(gfx, indices));
 
     auto pvs = std::make_unique<VertexShader>(gfx, L"PhongVS.cso");
+    if (mesh.HasBones()) {
+        pvs = std::make_unique<VertexShader>(gfx, L"AnimatedPhongVS.cso");
+    }
     auto pvsbc = pvs->GetBytecode();
     bindablePtrs.push_back(std::move(pvs));
 
@@ -311,7 +316,7 @@ std::shared_ptr<Mesh> Model::ParseMesh(
     } pmc;
     bindablePtrs.push_back(
         std::make_unique<PixelConstantBuffer<PSMaterialConstant>>(gfx, pmc,
-                                                                  1u));
+                                                                  0u));
 
     return std::make_unique<Mesh>(gfx, std::move(bindablePtrs), *this,
                                   animationTime, Bones);

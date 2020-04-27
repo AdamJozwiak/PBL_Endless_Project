@@ -3,7 +3,7 @@
 #include "imgui/imgui.h"
 
 PointLight::PointLight(Graphics& gfx, float radius)
-    : mesh(gfx, radius), cbuf(gfx) {
+    : mesh(gfx, radius), cbuf(gfx, 10) {
     Reset();
 }
 

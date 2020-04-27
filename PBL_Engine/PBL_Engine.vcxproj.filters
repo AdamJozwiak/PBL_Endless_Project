@@ -952,6 +952,9 @@
     <FxCompile Include="TexturedPhongVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="AnimatedPhongVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="yaml-cpp\src\contrib\yaml-cpp.natvis">

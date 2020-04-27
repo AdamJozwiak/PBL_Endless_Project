@@ -12,7 +12,7 @@ class BonesCbuf : public Bindable {
 
   public:
     BonesCbuf(Graphics& gfx, Model& parent, float* animationTime,
-              UINT slot = 5u);
+              UINT slot = 1u);
     void Bind(Graphics& gfx) noexcept override;
 
   private:
