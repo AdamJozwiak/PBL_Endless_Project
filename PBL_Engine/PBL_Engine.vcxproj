@@ -35,6 +35,7 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="ExceptionHandler.cpp" />
     <ClCompile Include="GDIPlusManager.cpp" />
+    <ClCompile Include="GeometryShader.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="ImguiManager.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="Events\OnCollisionEnter.hpp" />
     <ClInclude Include="ExceptionHandler.h" />
     <ClInclude Include="GDIPlusManager.h" />
+    <ClInclude Include="GeometryShader.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsThrowMacros.h" />
     <ClInclude Include="ImguiManager.h" />

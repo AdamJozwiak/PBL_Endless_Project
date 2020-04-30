@@ -7,3 +7,4 @@
 #include "TransformCbuf.h"
 #include "VertexBuffer.h"
 #include "VertexShader.h"
+#include "GeometryShader.h"
