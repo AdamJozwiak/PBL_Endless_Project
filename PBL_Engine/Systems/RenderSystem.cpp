@@ -39,6 +39,7 @@ void RenderSystem::setup() {
     window = std::make_unique<Window>(1280, 720, "PBL_ENGINE");
     camera = std::make_unique<Camera>();
     sphere = std::make_unique<SolidSphere>(window->Gfx(), 1.0f);
+    billboard = std::make_unique<Billboard>(window->Gfx(), camera->GetCameraPos());
     light = new PointLight(window->Gfx());
     animator.animationTime = 0;
     // imgui = std::make_unique<ImguiManager>();
@@ -84,6 +85,7 @@ void RenderSystem::update(float deltaTime) {
         }
         sphere->Draw(window->Gfx());
     }
+    billboard->Draw(window->Gfx());
 
     // test->Draw(window->Gfx());
     nano->Draw(window->Gfx(),

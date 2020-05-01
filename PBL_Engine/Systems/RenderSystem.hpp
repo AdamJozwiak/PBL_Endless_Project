@@ -6,6 +6,7 @@
 #include "Mesh.h"
 #include "PointLight.h"
 #include "SolidSphere.h"
+#include "../Billboard.h"
 
 // ECS
 #include "Components/Components.hpp"
@@ -34,6 +35,7 @@ ECS_SYSTEM(RenderSystem) {
     ImguiManager imgui;
     float speed_factor = 1.0f;
     std::unique_ptr<SolidSphere> sphere;
+    std::unique_ptr<Billboard> billboard;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
