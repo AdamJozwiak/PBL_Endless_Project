@@ -77,3 +77,17 @@ class PixelConstantBuffer : public ConstantBuffer<C> {
                                               pConstantBuffer.GetAddressOf());
     }
 };
+
+template <typename C>
+class GeometryConstantBuffer : public ConstantBuffer<C> {
+    using ConstantBuffer<C>::pConstantBuffer;
+    using ConstantBuffer<C>::slot;
+    using Bindable::GetContext;
+
+  public:
+    using ConstantBuffer<C>::ConstantBuffer;
+    void Bind(Graphics& gfx) noexcept override {
+        GetContext(gfx)->GSSetConstantBuffers(slot, 1u,
+                                              pConstantBuffer.GetAddressOf());
+    }
+};

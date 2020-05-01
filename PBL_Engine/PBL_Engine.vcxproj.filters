@@ -339,10 +339,13 @@
     <ClCompile Include="Systems\ColliderSystem.cpp">
       <Filter>Pliki źródłowe\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="GeometryShader.cpp">
+      <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
     <ClCompile Include="BonesCbuf.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="GeometryShader.cpp">
+    <ClCompile Include="GeometryCbuf.cpp">
       <Filter>Pliki źródłowe\Bindable</Filter>
     </ClCompile>
   </ItemGroup>
@@ -786,6 +789,9 @@
       <Filter>Pliki nagłówkowe\Events</Filter>
     </ClInclude>
     <ClInclude Include="GeometryShader.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryCbuf.h">
       <Filter>Pliki nagłówkowe\Bindable</Filter>
     </ClInclude>
   </ItemGroup>
