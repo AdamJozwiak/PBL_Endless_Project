@@ -791,6 +791,9 @@
     <ClInclude Include="GeometryShader.h">
       <Filter>Pliki nagłówkowe\Bindable</Filter>
     </ClInclude>
+    <ClInclude Include="Billboard.h">
+      <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
     <ClInclude Include="GeometryCbuf.h">
       <Filter>Pliki nagłówkowe\Bindable</Filter>
     </ClInclude>
