@@ -7,6 +7,8 @@ namespace wrl = Microsoft::WRL;
 
 Texture::Texture(Graphics& gfx, const Surface& s) {
     INFOMAN(gfx);
+    textureWidth = s.GetWidth();
+    textureHeight = s.GetHeight();
 
     // create texture resource
     D3D11_TEXTURE2D_DESC textureDesc = {};
@@ -44,3 +46,7 @@ Texture::Texture(Graphics& gfx, const Surface& s) {
 void Texture::Bind(Graphics& gfx) noexcept {
     GetContext(gfx)->PSSetShaderResources(0u, 1u, pTextureView.GetAddressOf());
 }
+
+float Texture::GetTextureWidth() { return (float)textureWidth; }
+
+float Texture::GetTextureHeight() { return (float)textureHeight; }
