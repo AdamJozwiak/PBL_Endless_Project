@@ -6,6 +6,7 @@ class Camera {
     DirectX::XMMATRIX GetMatrix() const noexcept;
     void SpawnControlWindow() noexcept;
     void Reset() noexcept;
+    DirectX::XMVECTOR GetCameraPos() const noexcept;
 
   private:
     float r = 20.0f;  // distance from the origin
