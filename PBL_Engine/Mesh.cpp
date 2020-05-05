@@ -303,6 +303,8 @@ std::shared_ptr<Mesh> Model::ParseMesh(
     auto pvsbc = pvs->GetBytecode();
     bindablePtrs.push_back(std::move(pvs));
 
+    bindablePtrs.push_back(std::make_unique<GeometryShader>(gfx, L"PhongGS.cso"));
+
     bindablePtrs.push_back(std::make_unique<PixelShader>(gfx, L"PhongPS.cso"));
 
     bindablePtrs.push_back(std::make_unique<InputLayout>(
