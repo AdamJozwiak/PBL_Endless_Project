@@ -65,9 +65,9 @@ class Billboard : public RenderableBase<Billboard> {
         geoCbuf.SetTextureWidth(texture.GetTextureWidth());
         geoCbuf.SetTextureHeight(texture.GetTextureHeight());
 
-        AddBind(std::make_unique<GeometryCbuf>(geoCbuf));
-
         AddBind(std::make_unique<TransformCbuf>(gfx, *this));
+
+        AddBind(std::make_unique<GeometryCbuf>(geoCbuf));
     }
 
     void Update(float dt) noexcept {}
