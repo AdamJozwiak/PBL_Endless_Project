@@ -32,14 +32,14 @@ class Billboard : public RenderableBase<Billboard> {
 
             AddStaticBind(std::make_unique<Sampler>(gfx));
 
-            auto pvs = std::make_unique<VertexShader>(gfx, L"TextureVS.cso");
+            auto pvs = std::make_unique<VertexShader>(gfx, L"BillboardVS.cso");
             auto pvsbc = pvs->GetBytecode();
             AddStaticBind(std::move(pvs));
 
             AddStaticBind(
                 std::make_unique<GeometryShader>(gfx, L"BillboardGS.cso"));
 
-            AddStaticBind(std::make_unique<PixelShader>(gfx, L"TexturePS.cso"));
+            AddStaticBind(std::make_unique<PixelShader>(gfx, L"BillboardPS.cso"));
 
             AddStaticIndexBuffer(
                 std::make_unique<IndexBuffer>(gfx, model.indices));
