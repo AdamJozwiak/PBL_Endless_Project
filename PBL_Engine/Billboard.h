@@ -20,16 +20,19 @@ class Billboard : public RenderableBase<Billboard> {
                     float v;
                 } tex;
             };
-            auto model = Plane::Make<Vertex>();
-            model.vertices[0].tex = {0.0f, 0.0f};
-            model.vertices[1].tex = {1.0f, 0.0f};
-            model.vertices[2].tex = {0.0f, 1.0f};
-            model.vertices[3].tex = {1.0f, 1.0f};
+
+            Vertex model;
+            model.pos = dx::XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+            std::vector<dx::XMFLOAT3> vertices;
+            std::vector<unsigned short> indices;
+            vertices.push_back(model.pos);
+            indices.push_back(1);
 
             AddStaticBind(std::make_unique<Texture>(
                 gfx, Surface::FromFile("../Executable/Graphics/kappa.png")));
 
-            AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
+            AddStaticBind(std::make_unique<VertexBuffer>(gfx, vertices));
 
             AddStaticBind(std::make_unique<Sampler>(gfx));
 
@@ -43,8 +46,7 @@ class Billboard : public RenderableBase<Billboard> {
             AddStaticBind(
                 std::make_unique<PixelShader>(gfx, L"BillboardPS.cso"));
 
-            AddStaticIndexBuffer(
-                std::make_unique<IndexBuffer>(gfx, model.indices));
+            AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, indices));
 
             const std::vector<D3D11_INPUT_ELEMENT_DESC> ied = {
                 {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
