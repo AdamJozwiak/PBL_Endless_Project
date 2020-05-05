@@ -1,4 +1,4 @@
-cbuffer CBuf : register(b13){
+cbuffer CBuf {
     matrix model;
     matrix viewProj;
     float4 cameraPos;

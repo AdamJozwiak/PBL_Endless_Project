@@ -61,7 +61,7 @@ class Billboard : public RenderableBase<Billboard> {
         auto texture =
             Texture(gfx, Surface::FromFile("../Executable/Graphics/kappa.png"));
 
-        auto geoCbuf = GeometryCbuf(gfx, *this, cameraPos, 13);
+        auto geoCbuf = GeometryCbuf(gfx, *this, cameraPos);
         geoCbuf.SetTextureWidth(texture.GetTextureWidth());
         geoCbuf.SetTextureHeight(texture.GetTextureHeight());
 
