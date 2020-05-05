@@ -39,7 +39,8 @@ class Billboard : public RenderableBase<Billboard> {
             AddStaticBind(
                 std::make_unique<GeometryShader>(gfx, L"BillboardGS.cso"));
 
-            AddStaticBind(std::make_unique<PixelShader>(gfx, L"BillboardPS.cso"));
+            AddStaticBind(
+                std::make_unique<PixelShader>(gfx, L"BillboardPS.cso"));
 
             AddStaticIndexBuffer(
                 std::make_unique<IndexBuffer>(gfx, model.indices));
