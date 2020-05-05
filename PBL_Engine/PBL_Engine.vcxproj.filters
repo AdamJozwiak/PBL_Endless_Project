@@ -343,7 +343,7 @@
       <Filter>Pliki źródłowe\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="BonesCbuf.cpp">
-      <Filter>Pliki źródłowe</Filter>
+      <Filter>Pliki źródłowe\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="GeometryCbuf.cpp">
       <Filter>Pliki źródłowe\Bindable</Filter>
@@ -773,9 +773,6 @@
     <ClInclude Include="Mesh.h">
       <Filter>Pliki nagłówkowe\Renderable</Filter>
     </ClInclude>
-    <ClInclude Include="BonesCbuf.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
     <ClInclude Include="Animator.h">
       <Filter>Pliki nagłówkowe\Components</Filter>
     </ClInclude>
@@ -793,6 +790,9 @@
     </ClInclude>
     <ClInclude Include="Billboard.h">
       <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="BonesCbuf.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="GeometryCbuf.h">
       <Filter>Pliki nagłówkowe\Bindable</Filter>
