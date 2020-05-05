@@ -80,7 +80,7 @@ class Billboard : public RenderableBase<Billboard> {
     }
 
   public:
-    float scale = 1.0f;
+    float scale = 0.1f;
 
   private:
     DirectX::XMFLOAT3 pos = {1.0f, 1.0f, 10.0f};
