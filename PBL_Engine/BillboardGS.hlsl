@@ -11,9 +11,9 @@ struct GSOut {
 };
 
 struct VSOut {
-    float4 pos : SV_Position;
-    float4 worldPos : Position;
-    float2 tex : TexCoord;
+    float4 pos : SV_POSITION;
+    float4 worldPos : POSITION;
+    float2 tex : TEXCOORD;
 };
 
 [maxvertexcount(4)] void GS_Billboard(
