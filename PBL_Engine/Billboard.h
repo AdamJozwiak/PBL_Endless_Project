@@ -1,5 +1,6 @@
 #pragma once
 #include "BindableBase.h"
+#include "Camera.h"
 #include "GraphicsThrowMacros.h"
 #include "Plane.h"
 #include "RenderableBase.h"
@@ -9,7 +10,7 @@
 
 class Billboard : public RenderableBase<Billboard> {
   public:
-    Billboard(Graphics& gfx, DirectX::XMVECTOR cameraPos) {
+    Billboard(Graphics& gfx, Camera* camera) {
         namespace dx = DirectX;
         if (!IsStaticInitialized()) {
             struct Vertex {
@@ -62,7 +63,7 @@ class Billboard : public RenderableBase<Billboard> {
         auto texture =
             Texture(gfx, Surface::FromFile("../Executable/Graphics/kappa.png"));
 
-        auto geoCbuf = GeometryCbuf(gfx, *this, cameraPos);
+        auto geoCbuf = GeometryCbuf(gfx, *this, camera);
         geoCbuf.SetTextureWidth(texture.GetTextureWidth());
         geoCbuf.SetTextureHeight(texture.GetTextureHeight());
 

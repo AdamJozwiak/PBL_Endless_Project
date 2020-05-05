@@ -1,16 +1,16 @@
 #include "GeometryCbuf.h"
 
 GeometryCbuf::GeometryCbuf(Graphics& gfx, const Renderable& parent,
-                           DirectX::XMVECTOR cameraPos, UINT slot)
-    : parent(parent) {
+                           Camera* camera, UINT slot)
+    : parent(parent), pCamera(camera) {
     if (!pGcbuf) {
-        DirectX::XMStoreFloat4(&pCamPos, cameraPos);
         pGcbuf =
             std::make_unique<GeometryConstantBuffer<Transforms>>(gfx, slot);
     }
 }
 
 void GeometryCbuf::Bind(Graphics& gfx) noexcept {
+    DirectX::XMStoreFloat4(&pCamPos, pCamera->GetCameraPos());
     const Transforms tf = {
         DirectX::XMMatrixTranspose(parent.GetTransformXM()),
         DirectX::XMMatrixTranspose(gfx.GetCamera() * gfx.GetProjection()),

@@ -3,6 +3,7 @@
 
 #include "ConstantBuffers.h"
 #include "Renderable.h"
+#include "Camera.h"
 
 class GeometryCbuf : public Bindable {
   private:
@@ -15,8 +16,8 @@ class GeometryCbuf : public Bindable {
     };
 
   public:
-    GeometryCbuf(Graphics& gfx, const Renderable& parent,
-                 DirectX::XMVECTOR cameraPos, UINT slot = 0u);
+    GeometryCbuf(Graphics& gfx, const Renderable& parent, Camera* camera,
+                 UINT slot = 0u);
     void Bind(Graphics& gfx) noexcept override;
     void SetTextureWidth(float textureWidth);
     void SetTextureHeight(float textureHeight);
@@ -27,4 +28,5 @@ class GeometryCbuf : public Bindable {
     float textureWidth = 0;
     float textureHeight = 0;
     DirectX::XMFLOAT4 pCamPos;
+    Camera* pCamera;
 };
