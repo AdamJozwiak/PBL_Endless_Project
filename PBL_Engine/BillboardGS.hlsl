@@ -16,7 +16,7 @@ struct VSOut {
     float2 tex : TEXCOORD;
 };
 
-[maxvertexcount(4)] void GS_Billboard(
+[maxvertexcount(4)] void main(
     point VSOut input[1]
     : SV_POSITION, inout TriangleStream<VSOut> OutputStream) {
     matrix modelViewProj = mul(model, viewProj);
