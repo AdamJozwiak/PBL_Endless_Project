@@ -39,11 +39,11 @@
     <ClCompile Include="GeometryShader.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="ImguiManager.cpp" />
+    <ClCompile Include="imgui\examples\imgui_impl_dx11.cpp" />
+    <ClCompile Include="imgui\examples\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
-    <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
-    <ClCompile Include="imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputLayout.cpp" />
@@ -147,10 +147,10 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsThrowMacros.h" />
     <ClInclude Include="ImguiManager.h" />
+    <ClInclude Include="imgui\examples\imgui_impl_dx11.h" />
+    <ClInclude Include="imgui\examples\imgui_impl_win32.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
-    <ClInclude Include="imgui\imgui_impl_dx11.h" />
-    <ClInclude Include="imgui\imgui_impl_win32.h" />
     <ClInclude Include="imgui\imgui_internal.h" />
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
@@ -572,22 +572,22 @@
     <LibraryPath>C:\Users\Maciej Pracucik\Desktop\Repo\PBL_Endless_Project\PBL_Engine\assimp\lib;C:\Users\Maciej Pracucik\Desktop\Repo\PBL_Endless_Project\PBL_Engine\assimp\include\assimp\Compiler;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(ProjectDir)imgui;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)assimp\include\assimp\Compiler;$(ProjectDir)assimp\lib;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(ProjectDir)imgui;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)assimp\include\assimp\Compiler;$(ProjectDir)assimp\lib;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(ProjectDir)imgui;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)assimp\include\assimp\Compiler;$(ProjectDir)assimp\lib;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(ProjectDir)imgui;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)assimp\include\assimp\Compiler;$(ProjectDir)assimp\lib;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>

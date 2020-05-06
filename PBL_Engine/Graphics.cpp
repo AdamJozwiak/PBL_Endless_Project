@@ -2,8 +2,8 @@
 
 #include "GraphicsThrowMacros.h"
 #include "dxerr.h"
-#include "imgui/imgui_impl_dx11.h"
-#include "imgui/imgui_impl_win32.h"
+#include "imgui/examples/imgui_impl_dx11.h"
+#include "imgui/examples/imgui_impl_win32.h"
 
 namespace WRL = Microsoft::WRL;
 namespace dx = DirectX;

@@ -3,8 +3,11 @@
 #include <sstream>
 
 #include "WindowsThrowMacros.h"
-#include "imgui/imgui_impl_win32.h"
+#include "imgui/examples/imgui_impl_win32.h"
 #include "resource.h"
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM,
+                                                             LPARAM);
 
 Window::WindowClass Window::WindowClass::wndClass;
 
