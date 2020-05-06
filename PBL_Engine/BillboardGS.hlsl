@@ -6,19 +6,14 @@ cbuffer CBuf {
     float textureHeight;
 };
 
-struct GSOut {
-    float4 pos : SV_Position;
-};
-
 struct VSOut {
     float4 pos : SV_POSITION;
     float4 worldPos : POSITION;
     float2 tex : TEXCOORD;
 };
 
-[maxvertexcount(4)] void main(
-    point VSOut input[1]
-    : SV_POSITION, inout TriangleStream<VSOut> OutputStream) {
+[maxvertexcount(4)] void main(point VSOut input[1],
+                              inout TriangleStream<VSOut> OutputStream) {
     matrix modelViewProj = mul(model, viewProj);
     float halfWidth = textureWidth / 2.0f;
 
