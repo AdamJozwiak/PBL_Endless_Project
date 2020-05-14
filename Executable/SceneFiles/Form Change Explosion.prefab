@@ -2,6 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &4127620562911794796
 GameObject:
+  id: 4127620562911794796
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -19,6 +20,7 @@ GameObject:
   m_IsActive: 1
 --- !u!4 &8143445601404001003
 Transform:
+  id: 8143445601404001003
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -33,6 +35,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!108 &1503153405258167567
 Light:
+  id: 1503153405258167567
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -94,6 +97,7 @@ Light:
   m_ShadowAngle: 0
 --- !u!1 &5043885343950944986
 GameObject:
+  id: 5043885343950944986
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -112,6 +116,7 @@ GameObject:
   m_IsActive: 1
 --- !u!4 &9210424125709413778
 Transform:
+  id: 9210424125709413778
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -127,6 +132,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &4399550217506394765
 ParticleSystem:
+  id: 4399550217506394765
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4794,6 +4800,7 @@ ParticleSystem:
     vectorLabel1_3: W
 --- !u!199 &2137053362218650863
 ParticleSystemRenderer:
+  id: 2137053362218650863
   serializedVersion: 6
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

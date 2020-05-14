@@ -2,6 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &6992279149502758414
 GameObject:
+  id: 6992279149502758414
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -24,6 +25,7 @@ GameObject:
   m_IsActive: 1
 --- !u!4 &6992279149502758418
 Transform:
+  id: 6992279149502758418
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -40,6 +42,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6992279149502758419
 MeshFilter:
+  id: 6992279149502758419
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -48,6 +51,7 @@ MeshFilter:
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &6992279149502758412
 MeshRenderer:
+  id: 6992279149502758412
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -87,6 +91,7 @@ MeshRenderer:
   m_SortingOrder: 0
 --- !u!136 &6992279149502758413
 CapsuleCollider:
+  id: 6992279149502758413
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -101,6 +106,7 @@ CapsuleCollider:
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6992279149502758417
 MonoBehaviour:
+  id: 6992279149502758417
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -115,6 +121,7 @@ MonoBehaviour:
   playerDistance: 20
 --- !u!54 &6992279149502758416
 Rigidbody:
+  id: 6992279149502758416
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -131,6 +138,7 @@ Rigidbody:
   m_CollisionDetection: 0
 --- !u!122 &5920677916658905112
 Halo:
+  id: 5920677916658905112
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -143,6 +151,7 @@ Halo:
   m_Size: 3
 --- !u!1001 &6202928725938518604
 PrefabInstance:
+  id: 6202928725938518604
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
@@ -265,14 +274,16 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 8a07613b57d7d7d418abe6c105c2ec38, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1381b64ff1936ac4e80c3a00687081f3, type: 3}
---- !u!4 &6204542247175143298 stripped
+--- !u!4 &6204542247175143298
 Transform:
+  id: 6204542247175143298
   m_CorrespondingSourceObject: {fileID: 4446988475467214, guid: 1381b64ff1936ac4e80c3a00687081f3,
     type: 3}
   m_PrefabInstance: {fileID: 6202928725938518604}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8621075721869904862
 PrefabInstance:
+  id: 8621075721869904862
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
@@ -328,8 +339,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eca000ab44c908d4dab395f654753038, type: 3}
---- !u!4 &8623074267237385820 stripped
+--- !u!4 &8623074267237385820
 Transform:
+  id: 8623074267237385820
   m_CorrespondingSourceObject: {fileID: 4335282639064450, guid: eca000ab44c908d4dab395f654753038,
     type: 3}
   m_PrefabInstance: {fileID: 8621075721869904862}
