@@ -51,7 +51,7 @@ void RenderSystem::setup() {
 
 void RenderSystem::update(float deltaTime) {
     const auto dt = deltaTime * speed_factor;
-    window->Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
+    window->Gfx().BeginFrame(0.0f, 0.0f, 0.0f);
     window->Gfx().SetCamera(camera->GetMatrix());
     light->Bind(window->Gfx(), DirectX::XMMatrixIdentity());
     animator.animationTime += dt;
