@@ -93,7 +93,7 @@ class Mouse {
     bool rightIsPressed = false;
     bool isInWindow = false;
     int wheelDeltaCarry = 0;
-    bool rawEnabled = false;
+    bool rawEnabled = true;
     std::queue<Event> buffer;
     std::queue<RawDelta> rawDeltaBuffer;
 };

@@ -4,12 +4,40 @@
 
 namespace dx = DirectX;
 
-DirectX::XMMATRIX Camera::GetMatrix() const noexcept {
-    const auto pos = GetCameraPos();
+dx::XMMATRIX Camera::GetMatrix() noexcept {
+    // Set constants
+    constexpr float maxPitchAngleValue = 85.0f;
+    constexpr float movementSmoothing = 0.8f;
 
-    return dx::XMMatrixLookAtLH(pos, dx::XMVectorZero(),
-                                dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)) *
-           dx::XMMatrixRotationRollPitchYaw(pitch, -yaw, roll);
+    // Clip pitch angle values
+    pitch = std::clamp(pitch, dx::XMConvertToRadians(-maxPitchAngleValue),
+                       dx::XMConvertToRadians(maxPitchAngleValue));
+
+    // Create rotation matrix
+    rotation = dx::XMMatrixRotationRollPitchYaw(pitch, yaw, 0);
+
+    // Compute required directions
+    right = dx::XMVector3TransformCoord(defaultRight, rotation);
+    forward = dx::XMVector3TransformCoord(defaultForward, rotation);
+
+    // Update position
+    position =
+        dx::XMVectorAdd(position, dx::XMVectorScale(right, moveLeftRight));
+    position =
+        dx::XMVectorAdd(position, dx::XMVectorScale(forward, moveBackForward));
+
+    // Smoothly slow down the movement
+    moveLeftRight = std::lerp(0.0f, moveLeftRight, movementSmoothing);
+    moveBackForward = std::lerp(0.0f, moveBackForward, movementSmoothing);
+
+    // Compute target point
+    dx::XMVECTOR target = dx::XMVectorAdd(
+        position, dx::XMVector3Normalize(
+                      XMVector3TransformCoord(defaultForward, rotation)));
+
+    // Return camera's view matrix
+    return dx::XMMatrixLookAtLH(position, target,
+                                dx::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
 }
 
 void Camera::SpawnControlWindow() noexcept {
@@ -38,8 +66,4 @@ void Camera::Reset() noexcept {
     roll = 0.0f;
 }
 
-DirectX::XMVECTOR Camera::GetCameraPos() const noexcept {
-    return dx::XMVector3Transform(
-        dx::XMVectorSet(0.0f, 0.0f, -r, 0.0f),
-        dx::XMMatrixRotationRollPitchYaw(phi, -theta, 0.0f));
-}
+DirectX::XMVECTOR Camera::GetCameraPos() const noexcept { return position; }

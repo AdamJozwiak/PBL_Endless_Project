@@ -52,6 +52,36 @@ void RenderSystem::setup() {
 void RenderSystem::update(float deltaTime) {
     const auto dt = deltaTime * speed_factor;
     window->Gfx().BeginFrame(0.0f, 0.0f, 0.0f);
+
+    // Process mouse movements for free camera
+    while (auto const delta = window->mouse.ReadRawDelta()) {
+        if (window->mouse.RightIsPressed()) {
+            camera->yaw += delta->x * 0.25f * deltaTime;
+            camera->pitch += delta->y * 0.25f * deltaTime;
+        }
+    }
+    // Process input for free camera movement
+    if (window->mouse.RightIsPressed()) {
+        static float speed = 0.0f;
+        float const targetSpeed = 5.0f * deltaTime;
+
+        speed = std::lerp(speed, targetSpeed, 0.1f);  // Accelerate
+        speed = std::lerp(0.0f, speed, 0.9f);         // Slow down
+
+        if (window->keyboard.KeyIsPressed('A')) {
+            camera->moveLeftRight -= speed;
+        }
+        if (window->keyboard.KeyIsPressed('D')) {
+            camera->moveLeftRight += speed;
+        }
+        if (window->keyboard.KeyIsPressed('W')) {
+            camera->moveBackForward += speed;
+        }
+        if (window->keyboard.KeyIsPressed('S')) {
+            camera->moveBackForward -= speed;
+        }
+    }
+
     window->Gfx().SetCamera(camera->GetMatrix());
     light->Bind(window->Gfx(), DirectX::XMMatrixIdentity());
     animator.animationTime += dt;
@@ -112,7 +142,7 @@ void RenderSystem::update(float deltaTime) {
     ImGui::End();
 
     // imgui window to control camera
-    camera->SpawnControlWindow();
+    // camera->SpawnControlWindow();
     light->SpawnControlWindow();
     // nano->ShowWindow();
     // test->ShowWindow();

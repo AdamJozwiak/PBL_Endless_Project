@@ -67,6 +67,17 @@ Window::Window(int width, int height, const char* name)
     ImGui_ImplWin32_Init(hWnd);
     // create graphics object
     pGfx = std::make_unique<Graphics>(hWnd, width, height);
+
+    // Register mouse raw input device
+    RAWINPUTDEVICE rawInputDevice{.usUsagePage = 0x01,
+                                  .usUsage = 0x02,
+                                  .dwFlags = 0,
+                                  .hwndTarget = nullptr};
+    UINT numberOfRawInputDevices = 1u;
+    if (RegisterRawInputDevices(&rawInputDevice, numberOfRawInputDevices,
+                                sizeof(rawInputDevice)) == FALSE) {
+        throw HWND_LAST_EXCEPT();
+    }
 }
 
 Window::~Window() {
@@ -264,6 +275,38 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam,
             break;
         }
             /************** END MOUSE MESSAGES **************/
+
+        // Raw mouse messages
+        case WM_INPUT: {
+            if (!mouse.RawEnabled()) {
+                break;
+            }
+
+            // Get the size of the input data
+            UINT size;
+            if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT,
+                                nullptr, &size, sizeof(RAWINPUTHEADER)) == -1) {
+                break;
+            }
+            rawBuffer.resize(size);
+
+            // Read the input data
+            if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT,
+                                rawBuffer.data(), &size,
+                                sizeof(RAWINPUTHEADER)) != size) {
+                break;
+            }
+
+            // Process the raw input data
+            auto& rawInput =
+                reinterpret_cast<RAWINPUT const&>(*rawBuffer.data());
+            if (rawInput.header.dwType == RIM_TYPEMOUSE &&
+                (rawInput.data.mouse.lLastX != 0 ||
+                 rawInput.data.mouse.lLastY != 0)) {
+                mouse.OnRawDelta(rawInput.data.mouse.lLastX,
+                                 rawInput.data.mouse.lLastY);
+            }
+        } break;
     }
     return DefWindowProc(hWnd, msg, wParam, lParam);
 }
