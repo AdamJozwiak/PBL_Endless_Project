@@ -46,7 +46,7 @@ void RenderSystem::setup() {
     nano = new Model(window->Gfx(), "Models\\Wolf_One_dae.dae",
                      &animator.animationTime);
     window->Gfx().SetProjection(
-        dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 40.0f));
+        dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 400.0f));
 }
 
 void RenderSystem::update(float deltaTime) {
