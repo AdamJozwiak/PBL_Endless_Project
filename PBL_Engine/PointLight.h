@@ -9,11 +9,13 @@ class PointLight {
     void SpawnControlWindow() noexcept;
     void Reset() noexcept;
     void Draw(Graphics& gfx) const noexcept(!IS_DEBUG);
-    void Bind(Graphics& gfx, DirectX::FXMMATRIX view) const noexcept;
+    void Bind(Graphics& gfx, DirectX::FXMMATRIX view,
+              DirectX::XMVECTOR cameraWorldPosition) const noexcept;
 
   private:
     struct PointLightCBuf {
         alignas(16) DirectX::XMFLOAT3 pos;
+        alignas(16) DirectX::XMFLOAT3 view;
         alignas(16) DirectX::XMFLOAT3 ambient;
         alignas(16) DirectX::XMFLOAT3 diffuseColor;
         float diffuseIntensity;

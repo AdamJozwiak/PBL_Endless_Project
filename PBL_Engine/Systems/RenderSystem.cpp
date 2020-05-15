@@ -83,7 +83,8 @@ void RenderSystem::update(float deltaTime) {
     }
 
     window->Gfx().SetCamera(camera->GetMatrix());
-    light->Bind(window->Gfx(), DirectX::XMMatrixIdentity());
+    light->Bind(window->Gfx(), DirectX::XMMatrixIdentity(),
+                camera->GetCameraPos());
     animator.animationTime += dt;
     // window->Gfx().ClearBuffer(0.07f, 0.0f, 0.12f);
 

@@ -37,6 +37,7 @@ void PointLight::SpawnControlWindow() noexcept {
 void PointLight::Reset() noexcept {
     cbData = {
         {0.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 0.0f},
         {0.05f, 0.05f, 0.05f},
         {1.0f, 1.0f, 1.0f},
         1.0f,
@@ -51,11 +52,14 @@ void PointLight::Draw(Graphics& gfx) const noexcept(!IS_DEBUG) {
     mesh.Draw(gfx);
 }
 
-void PointLight::Bind(Graphics& gfx, DirectX::FXMMATRIX view) const noexcept {
+void PointLight::Bind(Graphics& gfx, DirectX::FXMMATRIX view,
+                      DirectX::XMVECTOR cameraWorldPosition) const noexcept {
     auto dataCopy = cbData;
-    const auto pos = DirectX::XMLoadFloat3(&cbData.pos);
+    const auto lightPosition = DirectX::XMLoadFloat3(&cbData.pos);
     DirectX::XMStoreFloat3(&dataCopy.pos,
-                           DirectX::XMVector3Transform(pos, view));
+                           DirectX::XMVector3Transform(lightPosition, view));
+
+    DirectX::XMStoreFloat3(&dataCopy.view, cameraWorldPosition);
     cbuf.Update(gfx, dataCopy);
     cbuf.Bind(gfx);
 }
