@@ -803,6 +803,9 @@
     <ClInclude Include="TimerCbuf.h">
       <Filter>Pliki nagłówkowe\Bindable</Filter>
     </ClInclude>
+    <ClInclude Include="FireParticle.h">
+      <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXTrace.inl">
@@ -989,6 +992,15 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="PhongGS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="FireEffectVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="FireEffectGS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="FireEffectPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>
