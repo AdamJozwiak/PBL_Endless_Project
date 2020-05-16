@@ -41,7 +41,7 @@ void RenderSystem::setup() {
     light = new PointLight(window->Gfx());
     animator.animationTime = 0;
     // imgui = std::make_unique<ImguiManager>();
-    nano = new Model(window->Gfx(), "Models\\Wolf_One_dae.dae",
+    nano = new Model(window->Gfx(), "Assets\\Models\\Wolf_One_dae.dae",
                      &animator.animationTime);
     window->Gfx().SetProjection(
         dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 400.0f));

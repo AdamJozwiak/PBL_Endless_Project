@@ -26,18 +26,18 @@ class FireParticle : public RenderableBase<FireParticle> {
             indices.push_back(1);
 
             AddStaticBind(std::make_unique<Texture>(
-                gfx, Surface::FromFile("Graphics/fire-albedo.png")));
+                gfx, Surface::FromFile("Assets/Graphics/fire-albedo.png")));
 
-            Texture tex2 =
-                Texture(gfx, Surface::FromFile("Graphics/fire-noise.png"));
+            Texture tex2 = Texture(
+                gfx, Surface::FromFile("Assets/Graphics/fire-noise.png"));
             tex2.BindAdditional(gfx, 1u);
 
-            Texture tex3 =
-                Texture(gfx, Surface::FromFile("Graphics/fire-gradient.png"));
+            Texture tex3 = Texture(
+                gfx, Surface::FromFile("Assets/Graphics/fire-gradient.png"));
             tex3.BindAdditional(gfx, 2u);
 
-            Texture tex4 =
-                Texture(gfx, Surface::FromFile("Graphics/fire-mask.png"));
+            Texture tex4 = Texture(
+                gfx, Surface::FromFile("Assets/Graphics/fire-mask.png"));
             tex4.BindAdditional(gfx, 3u);
 
             AddStaticBind(std::make_unique<VertexBuffer>(gfx, vertices));
@@ -70,7 +70,8 @@ class FireParticle : public RenderableBase<FireParticle> {
             SetIndexFromStatic();
         }
 
-        auto texture = Texture(gfx, Surface::FromFile("Graphics/red.png"));
+        auto texture =
+            Texture(gfx, Surface::FromFile("Assets/Graphics/red.png"));
 
         auto geoCbuf = GeometryCbuf(gfx, *this, camera);
         geoCbuf.SetTextureWidth(texture.GetTextureWidth());

@@ -30,7 +30,7 @@ class Billboard : public RenderableBase<Billboard> {
             indices.push_back(1);
 
             AddStaticBind(std::make_unique<Texture>(
-                gfx, Surface::FromFile("Graphics/kappa.png")));
+                gfx, Surface::FromFile("Assets/Graphics/kappa.png")));
 
             AddStaticBind(std::make_unique<VertexBuffer>(gfx, vertices));
 
@@ -62,7 +62,8 @@ class Billboard : public RenderableBase<Billboard> {
             SetIndexFromStatic();
         }
 
-        auto texture = Texture(gfx, Surface::FromFile("Graphics/kappa.png"));
+        auto texture =
+            Texture(gfx, Surface::FromFile("Assets/Graphics/kappa.png"));
 
         auto geoCbuf = GeometryCbuf(gfx, *this, camera);
         geoCbuf.SetTextureWidth(texture.GetTextureWidth());
