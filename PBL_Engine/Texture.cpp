@@ -47,6 +47,11 @@ void Texture::Bind(Graphics& gfx) noexcept {
     GetContext(gfx)->PSSetShaderResources(0u, 1u, pTextureView.GetAddressOf());
 }
 
+void Texture::BindAdditional(Graphics& gfx, UINT texRegister) {
+    GetContext(gfx)->PSSetShaderResources(texRegister, 1u,
+                                          pTextureView.GetAddressOf());
+}
+
 float Texture::GetTextureWidth() { return (float)textureWidth; }
 
 float Texture::GetTextureHeight() { return (float)textureHeight; }

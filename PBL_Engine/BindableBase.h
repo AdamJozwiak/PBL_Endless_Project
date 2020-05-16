@@ -5,6 +5,7 @@
 #include "IndexBuffer.h"
 #include "InputLayout.h"
 #include "PixelShader.h"
+#include "Texture.h"
 #include "TimerCbuf.h"
 #include "Topology.h"
 #include "TransformCbuf.h"
