@@ -348,6 +348,9 @@
     <ClCompile Include="imgui\examples\imgui_impl_win32.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
+    <ClCompile Include="TimerCbuf.cpp">
+      <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -796,6 +799,9 @@
     </ClInclude>
     <ClInclude Include="imgui\examples\imgui_impl_win32.h">
       <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerCbuf.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
