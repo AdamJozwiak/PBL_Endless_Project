@@ -7,6 +7,7 @@
 #include "PointLight.h"
 #include "SolidSphere.h"
 #include "Billboard.h"
+#include "FireParticle.h"
 
 // ECS
 #include "Components/Components.hpp"
@@ -36,6 +37,7 @@ ECS_SYSTEM(RenderSystem) {
     float speed_factor = 1.0f;
     std::unique_ptr<SolidSphere> sphere;
     std::unique_ptr<Billboard> billboard;
+    std::unique_ptr<FireParticle> fireParticle;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

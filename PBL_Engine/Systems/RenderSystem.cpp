@@ -37,6 +37,7 @@ void RenderSystem::setup() {
     camera = std::make_unique<Camera>();
     sphere = std::make_unique<SolidSphere>(window->Gfx(), 1.0f);
     billboard = std::make_unique<Billboard>(window->Gfx(), camera.get());
+    fireParticle = std::make_unique<FireParticle>(window->Gfx(), camera.get());
     light = new PointLight(window->Gfx());
     animator.animationTime = 0;
     // imgui = std::make_unique<ImguiManager>();
@@ -113,7 +114,10 @@ void RenderSystem::update(float deltaTime) {
         }
         sphere->Draw(window->Gfx());
     }
+
+    // billboards
     billboard->Draw(window->Gfx());
+    fireParticle->Draw(window->Gfx());
 
     // test->Draw(window->Gfx());
     nano->Draw(window->Gfx(),
