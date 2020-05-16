@@ -6,12 +6,9 @@
 #include <algorithm>
 #include <memory>
 
-#include "Box.h"
 #include "GDIPlusManager.h"
 #include "Mesh.h"
 #include "PBLMath.h"
-#include "SolidSphere.h"
-#include "Surface.h"
 #include "Window.h"
 #include "imgui/imgui.h"
 

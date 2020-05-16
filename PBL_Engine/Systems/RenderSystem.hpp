@@ -6,7 +6,7 @@
 #include "Mesh.h"
 #include "PointLight.h"
 #include "SolidSphere.h"
-#include "../Billboard.h"
+#include "Billboard.h"
 
 // ECS
 #include "Components/Components.hpp"
