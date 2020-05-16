@@ -15,35 +15,78 @@ float4 rand(float2 uv) {
 
 float4 main(VSOut input) : SV_TARGET {
     float redShine = 3.0f;
-    float greenShine = 5.0f;
-    float blueShine = 2.0f;
-
-    float4 albedo = shaderTextures[0].Sample(splr, input.tex);
-    // float4 col = float4(albedo.rgba * (1.0f, 1.0f, 1.0f, 1.0f));
+    float greenShine = 2.0f;
+    float blueShine = 1.0f;
 
     float2 noisePadding = float2(input.tex.x + rand(input.tex).x,
                                  input.tex.y + rand(input.tex).y);
 
-    float noise = shaderTextures[1].Sample(
-        splr, float2(noisePadding.x, noisePadding.y + time / 1.5f));
+    // Noise
+    float noises[4];
+    noises[0] = shaderTextures[1].Sample(
+        splr,
+        float2(noisePadding.x * 1.0f, noisePadding.y * 1.0f + 0.9f * time));
+    noises[1] = shaderTextures[1].Sample(
+        splr,
+        float2(noisePadding.x * 0.5f, noisePadding.y * 0.5f + 0.3f * time));
+    noises[2] = shaderTextures[1].Sample(
+        splr,
+        float2(noisePadding.x * 1.5f, noisePadding.y * 1.5f + 0.6f * time));
+    noises[3] = shaderTextures[1].Sample(
+        splr,
+        float2(noisePadding.x * 0.1f, noisePadding.y * 0.2f + 0.2f * time));
 
+    // Gradient
     float gradient = shaderTextures[2].Sample(splr, input.tex);
 
-    if (noise > (1.5f - gradient.r) * 0.5f && noisePadding.y < 0.75f) discard;
+    // Albedo
+    float4 albedo = shaderTextures[0].Sample(
+        splr,
+        float2(input.tex.x + 0.4 * gradient.r *
+                                 sin(time * 0.5f + input.tex.y * 2) * noises[0],
+               input.tex.y + 0.5 * time +
+                   0.1 * gradient.r * cos(time * 0.55f + input.tex.x * 4) *
+                       noises[0]));
 
-    albedo.r *=
-        1.0f + gradient.r * redShine + gradient.r * (1.0f - noise) * redShine;
-    albedo.g *= 1.0f + gradient.r * greenShine +
-                gradient.r * (1.0f - noise) * greenShine;
-    albedo.b *=
-        1.0f + gradient.r * blueShine + gradient.r * (1.0f - noise) * blueShine;
-
+    // Shape
     float4 shape = shaderTextures[3].Sample(
-        splr, float2(input.tex.x + 0.2 * gradient.r *
-                                       sin(time * 4 + input.tex.y * 2) * noise,
-                     input.tex.y));
+        splr,
+        float2(input.tex.x + 0.2 * gradient.r *
+                                 sin(time * 2 + input.tex.y * 2) * noises[0],
+               input.tex.y - 0.01f * (1.0f - gradient.r) *
+                                 sin(time * 1 + input.tex.y * 1) * noises[1]));
 
-    if (albedo.a > shape.a + 0.5f) discard;
+    // Handle noise data
+    if (noises[0] < 0.7f * gradient.r && shape.r > 0.25f) {
+        discard;
+    }
+    if (noises[1] < 0.8f * gradient.r && shape.r > 0.25f) {
+        discard;
+    }
+    if (noises[2] < 0.8f * gradient.r) {
+        albedo.r += 0.5f * noises[0].r;
+        albedo.g += 0.5f * noises[0].r;
+        albedo.b += 0.5f * noises[0].r;
+    }
+    if (noises[3] < 0.2f * gradient.r && shape.r > 0.25f) {
+        discard;
+    }
+
+    // Emphasize fire color with noise
+    albedo.r += 0.3f * noises[0].r;
+    albedo.g += 0.3f * noises[0].r;
+    albedo.b += 0.3f * noises[0].r;
+
+    albedo.r *= 1.0f + gradient.r * redShine +
+                gradient.r * (1.0f - noises[0]) * redShine;
+    albedo.g *= 1.0f + gradient.r * greenShine +
+                gradient.r * (1.0f - noises[0]) * greenShine;
+    albedo.b *= 1.0f + gradient.r * blueShine +
+                gradient.r * (1.0f - noises[0]) * blueShine;
+
+    if (albedo.a > shape.a) {
+        discard;
+    }
 
     return albedo;
 }

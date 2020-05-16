@@ -26,18 +26,18 @@ class FireParticle : public RenderableBase<FireParticle> {
             indices.push_back(1);
 
             AddStaticBind(std::make_unique<Texture>(
-                gfx, Surface::FromFile("Graphics/red.png")));
+                gfx, Surface::FromFile("Graphics/fire-albedo.png")));
 
             Texture tex2 =
-                Texture(gfx, Surface::FromFile("Graphics/fireNoise.jpg"));
+                Texture(gfx, Surface::FromFile("Graphics/fire-noise.png"));
             tex2.BindAdditional(gfx, 1u);
 
             Texture tex3 =
-                Texture(gfx, Surface::FromFile("Graphics/fireGradient.png"));
+                Texture(gfx, Surface::FromFile("Graphics/fire-gradient.png"));
             tex3.BindAdditional(gfx, 2u);
 
             Texture tex4 =
-                Texture(gfx, Surface::FromFile("Graphics/fireMask.png"));
+                Texture(gfx, Surface::FromFile("Graphics/fire-mask.png"));
             tex4.BindAdditional(gfx, 3u);
 
             AddStaticBind(std::make_unique<VertexBuffer>(gfx, vertices));
