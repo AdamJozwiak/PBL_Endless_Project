@@ -91,9 +91,6 @@
     <Filter Include="Pliki źródłowe\Animation">
       <UniqueIdentifier>{302bc15f-ba8d-48cd-b60a-b98a4ce642bc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SceneFiles">
-      <UniqueIdentifier>{e52cb541-d32f-4dea-9bad-9bac074c9939}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -821,114 +818,6 @@
       <Filter>yaml-cpp\src\contrib</Filter>
     </None>
     <None Include="cpp.hint" />
-    <None Include="SceneFiles\Player.prefab.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Tile.mat">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Tile.mat.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Tile.prefab.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Torch.mat">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Torch.mat.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\TorchCollectible.prefab">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\TorchCollectible.prefab.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Trap.mat">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Trap.mat.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Trap.prefab.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Wall (8).prefab">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Wall (8).prefab.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Wall.prefab">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Wall.prefab.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Water Trap.mat">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Water Trap.mat.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Water Trap.prefab">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Water Trap.prefab.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Way.prefab">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Way.prefab.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\1.unity">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\1.yaml">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Cat Form.prefab">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Cat Form.prefab.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Enemy.mat">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Enemy.mat.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Enemy.prefab">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Enemy.prefab.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Form Change Explosion Fail Variant.prefab">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Form Change Explosion Fail Variant.prefab.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Form Change Explosion.prefab">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Form Change Explosion.prefab.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Lane.prefab.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Particle.mat">
-      <Filter>SceneFiles</Filter>
-    </None>
-    <None Include="SceneFiles\Particle.mat.meta">
-      <Filter>SceneFiles</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ColorBlendPS.hlsl">
