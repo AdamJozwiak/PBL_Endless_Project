@@ -34,20 +34,25 @@ void LevelParser::load() {
     auto const &sceneNodes =
         YAML::LoadAllFromFile("SceneFiles/SampleScene/SampleScene.unity");
 
+    std::unordered_map<FileGuid, std::set<FileId>> prefabFileIds;
+
     std::unordered_map<FileExtension, std::vector<Path>> assetPaths;
     std::unordered_map<FileGuid, Path> guidPaths;
+    std::unordered_map<Path, FileGuid> pathToGuid;
 
     // Creating vectors of files with .prefab, .mat, .meta extensions
     Path searchedDirectory{"SceneFiles/SampleScene"};
-    std::set<FileExtension> searchedFileExtensions{".prefab", ".mat", ".meta"};
+    std::vector<FileExtension> searchedFileExtensions{".meta", ".prefab",
+                                                      ".mat"};
 
     for (auto const &entry :
          fs::recursive_directory_iterator(searchedDirectory)) {
         Path const &path = entry.path().string();
         FileExtension const &extension = entry.path().extension().string();
 
-        if (searchedFileExtensions.find(extension) !=
-            searchedFileExtensions.end()) {
+        if (std::find(searchedFileExtensions.begin(),
+                      searchedFileExtensions.end(),
+                      extension) != searchedFileExtensions.end()) {
             assetPaths[extension].emplace_back(path);
         }
     }
@@ -66,26 +71,94 @@ void LevelParser::load() {
         }
     }
 
-    for (auto const &[extension, paths] : assetPaths) {
-        for (auto const &path : paths) {
+    for (auto const &extension : searchedFileExtensions) {
+        for (auto const &path : assetPaths[extension]) {
             std::vector<YAML::Node> assetNodes = YAML::LoadAllFromFile(path);
             for (auto const &node : assetNodes) {
                 if (extension == ".meta") {
                     auto const pathWithoutExtension{
-                        fs::path(path).parent_path().string() + "/" +
+                        fs::path(path).parent_path().string() + "\\" +
                         fs::path(path).stem().string()};
                     guidPaths.insert(
                         {node["guid"].as<FileGuid>(), pathWithoutExtension});
+                    pathToGuid.insert(
+                        {pathWithoutExtension, node["guid"].as<FileGuid>()});
                     break;
                 }
                 yamlLoop(i, node) {
                     if (!i->second["id"]) {
                         continue;
                     }
+
+                    // Check for duplicates
+                    assert(nodes.find(i->second["id"].as<FileId>()) ==
+                               nodes.end() &&
+                           "Duplicate file identifiers!");
+
                     nodes.insert({i->second["id"].as<FileId>(), node});
+
+                    if (extension == ".prefab") {
+                        prefabFileIds[pathToGuid[path]].insert(
+                            i->second["id"].as<FileId>());
+                    }
                 }
             }
         }
+    }
+
+    // Go through all prefabs in the scene file and save prefab GUIDs that
+    // belong to the parsed scene
+    auto findPrefabGuidsBelongingToScene =
+        [&nodes, &prefabFileIds](
+            std::set<FileId> const &fileIds) -> std::vector<FileGuid> {
+        auto localFunction =
+            [&nodes, &prefabFileIds](
+                std::set<FileId> const &fileIds,
+                auto const &localFunction) -> std::vector<FileGuid> {
+            std::vector<FileGuid> guids;
+            for (auto const &fileId : fileIds) {
+                auto node{nodes[fileId]};
+
+                if (auto const &nodePrefabInstance = node["PrefabInstance"];
+                    nodePrefabInstance) {
+                    assert(nodePrefabInstance["m_SourcePrefab"] &&
+                           "Every property inside PrefabInstance component "
+                           "must be "
+                           "valid!");
+
+                    yamlLoop(it, nodePrefabInstance["m_SourcePrefab"]) {
+                        auto const key = it->first.as<std::string>();
+                        auto const value = it->second.as<std::string>();
+
+                        if (key == "guid") {
+                            guids.push_back(value);
+                        }
+                    }
+                }
+            }
+            for (auto const &guid : guids) {
+                auto deeperGuids =
+                    localFunction(prefabFileIds[guid], localFunction);
+                guids.insert(guids.begin(), deeperGuids.begin(),
+                             deeperGuids.end());
+            }
+            return guids;
+        };
+
+        return localFunction(fileIds, localFunction);
+    };
+    std::vector<FileGuid> scenePrefabGuids =
+        findPrefabGuidsBelongingToScene(sceneFileIds);
+
+    for (auto const &guid : scenePrefabGuids) {
+        // Check for duplicates
+        for (auto const &fileId : prefabFileIds[guid]) {
+            assert(sceneFileIds.find(fileId) == sceneFileIds.end() &&
+                   "Duplicate file identifiers!");
+        }
+
+        sceneFileIds.insert(prefabFileIds[guid].begin(),
+                            prefabFileIds[guid].end());
     }
 
     // Go through all game objects in scene file and create entities
@@ -107,6 +180,18 @@ void LevelParser::load() {
         auto const &node = nodes[fileId];
 
         if (auto const &nodeTransform = node["Transform"]; nodeTransform) {
+            assert(nodeTransform["m_PrefabInstance"] &&
+                   "Every property inside Transform component must be valid!");
+
+            bool skipThisTransform = false;
+            yamlLoop(i, nodeTransform["m_PrefabInstance"]) {
+                auto prefabFileId = i->second.Scalar();
+                skipThisTransform = prefabFileId != "0";
+            }
+            if (skipThisTransform) {
+                continue;
+            }
+
             assert(nodeTransform["m_GameObject"] &&
                    nodeTransform["m_LocalRotation"] &&
                    nodeTransform["m_LocalPosition"] &&
