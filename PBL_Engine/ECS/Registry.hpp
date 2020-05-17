@@ -2,6 +2,7 @@
 
 // ///////////////////////////////////////////////////////////////// Includes //
 #include <memory>
+#include <vector>
 
 #include "ComponentManager.hpp"
 #include "EngineAPI.hpp"
@@ -24,6 +25,9 @@ class ENGINE_API Registry {
     Registry(Registry&&) = delete;
     Registry& operator=(Registry const&) = delete;
     Registry& operator=(Registry&&) = delete;
+
+    // ---------------------------------------- Delayed entity deletion -- == //
+    void refresh();
 
     // --------------------------------------------------------- Entity -- == //
     Entity createEntity();
@@ -91,10 +95,14 @@ class ENGINE_API Registry {
     }
 
     // ============================================================== Data == //
+    // ------------------------------------------------------- Managers -- == //
     ComponentManager& componentManager;
     EntityManager& entityManager;
     EventManager& eventManager;
     SystemManager& systemManager;
+
+    // ---------------------------------------- Delayed entity deletion -- == //
+    std::vector<Entity> entitiesToRemove;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

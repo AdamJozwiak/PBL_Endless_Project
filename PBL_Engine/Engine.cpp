@@ -26,6 +26,8 @@ ENGINE_API int Engine::run() {
     }
 
     while (true) {
+        registry.refresh();
+
         if (auto const exitCode = Window::ProcessMessages()) {
             return *exitCode;
         }

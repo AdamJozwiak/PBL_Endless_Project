@@ -11,13 +11,21 @@ Registry& Registry::instance() {
     return registry;
 }
 
+// -------------------------------------------- Delayed entity deletion -- == //
+void Registry::refresh() {
+    for (auto const& entity : entitiesToRemove) {
+        entityManager.destroy(entity.id);
+        componentManager.destroyEntity(entity.id);
+        systemManager.destroyEntity(entity.id);
+    }
+    entitiesToRemove.clear();
+}
+
 // ------------------------------------------------------------- Entity -- == //
 Entity Registry::createEntity() { return entityManager.create(); }
 
 void Registry::destroyEntity(Entity const& entity) {
-    entityManager.destroy(entity.id);
-    componentManager.destroyEntity(entity.id);
-    systemManager.destroyEntity(entity.id);
+    entitiesToRemove.push_back(entity);
 }
 
 // ---------------------------------------------------------- Singleton -- == //
