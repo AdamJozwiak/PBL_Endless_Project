@@ -53,6 +53,7 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="Pyramid.cpp" />
     <ClCompile Include="Renderable.cpp" />
     <ClCompile Include="Sampler.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="PostProcessing.h" />
     <ClInclude Include="Prism.h" />
     <ClInclude Include="Pyramid.h" />
     <ClInclude Include="Renderable.h" />

@@ -348,6 +348,9 @@
     <ClCompile Include="TimerCbuf.cpp">
       <Filter>Pliki źródłowe\Bindable</Filter>
     </ClCompile>
+    <ClCompile Include="PostProcessing.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -802,6 +805,9 @@
     </ClInclude>
     <ClInclude Include="FireParticle.h">
       <Filter>Pliki nagłówkowe\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessing.h">
+      <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
