@@ -8,6 +8,7 @@
 #include "SolidSphere.h"
 #include "Billboard.h"
 #include "FireParticle.h"
+#include "PostProcessing.h"
 
 // ECS
 #include "Components/Components.hpp"
@@ -38,6 +39,8 @@ ECS_SYSTEM(RenderSystem) {
     std::unique_ptr<SolidSphere> sphere;
     std::unique_ptr<Billboard> billboard;
     std::unique_ptr<FireParticle> fireParticle;
+    std::unique_ptr<PostProcessing> postProcessing, colorCorrectionPost;
+
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
