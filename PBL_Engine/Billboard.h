@@ -6,7 +6,6 @@
 #include "RenderableBase.h"
 #include "Sampler.h"
 #include "Surface.h"
-#include "Texture.h"
 
 class Billboard : public RenderableBase<Billboard> {
   public:
