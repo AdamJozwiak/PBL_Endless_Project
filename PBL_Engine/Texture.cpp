@@ -43,6 +43,15 @@ Texture::Texture(Graphics& gfx, const Surface& s) {
         pTexture.Get(), &srvDesc, &pTextureView));
 }
 
+Texture::Texture(
+    Graphics& gfx,
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pOutputTexture,
+    float width, float height) {
+    pTextureView = pOutputTexture;
+    textureWidth = width;
+    textureHeight = height;
+}
+
 void Texture::Bind(Graphics& gfx) noexcept {
     GetContext(gfx)->PSSetShaderResources(0u, 1u, pTextureView.GetAddressOf());
 }
