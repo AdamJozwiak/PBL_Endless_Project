@@ -1,6 +1,8 @@
 // ///////////////////////////////////////////////////////////////// Includes //
 #include "TestScript.hpp"
 
+#include <array>
+
 #include "Components/Components.hpp"
 #include "ECS/ECS.hpp"
 #include "Systems/Systems.hpp"
@@ -53,6 +55,37 @@ void TestScript::update(float const deltaTime) {
     if (isKeyPressed('S')) {
         transform.position.z -= 5.0f * deltaTime;
     }
+
+    static float timer = 0.0f;
+    timer += deltaTime;
+    if (isKeyPressed('Q')) {
+        static int counter = 0;
+        static constexpr int NUMBER_OF_MONKEYS = 10;
+        static std::array<EntityId, NUMBER_OF_MONKEYS> monkeys;
+
+        if (timer > 0.2f) {
+            timer = 0.0f;
+            if (counter < 10) {
+                monkeys[counter] = registry.createEntity().id;
+                Entity(monkeys[counter])
+                    .add<Transform>([this]() {
+                        auto transform = entity.get<Transform>();
+                        transform.position.x = 0.0f;
+                        transform.position.y = (counter++) * 2.0f;
+                        transform.position.z = 0.0f;
+                        return transform;
+                    }())
+                    .add<MeshFilter>(
+                        MeshFilter{.model = entity.get<MeshFilter>().model})
+                    .add<Renderer>(entity.get<Renderer>());
+            } else {
+                counter = 0;
+                for (auto const& entity : monkeys) {
+                    registry.destroyEntity(entity);
+                }
+            }
+        }
+    }
 };
 
 // ------------------------------------------------------------- Events -- == //
@@ -64,6 +97,10 @@ void TestScript::onCollisionEnter(OnCollisionEnter const& event) {
 
         if (isKeyPressed(VK_SHIFT)) {
             otherTransform.euler.x += 45.0f * lastDeltaTime;
+        }
+
+        if (isKeyPressed(VK_CONTROL)) {
+            registry.destroyEntity(other);
         }
 
         if (isKeyPressed(VK_SPACE)) {
