@@ -11,7 +11,8 @@ namespace dx = DirectX;
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
-Graphics::Graphics(HWND hWnd, int width, int height) {
+Graphics::Graphics(HWND hWnd, int width, int height)
+    : windowWidth(width), windowHeight(height) {
     DXGI_SWAP_CHAIN_DESC sd = {};
     sd.BufferDesc.Width = width;
     sd.BufferDesc.Height = height;
@@ -157,6 +158,10 @@ void Graphics::EnableImgui() noexcept { imguiEnabled = true; }
 void Graphics::DisableImgui() noexcept { imguiEnabled = false; }
 
 bool Graphics::IsImguiEnabled() const noexcept { return imguiEnabled; }
+
+int Graphics::GetWindowWidth() const noexcept { return windowWidth; }
+
+int Graphics::GetWindowHeight() const noexcept { return windowHeight; }
 
 // ------------------------ Graphics exception ---------------------------- //
 

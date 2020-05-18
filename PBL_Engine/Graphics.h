@@ -72,10 +72,14 @@ class Graphics {
     void EnableImgui() noexcept;
     void DisableImgui() noexcept;
     bool IsImguiEnabled() const noexcept;
+    int GetWindowWidth() const noexcept;
+    int GetWindowHeight() const noexcept;
 
   private:
     DirectX::XMMATRIX projection;
     DirectX::XMMATRIX camera;
+    int windowWidth;
+    int windowHeight;
     bool imguiEnabled = true;
 #ifndef NDEBUG  // If in Debug mode this will be included
     DxgiInfoManager infoManager;
