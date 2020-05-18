@@ -898,13 +898,13 @@
     <FxCompile Include="FireEffectPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="PostProcessingTestGS.hlsl">
+    <FxCompile Include="BloomGS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="PostProcessingTestVS.hlsl">
+    <FxCompile Include="BloomVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="PostProcessingTestPS.hlsl">
+    <FxCompile Include="BloomPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="ColorCorrectionVS.hlsl">
