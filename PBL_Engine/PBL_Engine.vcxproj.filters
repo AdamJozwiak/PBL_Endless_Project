@@ -898,6 +898,24 @@
     <FxCompile Include="FireEffectPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="PostProcessingTestGS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="PostProcessingTestVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="PostProcessingTestPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ColorCorrectionVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ColorCorrectionGS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ColorCorrectionPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="yaml-cpp\src\contrib\yaml-cpp.natvis">
