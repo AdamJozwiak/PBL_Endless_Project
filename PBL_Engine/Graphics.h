@@ -63,7 +63,7 @@ class Graphics {
     Graphics& operator=(const Graphics&) = delete;
     ~Graphics() = default;
     void EndFrame();
-    void BeginFrame(float red, float green, float blue) noexcept;
+    void BeginFrame(float red, float green, float blue, bool imguiRender = true) noexcept;
     void DrawIndexed(UINT count) noexcept(!IS_DEBUG);
     void SetProjection(DirectX::FXMMATRIX proj) noexcept;
     DirectX::XMMATRIX GetProjection() const noexcept;
