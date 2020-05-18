@@ -62,6 +62,7 @@ class Graphics {
     Graphics(const Graphics&) = delete;
     Graphics& operator=(const Graphics&) = delete;
     ~Graphics() = default;
+    void SetDefaultRenderTarget(int width, int height);
     void EndFrame();
     void BeginFrame(float red, float green, float blue, bool imguiRender = true) noexcept;
     void DrawIndexed(UINT count) noexcept(!IS_DEBUG);

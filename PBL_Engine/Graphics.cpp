@@ -83,8 +83,7 @@ Graphics::Graphics(HWND hWnd, int width, int height)
     GFX_THROW_INFO(
         pDevice->CreateDepthStencilView(pDepthStencil.Get(), &descDSV, &pDSV));
 
-    // bind depth stensil view to OM
-    pContext->OMSetRenderTargets(1u, pTarget.GetAddressOf(), pDSV.Get());
+    SetDefaultRenderTarget(width, height);
 
     // configure viewport
     D3D11_VIEWPORT vp;
@@ -97,6 +96,11 @@ Graphics::Graphics(HWND hWnd, int width, int height)
     pContext->RSSetViewports(1u, &vp);
 
     ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
+}
+
+void Graphics::SetDefaultRenderTarget(int width, int height) {
+    // bind depth stensil view to OM
+    pContext->OMSetRenderTargets(1u, pTarget.GetAddressOf(), pDSV.Get());
 }
 
 void Graphics::EndFrame() {
