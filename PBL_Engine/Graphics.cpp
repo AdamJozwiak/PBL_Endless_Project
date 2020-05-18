@@ -124,7 +124,8 @@ void Graphics::EndFrame() {
     }
 }
 
-void Graphics::BeginFrame(float red, float green, float blue, bool imguiRender) noexcept {
+void Graphics::BeginFrame(float red, float green, float blue,
+                          bool imguiRender) noexcept {
     // imgui begin frame
     if (imguiEnabled && imguiRender) {
         ImGui_ImplDX11_NewFrame();

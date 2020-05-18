@@ -39,8 +39,10 @@ void RenderSystem::setup() {
     billboard = std::make_unique<Billboard>(window->Gfx(), camera.get());
     fireParticle = std::make_unique<FireParticle>(window->Gfx(), camera.get());
     light = new PointLight(window->Gfx());
-    postProcessing = std::make_unique<PostProcessing>(window->Gfx(), L"PostProcessingTest");
-    colorCorrectionPost = std::make_unique<PostProcessing>(window->Gfx(), L"ColorCorrection");
+    postProcessing =
+        std::make_unique<PostProcessing>(window->Gfx(), L"PostProcessingTest");
+    colorCorrectionPost =
+        std::make_unique<PostProcessing>(window->Gfx(), L"ColorCorrection");
     animator.animationTime = 0;
     // imgui = std::make_unique<ImguiManager>();
     nano = new Model(window->Gfx(), "Assets\\Models\\Wolf_One_dae.dae",

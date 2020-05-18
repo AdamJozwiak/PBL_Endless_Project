@@ -90,8 +90,8 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName)
     indices.push_back(2);
     indices.push_back(3);
 
-    AddBind(std::make_unique<Texture>(
-        gfx, pOutputTexture, gfx.GetWindowWidth(), gfx.GetWindowHeight()));
+    AddBind(std::make_unique<Texture>(gfx, pOutputTexture, gfx.GetWindowWidth(),
+                                      gfx.GetWindowHeight()));
 
     AddBind(std::make_unique<VertexBuffer>(pGfx, screenVertices));
 
@@ -101,8 +101,7 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName)
     auto pvsbc = pvs->GetBytecode();
     AddBind(std::move(pvs));
 
-    AddBind(
-        std::make_unique<GeometryShader>(pGfx, shaderName + L"GS.cso"));
+    AddBind(std::make_unique<GeometryShader>(pGfx, shaderName + L"GS.cso"));
 
     AddBind(std::make_unique<PixelShader>(pGfx, shaderName + L"PS.cso"));
 
@@ -116,8 +115,8 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName)
     };
     AddBind(std::make_unique<InputLayout>(pGfx, ied, pvsbc));
 
-    AddBind(std::make_unique<Topology>(
-        pGfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+    AddBind(std::make_unique<Topology>(pGfx,
+                                       D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 }
 
 WRL::ComPtr<ID3D11RenderTargetView> PostProcessing::RenderTargetView() const {

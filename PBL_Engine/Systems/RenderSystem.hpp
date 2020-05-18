@@ -1,14 +1,14 @@
 #pragma once
 
 // ///////////////////////////////////////////////////////////////// Includes //
+#include "Billboard.h"
 #include "Camera.h"
+#include "FireParticle.h"
 #include "ImguiManager.h"
 #include "Mesh.h"
 #include "PointLight.h"
-#include "SolidSphere.h"
-#include "Billboard.h"
-#include "FireParticle.h"
 #include "PostProcessing.h"
+#include "SolidSphere.h"
 
 // ECS
 #include "Components/Components.hpp"
@@ -40,7 +40,6 @@ ECS_SYSTEM(RenderSystem) {
     std::unique_ptr<Billboard> billboard;
     std::unique_ptr<FireParticle> fireParticle;
     std::unique_ptr<PostProcessing> postProcessing, colorCorrectionPost;
-
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
