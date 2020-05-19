@@ -22,6 +22,7 @@ class VertexLayout {
         Position3D,
         Texture2D,
         Normal,
+        Tangent,
         Float3Color,
         Float4Color,
         BGRAColor,
@@ -54,6 +55,12 @@ class VertexLayout {
         using SysType = DirectX::XMFLOAT3;
         static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
         static constexpr const char* semantic = "Normal";
+    };
+    template <>
+    struct Map<Tangent> {
+        using SysType = DirectX::XMFLOAT3;
+        static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+        static constexpr const char* semantic = "Tangent";
     };
     template <>
     struct Map<Float3Color> {
@@ -105,6 +112,8 @@ class VertexLayout {
                     return sizeof(Map<Texture2D>::SysType);
                 case Normal:
                     return sizeof(Map<Normal>::SysType);
+                case Tangent:
+                    return sizeof(Map<Tangent>::SysType);
                 case Float3Color:
                     return sizeof(Map<Float3Color>::SysType);
                 case Float4Color:
@@ -130,6 +139,8 @@ class VertexLayout {
                     return GenerateDesc<Texture2D>(GetOffset());
                 case Normal:
                     return GenerateDesc<Normal>(GetOffset());
+                case Tangent:
+                    return GenerateDesc<Tangent>(GetOffset());
                 case Float3Color:
                     return GenerateDesc<Float3Color>(GetOffset());
                 case Float4Color:
@@ -231,6 +242,10 @@ class Vertex {
             case VertexLayout::Normal:
                 SetAttribute<VertexLayout::Normal>(pAttribute,
                                                    std::forward<T>(val));
+                break;
+            case VertexLayout::Tangent:
+                SetAttribute<VertexLayout::Tangent>(pAttribute,
+                                                    std::forward<T>(val));
                 break;
             case VertexLayout::Float3Color:
                 SetAttribute<VertexLayout::Float3Color>(pAttribute,
