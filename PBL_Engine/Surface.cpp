@@ -89,13 +89,13 @@ Surface Surface::FromFile(const std::string& name) {
         height = bitmap.GetHeight();
         pBuffer = std::make_unique<Color[]>(width * height);
 
-        for (unsigned int y = 0; y < height; y++) {
-            for (unsigned int x = 0; x < width; x++) {
-                Gdiplus::Color c;
-                bitmap.GetPixel(x, y, &c);
-                pBuffer[y * width + x] = c.GetValue();
-            }
-        }
+		for (unsigned int y = 0; y < height; y++) {
+			for (unsigned int x = 0; x < width; x++) {
+				Gdiplus::Color c;
+				bitmap.GetPixel(x, y, &c);
+				pBuffer[y * width + x] = c.GetValue();
+			}
+		}
     }
 
     return Surface(width, height, std::move(pBuffer));
