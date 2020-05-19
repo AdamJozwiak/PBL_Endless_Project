@@ -931,6 +931,9 @@
     <FxCompile Include="AnimatedPBRVS.hlsl">
       <Filter>Shader\PBR</Filter>
     </FxCompile>
+    <FxCompile Include="TemplateParticleSystemGS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="yaml-cpp\src\contrib\yaml-cpp.natvis">
