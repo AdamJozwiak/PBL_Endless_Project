@@ -1,3 +1,8 @@
+cbuffer TransformCBuf {
+    matrix model;
+    matrix viewProj;
+};
+
 struct VsIn {
     float4 position : POSITION;
     float2 tex : TEXCOORD0;
@@ -11,7 +16,8 @@ struct VSOut {
 
 VSOut main(VsIn input) {
     VSOut output;
-    output.pos = input.position;
+    output.pos = mul(input.position, mul(model, viewProj));
+    output.worldPos = mul(input.position, model);
     output.tex = input.tex;
     return output;
 }
