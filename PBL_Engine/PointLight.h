@@ -13,19 +13,16 @@ class PointLight {
               DirectX::XMVECTOR cameraWorldPosition) const noexcept;
 
   private:
-    struct PointLightCBuf {
-        alignas(16) DirectX::XMFLOAT3 pos;
-        alignas(16) DirectX::XMFLOAT3 view;
-        alignas(16) DirectX::XMFLOAT3 ambient;
+    struct LightParametersConstantBuffer {
+        alignas(16) DirectX::XMFLOAT3 lightPositionWorld;
+        alignas(16) DirectX::XMFLOAT3 viewPositionWorld;
         alignas(16) DirectX::XMFLOAT3 diffuseColor;
-        float diffuseIntensity;
-        float attConst;
-        float attLin;
-        float attQuad;
-    };
+        float attenuationConstant;
+        float attenuationLinear;
+        float attenuationQuadratic;
+    } lightParametersConstantBuffer;
 
   private:
-    PointLightCBuf cbData;
     mutable SolidSphere mesh;
-    mutable PixelConstantBuffer<PointLightCBuf> cbuf;
+    mutable PixelConstantBuffer<LightParametersConstantBuffer> cbuf;
 };

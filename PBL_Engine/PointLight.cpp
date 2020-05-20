@@ -10,22 +10,36 @@ PointLight::PointLight(Graphics& gfx, float radius)
 void PointLight::SpawnControlWindow() noexcept {
     if (ImGui::Begin("Light")) {
         ImGui::Text("Position");
-        ImGui::SliderFloat("X", &cbData.pos.x, -60.0f, 60.0f, "%.1f");
-        ImGui::SliderFloat("Y", &cbData.pos.y, -60.0f, 60.0f, "%.1f");
-        ImGui::SliderFloat("Z", &cbData.pos.z, -60.0f, 60.0f, "%.1f");
+        ImGui::SliderFloat("X",
+                           &lightParametersConstantBuffer.lightPositionWorld.x,
+                           -60.0f, 60.0f, "%.1f");
+        ImGui::SliderFloat("Y",
+                           &lightParametersConstantBuffer.lightPositionWorld.y,
+                           -60.0f, 60.0f, "%.1f");
+        ImGui::SliderFloat("Z",
+                           &lightParametersConstantBuffer.lightPositionWorld.z,
+                           -60.0f, 60.0f, "%.1f");
 
         ImGui::Text("Intensity/Color");
-        ImGui::SliderFloat("Intensity", &cbData.diffuseIntensity, 0.01f, 2.0f,
-                           "%.2f", 2);
-        ImGui::ColorEdit3("Diffuse Color", &cbData.diffuseColor.x);
-        ImGui::ColorEdit3("Ambient", &cbData.ambient.x);
+        /* ImGui::SliderFloat("Intensity", */
+        /*                    &lightParametersConstantBuffer.diffuseIntensity,
+         */
+        /*                    0.01f, 2.0f, "%.2f", 2); */
+        ImGui::ColorEdit3("Diffuse Color",
+                          &lightParametersConstantBuffer.diffuseColor.x);
+        /* ImGui::ColorEdit3("Ambient",
+         * &lightParametersConstantBuffer.ambient.x); */
 
         ImGui::Text("Falloff");
-        ImGui::SliderFloat("Constant", &cbData.attConst, 0.05f, 10.0f, "%.2f",
-                           4);
-        ImGui::SliderFloat("Linear", &cbData.attLin, 0.0001f, 4.0f, "%.4f", 8);
-        ImGui::SliderFloat("Quadratic", &cbData.attQuad, 0.0000001f, 10.0f,
-                           "%.7f", 10);
+        ImGui::SliderFloat("Constant",
+                           &lightParametersConstantBuffer.attenuationConstant,
+                           0.05f, 10.0f, "%.2f", 4);
+        ImGui::SliderFloat("Linear",
+                           &lightParametersConstantBuffer.attenuationLinear,
+                           0.0001f, 4.0f, "%.4f", 8);
+        ImGui::SliderFloat("Quadratic",
+                           &lightParametersConstantBuffer.attenuationQuadratic,
+                           0.0000001f, 10.0f, "%.7f", 10);
 
         if (ImGui::Button("Reset")) {
             Reset();
@@ -35,12 +49,12 @@ void PointLight::SpawnControlWindow() noexcept {
 }
 
 void PointLight::Reset() noexcept {
-    cbData = {
+    lightParametersConstantBuffer = {
         {0.0f, 0.0f, 0.0f},
         {0.0f, 0.0f, 0.0f},
-        {0.05f, 0.05f, 0.05f},
+        /* {0.05f, 0.05f, 0.05f}, */
         {1.0f, 1.0f, 1.0f},
-        1.0f,
+        /* 1.0f, */
         1.0f,
         0.045f,
         0.0075f,
@@ -48,18 +62,19 @@ void PointLight::Reset() noexcept {
 }
 
 void PointLight::Draw(Graphics& gfx) const noexcept(!IS_DEBUG) {
-    mesh.SetPos(cbData.pos);
+    mesh.SetPos(lightParametersConstantBuffer.lightPositionWorld);
     mesh.Draw(gfx);
 }
 
 void PointLight::Bind(Graphics& gfx, DirectX::FXMMATRIX view,
                       DirectX::XMVECTOR cameraWorldPosition) const noexcept {
-    auto dataCopy = cbData;
-    const auto lightPosition = DirectX::XMLoadFloat3(&cbData.pos);
-    DirectX::XMStoreFloat3(&dataCopy.pos,
+    auto dataCopy = lightParametersConstantBuffer;
+    const auto lightPosition = DirectX::XMLoadFloat3(
+        &lightParametersConstantBuffer.lightPositionWorld);
+    DirectX::XMStoreFloat3(&dataCopy.lightPositionWorld,
                            DirectX::XMVector3Transform(lightPosition, view));
 
-    DirectX::XMStoreFloat3(&dataCopy.view, cameraWorldPosition);
+    DirectX::XMStoreFloat3(&dataCopy.viewPositionWorld, cameraWorldPosition);
     cbuf.Update(gfx, dataCopy);
     cbuf.Bind(gfx);
 }
