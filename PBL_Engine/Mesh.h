@@ -7,6 +7,7 @@
 #include <optional>
 
 #include "BindableBase.h"
+#include "Components/Components.hpp"
 #include "RenderableBase.h"
 #include "Vertex.h"
 class Bone {

@@ -3,6 +3,8 @@
 #include "Camera.h"
 #include "GraphicsThrowMacros.h"
 #include "RenderableBase.h"
+#include "Sampler.h"
+#include "Surface.h"
 
 class FireParticle : public RenderableBase<FireParticle> {
   public:

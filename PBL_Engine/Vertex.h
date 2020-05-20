@@ -1,6 +1,9 @@
 #pragma once
 #include <DirectXMath.h>
+#include <d3d11.h>
+#include <dxgiformat.h>
 
+#include <IsDebug.hpp>
 #include <type_traits>
 #include <vector>
 

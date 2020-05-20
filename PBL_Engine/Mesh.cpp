@@ -1,10 +1,13 @@
 #include "Mesh.h"
 
+#include <Sampler.h>
+#include <assimp/postprocess.h>
 #include <array>
 #include <sstream>
 #include <unordered_map>
 
 #include "BonesCbuf.h"
+#include "Surface.h"
 #include "imgui/imgui.h"
 
 namespace dx = DirectX;

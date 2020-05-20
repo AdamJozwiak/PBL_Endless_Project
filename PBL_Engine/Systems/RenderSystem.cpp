@@ -4,6 +4,7 @@
 #include <DirectXMath.h>
 
 #include <algorithm>
+#include <cmath>
 #include <memory>
 
 #include "GDIPlusManager.h"
