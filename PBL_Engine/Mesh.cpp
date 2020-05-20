@@ -580,10 +580,6 @@ void Model::CalcInterpolatedScaling(aiVector3D& Out, float animationTime,
 
 DirectX::XMMATRIX Model::aiMatrixToXMMATRIX(aiMatrix4x4 aiM) {
     return DirectX::XMMATRIX(&aiM.a1);
-    /*return DirectX::XMMATRIX(aiM[0][0], aiM[0][1], aiM[0][2], aiM[0][3],
-                             aiM[1][0], aiM[1][1], aiM[1][2], aiM[1][3],
-                             aiM[2][0], aiM[2][1], aiM[2][2], aiM[2][3],
-                             aiM[3][0], aiM[3][1], aiM[3][2], aiM[3][3]);*/
 }
 
 std::vector<std::pair<std::string, Bone>> Model::getBonesMap() {
