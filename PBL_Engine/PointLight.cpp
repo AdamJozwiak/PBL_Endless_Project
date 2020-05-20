@@ -7,6 +7,10 @@ PointLight::PointLight(Graphics& gfx, float radius)
     Reset();
 }
 
+DirectX::XMFLOAT3 PointLight::lightPositionWorld() const {
+    return lightParametersConstantBuffer.lightPositionWorld;
+}
+
 void PointLight::SpawnControlWindow() noexcept {
     if (ImGui::Begin("Light")) {
         ImGui::Text("Position");

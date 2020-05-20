@@ -90,7 +90,5 @@ class FireParticle : public RenderableBase<FireParticle> {
 
   public:
     float scale = 0.1f;
-
-  private:
-    DirectX::XMFLOAT3 pos = {0.0f, -2.0f, -10.0f};
+    DirectX::XMFLOAT3 pos = {0.0f, 0.0f, 0.0f};
 };

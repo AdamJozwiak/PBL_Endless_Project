@@ -124,6 +124,7 @@ void RenderSystem::update(float deltaTime) {
 
         // Render billboards
         billboard->Draw(window->Gfx());
+        fireParticle->pos = light->lightPositionWorld();
         fireParticle->Draw(window->Gfx());
 
         // Render other test models
@@ -133,7 +134,7 @@ void RenderSystem::update(float deltaTime) {
                                       dx::XMConvertToRadians(0.0f)));
 
         // Render light dummy
-        light->Draw(window->Gfx());
+        // light->Draw(window->Gfx());
 
         // Render interface
         {

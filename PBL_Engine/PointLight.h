@@ -11,6 +11,7 @@ class PointLight {
     void Draw(Graphics& gfx) const noexcept(!IS_DEBUG);
     void Bind(Graphics& gfx, DirectX::FXMMATRIX view,
               DirectX::XMVECTOR cameraWorldPosition) const noexcept;
+    DirectX::XMFLOAT3 lightPositionWorld() const;
 
   private:
     struct LightParametersConstantBuffer {
