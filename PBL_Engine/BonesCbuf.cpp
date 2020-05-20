@@ -9,7 +9,11 @@ BonesCbuf::BonesCbuf(Graphics& gfx, Model& parent, float* animationTime,
 
 void BonesCbuf::Bind(Graphics& gfx) noexcept {
     std::vector<DirectX::XMFLOAT4X4> transforms;
-    parent.BoneTransform(*animationTime, transforms);
+    if (parent.getAnimNumber() > 1) {
+        parent.BlendBoneTransform(*animationTime, transforms);
+    } else {
+        parent.BoneTransform(*animationTime, transforms);
+    }
     Transforms tf;
     for (UINT i = 0; i < 256; i++) {
         if (i < transforms.size()) {

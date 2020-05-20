@@ -180,6 +180,7 @@ class ModelWindow {
                 ImGui::SliderFloat("X", &transform.x, -20.0f, 20.0f);
                 ImGui::SliderFloat("Y", &transform.y, -20.0f, 20.0f);
                 ImGui::SliderFloat("Z", &transform.z, -20.0f, 20.0f);
+                ImGui::SliderFloat("animations", &currentAnim, 0.0f, 1.0f);
             }
         }
         ImGui::End();
@@ -191,6 +192,7 @@ class ModelWindow {
                dx::XMMatrixTranslation(transform.x, transform.y, transform.z);
     }
     Node* GetSelectedNode() const noexcept { return pSelectedNode; }
+    float getCurrentAnim() { return currentAnim; }
 
   private:
     std::optional<int> selectedIndex;
@@ -204,6 +206,7 @@ class ModelWindow {
         float z = 0.0f;
     };
     std::unordered_map<int, TransformParameters> transforms;
+    float currentAnim = 0.0f;
 };
 
 Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
@@ -397,7 +400,7 @@ std::unique_ptr<Node> Model::ParseNode(const aiNode& node) noexcept {
 void Model::ReadNodeHierarchy(float animationTime, aiNode* pNode,
                               const DirectX::XMMATRIX& parentTransform) {
     std::string nodeName(pNode->mName.data);
-    aiAnimation* pAnim = animPtrs[0];
+    aiAnimation* pAnim = animPtrs[pWindow->getCurrentAnim()];
     DirectX::XMMATRIX nodeTransformation =
         DirectX::XMMATRIX(&pNode->mTransformation.a1);
     aiNodeAnim* pNodeAnim = FindNodeAnim(pAnim, nodeName);
@@ -439,6 +442,71 @@ void Model::ReadNodeHierarchy(float animationTime, aiNode* pNode,
                           globalTransformation);
     }
 }
+void Model::ReadNodeHierarchyForBlend(float animationTime, float animationTime2,
+                                      aiNode* pNode,
+                                      const DirectX::XMMATRIX& parentTransform,
+                                      float factor) {
+    std::string currentNodeName(pNode->mName.data);
+    aiAnimation* currentAnim = animPtrs[0];
+    aiAnimation* nextAnim = animPtrs[1];
+    DirectX::XMMATRIX nodeTransformation =
+        DirectX::XMMATRIX(&pNode->mTransformation.a1);
+    aiNodeAnim* currentNodeAnim = FindNodeAnim(currentAnim, currentNodeName);
+    aiNodeAnim* nextNodeAnim = FindNodeAnim(nextAnim, currentNodeName);
+    DirectX::XMMATRIX anim = DirectX::XMMatrixIdentity();
+
+    if (currentNodeAnim && nextNodeAnim) {
+        aiVector3D currentScale;
+        CalcInterpolatedScaling(currentScale, animationTime, currentNodeAnim);
+        aiVector3D nextScale;
+        CalcInterpolatedScaling(nextScale, animationTime2, nextNodeAnim);
+        aiVector3D scaling =
+            currentScale * (1.0f - factor) + nextScale * factor;
+        DirectX::XMMATRIX scalingM =
+            DirectX::XMMatrixScaling(scaling.x, scaling.y, scaling.z);
+
+        aiQuaternion currentRotation;
+        CalcInterpolatedRotation(currentRotation, animationTime,
+                                 currentNodeAnim);
+        aiQuaternion nextRotation;
+        CalcInterpolatedRotation(nextRotation, animationTime2, nextNodeAnim);
+        aiQuaternion rotationQ;
+        aiQuaternion::Interpolate(rotationQ, currentRotation, nextRotation,
+                                  factor);
+        rotationQ = rotationQ.Normalize();
+        DirectX::XMMATRIX rotationM =
+            DirectX::XMMatrixRotationQuaternion(DirectX::XMVectorSet(
+                rotationQ.x, rotationQ.y, rotationQ.z, rotationQ.w));
+
+        aiVector3D currentPosition;
+        CalcInterpolatedPos(currentPosition, animationTime, currentNodeAnim);
+        aiVector3D nextPosition;
+        CalcInterpolatedPos(nextPosition, animationTime, nextNodeAnim);
+        aiVector3D position =
+            currentPosition * (1.0f - factor) + nextPosition * factor;
+        DirectX::XMMATRIX translationM =
+            DirectX::XMMatrixTranslation(position.x, position.y, position.z);
+
+        nodeTransformation = scalingM * rotationM * translationM;
+        nodeTransformation = DirectX::XMMatrixTranspose(nodeTransformation);
+    }
+    DirectX::XMMATRIX globalTransformation =
+        parentTransform * nodeTransformation;
+
+    for (auto& it : bonesMap) {
+        if (it.first == currentNodeName) {
+            it.second.FinalTransform =
+                // aiMatrixToXMMATRIX(root->mTransformation.Inverse()) *
+                globalTransformation * aiMatrixToXMMATRIX(it.second.boneOffset);
+            break;
+        }
+    }
+    for (UINT i = 0; i < pNode->mNumChildren; ++i) {
+        ReadNodeHierarchyForBlend(animationTime, animationTime2,
+                                  pNode->mChildren[i], globalTransformation,
+                                  factor);
+    }
+}
 void Model::BoneTransform(float time,
                           std::vector<DirectX::XMFLOAT4X4>& transforms) {
     DirectX::XMMATRIX identity = DirectX::XMMatrixIdentity();
@@ -446,11 +514,41 @@ void Model::BoneTransform(float time,
         return;
     }
     float ticksPreSecond =
+        (float)(animPtrs[pWindow->getCurrentAnim()]->mTicksPerSecond != 0
+                    ? animPtrs[pWindow->getCurrentAnim()]->mTicksPerSecond
+                    : 25.0f);
+    float timeInTicks = time * ticksPreSecond;
+    float animationTime = fmod(
+        timeInTicks, (float)animPtrs[pWindow->getCurrentAnim()]->mDuration);
+    ReadNodeHierarchy(animationTime, root, identity);
+
+    // transforms.resize(numBones);
+    transforms.clear();
+    for (auto& [name, bone] : bonesMap) {
+        DirectX::XMFLOAT4X4 tmp;
+        DirectX::XMStoreFloat4x4(&tmp, bone.FinalTransform);
+        transforms.emplace_back(tmp);
+    }
+}
+void Model::BlendBoneTransform(float time,
+                               std::vector<DirectX::XMFLOAT4X4>& transforms) {
+    DirectX::XMMATRIX identity = DirectX::XMMatrixIdentity();
+    if (animPtrs.empty()) {
+        return;
+    }
+    float ticksPreSecond =
         (float)(animPtrs[0]->mTicksPerSecond != 0 ? animPtrs[0]->mTicksPerSecond
                                                   : 25.0f);
+    float ticksPreSecond2 =
+        (float)(animPtrs[1]->mTicksPerSecond != 0 ? animPtrs[1]->mTicksPerSecond
+                                                  : 25.0f);
     float timeInTicks = time * ticksPreSecond;
+    float timeInTicks2 = time * ticksPreSecond2;
     float animationTime = fmod(timeInTicks, (float)animPtrs[0]->mDuration);
-    ReadNodeHierarchy(animationTime, root, identity);
+    float animationTime2 = fmod(timeInTicks2, (float)animPtrs[1]->mDuration);
+
+    ReadNodeHierarchyForBlend(animationTime, animationTime2, root, identity,
+                              pWindow->getCurrentAnim());
 
     // transforms.resize(numBones);
     transforms.clear();
@@ -471,7 +569,7 @@ aiNodeAnim* Model::FindNodeAnim(aiAnimation* pAnim,
     return NULL;
 }
 
-UINT Model::FindPos(float animationTime, aiNodeAnim* pNodeAnim) {
+UINT Model::FindPosIndex(float animationTime, aiNodeAnim* pNodeAnim) {
     for (UINT i = 0; i < pNodeAnim->mNumPositionKeys - 1; i++) {
         if (animationTime < (float)pNodeAnim->mPositionKeys[i + 1].mTime) {
             return i;
@@ -511,11 +609,27 @@ UINT Model::FindScaling(float animationTime, aiNodeAnim* pNodeAnim) {
 
 void Model::CalcInterpolatedPos(aiVector3D& Out, float animationTime,
                                 aiNodeAnim* pNodeAnim) {
+    if (pNodeAnim->mNumPositionKeys == 0) {
+        Out.x = 0.0f;
+        Out.y = 0.0f;
+        Out.z = 0.0f;
+        return;
+    }
     if (pNodeAnim->mNumPositionKeys == 1) {
         Out = pNodeAnim->mPositionKeys[0].mValue;
         return;
     }
-    UINT posIndex = FindPos(animationTime, pNodeAnim);
+    if (animationTime <= pNodeAnim->mPositionKeys[0].mTime) {
+        Out = pNodeAnim->mPositionKeys[0].mValue;
+        return;
+    }
+    if (animationTime >=
+        pNodeAnim->mPositionKeys[pNodeAnim->mNumPositionKeys - 1].mTime) {
+        Out = pNodeAnim->mPositionKeys[pNodeAnim->mNumPositionKeys - 1].mValue;
+        return;
+    }
+
+    UINT posIndex = FindPosIndex(animationTime, pNodeAnim);
     UINT nextPosIndex = (posIndex + 1);
     assert(nextPosIndex < pNodeAnim->mNumPositionKeys);
     float deltaTime = (float)(pNodeAnim->mPositionKeys[nextPosIndex].mTime -
@@ -581,6 +695,8 @@ void Model::CalcInterpolatedScaling(aiVector3D& Out, float animationTime,
 DirectX::XMMATRIX Model::aiMatrixToXMMATRIX(aiMatrix4x4 aiM) {
     return DirectX::XMMATRIX(&aiM.a1);
 }
+
+int Model::getAnimNumber() { return animPtrs.size(); }
 
 std::vector<std::pair<std::string, Bone>> Model::getBonesMap() {
     return bonesMap;

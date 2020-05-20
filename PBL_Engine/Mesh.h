@@ -77,6 +77,9 @@ class Model {
     ~Model() noexcept;
     void BoneTransform(float time,
                        std::vector<DirectX::XMFLOAT4X4>& transforms);
+    void BlendBoneTransform(float time,
+                            std::vector<DirectX::XMFLOAT4X4>& transforms);
+    int getAnimNumber();
 
     std::vector<DirectX::XMFLOAT3> verticesForCollision;
     std::vector<std::shared_ptr<Texture>> textures;
@@ -89,9 +92,13 @@ class Model {
     void ReadNodeHierarchy(float animationTime, aiNode* pNode,
                            const DirectX::XMMATRIX& parentTransform);
 
+    void ReadNodeHierarchyForBlend(float animationTime, float animationTime2,
+                                   aiNode* currentNode,
+                                   const DirectX::XMMATRIX& parentTransform,
+                                   float factor);
     aiNodeAnim* FindNodeAnim(aiAnimation* pAnim,
                              std::string_view const& nodeName);
-    UINT FindPos(float animationTime, aiNodeAnim* pNodeAnim);
+    UINT FindPosIndex(float animationTime, aiNodeAnim* pNodeAnim);
     UINT FindRotation(float animationTime, aiNodeAnim* pNodeAnim);
     UINT FindScaling(float animationTime, aiNodeAnim* pNodeAnim);
     void CalcInterpolatedPos(aiVector3D& Out, float animationTime,
