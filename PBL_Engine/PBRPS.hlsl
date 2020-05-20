@@ -7,6 +7,12 @@ struct PixelShaderInput {
     float4 position : SV_POSITION;
 };
 
+// ////////////////////////////////////////////////////////////////// Outputs //
+struct PixelShaderOutput {
+    float4 color : SV_Target0;
+    float4 bloom : SV_Target1;
+};
+
 // ///////////////////////////////////////////////////////////////// Textures //
 Texture2D textures[4];
 SamplerState textureSampler;
@@ -15,6 +21,7 @@ SamplerState textureSampler;
 static const float PI = 3.14159265359;
 static const int TEXTURE_ALBEDO = 0, TEXTURE_AMBIENT_OCCLUSION = 1,
                  TEXTURE_METALLIC_SMOOTHNESS = 2, TEXTURE_NORMAL = 3;
+static const float BLOOM_THRESHOLD = 0.3f;
 
 // ///////////////////////////////////////////////////////// Constant buffers //
 cbuffer LightParameters : register(b10) {
@@ -121,22 +128,26 @@ float4 pointLight(PixelShaderInput input, float3 normal) {
 }
 
 // ///////////////////////////////////////////////////////////////////// Main //
-float4 main(PixelShaderInput input) : SV_Target {
+PixelShaderOutput main(PixelShaderInput input) {
+    PixelShaderOutput output;
     float3 normal = calculateMappedNormal(input);
 
-    float4 outColor =
+    output.color =
         clamp(pointLight(input, normal), float4(0.0f, 0.0f, 0.0f, 0.0f),
               float4(1.0f, 1.0f, 1.0f, 1.0f));
 
     float4 pixelColor = float4(textures[TEXTURE_AMBIENT_OCCLUSION]
                                        .Sample(textureSampler, input.texCoord)
                                        .rgb *
-                                   outColor.rgb,
+                                   output.color.rgb,
                                1.0f);
 
-    outColor = pow(pixelColor, (1.0f / 2.2f) * float4(1.0f, 1.0f, 1.0f, 1.0f));
+    output.color =
+        pow(pixelColor, (1.0f / 2.2f) * float4(1.0f, 1.0f, 1.0f, 1.0f));
+    output.bloom =
+        saturate((output.color - BLOOM_THRESHOLD) / (1 - BLOOM_THRESHOLD));
 
-    return outColor;
+    return output;
 }
 
 // ////////////////////////////////////////////////////////////////////////// //

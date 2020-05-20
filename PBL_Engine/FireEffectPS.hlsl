@@ -5,6 +5,10 @@ struct VSOut {
     float4 worldPos : POSITION;
     float2 tex : TEXCOORD;
 };
+struct PixelShaderOutput {
+    float4 color : SV_Target0;
+    float4 bloom : SV_Target1;
+};
 
 Texture2D shaderTextures[4];
 SamplerState splr;
@@ -13,7 +17,7 @@ float4 rand(float2 uv) {
     return frac(sin(dot(uv, float2(12.9898, 78.233))) * 43758.5453) / 100.0f;
 }
 
-float4 main(VSOut input) : SV_TARGET0 {
+PixelShaderOutput main(VSOut input) {
     float redShine = 3.0f;
     float greenShine = 2.0f;
     float blueShine = 1.0f;
@@ -88,5 +92,11 @@ float4 main(VSOut input) : SV_TARGET0 {
         discard;
     }
 
-    return albedo;
+    static const float BLOOM_THRESHOLD = 0.3f;
+    PixelShaderOutput output;
+    output.color = albedo;
+    output.bloom =
+        saturate((output.color - BLOOM_THRESHOLD) / (1 - BLOOM_THRESHOLD));
+
+    return output;
 }
