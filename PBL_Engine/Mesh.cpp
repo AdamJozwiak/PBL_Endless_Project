@@ -206,7 +206,9 @@ Model::Model(Graphics& gfx, const std::string fileName, float* animationTime)
     const auto pScene = importer->ReadFile(
         fileName.c_str(),
         aiProcess_Triangulate | aiProcess_JoinIdenticalVertices |
-            aiProcess_ConvertToLeftHanded | aiProcess_GenNormals);
+            aiProcess_ConvertToLeftHanded | aiProcess_GenNormals |
+            aiProcess_CalcTangentSpace | aiProcess_GenUVCoords |
+            aiProcess_OptimizeGraph | aiProcess_OptimizeMeshes);
     if (pScene == nullptr) {
         throw ModelException(__LINE__, __FILE__, importer->GetErrorString());
     }
