@@ -9,5 +9,5 @@ struct VSOut {
 float4 main(VSOut input) : SV_TARGET {
     float4 color = ColorTexture.Sample(splr, input.tex);
 
-    return float4(color.b, color.g, color.r, color.a);
+    return float4(color.r, color.g, color.b, color.a);
 }
