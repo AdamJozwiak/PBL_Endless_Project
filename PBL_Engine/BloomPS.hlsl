@@ -16,13 +16,13 @@ float4 adjustSaturation(float4 color, float saturation) {
 
 float4 main(VSOut input) : SV_TARGET {
     // variables
-    float blurDistance = 0.002f;
+    float blurDistance = 2.0f;
     float4 baseColor = ColorTexture[0].Sample(splr, input.tex);
     float4 bloomColor = ColorTexture[1].Sample(splr, input.tex);
     float intensity = dot(baseColor.rgb, GrayScaleIntensity);
-    float bloomIntensity = 1.2f;
+    float bloomIntensity = 1.5f;
     float originalIntensity = 1.0f;
-    float bloomSaturation = 1.0;
+    float bloomSaturation = 0.5f;
     float originalSaturation = 1.0f;
 
     // blur
