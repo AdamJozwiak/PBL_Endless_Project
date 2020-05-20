@@ -70,7 +70,7 @@ class Node {
 class Model {
   public:
     Model(Graphics& gfx, const std::string fileName,
-          float* animationTime = nullptr);
+          Renderer* renderer, float* animationTime = nullptr);
     void Draw(Graphics& gfx, DirectX::XMMATRIX transform) const
         noexcept(!IS_DEBUG);
     void ShowWindow(const char* windowName = nullptr) noexcept;
@@ -79,6 +79,7 @@ class Model {
                        std::vector<DirectX::XMFLOAT4X4>& transforms);
 
     std::vector<DirectX::XMFLOAT3> verticesForCollision;
+    std::vector<std::shared_ptr<Texture>> textures;
 
   private:
     std::shared_ptr<Mesh> ParseMesh(

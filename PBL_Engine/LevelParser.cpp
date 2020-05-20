@@ -60,6 +60,7 @@ void LevelParser::load() {
     // Map all possible nodes with corresponding identifiers and make a set
     // of all identifiers in scene file
     std::unordered_map<FileId, YAML::Node> nodes;
+    std::unordered_map<FileGuid, YAML::Node> materialNodes;
     std::set<FileId> sceneFileIds;
     for (auto const &node : sceneNodes) {
         yamlLoop(i, node) {
@@ -83,24 +84,28 @@ void LevelParser::load() {
                         {node["guid"].as<FileGuid>(), pathWithoutExtension});
                     pathToGuid.insert(
                         {pathWithoutExtension, node["guid"].as<FileGuid>()});
-                    break;
-                }
-                yamlLoop(i, node) {
-                    if (!i->second["id"]) {
-                        continue;
-                    }
+                } else if (extension == ".prefab") {
+                    yamlLoop(i, node) {
+                        if (!i->second["id"]) {
+                            continue;
+                        }
 
-                    // Check for duplicates
-                    assert(nodes.find(i->second["id"].as<FileId>()) ==
-                               nodes.end() &&
-                           "Duplicate file identifiers!");
+                        // Check for duplicates
+                        assert(nodes.find(i->second["id"].as<FileId>()) ==
+                                   nodes.end() &&
+                               "Duplicate file identifiers!");
 
-                    nodes.insert({i->second["id"].as<FileId>(), node});
-
-                    if (extension == ".prefab") {
+                        nodes.insert({i->second["id"].as<FileId>(), node});
                         prefabFileIds[pathToGuid[path]].insert(
                             i->second["id"].as<FileId>());
                     }
+                } else if (extension == ".mat") {
+                    // Check for duplicates
+                    assert(materialNodes.find(pathToGuid[path]) ==
+                               materialNodes.end() &&
+                           "Duplicate file identifiers!");
+
+                    materialNodes.insert({pathToGuid[path], node});
                 }
             }
         }
@@ -305,6 +310,7 @@ void LevelParser::load() {
             nodeMeshRenderer) {
             assert(
                 nodeMeshRenderer["m_GameObject"] &&
+                nodeMeshRenderer["m_Materials"] &&
                 "Every property inside MeshRenderer component must be valid!");
 
             yamlLoop(i, nodeMeshRenderer["m_GameObject"]) {
@@ -314,6 +320,36 @@ void LevelParser::load() {
             }
 
             auto &renderer = Entity(entityIds[fileId]).get<Renderer>();
+
+            yamlLoop(i, nodeMeshRenderer["m_Materials"][0]) {
+                auto const key = i->first.as<std::string>();
+                auto const value = i->second.as<std::string>();
+
+                if (key == "guid") {
+                    if (materialNodes.find(value) == materialNodes.end()) {
+                        continue;
+                    }
+                    auto const &materialNode =
+                        materialNodes[value]["Material"]["m_SavedProperties"]
+                                     ["m_TexEnvs"];
+                    renderer.material.albedoPath =
+                        guidPaths[materialNode[5]["_MainTex"]["m_Texture"]
+                                              ["guid"]
+                                                  .as<std::string>()];
+                    renderer.material.ambientOcclusionPath =
+                        guidPaths[materialNode[7]["_OcclusionMap"]["m_Texture"]
+                                              ["guid"]
+                                                  .as<std::string>()];
+                    renderer.material.metallicSmoothnessPath =
+                        guidPaths[materialNode[6]["_MetallicGlossMap"]
+                                              ["m_Texture"]["guid"]
+                                                  .as<std::string>()];
+                    renderer.material.normalPath =
+                        guidPaths[materialNode[0]["_BumpMap"]["m_Texture"]
+                                              ["guid"]
+                                                  .as<std::string>()];
+                }
+            }
         }
 
         if (auto const &nodeMeshFilter = node["MeshFilter"]; nodeMeshFilter) {
@@ -333,9 +369,7 @@ void LevelParser::load() {
                 auto const value = it->second.as<std::string>();
 
                 if (key == "guid") {
-                    meshFilter.model = std::make_shared<Model>(
-                        registry.system<RenderSystem>()->window->Gfx(),
-                        guidPaths[value]);
+                    meshFilter.path = guidPaths[value];
                 }
             }
         }
@@ -418,6 +452,16 @@ void LevelParser::load() {
                 }
             }
         }
+    }
+
+    // Create models based on loaded data
+    for (Entity entity : registry.system<RenderSystem>()->entities) {
+        auto &meshFilter = entity.get<MeshFilter>();
+        auto &renderer = entity.get<Renderer>();
+
+        meshFilter.model = std::make_shared<Model>(
+            registry.system<RenderSystem>()->window->Gfx(), meshFilter.path,
+            &renderer);
     }
 
     // After creating Transform components, update parent references

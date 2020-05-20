@@ -75,8 +75,7 @@ void TestScript::update(float const deltaTime) {
                         transform.position.z = 0.0f;
                         return transform;
                     }())
-                    .add<MeshFilter>(
-                        MeshFilter{.model = entity.get<MeshFilter>().model})
+                    .add<MeshFilter>(entity.get<MeshFilter>())
                     .add<Renderer>(entity.get<Renderer>());
             } else {
                 counter = 0;

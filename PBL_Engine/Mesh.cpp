@@ -5,6 +5,7 @@
 #include <array>
 #include <sstream>
 #include <string_view>
+#include <thread>
 #include <unordered_map>
 
 #include "BonesCbuf.h"
@@ -47,6 +48,10 @@ Mesh::Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bindable>> bindPtrs,
     if (animationTime) {
         AddBind(std::make_unique<BonesCbuf>(gfx, parent, animationTime));
     }
+    for (auto const& texture : parent.textures) {
+        AddBind(texture);
+    }
+    AddBind(std::make_unique<Sampler>(gfx));
 }
 
 void Mesh::Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const
@@ -200,7 +205,8 @@ class ModelWindow {
     std::unordered_map<int, TransformParameters> transforms;
 };
 
-Model::Model(Graphics& gfx, const std::string fileName, float* animationTime)
+Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
+             float* animationTime)
     : pWindow(std::make_unique<ModelWindow>()), animationTime(animationTime) {
     importer = std::make_unique<Assimp::Importer>();
     const auto pScene = importer->ReadFile(
@@ -216,6 +222,35 @@ Model::Model(Graphics& gfx, const std::string fileName, float* animationTime)
     if (pScene->HasAnimations()) {
         for (size_t i = 0; i < pScene->mNumAnimations; i++) {
             animPtrs.push_back(pScene->mAnimations[i]);
+        }
+    }
+    // Textures
+    if (renderer) {
+        std::vector<Surface> surfaces(4);
+        std::vector<std::thread> threads;
+        threads.push_back(std::thread([&surfaces, &renderer] {
+            surfaces[0] = Surface::FromFile(renderer->material.albedoPath);
+        }));
+        threads.push_back(std::thread([&surfaces, &renderer] {
+            surfaces[1] =
+                Surface::FromFile(renderer->material.ambientOcclusionPath);
+        }));
+        threads.push_back(std::thread([&surfaces, &renderer] {
+            surfaces[2] =
+                Surface::FromFile(renderer->material.metallicSmoothnessPath);
+        }));
+        threads.push_back(std::thread([&surfaces, &renderer] {
+            surfaces[3] = Surface::FromFile(renderer->material.normalPath);
+        }));
+        for (auto& thread : threads) {
+            if (thread.joinable()) {
+                thread.join();
+            }
+        }
+
+        for (size_t i = 0; i < surfaces.size(); ++i) {
+            textures.push_back(
+                std::make_shared<Texture>(gfx, std::move(surfaces[i]), i));
         }
     }
 
