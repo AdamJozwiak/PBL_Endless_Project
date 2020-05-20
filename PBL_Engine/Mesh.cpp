@@ -344,16 +344,16 @@ std::shared_ptr<Mesh> Model::ParseMesh(
 
     bindablePtrs.push_back(std::make_unique<IndexBuffer>(gfx, indices));
 
-    auto pvs = std::make_unique<VertexShader>(gfx, L"PhongVS.cso");
+    auto pvs = std::make_unique<VertexShader>(gfx, L"PBRVS.cso");
     if (mesh.HasBones()) {
-        pvs = std::make_unique<VertexShader>(gfx, L"AnimatedPhongVS.cso");
+        pvs = std::make_unique<VertexShader>(gfx, L"AnimatedPBRVS.cso");
     }
     auto pvsbc = pvs->GetBytecode();
     bindablePtrs.push_back(std::move(pvs));
 
-    bindablePtrs.push_back(std::make_unique<GeometryShader>(gfx, L"PhongGS.cso"));
+    bindablePtrs.push_back(std::make_unique<GeometryShader>(gfx, L"PBRGS.cso"));
 
-    bindablePtrs.push_back(std::make_unique<PixelShader>(gfx, L"PhongPS.cso"));
+    bindablePtrs.push_back(std::make_unique<PixelShader>(gfx, L"PBRPS.cso"));
 
     bindablePtrs.push_back(std::make_unique<InputLayout>(
         gfx, vbuf.GetLayout().GetD3DLayout(), pvsbc));

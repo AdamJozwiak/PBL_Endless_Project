@@ -91,6 +91,9 @@
     <Filter Include="Pliki źródłowe\Animation">
       <UniqueIdentifier>{302bc15f-ba8d-48cd-b60a-b98a4ce642bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\PBR">
+      <UniqueIdentifier>{0a6be36f-0cb7-4ec1-92f6-c97a287b6385}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -915,6 +918,18 @@
     </FxCompile>
     <FxCompile Include="ColorCorrectionPS.hlsl">
       <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="PBRVS.hlsl">
+      <Filter>Shader\PBR</Filter>
+    </FxCompile>
+    <FxCompile Include="PBRPS.hlsl">
+      <Filter>Shader\PBR</Filter>
+    </FxCompile>
+    <FxCompile Include="PBRGS.hlsl">
+      <Filter>Shader\PBR</Filter>
+    </FxCompile>
+    <FxCompile Include="AnimatedPBRVS.hlsl">
+      <Filter>Shader\PBR</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
