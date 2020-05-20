@@ -253,7 +253,8 @@ std::shared_ptr<Mesh> Model::ParseMesh(
     VertexLayout vl;
     vl.Append(VertexLayout::Position3D)
         .Append(VertexLayout::Normal)
-        .Append(VertexLayout::Tangent);
+        .Append(VertexLayout::Tangent)
+        .Append(VertexLayout::Texture2D);
     if (mesh.HasBones()) {
         Mesh::LoadBones(1, &mesh, Bones, bonesMap);
         for (int x = 0; x < Bones.size(); ++x) {
@@ -281,13 +282,15 @@ std::shared_ptr<Mesh> Model::ParseMesh(
                 *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mVertices[i]),
                 *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]),
                 *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mTangents[i]),
+                *reinterpret_cast<dx::XMFLOAT2*>(&mesh.mTextureCoords[0][i]),
                 *reinterpret_cast<dx::XMUINT4*>(bonesID[i].data()),
                 *reinterpret_cast<dx::XMFLOAT4*>(weights[i].data()));
         } else
             vbuf.EmplaceBack(
                 *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mVertices[i]),
                 *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]),
-                *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mTangents[i]));
+                *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mTangents[i]),
+                *reinterpret_cast<dx::XMFLOAT2*>(&mesh.mTextureCoords[0][i]));
     }
 
     std::vector<unsigned short> indices;
