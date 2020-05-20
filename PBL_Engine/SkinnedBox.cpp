@@ -27,7 +27,7 @@ SkinnedBox::SkinnedBox(Graphics& gfx, std::mt19937& rng,
         AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
 
         AddStaticBind(std::make_unique<Texture>(
-            gfx, Surface::FromFile("Assets/Graphics/kappa.png")));
+            gfx, Surface::FromFile("Assets/Graphics/painting.jpg")));
 
         AddStaticBind(std::make_unique<Sampler>(gfx));
 
