@@ -14,12 +14,17 @@ cbuffer ObjectCBuf : register(b0) {
     float specularIntensity;
     float specularPower;
 };
+struct Output {
+    float4 color : SV_Target0;
+    float4 bloom : SV_Target1;
+};
 
-float4 main(float3 worldPos : Position, float3 n : Normal) : SV_Target {
+Output main(float3 worldPos : Position, float3 n : Normal) {
     // fragment to light vector data
     float3 lightDir = lightPos - worldPos;
     const float distToL = length(lightDir);
     lightDir = normalize(lightDir);
+    float threshold = 0.3f;
 
     // attenuation
     const float att =
@@ -31,15 +36,18 @@ float4 main(float3 worldPos : Position, float3 n : Normal) : SV_Target {
 
     // reflected light vector
     const float3 viewDir = normalize(viewPos - worldPos);
-    const float3 r = normalize(reflect(-lightDir, n));  
+    const float3 r = normalize(reflect(-lightDir, n));
 
     // calculate specular intensity based on angle between viewing vector and
     // reflection vector, narrow with power function
-    const float3 specular =
-        att * (diffuseColor * diffuseIntensity) * specularIntensity *
-        pow(max(0.0f, dot(r, viewDir)), specularPower);
+    const float3 specular = att * (diffuseColor * diffuseIntensity) *
+                            specularIntensity *
+                            pow(max(0.0f, dot(r, viewDir)), specularPower);
+    Output output;
+    output.color =
+        float4(saturate((diffuse + ambient + specular) * materialColor), 1.0f);
+    output.bloom = saturate((output.color - threshold) / (1 - threshold));
 
     // final color
-    return float4(saturate((diffuse + ambient + specular) * materialColor),
-                  1.0f);
+    return output;
 }

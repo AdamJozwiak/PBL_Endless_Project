@@ -13,7 +13,7 @@ float4 rand(float2 uv) {
     return frac(sin(dot(uv, float2(12.9898, 78.233))) * 43758.5453) / 100.0f;
 }
 
-float4 main(VSOut input) : SV_TARGET {
+float4 main(VSOut input) : SV_TARGET0 {
     float redShine = 3.0f;
     float greenShine = 2.0f;
     float blueShine = 1.0f;
