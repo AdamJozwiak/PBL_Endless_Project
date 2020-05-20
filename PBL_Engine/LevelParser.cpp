@@ -173,8 +173,6 @@ void LevelParser::load() {
     }
 
     // Go through all other components in the scene file
-    // For now, only process Transform
-    // TODO: Expand this only when new components are needed
     std::unordered_map<FileId, EntityId> entityIdsWithTransform;
     for (auto const &fileId : sceneFileIds) {
         auto const &node = nodes[fileId];
