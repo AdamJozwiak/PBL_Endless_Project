@@ -5,7 +5,7 @@
 
 namespace wrl = Microsoft::WRL;
 
-Texture::Texture(Graphics& gfx, const Surface& s) {
+Texture::Texture(Graphics& gfx, const Surface& s, int number) : number(number) {
     INFOMAN(gfx);
     textureWidth = s.GetWidth();
     textureHeight = s.GetHeight();
@@ -46,18 +46,15 @@ Texture::Texture(Graphics& gfx, const Surface& s) {
 Texture::Texture(
     Graphics& gfx,
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pOutputTexture,
-    float width, float height) {
+    float width, float height, int number)
+    : number(number) {
     pTextureView = pOutputTexture;
     textureWidth = width;
     textureHeight = height;
 }
 
 void Texture::Bind(Graphics& gfx) noexcept {
-    GetContext(gfx)->PSSetShaderResources(0u, 1u, pTextureView.GetAddressOf());
-}
-
-void Texture::BindAdditional(Graphics& gfx, UINT texRegister) {
-    GetContext(gfx)->PSSetShaderResources(texRegister, 1u,
+    GetContext(gfx)->PSSetShaderResources(number, 1u,
                                           pTextureView.GetAddressOf());
 }
 
