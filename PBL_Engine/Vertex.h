@@ -148,12 +148,12 @@ class VertexLayout {
         }
 
       private:
-        template <ElementType type>
+        template <ElementType elementType>
         static constexpr D3D11_INPUT_ELEMENT_DESC GenerateDesc(
             size_t offset) noexcept(!IS_DEBUG) {
-            return {Map<type>::semantic,
+            return {Map<elementType>::semantic,
                     0,
-                    Map<type>::dxgiFormat,
+                    Map<elementType>::dxgiFormat,
                     0,
                     (UINT)offset,
                     D3D11_INPUT_PER_VERTEX_DATA,
