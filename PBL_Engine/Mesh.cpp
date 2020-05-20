@@ -4,6 +4,7 @@
 #include <assimp/postprocess.h>
 #include <array>
 #include <sstream>
+#include <string_view>
 #include <unordered_map>
 
 #include "BonesCbuf.h"
@@ -414,10 +415,11 @@ void Model::BoneTransform(float time,
         transforms.emplace_back(tmp);
     }
 }
-aiNodeAnim* Model::FindNodeAnim(aiAnimation* pAnim, std::string nodeName) {
+aiNodeAnim* Model::FindNodeAnim(aiAnimation* pAnim,
+                                std::string_view const& nodeName) {
     for (UINT i = 0; i < pAnim->mNumChannels; i++) {
         aiNodeAnim* pNodeAnim = pAnim->mChannels[i];
-        if (std::string(pNodeAnim->mNodeName.data) == nodeName) {
+        if (std::string_view(pNodeAnim->mNodeName.data) == nodeName) {
             return pNodeAnim;
         }
     }

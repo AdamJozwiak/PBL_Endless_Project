@@ -5,6 +5,7 @@
 #include <assimp/Importer.hpp>
 #include <map>
 #include <optional>
+#include <string_view>
 
 #include "BindableBase.h"
 #include "Components/Components.hpp"
@@ -87,7 +88,8 @@ class Model {
     void ReadNodeHierarchy(float animationTime, aiNode* pNode,
                            const DirectX::XMMATRIX& parentTransform);
 
-    aiNodeAnim* FindNodeAnim(aiAnimation* pAnim, std::string nodeName);
+    aiNodeAnim* FindNodeAnim(aiAnimation* pAnim,
+                             std::string_view const& nodeName);
     UINT FindPos(float animationTime, aiNodeAnim* pNodeAnim);
     UINT FindRotation(float animationTime, aiNodeAnim* pNodeAnim);
     UINT FindScaling(float animationTime, aiNodeAnim* pNodeAnim);
