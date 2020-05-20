@@ -15,10 +15,12 @@
 
 class PostProcessing : public Bindable, public RenderableBase<PostProcessing> {
   public:
-    PostProcessing(Graphics& gfx, std::wstring shaderName);
+    PostProcessing(Graphics& gfx, std::wstring shaderName,
+                   size_t numberOfTargets);
     ~PostProcessing() = default;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> OutputTexture() const;
-    Microsoft::WRL::ComPtr<ID3D11RenderTargetView> RenderTargetView() const;
+    std::vector<Microsoft::WRL::ComPtr<ID3D11RenderTargetView>>
+    RenderTargetView() const;
     Microsoft::WRL::ComPtr<ID3D11DepthStencilView> DepthStencilView() const;
     void Begin();
     void End();
@@ -27,7 +29,7 @@ class PostProcessing : public Bindable, public RenderableBase<PostProcessing> {
   private:
     Graphics& pGfx;
     DxgiInfoManager infoManager;
-    Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pRenderTarget;
+    std::vector<Microsoft::WRL::ComPtr<ID3D11RenderTargetView>> pRenderTargets;
     Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pOutputTexture;
 

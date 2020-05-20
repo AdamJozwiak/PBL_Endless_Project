@@ -1,74 +1,86 @@
 #include "PostProcessing.h"
 
+#include <array>
+
 #include "BindableBase.h"
 #include "Sampler.h"
 #include "Surface.h"
 
 namespace WRL = Microsoft::WRL;
 
-PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName)
+PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName,
+                               size_t numberOfTargets)
     : pGfx(gfx),
-      pRenderTarget(nullptr),
+      pRenderTargets(numberOfTargets, nullptr),
       pDSV(nullptr),
       pOutputTexture(nullptr) {
     namespace dx = DirectX;
-    // Output Texture
-    D3D11_TEXTURE2D_DESC outputTextureDesc;
-    ZeroMemory(&outputTextureDesc, sizeof(outputTextureDesc));
-    outputTextureDesc.Width = gfx.GetWindowWidth();
-    outputTextureDesc.Height = gfx.GetWindowHeight();
-    outputTextureDesc.MipLevels = 1;
-    outputTextureDesc.ArraySize = 1;
-    outputTextureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    outputTextureDesc.SampleDesc.Count = 1;
-    outputTextureDesc.SampleDesc.Quality = 0;
-    outputTextureDesc.BindFlags =
-        D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-    outputTextureDesc.Usage = D3D11_USAGE_DEFAULT;
-
     HRESULT hr;
-    WRL::ComPtr<ID3D11Texture2D> screenTexture = nullptr;
+    int a = 0;
+    // Output Texture
+    for (size_t i = 0; i < pRenderTargets.size(); i++) {
+        D3D11_TEXTURE2D_DESC outputTextureDesc;
+        ZeroMemory(&outputTextureDesc, sizeof(outputTextureDesc));
 
-    D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
-    shaderResourceViewDesc.Format = outputTextureDesc.Format;
-    shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-    shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
-    shaderResourceViewDesc.Texture2D.MipLevels = 1;
+        outputTextureDesc.Width = gfx.GetWindowWidth();
+        outputTextureDesc.Height = gfx.GetWindowHeight();
+        outputTextureDesc.MipLevels = 1;
+        outputTextureDesc.ArraySize = 1;
+        outputTextureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        outputTextureDesc.SampleDesc.Count = 1;
+        outputTextureDesc.SampleDesc.Quality = 0;
+        outputTextureDesc.BindFlags =
+            D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+        outputTextureDesc.Usage = D3D11_USAGE_DEFAULT;
 
-    GFX_THROW_INFO(GetDevice(gfx)->CreateTexture2D(
-        &outputTextureDesc, nullptr, screenTexture.GetAddressOf()));
-    GFX_THROW_INFO(GetDevice(gfx)->CreateShaderResourceView(
-        screenTexture.Get(), &shaderResourceViewDesc,
-        pOutputTexture.GetAddressOf()));
+        WRL::ComPtr<ID3D11Texture2D> screenTexture = nullptr;
 
-    // Depth Stencil
-    D3D11_TEXTURE2D_DESC depthStencilDesc;
-    ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
-    depthStencilDesc.Width = gfx.GetWindowWidth();
-    depthStencilDesc.Height = gfx.GetWindowHeight();
-    depthStencilDesc.MipLevels = 1;
-    depthStencilDesc.ArraySize = 1;
-    depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    depthStencilDesc.SampleDesc.Count = 1;
-    depthStencilDesc.SampleDesc.Quality = 0;
-    depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-    depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+        D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+        shaderResourceViewDesc.Format = outputTextureDesc.Format;
+        shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+        shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+        shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
-    WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer = nullptr;
-    GFX_THROW_INFO(GetDevice(gfx)->CreateTexture2D(
-        &depthStencilDesc, nullptr, depthStencilBuffer.GetAddressOf()));
-    GFX_THROW_INFO(GetDevice(gfx)->CreateDepthStencilView(
-        depthStencilBuffer.Get(), nullptr, pDSV.GetAddressOf()));
+        GFX_THROW_INFO(GetDevice(gfx)->CreateTexture2D(
+            &outputTextureDesc, nullptr, screenTexture.GetAddressOf()));
+        GFX_THROW_INFO(GetDevice(gfx)->CreateShaderResourceView(
+            screenTexture.Get(), &shaderResourceViewDesc,
+            pOutputTexture.GetAddressOf()));
 
-    D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
-    ZeroMemory(&renderTargetViewDesc, sizeof(D3D11_RENDER_TARGET_VIEW_DESC));
-    renderTargetViewDesc.Format = outputTextureDesc.Format;
-    renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-    renderTargetViewDesc.Texture2D.MipSlice = 0;
+        // Depth Stencil
+        D3D11_TEXTURE2D_DESC depthStencilDesc;
+        ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
+        depthStencilDesc.Width = gfx.GetWindowWidth();
+        depthStencilDesc.Height = gfx.GetWindowHeight();
+        depthStencilDesc.MipLevels = 1;
+        depthStencilDesc.ArraySize = 1;
+        depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+        depthStencilDesc.SampleDesc.Count = 1;
+        depthStencilDesc.SampleDesc.Quality = 0;
+        depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+        depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
 
-    GFX_THROW_INFO(GetDevice(gfx)->CreateRenderTargetView(
-        screenTexture.Get(), &renderTargetViewDesc,
-        pRenderTarget.GetAddressOf()));
+        WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer = nullptr;
+        GFX_THROW_INFO(GetDevice(gfx)->CreateTexture2D(
+            &depthStencilDesc, nullptr, depthStencilBuffer.GetAddressOf()));
+        GFX_THROW_INFO(GetDevice(gfx)->CreateDepthStencilView(
+            depthStencilBuffer.Get(), nullptr, pDSV.GetAddressOf()));
+
+        D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
+        ZeroMemory(&renderTargetViewDesc,
+                   sizeof(D3D11_RENDER_TARGET_VIEW_DESC));
+        renderTargetViewDesc.Format = outputTextureDesc.Format;
+        renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+        renderTargetViewDesc.Texture2D.MipSlice = 0;
+
+        GFX_THROW_INFO(GetDevice(gfx)->CreateRenderTargetView(
+            screenTexture.Get(), &renderTargetViewDesc,
+            pRenderTargets[i].GetAddressOf()));
+
+        AddBind(std::make_unique<Texture>(gfx, pOutputTexture,
+                                          gfx.GetWindowWidth(),
+                                          gfx.GetWindowHeight(), a++));
+    }
 
     struct Vertex {
         dx::XMFLOAT3 pos;
@@ -89,9 +101,6 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName)
     indices.push_back(0);
     indices.push_back(2);
     indices.push_back(3);
-
-    AddBind(std::make_unique<Texture>(gfx, pOutputTexture, gfx.GetWindowWidth(),
-                                      gfx.GetWindowHeight()));
 
     AddBind(std::make_unique<VertexBuffer>(pGfx, screenVertices));
 
@@ -119,8 +128,9 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName)
                                        D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 }
 
-WRL::ComPtr<ID3D11RenderTargetView> PostProcessing::RenderTargetView() const {
-    return pRenderTarget;
+std::vector<WRL::ComPtr<ID3D11RenderTargetView>>
+PostProcessing::RenderTargetView() const {
+    return pRenderTargets;
 }
 
 WRL::ComPtr<ID3D11DepthStencilView> PostProcessing::DepthStencilView() const {
@@ -132,11 +142,18 @@ WRL::ComPtr<ID3D11ShaderResourceView> PostProcessing::OutputTexture() const {
 }
 
 void PostProcessing::Begin() {
-    GetContext(pGfx)->OMSetRenderTargets(1, pRenderTarget.GetAddressOf(),
-                                         pDSV.Get());
+    std::array<ID3D11RenderTargetView*, 2> addresses;
+    for (size_t i = 0; i < pRenderTargets.size(); i++) {
+        addresses[i] = pRenderTargets[i].Get();
+    }
+    GetContext(pGfx)->OMSetRenderTargets(pRenderTargets.size(),
+                                         addresses.data(), pDSV.Get());
 
     const float color[] = {0.0f, 0.0f, 0.0f, 1.0f};
-    GetContext(pGfx)->ClearRenderTargetView(pRenderTarget.Get(), color);
+    for (auto const& target : pRenderTargets) {
+        GetContext(pGfx)->ClearRenderTargetView(target.Get(), color);
+    }
+
     GetContext(pGfx)->ClearDepthStencilView(pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f,
                                             0u);
 }
