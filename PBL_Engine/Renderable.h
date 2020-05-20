@@ -27,7 +27,7 @@ class Renderable {
         }
         return nullptr;
     }
-    void AddBind(std::unique_ptr<Bindable> bind) noexcept(!IS_DEBUG);
+    void AddBind(std::shared_ptr<Bindable> bind) noexcept(!IS_DEBUG);
     void AddIndexBuffer(std::unique_ptr<class IndexBuffer> ibuf) noexcept(
         !IS_DEBUG);
 
@@ -37,5 +37,5 @@ class Renderable {
 
   private:
     const IndexBuffer* pIndexBuffer = nullptr;
-    std::vector<std::unique_ptr<Bindable>> binds;
+    std::vector<std::shared_ptr<Bindable>> binds;
 };

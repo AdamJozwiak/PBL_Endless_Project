@@ -15,10 +15,10 @@ void Renderable::Draw(Graphics& gfx) const noexcept(!IS_DEBUG) {
     gfx.DrawIndexed(pIndexBuffer->GetCount());
 }
 
-void Renderable::AddBind(std::unique_ptr<Bindable> bind) noexcept(!IS_DEBUG) {
+void Renderable::AddBind(std::shared_ptr<Bindable> bind) noexcept(!IS_DEBUG) {
     assert("*Must* use AddIndexBuffer to bind index buffer" &&
            typeid(*bind) != typeid(IndexBuffer));
-    binds.push_back(std::move(bind));
+    binds.push_back(bind);
 }
 
 void Renderable::AddIndexBuffer(std::unique_ptr<IndexBuffer> ibuf) noexcept(
