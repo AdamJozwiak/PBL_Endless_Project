@@ -251,7 +251,9 @@ std::shared_ptr<Mesh> Model::ParseMesh(
     std::vector<std::array<UINT, 4>> bonesID;
     std::vector<std::array<float, 4>> weights;
     VertexLayout vl;
-    vl.Append(VertexLayout::Position3D).Append(VertexLayout::Normal);
+    vl.Append(VertexLayout::Position3D)
+        .Append(VertexLayout::Normal)
+        .Append(VertexLayout::Tangent);
     if (mesh.HasBones()) {
         Mesh::LoadBones(1, &mesh, Bones, bonesMap);
         for (int x = 0; x < Bones.size(); ++x) {
@@ -278,12 +280,14 @@ std::shared_ptr<Mesh> Model::ParseMesh(
             vbuf.EmplaceBack(
                 *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mVertices[i]),
                 *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]),
+                *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mTangents[i]),
                 *reinterpret_cast<dx::XMUINT4*>(bonesID[i].data()),
                 *reinterpret_cast<dx::XMFLOAT4*>(weights[i].data()));
         } else
             vbuf.EmplaceBack(
                 *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mVertices[i]),
-                *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]));
+                *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]),
+                *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mTangents[i]));
     }
 
     std::vector<unsigned short> indices;
