@@ -67,6 +67,7 @@ class Surface {
     };
 
   public:
+    Surface() noexcept = default;
     Surface(unsigned int width, unsigned int height) noexcept;
     Surface(Surface&& source) noexcept;
     Surface(Surface&) = delete;
