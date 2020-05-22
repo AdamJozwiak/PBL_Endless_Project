@@ -34,7 +34,7 @@ void RenderSystem::filters() {
 }
 
 void RenderSystem::setup() {
-    window = std::make_unique<Window>(1680, 1050, "PBL_ENGINE");
+    window = std::make_unique<Window>(1680, 1050, "Ohunkakan");
     camera = std::make_unique<Camera>();
     sphere = std::make_unique<SolidSphere>(window->Gfx(), 1.0f);
     billboard = std::make_unique<Billboard>(window->Gfx(), camera.get());
