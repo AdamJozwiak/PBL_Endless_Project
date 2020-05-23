@@ -2,7 +2,7 @@
 struct PixelShaderInput {
     float3 positionWorld : POSITION;
     float3 normalWorld : NORMAL;
-    float3 tangent : TANGENT;
+    float3 tangentWorld : TANGENT;
     float3 bitangentWorld : BITANGENT;
     float2 texCoord : TEXCOORD;
     float4 position : SV_POSITION;
@@ -15,7 +15,7 @@ struct PixelShaderOutput {
 };
 
 // ///////////////////////////////////////////////////////////////// Textures //
-Texture2D textures[4];
+Texture2D textures[5];
 SamplerState textureSampler {
     Filter = MIN_MAG_MIP_LINEAR;
     AddressU = Wrap;
@@ -25,10 +25,15 @@ SamplerState textureSampler {
 // //////////////////////////////////////////////////////////////// Constants //
 static const float PI = 3.14159265359;
 static const int TEXTURE_ALBEDO = 0, TEXTURE_AMBIENT_OCCLUSION = 1,
-                 TEXTURE_METALLIC_SMOOTHNESS = 2, TEXTURE_NORMAL = 3;
+                 TEXTURE_METALLIC_SMOOTHNESS = 2, TEXTURE_NORMAL = 3,
+                 TEXTURE_HEIGHT = 4;
 static const float BLOOM_THRESHOLD = 0.3f;
+static const int MIN_SAMPLE_COUNT = 4;
+static const int MAX_SAMPLE_COUNT = 32;
 
 // ///////////////////////////////////////////////////////// Constant buffers //
+cbuffer MaterialParameters : register(b9) { float parallaxHeight; };
+
 cbuffer LightParameters : register(b10) {
     float3 lightPositionWorld;
     float3 viewPositionWorld;
@@ -72,20 +77,19 @@ float3 fresnelSchlick(float cosTheta, float3 f0) {
     return f0 + (1.0f - f0) * pow(1.0f - cosTheta, 5.0f);
 }
 
-float4 pbr(PixelShaderInput input, float3 lightDir, float factor,
-           float3 normal) {
+float4 pbr(PixelShaderInput input, float3 lightDir, float factor, float3 normal,
+           float2 texCoord) {
     // Load texture parameters
     float3 albedo =
-        pow(textures[TEXTURE_ALBEDO].Sample(textureSampler, input.texCoord).rgb,
+        pow(textures[TEXTURE_ALBEDO].Sample(textureSampler, texCoord).rgb,
             2.2f * float3(1.0f, 1.0f, 1.0f));
-    float ao = textures[TEXTURE_AMBIENT_OCCLUSION]
-                   .Sample(textureSampler, input.texCoord)
-                   .r;
+    float ao =
+        textures[TEXTURE_AMBIENT_OCCLUSION].Sample(textureSampler, texCoord).r;
     float metalness = textures[TEXTURE_METALLIC_SMOOTHNESS]
-                          .Sample(textureSampler, input.texCoord)
+                          .Sample(textureSampler, texCoord)
                           .r;
     float roughness = 1.0f - textures[TEXTURE_METALLIC_SMOOTHNESS]
-                                 .Sample(textureSampler, input.texCoord)
+                                 .Sample(textureSampler, texCoord)
                                  .a;
 
     // Calculate view direction
@@ -120,17 +124,78 @@ float attenuate(float distance) {
                    attenuationQuadratic * pow(distance, 2.0f));
 }
 
-float4 pointLight(PixelShaderInput input, float3 normal) {
+float4 pointLight(PixelShaderInput input, float3 normal, float2 texCoord) {
     float3 lightDir = normalize(lightPositionWorld - input.positionWorld);
     return pbr(input, lightDir,
                attenuate(length(lightPositionWorld - input.positionWorld)),
-               normal);
+               normal, texCoord);
+}
+
+// /////////////////////////////////////////////// Parallax occlusion mapping //
+float2 parallaxOcclusionMapping(PixelShaderInput input, float2 texCoords,
+                                float3 viewDirectionTangent,
+                                float3 viewDirectionWorld) {
+    const float2 maxParallaxOffset =
+        -viewDirectionTangent.xy * parallaxHeight / viewDirectionTangent.z;
+
+    const int sampleCount =
+        (int)lerp(MAX_SAMPLE_COUNT, MIN_SAMPLE_COUNT,
+                  dot(viewDirectionWorld, input.normalWorld));
+
+    const float depthStep = 1.0f / float(sampleCount);
+    const float2 deltaTexCoords = maxParallaxOffset * depthStep;
+
+    const float2 dx = ddx(texCoords);
+    const float2 dy = ddy(texCoords);
+
+    int sampleIndex = 0;
+
+    float2 currentTexOffset = 0;
+    float2 previousTexOffset = 0;
+    float2 finalTexOffset = 0;
+
+    float currentRayZ = 1.0f - depthStep;
+    float prevRayZ = 1.0f;
+
+    float currentHeight = 0.0f;
+    float prevHeight = 0.0f;
+
+    while (sampleIndex < sampleCount + 1) {
+        currentHeight = textures[TEXTURE_HEIGHT]
+                            .SampleGrad(textureSampler,
+                                        texCoords + currentTexOffset, dx, dy)
+                            .r;
+
+        // Did we cross the height profile?
+        if (currentHeight > currentRayZ) {
+            // Do ray/line segment intersection
+            // and compute the final texture offset
+            float t = (prevHeight - prevRayZ) /
+                      (prevHeight - currentHeight + currentRayZ - prevRayZ);
+            finalTexOffset = previousTexOffset + t * deltaTexCoords;
+
+            // Exit loop.
+            sampleIndex = sampleCount + 1;
+        } else {
+            ++sampleIndex;
+            previousTexOffset = currentTexOffset;
+            prevRayZ = currentRayZ;
+            prevHeight = currentHeight;
+            currentTexOffset += deltaTexCoords;
+
+            // Negative because we are going "deeper" into the surface.
+            currentRayZ -= depthStep;
+        }
+    }
+
+    return texCoords + finalTexOffset;
 }
 
 // ///////////////////////////////////////////////////////////////////// Main //
 PixelShaderOutput main(PixelShaderInput input) {
     PixelShaderOutput output;
 
+    // Construct transform matrices between world and tangent space
     input.normalWorld = normalize(input.normalWorld);
     input.tangentWorld = normalize(input.tangentWorld -
                                    dot(input.tangentWorld, input.normalWorld) *
@@ -142,6 +207,17 @@ PixelShaderOutput main(PixelShaderInput input) {
         float3x3(input.tangentWorld, input.bitangentWorld, input.normalWorld);
     float3x3 worldToTangent = transpose(tangentToWorld);
 
+    // Update texture coordinates with parallax mapping
+    float3 viewDirectionWorld =
+        normalize(viewPositionWorld - input.positionWorld);
+    float3 viewDirectionTangent =
+        normalize(mul(-viewDirectionWorld, worldToTangent));
+
+    float2 texCoordParallax = input.texCoord;
+    if (parallaxHeight > 0.005f) {
+        texCoordParallax = parallaxOcclusionMapping(
+            input, input.texCoord, viewDirectionTangent, viewDirectionWorld);
+    }
 
     // Update normal with normal mapping
     float3 normal =
@@ -150,12 +226,14 @@ PixelShaderOutput main(PixelShaderInput input) {
                                        -normalize(input.bitangentWorld),
                                        normalize(input.normalWorld)));
 
+    // Calculate lighting
     output.color =
-        clamp(pointLight(input, normal), float4(0.0f, 0.0f, 0.0f, 0.0f),
-              float4(1.0f, 1.0f, 1.0f, 1.0f));
+        clamp(pointLight(input, normal, texCoordParallax),
+              float4(0.0f, 0.0f, 0.0f, 0.0f), float4(1.0f, 1.0f, 1.0f, 1.0f));
 
+    // Calculate final pixel color
     float4 pixelColor = float4(textures[TEXTURE_AMBIENT_OCCLUSION]
-                                       .Sample(textureSampler, input.texCoord)
+                                       .Sample(textureSampler, texCoordParallax)
                                        .rgb *
                                    output.color.rgb,
                                1.0f);

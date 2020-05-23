@@ -13,7 +13,8 @@ ECS_COMPONENT(Renderer) {
     std::shared_ptr<Renderable> renderable;
     struct {
         std::string albedoPath, ambientOcclusionPath, metallicSmoothnessPath,
-            normalPath;
+            normalPath, heightPath;
+        float parallaxHeight;
     } material;
 };
 

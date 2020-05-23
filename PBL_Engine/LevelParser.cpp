@@ -332,6 +332,9 @@ void LevelParser::load() {
                     auto const &materialNode =
                         materialNodes[value]["Material"]["m_SavedProperties"]
                                      ["m_TexEnvs"];
+                    auto const &propertiesNode =
+                        materialNodes[value]["Material"]["m_SavedProperties"]
+                                     ["m_Floats"];
                     renderer.material.albedoPath =
                         guidPaths[materialNode[5]["_MainTex"]["m_Texture"]
                                               ["guid"]
@@ -348,6 +351,12 @@ void LevelParser::load() {
                         guidPaths[materialNode[0]["_BumpMap"]["m_Texture"]
                                               ["guid"]
                                                   .as<std::string>()];
+                    renderer.material.heightPath =
+                        guidPaths[materialNode[8]["_ParallaxMap"]["m_Texture"]
+                                              ["guid"]
+                                                  .as<std::string>()];
+                    renderer.material.parallaxHeight =
+                        propertiesNode[10]["_Parallax"].as<float>();
                 }
             }
         }

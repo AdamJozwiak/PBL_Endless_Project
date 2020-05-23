@@ -53,6 +53,13 @@ Mesh::Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bindable>> bindPtrs,
         AddBind(texture);
     }
     AddBind(std::make_unique<Sampler>(gfx));
+
+    struct Properties {
+        float parallaxHeight;
+        float padding[3];
+    } properties{.parallaxHeight = parent.parallaxHeight};
+    AddBind(
+        std::make_unique<PixelConstantBuffer<Properties>>(gfx, properties, 9u));
 }
 
 void Mesh::Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const
@@ -230,7 +237,7 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
     }
     // Textures
     if (renderer) {
-        std::vector<Surface> surfaces(4);
+        std::vector<Surface> surfaces(5);
         std::vector<std::thread> threads;
         threads.push_back(std::thread([&surfaces, &renderer] {
             surfaces[0] = Surface::FromFile(renderer->material.albedoPath);
@@ -246,6 +253,9 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
         threads.push_back(std::thread([&surfaces, &renderer] {
             surfaces[3] = Surface::FromFile(renderer->material.normalPath);
         }));
+        threads.push_back(std::thread([&surfaces, &renderer] {
+            surfaces[4] = Surface::FromFile(renderer->material.heightPath);
+        }));
         for (auto& thread : threads) {
             if (thread.joinable()) {
                 thread.join();
@@ -256,6 +266,8 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
             textures.push_back(
                 std::make_shared<Texture>(gfx, std::move(surfaces[i]), i));
         }
+
+        parallaxHeight = renderer->material.parallaxHeight;
     }
 
     for (size_t i = 0; i < pScene->mNumMeshes; i++) {
