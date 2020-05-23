@@ -27,6 +27,7 @@ static const int MAX_BONES = 256;
 // ///////////////////////////////////////////////////////// Constant buffers //
 cbuffer Transform : register(b0) {
     matrix model;
+    matrix modelInverseTranspose;
     matrix viewProj;
 };
 
@@ -37,6 +38,7 @@ VertexShaderOutput main(VertexShaderInput input) {
     VertexShaderOutput output;
 
     matrix world = model;
+    matrix worldInverseTranspose = modelInverseTranspose;
     float4 positionModel = float4(input.positionModel, 1.0f);
 
 #ifdef ANIMATED
@@ -46,10 +48,12 @@ VertexShaderOutput main(VertexShaderInput input) {
     skinning += boneTransforms[input.boneIndices.w] * input.boneWeights.w;
 
     world = mul(skinning, world);
+    worldInverseTranspose = mul(skinning, worldInverseTranspose);
 #endif
 
     output.positionWorld = mul(positionModel, world).xyz;
-    output.normalWorld = mul(input.normalModel, (float3x3)world);
+    output.normalWorld =
+        mul(input.normalModel, (float3x3)worldInverseTranspose);
     output.tangentWorld = mul(input.tangentModel, (float3x3)world);
     output.bitangentWorld = mul(input.bitangentModel, (float3x3)world);
     output.position = mul(positionModel, mul(world, viewProj));

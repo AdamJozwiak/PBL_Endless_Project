@@ -8,6 +8,7 @@ class TransformCbuf : public Bindable {
   private:
     struct Transforms {
         DirectX::XMMATRIX model;
+        DirectX::XMMATRIX modelInverseTranspose;
         DirectX::XMMATRIX viewProj;
     };
 

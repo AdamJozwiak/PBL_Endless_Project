@@ -41,17 +41,12 @@ cbuffer LightParameters : register(b10) {
 };
 
 // /////////////////////////////////////////////////////////// Normal mapping //
-float3 calculateMappedNormal(PixelShaderInput input) {
-    float3 tangent =
-        normalize(input.tangent -
-                  dot(input.tangent, input.normalWorld) * input.normalWorld);
-
-    return normalize(mul((2.0f * textures[TEXTURE_NORMAL]
-                                     .Sample(textureSampler, input.texCoord)
-                                     .xyz -
-                          float3(1.0f, 1.0f, 1.0f)),
-                         float3x3(tangent, cross(tangent, input.normalWorld),
-                                  input.normalWorld)));
+float3 calculateMappedNormal(PixelShaderInput input, float2 texCoords,
+                             float3x3 tangentToWorld) {
+    return normalize(mul(
+        (2.0f * textures[TEXTURE_NORMAL].Sample(textureSampler, texCoords).xyz -
+         1.0f),
+        tangentToWorld));
 }
 
 // /////////////////////////////////////////////// Physically Based Rendering //
@@ -135,7 +130,25 @@ float4 pointLight(PixelShaderInput input, float3 normal) {
 // ///////////////////////////////////////////////////////////////////// Main //
 PixelShaderOutput main(PixelShaderInput input) {
     PixelShaderOutput output;
-    float3 normal = calculateMappedNormal(input);
+
+    input.normalWorld = normalize(input.normalWorld);
+    input.tangentWorld = normalize(input.tangentWorld -
+                                   dot(input.tangentWorld, input.normalWorld) *
+                                       input.normalWorld);
+    input.bitangentWorld =
+        normalize(cross(input.normalWorld, input.tangentWorld));
+
+    float3x3 tangentToWorld =
+        float3x3(input.tangentWorld, input.bitangentWorld, input.normalWorld);
+    float3x3 worldToTangent = transpose(tangentToWorld);
+
+
+    // Update normal with normal mapping
+    float3 normal =
+        calculateMappedNormal(input, texCoordParallax,
+                              float3x3(normalize(input.tangentWorld),
+                                       -normalize(input.bitangentWorld),
+                                       normalize(input.normalWorld)));
 
     output.color =
         clamp(pointLight(input, normal), float4(0.0f, 0.0f, 0.0f, 0.0f),
