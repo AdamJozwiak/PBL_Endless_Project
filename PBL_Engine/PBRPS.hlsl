@@ -15,7 +15,11 @@ struct PixelShaderOutput {
 
 // ///////////////////////////////////////////////////////////////// Textures //
 Texture2D textures[4];
-SamplerState textureSampler;
+SamplerState textureSampler {
+    Filter = MIN_MAG_MIP_LINEAR;
+    AddressU = Wrap;
+    AddressV = Wrap;
+};
 
 // //////////////////////////////////////////////////////////////// Constants //
 static const float PI = 3.14159265359;
