@@ -3,6 +3,7 @@ struct GeometryShaderInputOutput {
     float3 positionWorld : POSITION;
     float3 normalWorld : NORMAL;
     float3 tangentWorld : TANGENT;
+    float3 bitangentWorld : BITANGENT;
     float2 texCoord : TEXCOORD;
     float4 position : SV_POSITION;
 };
@@ -16,6 +17,7 @@ struct GeometryShaderInputOutput {
         element.positionWorld = input[i].positionWorld;
         element.normalWorld = input[i].normalWorld;
         element.tangentWorld = input[i].tangentWorld;
+        element.bitangentWorld = input[i].bitangentWorld;
         element.texCoord = input[i].texCoord;
         element.position = input[i].position;
 

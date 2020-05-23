@@ -3,6 +3,7 @@ struct PixelShaderInput {
     float3 positionWorld : POSITION;
     float3 normalWorld : NORMAL;
     float3 tangent : TANGENT;
+    float3 bitangentWorld : BITANGENT;
     float2 texCoord : TEXCOORD;
     float4 position : SV_POSITION;
 };
