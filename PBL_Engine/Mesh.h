@@ -69,8 +69,8 @@ class Node {
 
 class Model {
   public:
-    Model(Graphics& gfx, const std::string fileName,
-          Renderer* renderer, float* animationTime = nullptr);
+    Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
+          float* animationTime = nullptr);
     void Draw(Graphics& gfx, DirectX::XMMATRIX transform) const
         noexcept(!IS_DEBUG);
     void ShowWindow(const char* windowName = nullptr) noexcept;
