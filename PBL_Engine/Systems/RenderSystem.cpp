@@ -175,11 +175,11 @@ void RenderSystem::update(float deltaTime) {
 DirectX::XMMATRIX RenderSystem::transformMatrix(Entity entity) {
     auto& transform = entity.get<Transform>();
 
-    return dx::XMMatrixScaling(transform.scale.x, transform.scale.y,
-                               transform.scale.z) *
-           dx::XMMatrixRotationRollPitchYaw(dx::XMConvertToRadians(270.0f),
+    return dx::XMMatrixRotationRollPitchYaw(dx::XMConvertToRadians(270.0f),
                                             dx::XMConvertToRadians(180.0f),
                                             dx::XMConvertToRadians(0.0f)) *
+           dx::XMMatrixScaling(transform.scale.x, transform.scale.y,
+                               transform.scale.z) *
            dx::XMMatrixRotationRollPitchYaw(
                dx::XMConvertToRadians(transform.euler.x),
                dx::XMConvertToRadians(transform.euler.y),
