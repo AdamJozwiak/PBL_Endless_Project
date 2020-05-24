@@ -357,6 +357,9 @@
     <ClCompile Include="Systems\GraphSystem.cpp">
       <Filter>Pliki źródłowe\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Blender.cpp">
+      <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -817,6 +820,9 @@
     </ClInclude>
     <ClInclude Include="Systems\GraphSystem.hpp">
       <Filter>Pliki nagłówkowe\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

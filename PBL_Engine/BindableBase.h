@@ -1,4 +1,5 @@
 #pragma once
+#include "Blender.h"
 #include "ConstantBuffers.h"
 #include "GeometryCbuf.h"
 #include "GeometryShader.h"
