@@ -1,4 +1,5 @@
 #include "Renderable.h"
+#include "Blender.h"
 
 #include <cassert>
 
@@ -13,6 +14,10 @@ void Renderable::Draw(Graphics& gfx) const noexcept(!IS_DEBUG) {
         b->Bind(gfx);
     }
     gfx.DrawIndexed(pIndexBuffer->GetCount());
+
+    // Setting blending state back to normal
+    static Blender blending = Blender(gfx, false);
+    blending.Bind(gfx);
 }
 
 void Renderable::AddBind(std::shared_ptr<Bindable> bind) noexcept(!IS_DEBUG) {
