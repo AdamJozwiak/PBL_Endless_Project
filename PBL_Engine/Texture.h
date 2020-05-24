@@ -16,4 +16,5 @@ class Texture : public Bindable {
     float textureWidth;
     float textureHeight;
     int number;
+    bool hasAlpha = false;
 };

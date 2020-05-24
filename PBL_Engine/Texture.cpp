@@ -9,6 +9,7 @@ Texture::Texture(Graphics& gfx, const Surface& s, int number) : number(number) {
     INFOMAN(gfx);
     textureWidth = s.GetWidth();
     textureHeight = s.GetHeight();
+    hasAlpha = s.AlphaLoaded();
 
     // create texture resource
     D3D11_TEXTURE2D_DESC textureDesc = {};
