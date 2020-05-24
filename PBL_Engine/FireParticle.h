@@ -79,6 +79,8 @@ class FireParticle : public RenderableBase<FireParticle> {
         AddBind(std::make_unique<GeometryCbuf>(geoCbuf));
 
         AddBind(std::make_unique<TimerCbuf>(gfx, *this));
+
+        AddBind(std::make_unique<Blender>(gfx, true));
     }
 
     void Update(float dt) noexcept {}
