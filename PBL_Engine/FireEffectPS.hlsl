@@ -62,10 +62,10 @@ PixelShaderOutput main(VSOut input) {
 
     // Handle noise data
     if (noises[0] < 0.7f * gradient.r && shape.r > 0.25f) {
-        discard;
+        albedo.a = 0;
     }
     if (noises[1] < 0.8f * gradient.r && shape.r > 0.25f) {
-        discard;
+        albedo.a = 0;
     }
     if (noises[2] < 0.8f * gradient.r) {
         albedo.r += 0.5f * noises[0].r;
@@ -73,7 +73,7 @@ PixelShaderOutput main(VSOut input) {
         albedo.b += 0.5f * noises[0].r;
     }
     if (noises[3] < 0.2f * gradient.r && shape.r > 0.25f) {
-        discard;
+        albedo.a = 0;
     }
 
     // Emphasize fire color with noise
@@ -88,9 +88,7 @@ PixelShaderOutput main(VSOut input) {
     albedo.b *= 1.0f + gradient.r * blueShine +
                 gradient.r * (1.0f - noises[0]) * blueShine;
 
-    if (albedo.a > shape.a) {
-        discard;
-    }
+    if (albedo.a > shape.a) albedo.a = 0;
 
     static const float BLOOM_THRESHOLD = 0.3f;
     PixelShaderOutput output;
