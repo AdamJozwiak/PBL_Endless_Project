@@ -3,11 +3,13 @@
 // ///////////////////////////////////////////////////////////////// Includes //
 #include <DirectXMath.h>
 
+#include <optional>
+
 #include "ECS/Component.hpp"
 
 // //////////////////////////////////////////////////////////////// Component //
 ECS_COMPONENT(Transform) {
-    Transform *parent;
+    std::optional<EntityId> parent;
     DirectX::XMFLOAT4 rotation;
     DirectX::XMFLOAT3 position, scale, euler;
     int root_Order;

@@ -62,6 +62,7 @@
     <ClCompile Include="SolidSphere.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Systems\ColliderSystem.cpp" />
+    <ClCompile Include="Systems\GraphSystem.cpp" />
     <ClCompile Include="Systems\SceneSystem.cpp" />
     <ClCompile Include="Systems\BehaviourSystem.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Systems\ColliderSystem.hpp" />
+    <ClInclude Include="Systems\GraphSystem.hpp" />
     <ClInclude Include="Systems\SceneSystem.hpp" />
     <ClInclude Include="Systems\BehaviourSystem.hpp" />
     <ClInclude Include="Texture.h" />

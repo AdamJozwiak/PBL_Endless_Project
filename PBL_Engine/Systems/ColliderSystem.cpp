@@ -9,6 +9,7 @@
 #include "Components/Components.hpp"
 #include "ECS/ECS.hpp"
 #include "Events/OnCollisionEnter.hpp"
+#include "Systems/GraphSystem.hpp"
 #include "Systems/RenderSystem.hpp"
 
 // /////////////////////////////////////////////////////////////////// System //
@@ -288,9 +289,9 @@ void ColliderSystem::update(float deltaTime) {
                 break;
             }
             auto iTransform =
-                registry.system<RenderSystem>()->transformMatrix(iEntity);
+                registry.system<GraphSystem>()->transform(iEntity);
             auto jTransform =
-                registry.system<RenderSystem>()->transformMatrix(jEntity);
+                registry.system<GraphSystem>()->transform(jEntity);
             if (CheckSpheresCollision(iEntity.get<SphereCollider>(), iTransform,
                                       jEntity.get<SphereCollider>(),
                                       jTransform)) {

@@ -16,6 +16,7 @@
 // ECS
 #include "ColliderSystem.hpp"
 #include "ECS/ECS.hpp"
+#include "GraphSystem.hpp"
 
 namespace dx = DirectX;
 
@@ -100,7 +101,9 @@ void RenderSystem::update(float deltaTime) {
         for (auto const& entity : entities) {
             auto& meshFilter = entity.get<MeshFilter>();
 
-            meshFilter.model->Draw(window->Gfx(), transformMatrix(entity));
+            meshFilter.model->Draw(
+                window->Gfx(),
+                registry.system<GraphSystem>()->transform(entity));
         }
 
         // Show colliders
