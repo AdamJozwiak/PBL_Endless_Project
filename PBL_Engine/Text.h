@@ -2,8 +2,8 @@
 #include <dwrite_2.h>
 #include <wrl/client.h>
 
-#include "Graphics.h"
 #include "ExceptionHandler.h"
+#include "Graphics.h"
 
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "dwrite.lib")

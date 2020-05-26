@@ -8,10 +8,9 @@ Text::Text(Graphics& gfx, const WCHAR* fontFamily, float fontSize) {
 
 void Text::RenderText(Graphics& gfx, std::string text) {
     std::wstring tmp = std::wstring(text.begin(), text.end());
-    writeFactory->CreateTextLayout(
-        tmp.c_str(), (UINT32)tmp.size(), textFormatFPS.Get(),
-        gfx.GetWindowWidth(), gfx.GetWindowHeight(),
-        &textLayoutFPS);
+    writeFactory->CreateTextLayout(tmp.c_str(), (UINT32)tmp.size(),
+                                   textFormatFPS.Get(), gfx.GetWindowWidth(),
+                                   gfx.GetWindowHeight(), &textLayoutFPS);
     devCon->BeginDraw();
 
     devCon->DrawTextLayout(
@@ -53,7 +52,9 @@ void Text::CreateDevice(Graphics& gfx) {
 
     // Create Direct2D device
     if (FAILED(factory->CreateDevice(dxgiDevice.Get(), &dev))) {
-        throw TextException(__LINE__, __FILE__, "Critical error: Unable to create the Direct2D device!");
+        throw TextException(
+            __LINE__, __FILE__,
+            "Critical error: Unable to create the Direct2D device!");
     }
 
     // Create Direct2D device context
@@ -101,12 +102,12 @@ void Text::InitializeTextFormats(const WCHAR* fontFamily, float fontSize) {
 
     // Text format
     writeFactory.Get()->CreateTextFormat(
-        fontFamily,           // font family
+        fontFamily,                  // font family
         nullptr,                     // font collection
         DWRITE_FONT_WEIGHT_LIGHT,    // font weight
         DWRITE_FONT_STYLE_NORMAL,    // font style
         DWRITE_FONT_STRETCH_NORMAL,  // font stretch
-        fontSize,                       // font size (in dp)
+        fontSize,                    // font size (in dp)
         L"en-GB",                    // locale
         &textFormatFPS               // [out] text format object
     );
