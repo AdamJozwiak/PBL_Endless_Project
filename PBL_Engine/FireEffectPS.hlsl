@@ -77,9 +77,9 @@ PixelShaderOutput main(VSOut input) {
     }
 
     // Emphasize fire color with noise
-    albedo.r += 0.3f * noises[0].r;
-    albedo.g += 0.3f * noises[0].r;
-    albedo.b += 0.3f * noises[0].r;
+    albedo.r += 0.3f * noises[0].r - 0.1f * noises[1].r;
+    albedo.g += 0.3f * noises[0].r - 0.1f * noises[1].r;
+    albedo.b += 0.3f * noises[0].r - 0.1f * noises[1].r;
 
     albedo.r *= 1.0f + gradient.r * redShine +
                 gradient.r * (1.0f - noises[0]) * redShine;
