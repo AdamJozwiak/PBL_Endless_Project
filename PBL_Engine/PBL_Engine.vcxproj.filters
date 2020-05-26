@@ -94,6 +94,12 @@
     <Filter Include="Shader\PBR">
       <UniqueIdentifier>{0a6be36f-0cb7-4ec1-92f6-c97a287b6385}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pliki nagłówkowe\UI">
+      <UniqueIdentifier>{2368580c-2219-433f-8f61-af26a77c0a6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki źródłowe\UI">
+      <UniqueIdentifier>{4baa4e28-4923-4dba-90f0-d3ab08217aa6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -359,6 +365,9 @@
     </ClCompile>
     <ClCompile Include="Blender.cpp">
       <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>Pliki źródłowe\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -823,6 +832,9 @@
     </ClInclude>
     <ClInclude Include="Blender.h">
       <Filter>Pliki nagłówkowe\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Pliki nagłówkowe\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

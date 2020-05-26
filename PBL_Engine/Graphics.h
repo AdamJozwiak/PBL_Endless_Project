@@ -76,6 +76,8 @@ class Graphics {
     bool IsImguiEnabled() const noexcept;
     int GetWindowWidth() const noexcept;
     int GetWindowHeight() const noexcept;
+    IDXGISwapChain* GetSwapChain();
+    ID3D11Device* GetDevice();
 
   private:
     DirectX::XMMATRIX projection;

@@ -30,7 +30,7 @@ Graphics::Graphics(HWND hWnd, int width, int height)
     sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
     sd.Flags = 0;
 
-    UINT swapCreateFlags = 0u;
+    UINT swapCreateFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #ifndef NDEBUG
     swapCreateFlags |= D3D11_CREATE_DEVICE_DEBUG;  // D3D11_CREATE_DEVICE_DEBUG,
                                                    // to debug in console
@@ -255,3 +255,9 @@ const char* Graphics::InfoException::GetType() const noexcept {
 std::string Graphics::InfoException::GetErrorInfo() const noexcept {
     return info;
 }
+
+IDXGISwapChain* Graphics::GetSwapChain() {
+    return pSwap.Get();
+}
+
+ID3D11Device* Graphics::GetDevice() { return pDevice.Get(); }

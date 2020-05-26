@@ -66,6 +66,7 @@
     <ClCompile Include="Systems\GraphSystem.cpp" />
     <ClCompile Include="Systems\SceneSystem.cpp" />
     <ClCompile Include="Systems\BehaviourSystem.cpp" />
+    <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Systems\RenderSystem.cpp" />
     <ClCompile Include="Timer.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="Systems\GraphSystem.hpp" />
     <ClInclude Include="Systems\SceneSystem.hpp" />
     <ClInclude Include="Systems\BehaviourSystem.hpp" />
+    <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Systems\RenderSystem.hpp" />
     <ClInclude Include="Systems\Systems.hpp" />

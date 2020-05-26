@@ -8,6 +8,7 @@
 #include <memory>
 
 #include "GDIPlusManager.h"
+#include "Text.h"
 #include "Mesh.h"
 #include "PBLMath.h"
 #include "Window.h"
@@ -26,6 +27,7 @@ GDIPlusManager gdipm;
 Model* nano;
 Animator animator;
 PointLight* light;
+std::unique_ptr<Text> text;
 
 // /////////////////////////////////////////////////////////////////// System //
 // ============================================================= Behaviour == //
@@ -48,6 +50,7 @@ void RenderSystem::setup() {
     // imgui = std::make_unique<ImguiManager>();
     nano = new Model(window->Gfx(), "Assets\\Models\\Wolf-Blender-2.82a.gltf",
                      nullptr, &animator.animationTime);
+    text = std::make_unique<Text>(window->Gfx(), L"Arial", 40);
     window->Gfx().SetProjection(
         dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 400.0f));
 }
@@ -105,7 +108,7 @@ void RenderSystem::update(float deltaTime) {
                 window->Gfx(),
                 registry.system<GraphSystem>()->transform(entity));
         }
-
+        
         // Show colliders
         static bool showColliders = false;
         for (auto const& entity : registry.system<ColliderSystem>()->entities) {
@@ -135,7 +138,7 @@ void RenderSystem::update(float deltaTime) {
                                       dx::XMConvertToRadians(270.0f),
                                       dx::XMConvertToRadians(180.0f),
                                       dx::XMConvertToRadians(0.0f)));
-
+        
         // Render light dummy
         // light->Draw(window->Gfx());
 
@@ -172,6 +175,7 @@ void RenderSystem::update(float deltaTime) {
         colorCorrection->Draw(window->Gfx());
     }
 
+    text->RenderText(window->Gfx(), "klata plecy barki");
     window->Gfx().EndFrame();
 };
 
