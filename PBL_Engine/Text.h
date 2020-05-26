@@ -32,10 +32,10 @@ class Text {
     void CreateBitmapRenderTarget(Graphics& gfx);
     void InitializeTextFormats(const WCHAR* fontFamily, float fontSize);
 
-    wrl::ComPtr<IDWriteFactory2> writeFactory;  // DirectWrite factory
-    wrl::ComPtr<ID2D1Factory2> factory;         // Direct2D factory
-    wrl::ComPtr<ID2D1Device1> dev;              // Direct2D device
-    wrl::ComPtr<ID2D1DeviceContext1> devCon;    // device context
+    wrl::ComPtr<IDWriteFactory1> writeFactory;  // DirectWrite factory
+    wrl::ComPtr<ID2D1Factory1> factory;         // Direct2D factory
+    wrl::ComPtr<ID2D1Device> dev;               // Direct2D device
+    wrl::ComPtr<ID2D1DeviceContext> devCon;     // device context
 };
 
 class TextException : public ExceptionHandler {

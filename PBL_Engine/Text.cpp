@@ -35,7 +35,7 @@ void Text::CreateDevice(Graphics& gfx) {
     options.debugLevel = D2D1_DEBUG_LEVEL_NONE;
 #endif
     if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_MULTI_THREADED,
-                                 __uuidof(ID2D1Factory2), &options,
+                                 __uuidof(ID2D1Factory1), &options,
                                  &factory))) {
         throw TextException(
             __LINE__, __FILE__,
@@ -45,7 +45,7 @@ void Text::CreateDevice(Graphics& gfx) {
     // Get DXGI device
     wrl::ComPtr<IDXGIDevice> dxgiDevice;
     if (FAILED(gfx.GetDevice()->QueryInterface(__uuidof(IDXGIDevice),
-                                                &dxgiDevice))) {
+                                               &dxgiDevice))) {
         throw TextException(__LINE__, __FILE__,
                             "Critical error: Unable to get the DXGI device!");
     }
