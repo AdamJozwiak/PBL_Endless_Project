@@ -97,8 +97,8 @@ PixelShaderOutput main(VSOut input) {
     }
 
     // Make the fire linearly more transparent from the bottom to the top, but
-    // change the gradient range from [0.0f, 1.0f] to [0.5f, 1.0f]
-    albedo.a *= (1.0f - gradient.r) / 2.0f + 0.5f;
+    // change the gradient range from [0.0f, 1.0f] to [0.75f, 1.0f]
+    albedo.a *= (1.0f - gradient.r) / 4.0f + 0.75f;
 
     // Fine tune the final alpha
     if (shape.r < 0.25f) {  // If the pixel is inside the fireball
@@ -106,8 +106,8 @@ PixelShaderOutput main(VSOut input) {
     } else {                // But if the pixel is outside
         albedo.a = pow(
             albedo.a,
-            0.5f);  // Change the alpha curve to lessen the transparency
-                    // without changing the relationships between pixel alphas
+            0.375f);  // Change the alpha curve to lessen the transparency
+                      // without changing the relationships between pixel alphas
     }
 
     static const float BLOOM_THRESHOLD = 0.3f;
