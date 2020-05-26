@@ -62,10 +62,10 @@ PixelShaderOutput main(VSOut input) {
 
     // Handle noise data
     if (noises[0] < 0.7f * gradient.r && shape.r > 0.25f) {
-        albedo.a = 0;
+        albedo.a *= noises[0] * gradient.r;
     }
     if (noises[1] < 0.8f * gradient.r && shape.r > 0.25f) {
-        albedo.a = 0;
+        albedo.a *= noises[1] * gradient.r;
     }
     if (noises[2] < 0.8f * gradient.r) {
         albedo.r += 0.5f * noises[0].r;
@@ -73,7 +73,7 @@ PixelShaderOutput main(VSOut input) {
         albedo.b += 0.5f * noises[0].r;
     }
     if (noises[3] < 0.2f * gradient.r && shape.r > 0.25f) {
-        albedo.a = 0;
+        albedo.a *= noises[3] * gradient.r;
     }
 
     // Emphasize fire color with noise
@@ -88,7 +88,27 @@ PixelShaderOutput main(VSOut input) {
     albedo.b *= 1.0f + gradient.r * blueShine +
                 gradient.r * (1.0f - noises[0]) * blueShine;
 
-    if (albedo.a > shape.a) albedo.a = 0;
+    // If the pixel is less transparent than the corresponding shape pixel (fire
+    // alpha is bigger than shape's alpha)
+    if (albedo.a > (1.0f - shape.r)) {
+        albedo.a *=
+            (1.0f - shape.r);  // Make the fire transparent proportionally to
+                               // the shape's alpha value
+    }
+
+    // Make the fire linearly more transparent from the bottom to the top, but
+    // change the gradient range from [0.0f, 1.0f] to [0.5f, 1.0f]
+    albedo.a *= (1.0f - gradient.r) / 2.0f + 0.5f;
+
+    // Fine tune the final alpha
+    if (shape.r < 0.25f) {  // If the pixel is inside the fireball
+        albedo.a = 1.0f;    // Make sure it's not transparent
+    } else {                // But if the pixel is outside
+        albedo.a = pow(
+            albedo.a,
+            0.5f);  // Change the alpha curve to lessen the transparency
+                    // without changing the relationships between pixel alphas
+    }
 
     static const float BLOOM_THRESHOLD = 0.3f;
     PixelShaderOutput output;
