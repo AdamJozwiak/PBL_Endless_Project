@@ -1,9 +1,14 @@
 #pragma once
 #define NOMINMAX
 // ///////////////////////////////////////////////////////////////// Includes //
+#include <memory>
+
 // ECS
 #include "Components/Components.hpp"
 #include "ECS/System.hpp"
+
+// ///////////////////////////////////////////////////// Forward declarations //
+class GraphSystem;
 
 // /////////////////////////////////////////////////////////////////// System //
 ECS_SYSTEM(ColliderSystem) {
@@ -15,16 +20,16 @@ ECS_SYSTEM(ColliderSystem) {
   public:
     // ========================================================= Behaviour == //
     // Box Collider
-    AABB AddAABB(std::vector<DirectX::XMFLOAT3> objectVertPos);
+    AABB AddAABB(std::vector<DirectX::XMFLOAT3> const& objectVertPos);
     void CalculateAABB(AABB & aabb, DirectX::XMMATRIX const& worldSpace);
-    bool CheckBoxesCollision(BoxCollider boxCollider,
-                             BoxCollider differentBoxCollider);
+    bool CheckBoxesCollision(BoxCollider const& boxCollider,
+                             BoxCollider const& differentBoxCollider);
     DirectX::XMVECTOR GetColliderMin();
     DirectX::XMVECTOR GetColliderMax();
 
     // Sphere Collider
     SphereCollider AddSphereCollider(
-        std::vector<DirectX::XMFLOAT3> objectVertPos);
+        std::vector<DirectX::XMFLOAT3> const& objectVertPos);
     bool CheckSpheresCollision(
         SphereCollider sphereCollider, DirectX::XMMATRIX const& worldSpace,
         SphereCollider differentSphereCollider,
@@ -36,5 +41,6 @@ ECS_SYSTEM(ColliderSystem) {
 
   private:
     float speed_factor = 1.0f;
+    std::shared_ptr<GraphSystem> graphSystem;
 };
 // ////////////////////////////////////////////////////////////////////////// //

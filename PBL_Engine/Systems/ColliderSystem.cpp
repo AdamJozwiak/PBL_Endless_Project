@@ -14,7 +14,8 @@
 
 // /////////////////////////////////////////////////////////////////// System //
 // ============================================================= Behaviour == //
-AABB ColliderSystem::AddAABB(std::vector<DirectX::XMFLOAT3> objectVertPos) {
+AABB ColliderSystem::AddAABB(
+    std::vector<DirectX::XMFLOAT3> const& objectVertPos) {
     DirectX::XMFLOAT3 minVertex = DirectX::XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
     DirectX::XMFLOAT3 maxVertex =
         DirectX::XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
@@ -145,8 +146,8 @@ void ColliderSystem::CalculateAABB(AABB& aabb,
         DirectX::XMVectorSet(maxVertex.x, maxVertex.y, maxVertex.z, 0.0f);
 }
 
-bool ColliderSystem::CheckBoxesCollision(BoxCollider boxCollider,
-                                         BoxCollider differentBoxCollider) {
+bool ColliderSystem::CheckBoxesCollision(
+    BoxCollider const& boxCollider, BoxCollider const& differentBoxCollider) {
     // Is obj1's max X greater than obj2's min X? If not, obj1 is to the
     // LEFT of obj2
     if (DirectX::XMVectorGetX(boxCollider.boxColliderMax) >
@@ -188,7 +189,7 @@ bool ColliderSystem::CheckBoxesCollision(BoxCollider boxCollider,
 }
 
 SphereCollider ColliderSystem::AddSphereCollider(
-    std::vector<DirectX::XMFLOAT3> objectVertPos) {
+    std::vector<DirectX::XMFLOAT3> const& objectVertPos) {
     SphereCollider sphereCollider;
     DirectX::XMFLOAT3 minVertex = DirectX::XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
     DirectX::XMFLOAT3 maxVertex =
@@ -257,7 +258,7 @@ void ColliderSystem::filters() {
     filter<Renderer>();
 }
 
-void ColliderSystem::setup() {}
+void ColliderSystem::setup() { graphSystem = registry.system<GraphSystem>(); }
 
 void ColliderSystem::update(float deltaTime) {
     // Collider Test
@@ -268,10 +269,8 @@ void ColliderSystem::update(float deltaTime) {
             if (iEntity.id == jEntity.id) {
                 break;
             }
-            auto iTransform =
-                registry.system<GraphSystem>()->transform(iEntity);
-            auto jTransform =
-                registry.system<GraphSystem>()->transform(jEntity);
+            auto iTransform = graphSystem->transform(iEntity);
+            auto jTransform = graphSystem->transform(jEntity);
             if (CheckSpheresCollision(iEntity.get<SphereCollider>(), iTransform,
                                       jEntity.get<SphereCollider>(),
                                       jTransform)) {
