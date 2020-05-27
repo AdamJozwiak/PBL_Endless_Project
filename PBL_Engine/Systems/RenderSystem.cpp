@@ -111,22 +111,24 @@ void RenderSystem::update(float deltaTime) {
         
         // Show colliders
         static bool showColliders = false;
-        for (auto const& entity : registry.system<ColliderSystem>()->entities) {
-            auto& transform = entity.get<Transform>();
-            auto& sphereCollider = entity.get<SphereCollider>();
+        // for (auto const& entity :
+        // registry.system<ColliderSystem>()->entities) {
+        //     auto& transform = entity.get<Transform>();
+        //     auto& sphereCollider = entity.get<SphereCollider>();
 
-            DirectX::XMFLOAT4 center;
-            DirectX::XMStoreFloat4(&center, sphereCollider.objectCenterOffset);
+        //     DirectX::XMFLOAT4 center;
+        //     DirectX::XMStoreFloat4(&center,
+        //     sphereCollider.objectCenterOffset);
 
-            sphere->SetPos({center.x + transform.position.x,
-                            center.y + transform.position.y,
-                            center.z + transform.position.z});
-            sphere->scale = 3 * transform.scale.x * sphereCollider.radius;
-            if (!showColliders) {
-                sphere->scale = 0.0f;
-            }
-            sphere->Draw(window->Gfx());
-        }
+        //     sphere->SetPos({center.x + transform.position.x,
+        //                     center.y + transform.position.y,
+        //                     center.z + transform.position.z});
+        //     sphere->scale = 3 * transform.scale.x * sphereCollider.radius;
+        //     if (!showColliders) {
+        //         sphere->scale = 0.0f;
+        //     }
+        //     sphere->Draw(window->Gfx());
+        // }
 
         // Render billboards
         billboard->Draw(window->Gfx());
@@ -143,14 +145,14 @@ void RenderSystem::update(float deltaTime) {
         // light->Draw(window->Gfx());
 
         // Render interface
-        {
-            if (ImGui::Begin("Colliders")) {
-                if (ImGui::Button("Dummies")) {
-                    showColliders = !showColliders;
-                }
-            }
-            ImGui::End();
-        }
+        // {
+        //     if (ImGui::Begin("Colliders")) {
+        //         if (ImGui::Button("Dummies")) {
+        //             showColliders = !showColliders;
+        //         }
+        //     }
+        //     ImGui::End();
+        // }
         {
             if (ImGui::Begin("Simulation Speed")) {
                 ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 10.0f,
