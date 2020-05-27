@@ -264,7 +264,7 @@ bool ColliderSystem::CheckSpheresCollision(
 }
 
 void ColliderSystem::filters() {
-    filter<SphereCollider>();
+    filter<BoxCollider>();
     filter<Renderer>();
 }
 
@@ -283,9 +283,8 @@ void ColliderSystem::update(float deltaTime) {
                 registry.system<GraphSystem>()->transform(iEntity);
             auto jTransform =
                 registry.system<GraphSystem>()->transform(jEntity);
-            if (CheckSpheresCollision(iEntity.get<SphereCollider>(), iTransform,
-                                      jEntity.get<SphereCollider>(),
-                                      jTransform)) {
+            if (CheckBoxesCollision(iEntity.get<BoxCollider>(),
+                                    jEntity.get<BoxCollider>())) {
                 //checkedCollisions[i][j] = true;
                 registry.send(OnCollisionEnter{.a = iEntity, .b = jEntity});
             }
