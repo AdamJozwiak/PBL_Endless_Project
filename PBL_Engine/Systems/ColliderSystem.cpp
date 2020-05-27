@@ -274,6 +274,11 @@ void ColliderSystem::update(float deltaTime) {
     // Collider Test
     const auto dt = deltaTime * speed_factor;
 
+    for (auto entity : entities) {
+        CalculateAABB(entity.get<BoxCollider>(),
+                      registry.system<GraphSystem>()->transform(entity));
+    }
+
     for (auto iEntity : entities) {
         for (auto jEntity : entities) {
             if (iEntity.id == jEntity.id) {
