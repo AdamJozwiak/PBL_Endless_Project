@@ -164,10 +164,9 @@ void RenderSystem::update(float deltaTime) {
         fireParticle->Draw(window->Gfx());
 
         // Render other test models
-        nano->Draw(window->Gfx(), dx::XMMatrixRotationRollPitchYaw(
-                                      dx::XMConvertToRadians(270.0f),
-                                      dx::XMConvertToRadians(180.0f),
-                                      dx::XMConvertToRadians(0.0f)));
+        nano->Draw(window->Gfx(),
+                   dx::XMMatrixScaling(10.0f, 10.0f, 10.0f) *
+                       dx::XMMatrixTranslation(0.0f, -2.5f, 7.5f));
 
         // Render light dummy
         // light->Draw(window->Gfx());
