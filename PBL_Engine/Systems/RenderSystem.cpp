@@ -34,7 +34,7 @@ std::unique_ptr<Text> text;
 // ============================================================= Behaviour == //
 // ----------------------------------------- System's virtual functions -- == //
 void RenderSystem::filters() {
-    filter<Renderer>().filter<MeshFilter>().filter<Transform>();
+    filter<Renderer>().filter<MeshFilter>().filter<Transform>().filter<AABB>();
 }
 
 void RenderSystem::setup() {
@@ -57,6 +57,13 @@ void RenderSystem::setup() {
 }
 
 void RenderSystem::update(float deltaTime) {
+    // Update AABB
+    for (Entity entity : entities) {
+        registry.system<ColliderSystem>()->CalculateAABB(
+            entity.get<AABB>(),
+            registry.system<GraphSystem>()->transform(entity));
+    }
+
     const auto dt = deltaTime * speed_factor;
     window->Gfx().BeginFrame(0.0f, 0.0f, 0.0f);
     int a = 0;
@@ -109,15 +116,14 @@ void RenderSystem::update(float deltaTime) {
 
         // Render all renderable models
         for (auto const& entity : entities) {
-            auto div = DirectX::XMVectorSubtract(
-                entity.get<BoxCollider>().boxColliderMax,
-                entity.get<BoxCollider>().boxColliderMin);
+            auto div = DirectX::XMVectorSubtract(entity.get<AABB>().vertexMax,
+                                                 entity.get<AABB>().vertexMin);
             auto avg = DirectX::XMVectorScale(div, 0.5f);
 
             DirectX::XMFLOAT3 center;
             DirectX::XMStoreFloat3(
-                &center, DirectX::XMVectorAdd(
-                             avg, entity.get<BoxCollider>().boxColliderMin));
+                &center,
+                DirectX::XMVectorAdd(avg, entity.get<AABB>().vertexMin));
             DirectX::XMFLOAT3 radius;
             DirectX::XMStoreFloat3(&radius, DirectX::XMVector3Length(avg));
 

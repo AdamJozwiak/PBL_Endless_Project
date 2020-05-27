@@ -38,24 +38,24 @@ void TestScript::update(float const deltaTime) {
     lastZ = transform.position.z;
 
     if (isKeyPressed(VK_SPACE)) {
-    if (isKeyPressed('A')) {
-        transform.position.x -= 5.0f * deltaTime;
-    }
-    if (isKeyPressed('D')) {
-        transform.position.x += 5.0f * deltaTime;
-    }
-    if (isKeyPressed('K')) {
-        transform.position.y += 5.0f * deltaTime;
-    }
-    if (isKeyPressed('J')) {
-        transform.position.y -= 5.0f * deltaTime;
-    }
-    if (isKeyPressed('W')) {
-        transform.position.z += 5.0f * deltaTime;
-    }
-    if (isKeyPressed('S')) {
-        transform.position.z -= 5.0f * deltaTime;
-    }
+        if (isKeyPressed('A')) {
+            transform.position.x -= 5.0f * deltaTime;
+        }
+        if (isKeyPressed('D')) {
+            transform.position.x += 5.0f * deltaTime;
+        }
+        if (isKeyPressed('K')) {
+            transform.position.y += 5.0f * deltaTime;
+        }
+        if (isKeyPressed('J')) {
+            transform.position.y -= 5.0f * deltaTime;
+        }
+        if (isKeyPressed('W')) {
+            transform.position.z += 5.0f * deltaTime;
+        }
+        if (isKeyPressed('S')) {
+            transform.position.z -= 5.0f * deltaTime;
+        }
     }
 
     static float timer = 0.0f;
@@ -78,7 +78,9 @@ void TestScript::update(float const deltaTime) {
                         return transform;
                     }())
                     .add<MeshFilter>(entity.get<MeshFilter>())
-                    .add<Renderer>(entity.get<Renderer>());
+                    .add<Renderer>(entity.get<Renderer>())
+                    .add<AABB>(registry.system<ColliderSystem>()->AddAABB(
+                        entity.get<MeshFilter>().model->verticesForCollision));
             } else {
                 counter = 0;
                 for (auto const& entity : monkeys) {

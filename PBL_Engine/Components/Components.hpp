@@ -1,6 +1,7 @@
 #pragma once
 
 // ////////////////////////////////////////////// Includes for all components //
+#include "AABB.hpp"
 #include "Animator.h"
 #include "Behaviour.hpp"
 #include "BoxCollider.h"

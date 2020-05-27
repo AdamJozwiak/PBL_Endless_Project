@@ -14,12 +14,11 @@
 
 // /////////////////////////////////////////////////////////////////// System //
 // ============================================================= Behaviour == //
-BoxCollider ColliderSystem::AddBoxCollider(
-    std::vector<DirectX::XMFLOAT3> objectVertPos) {
+AABB ColliderSystem::AddAABB(std::vector<DirectX::XMFLOAT3> objectVertPos) {
     DirectX::XMFLOAT3 minVertex = DirectX::XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
     DirectX::XMFLOAT3 maxVertex =
         DirectX::XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
-    BoxCollider boxCollider;
+    AABB aabb;
     // Look for the smallest and largest vertex
     for (size_t i = 0; i < objectVertPos.size(); i++) {
         minVertex.x = std::min(minVertex.x, objectVertPos[i].x);
@@ -32,30 +31,22 @@ BoxCollider ColliderSystem::AddBoxCollider(
     }
 
     // Store Bounding Box's min and max vertices
-    boxCollider.boxColliderMin =
+    aabb.vertexMin =
         DirectX::XMVectorSet(minVertex.x, minVertex.y, minVertex.z, 0.0f);
-    boxCollider.boxColliderMax =
+    aabb.vertexMax =
         DirectX::XMVectorSet(maxVertex.x, maxVertex.y, maxVertex.z, 0.0f);
 
     // Front Vertices
-    boxCollider.boxColliderVerts.push_back(
-        DirectX::XMFLOAT3(minVertex.x, minVertex.y, minVertex.z));
-    boxCollider.boxColliderVerts.push_back(
-        DirectX::XMFLOAT3(minVertex.x, maxVertex.y, minVertex.z));
-    boxCollider.boxColliderVerts.push_back(
-        DirectX::XMFLOAT3(maxVertex.x, maxVertex.y, minVertex.z));
-    boxCollider.boxColliderVerts.push_back(
-        DirectX::XMFLOAT3(maxVertex.x, minVertex.y, minVertex.z));
+    aabb.vertices[0] = DirectX::XMFLOAT3(minVertex.x, minVertex.y, minVertex.z);
+    aabb.vertices[1] = DirectX::XMFLOAT3(minVertex.x, maxVertex.y, minVertex.z);
+    aabb.vertices[2] = DirectX::XMFLOAT3(maxVertex.x, maxVertex.y, minVertex.z);
+    aabb.vertices[3] = DirectX::XMFLOAT3(maxVertex.x, minVertex.y, minVertex.z);
 
     // Back Vertices
-    boxCollider.boxColliderVerts.push_back(
-        DirectX::XMFLOAT3(minVertex.x, minVertex.y, maxVertex.z));
-    boxCollider.boxColliderVerts.push_back(
-        DirectX::XMFLOAT3(maxVertex.x, minVertex.y, maxVertex.z));
-    boxCollider.boxColliderVerts.push_back(
-        DirectX::XMFLOAT3(maxVertex.x, maxVertex.y, maxVertex.z));
-    boxCollider.boxColliderVerts.push_back(
-        DirectX::XMFLOAT3(minVertex.x, maxVertex.y, maxVertex.z));
+    aabb.vertices[4] = DirectX::XMFLOAT3(minVertex.x, minVertex.y, maxVertex.z);
+    aabb.vertices[5] = DirectX::XMFLOAT3(maxVertex.x, minVertex.y, maxVertex.z);
+    aabb.vertices[6] = DirectX::XMFLOAT3(maxVertex.x, maxVertex.y, maxVertex.z);
+    aabb.vertices[7] = DirectX::XMFLOAT3(minVertex.x, maxVertex.y, maxVertex.z);
 
     // Indieces
     unsigned short* i = new unsigned short[36];
@@ -109,21 +100,19 @@ BoxCollider ColliderSystem::AddBoxCollider(
 
     for (int j = 0; j < 36; j++) boxColliderIndieces.push_back(i[j]);
 
-    return boxCollider;
+    return aabb;
 }
 
-void ColliderSystem::CalculateAABB(BoxCollider& boxCollider,
+void ColliderSystem::CalculateAABB(AABB& aabb,
                                    DirectX::XMMATRIX const& worldSpace) {
     DirectX::XMFLOAT3 minVertex = DirectX::XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
     DirectX::XMFLOAT3 maxVertex =
         DirectX::XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
     // Loop through the 8 vertices describing the bounding box
-    for (size_t i = 0; i < 8; i++) {
+    for (size_t i = 0; i < aabb.vertices.size(); i++) {
         // Transform the bounding boxes vertices to the objects world space
-        DirectX::XMVECTOR Vert =
-            DirectX::XMVectorSet(boxCollider.boxColliderVerts[i].x,
-                                 boxCollider.boxColliderVerts[i].y,
-                                 boxCollider.boxColliderVerts[i].z, 0.0f);
+        DirectX::XMVECTOR Vert = DirectX::XMVectorSet(
+            aabb.vertices[i].x, aabb.vertices[i].y, aabb.vertices[i].z, 0.0f);
         Vert = XMVector3TransformCoord(Vert, worldSpace);
 
         // Get the smallest vertex
@@ -150,9 +139,9 @@ void ColliderSystem::CalculateAABB(BoxCollider& boxCollider,
     }
 
     // Store Bounding Box's min and max vertices
-    boxCollider.boxColliderMin =
+    aabb.vertexMin =
         DirectX::XMVectorSet(minVertex.x, minVertex.y, minVertex.z, 0.0f);
-    boxCollider.boxColliderMax =
+    aabb.vertexMax =
         DirectX::XMVectorSet(maxVertex.x, maxVertex.y, maxVertex.z, 0.0f);
 }
 
@@ -273,11 +262,6 @@ void ColliderSystem::setup() {}
 void ColliderSystem::update(float deltaTime) {
     // Collider Test
     const auto dt = deltaTime * speed_factor;
-
-    for (auto entity : entities) {
-        CalculateAABB(entity.get<BoxCollider>(),
-                      registry.system<GraphSystem>()->transform(entity));
-    }
 
     for (auto iEntity : entities) {
         for (auto jEntity : entities) {

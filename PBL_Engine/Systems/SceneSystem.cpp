@@ -92,9 +92,8 @@ void SceneSystem::setup() {
     }
 
     for (auto entity : registry.system<RenderSystem>()->entities) {
-        entity.add<BoxCollider>(
-            registry.system<ColliderSystem>()->AddBoxCollider(
-                entity.get<MeshFilter>().model->verticesForCollision));
+        entity.get<AABB>() = registry.system<ColliderSystem>()->AddAABB(
+            entity.get<MeshFilter>().model->verticesForCollision);
     }
 
     for (auto entity : registry.system<BehaviourSystem>()->entities) {

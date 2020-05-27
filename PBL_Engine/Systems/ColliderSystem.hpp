@@ -15,9 +15,8 @@ ECS_SYSTEM(ColliderSystem) {
   public:
     // ========================================================= Behaviour == //
     // Box Collider
-    BoxCollider AddBoxCollider(std::vector<DirectX::XMFLOAT3> objectVertPos);
-    void CalculateAABB(BoxCollider & boxCollider,
-                       DirectX::XMMATRIX const& worldSpace);
+    AABB AddAABB(std::vector<DirectX::XMFLOAT3> objectVertPos);
+    void CalculateAABB(AABB & aabb, DirectX::XMMATRIX const& worldSpace);
     bool CheckBoxesCollision(BoxCollider boxCollider,
                              BoxCollider differentBoxCollider);
     DirectX::XMVECTOR GetColliderMin();

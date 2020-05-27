@@ -187,6 +187,7 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
             yamlLoop(i, nodeMeshRenderer["m_GameObject"]) {
                 auto gameObjectFileId = i->second.Scalar();
                 Entity(entityIds[gameObjectFileId]).add<Renderer>({});
+                Entity(entityIds[gameObjectFileId]).add<AABB>({});
                 entityIds.insert({fileId, entityIds[gameObjectFileId]});
             }
 
