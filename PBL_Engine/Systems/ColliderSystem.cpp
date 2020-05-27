@@ -274,15 +274,6 @@ void ColliderSystem::update(float deltaTime) {
     // Collider Test
     const auto dt = deltaTime * speed_factor;
 
-    std::vector<std::vector<bool>> checkedCollisions;
-    for (int i = 0; i < entities.size(); i++) {
-        std::vector<bool> tempik;
-        for (int j = 0; j < i + 1; j++) {
-            tempik.push_back(false);
-        }
-        checkedCollisions.push_back(tempik);
-    }
-
     for (auto iEntity : entities) {
         for (auto jEntity : entities) {
             if (iEntity.id == jEntity.id) {
