@@ -90,16 +90,37 @@ Surface Surface::FromFile(const std::string& name) {
         height = bitmap.GetHeight();
         pBuffer = std::make_unique<Color[]>(width * height);
 
-        for (unsigned int y = 0; y < height; y++) {
-            for (unsigned int x = 0; x < width; x++) {
-                Gdiplus::Color c;
-                bitmap.GetPixel(x, y, &c);
-                pBuffer[y * width + x] = c.GetValue();
-                if (c.GetAlpha() != 255) {
-                    alphaLoaded = true;
+        Gdiplus::BitmapData bitmapData;
+        auto rect = Gdiplus::Rect(0, 0, bitmap.GetWidth(), bitmap.GetHeight());
+        bitmap.LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB,
+                        &bitmapData);
+        {
+            unsigned int* pRawBitmapOrig = (unsigned int*)bitmapData.Scan0;
+
+            for (UINT y = 0u; y < height; ++y) {
+                for (UINT x = 0u; x < width; ++x) {
+                    unsigned int pixel =
+                        pRawBitmapOrig[y * bitmapData.Stride / 4 + x];
+
+                    // Get separate color data
+                    int b = (pixel & Gdiplus::Color::BlueMask) >>
+                            Gdiplus::Color::BlueShift;
+                    int g = (pixel & Gdiplus::Color::GreenMask) >>
+                            Gdiplus::Color::GreenShift;
+                    int r = (pixel & Gdiplus::Color::RedMask) >>
+                            Gdiplus::Color::RedShift;
+                    int a = (pixel & Gdiplus::Color::AlphaMask) >>
+                            Gdiplus::Color::AlphaShift;
+
+                    pBuffer[y * width + x] = pixel;
+
+                    if (a != 255) {
+                        alphaLoaded = true;
+                    }
                 }
             }
         }
+        bitmap.UnlockBits(&bitmapData);
     }
 
     return Surface(width, height, std::move(pBuffer), alphaLoaded);
