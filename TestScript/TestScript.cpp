@@ -37,6 +37,7 @@ void TestScript::update(float const deltaTime) {
     lastY = transform.position.y;
     lastZ = transform.position.z;
 
+    if (isKeyPressed(VK_SPACE)) {
     if (isKeyPressed('A')) {
         transform.position.x -= 5.0f * deltaTime;
     }
@@ -54,6 +55,7 @@ void TestScript::update(float const deltaTime) {
     }
     if (isKeyPressed('S')) {
         transform.position.z -= 5.0f * deltaTime;
+    }
     }
 
     static float timer = 0.0f;
