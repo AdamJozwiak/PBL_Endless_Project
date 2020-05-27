@@ -40,6 +40,9 @@ void GraphSystem::setup() {
     root.transform = nullptr;
     root.cumulativeTransform = dx::XMMatrixIdentity();
     root.recalculate = true;
+
+    entityToGraphNode.clear();
+    entityToPreviousTransform.clear();
 }
 
 void GraphSystem::update(float const deltaTime) {
