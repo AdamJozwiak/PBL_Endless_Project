@@ -91,6 +91,12 @@ void SceneSystem::setup() {
                 entity.get<MeshFilter>().model->verticesForCollision);
     }
 
+    for (auto entity : registry.system<RenderSystem>()->entities) {
+        entity.add<BoxCollider>(
+            registry.system<ColliderSystem>()->AddBoxCollider(
+                entity.get<MeshFilter>().model->verticesForCollision));
+    }
+
     for (auto entity : registry.system<BehaviourSystem>()->entities) {
         entity.get<Behaviour>().script->setup();
     }
