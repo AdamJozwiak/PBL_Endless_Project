@@ -237,24 +237,27 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
     }
     // Textures
     if (renderer) {
-        std::vector<Surface> surfaces(5);
+        std::vector<std::unique_ptr<SurfaceReference>> surfaces(5);
         std::vector<std::thread> threads;
         threads.push_back(std::thread([&surfaces, &renderer] {
-            surfaces[0] = Surface::FromFile(renderer->material.albedoPath);
+            surfaces[0] = std::make_unique<SurfaceReference>(
+                Surface::FromFile(renderer->material.albedoPath));
         }));
         threads.push_back(std::thread([&surfaces, &renderer] {
-            surfaces[1] =
-                Surface::FromFile(renderer->material.ambientOcclusionPath);
+            surfaces[1] = std::make_unique<SurfaceReference>(
+                Surface::FromFile(renderer->material.ambientOcclusionPath));
         }));
         threads.push_back(std::thread([&surfaces, &renderer] {
-            surfaces[2] =
-                Surface::FromFile(renderer->material.metallicSmoothnessPath);
+            surfaces[2] = std::make_unique<SurfaceReference>(
+                Surface::FromFile(renderer->material.metallicSmoothnessPath));
         }));
         threads.push_back(std::thread([&surfaces, &renderer] {
-            surfaces[3] = Surface::FromFile(renderer->material.normalPath);
+            surfaces[3] = std::make_unique<SurfaceReference>(
+                Surface::FromFile(renderer->material.normalPath));
         }));
         threads.push_back(std::thread([&surfaces, &renderer] {
-            surfaces[4] = Surface::FromFile(renderer->material.heightPath);
+            surfaces[4] = std::make_unique<SurfaceReference>(
+                Surface::FromFile(renderer->material.heightPath));
         }));
         for (auto& thread : threads) {
             if (thread.joinable()) {
@@ -263,8 +266,7 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
         }
 
         for (size_t i = 0; i < surfaces.size(); ++i) {
-            textures.push_back(
-                std::make_shared<Texture>(gfx, std::move(surfaces[i]), i));
+            textures.push_back(std::make_shared<Texture>(gfx, *surfaces[i], i));
         }
 
         parallaxHeight = renderer->material.parallaxHeight;

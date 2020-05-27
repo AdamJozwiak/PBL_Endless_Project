@@ -8,6 +8,8 @@
 #include "IsDebug.hpp"
 #include "WinHeader.h"
 
+using SurfaceReference = std::reference_wrapper<class Surface>;
+
 class Surface {
   public:
     class Color {
@@ -82,10 +84,12 @@ class Surface {
     Color* GetBufferPtr() noexcept;
     const Color* GetBufferPtr() const noexcept;
     const Color* GetBufferPtrConst() const noexcept;
-    static Surface FromFile(const std::string& name);
+    static SurfaceReference FromFile(const std::string& name);
     void Save(const std::string& filename) const;
     void Copy(const Surface& src) noexcept(!IS_DEBUG);
     bool AlphaLoaded() const noexcept;
+
+    std::string filename;
 
   private:
     Surface(unsigned int width, unsigned int height,

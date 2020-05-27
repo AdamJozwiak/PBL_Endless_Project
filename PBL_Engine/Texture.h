@@ -1,9 +1,11 @@
 #pragma once
+#include <Surface.h>
+
 #include "Bindable.h"
 
 class Texture : public Bindable {
   public:
-    Texture(Graphics& gfx, const class Surface& s, int number = 0);
+    Texture(Graphics& gfx, SurfaceReference s, int number = 0);
     Texture(Graphics& gfx,
             Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pOutputTexture,
             float width, float height, int number = 0);

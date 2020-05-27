@@ -8,9 +8,12 @@ using std::min;
 }  // namespace Gdiplus
 #include <gdiplus.h>
 
+#include <map>
 #include <sstream>
 
 #pragma comment(lib, "gdiplus.lib")
+
+std::map<std::string, Surface> existingSurfaces;
 
 Surface::Surface(unsigned int width, unsigned int height) noexcept
     : pBuffer(std::make_unique<Color[]>(width * height)),
@@ -68,7 +71,11 @@ const Surface::Color* Surface::GetBufferPtrConst() const noexcept {
     return pBuffer.get();
 }
 
-Surface Surface::FromFile(const std::string& name) {
+SurfaceReference Surface::FromFile(const std::string& name) {
+    if (existingSurfaces.contains(name)) {
+        return existingSurfaces.at(name);
+    }
+
     unsigned int width = 0;
     unsigned int height = 0;
     std::unique_ptr<Color[]> pBuffer;
@@ -123,7 +130,10 @@ Surface Surface::FromFile(const std::string& name) {
         bitmap.UnlockBits(&bitmapData);
     }
 
-    return Surface(width, height, std::move(pBuffer), alphaLoaded);
+    existingSurfaces.insert(
+        {name, Surface(width, height, std::move(pBuffer), alphaLoaded)});
+    existingSurfaces.at(name).filename = name;
+    return std::ref(existingSurfaces.at(name));
 }
 
 void Surface::Save(const std::string& filename) const {

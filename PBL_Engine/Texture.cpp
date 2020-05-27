@@ -1,20 +1,30 @@
 #include "Texture.h"
 
+#include <map>
+
 #include "GraphicsThrowMacros.h"
 #include "Surface.h"
 
 namespace wrl = Microsoft::WRL;
 
-Texture::Texture(Graphics& gfx, const Surface& s, int number) : number(number) {
+std::map<std::string, Texture> existingTextures;
+
+Texture::Texture(Graphics& gfx, SurfaceReference s, int number)
+    : number(number) {
+    if (existingTextures.contains(s.get().filename)) {
+        Texture texture = existingTextures.at(s.get().filename);
+        *this = texture;
+        return;
+    }
     INFOMAN(gfx);
-    textureWidth = s.GetWidth();
-    textureHeight = s.GetHeight();
-    hasAlpha = s.AlphaLoaded();
+    textureWidth = s.get().GetWidth();
+    textureHeight = s.get().GetHeight();
+    hasAlpha = s.get().AlphaLoaded();
 
     // create texture resource
     D3D11_TEXTURE2D_DESC textureDesc = {};
-    textureDesc.Width = s.GetWidth();
-    textureDesc.Height = s.GetHeight();
+    textureDesc.Width = s.get().GetWidth();
+    textureDesc.Height = s.get().GetHeight();
     textureDesc.MipLevels = 1;
     textureDesc.ArraySize = 1;
     textureDesc.Format =
@@ -26,9 +36,9 @@ Texture::Texture(Graphics& gfx, const Surface& s, int number) : number(number) {
     textureDesc.CPUAccessFlags = 0;
     textureDesc.MiscFlags = 0;
     D3D11_SUBRESOURCE_DATA sd = {};
-    sd.pSysMem = s.GetBufferPtr();
+    sd.pSysMem = s.get().GetBufferPtr();
     sd.SysMemPitch =
-        s.GetWidth() *
+        s.get().GetWidth() *
         sizeof(Surface::Color);  // distance in bytes between adjacent pixels
     wrl::ComPtr<ID3D11Texture2D> pTexture;
     GFX_THROW_INFO(
@@ -42,6 +52,8 @@ Texture::Texture(Graphics& gfx, const Surface& s, int number) : number(number) {
     srvDesc.Texture2D.MipLevels = 1;
     GFX_THROW_INFO(GetDevice(gfx)->CreateShaderResourceView(
         pTexture.Get(), &srvDesc, &pTextureView));
+
+    existingTextures.insert({s.get().filename, *this});
 }
 
 Texture::Texture(
