@@ -369,6 +369,9 @@
     <ClCompile Include="Text.cpp">
       <Filter>Pliki źródłowe\UI</Filter>
     </ClCompile>
+    <ClCompile Include="FrustumCulling.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -827,6 +830,9 @@
     <ClInclude Include="PostProcessing.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="CPlane.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
     <ClInclude Include="Systems\GraphSystem.hpp">
       <Filter>Pliki nagłówkowe\Systems</Filter>
     </ClInclude>
@@ -835,6 +841,9 @@
     </ClInclude>
     <ClInclude Include="Text.h">
       <Filter>Pliki nagłówkowe\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="FrustumCulling.h">
+      <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

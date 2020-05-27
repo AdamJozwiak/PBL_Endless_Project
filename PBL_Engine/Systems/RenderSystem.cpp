@@ -7,6 +7,7 @@
 #include <cmath>
 #include <memory>
 
+#include "FrustumCulling.h"
 #include "GDIPlusManager.h"
 #include "Text.h"
 #include "Mesh.h"
@@ -58,7 +59,7 @@ void RenderSystem::setup() {
 void RenderSystem::update(float deltaTime) {
     const auto dt = deltaTime * speed_factor;
     window->Gfx().BeginFrame(0.0f, 0.0f, 0.0f);
-
+    int a = 0;
     bloom->Begin();
     {
         // Process mouse movements for free camera
@@ -92,6 +93,12 @@ void RenderSystem::update(float deltaTime) {
 
         // Set camera
         window->Gfx().SetCamera(camera->GetMatrix());
+        DirectX::XMFLOAT4X4 viewProjection;
+        DirectX::XMStoreFloat4x4(
+            &viewProjection,
+            camera->GetMatrix() * window->Gfx().GetProjection());
+
+        auto frustum = CFrustum(viewProjection);
 
         // Set lights
         light->Bind(window->Gfx(), DirectX::XMMatrixIdentity(),
@@ -102,13 +109,28 @@ void RenderSystem::update(float deltaTime) {
 
         // Render all renderable models
         for (auto const& entity : entities) {
-            auto& meshFilter = entity.get<MeshFilter>();
+            auto div = DirectX::XMVectorSubtract(
+                entity.get<BoxCollider>().boxColliderMax,
+                entity.get<BoxCollider>().boxColliderMin);
+            auto avg = DirectX::XMVectorScale(div, 0.5f);
 
-            meshFilter.model->Draw(
-                window->Gfx(),
-                registry.system<GraphSystem>()->transform(entity));
+            DirectX::XMFLOAT3 center;
+            DirectX::XMStoreFloat3(
+                &center, DirectX::XMVectorAdd(
+                             avg, entity.get<BoxCollider>().boxColliderMin));
+            DirectX::XMFLOAT3 radius;
+            DirectX::XMStoreFloat3(&radius, DirectX::XMVector3Length(avg));
+
+            if (frustum.SphereIntersection(center, radius.x)) {
+                auto& meshFilter = entity.get<MeshFilter>();
+
+                meshFilter.model->Draw(
+                    window->Gfx(),
+                    registry.system<GraphSystem>()->transform(entity));
+                a++;
+            }
         }
-        
+
         // Show colliders
         static bool showColliders = false;
         // for (auto const& entity :
@@ -140,7 +162,7 @@ void RenderSystem::update(float deltaTime) {
                                       dx::XMConvertToRadians(270.0f),
                                       dx::XMConvertToRadians(180.0f),
                                       dx::XMConvertToRadians(0.0f)));
-        
+
         // Render light dummy
         // light->Draw(window->Gfx());
 
@@ -177,7 +199,7 @@ void RenderSystem::update(float deltaTime) {
         colorCorrection->Draw(window->Gfx());
     }
 
-    text->RenderText(window->Gfx(), "klata plecy barki");
+    text->RenderText(window->Gfx(), "Visible entities: " + std::to_string(a));
     window->Gfx().EndFrame();
 };
 
