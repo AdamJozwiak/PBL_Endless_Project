@@ -274,7 +274,7 @@ void ColliderSystem::update(float deltaTime) {
                 registry.system<GraphSystem>()->transform(jEntity);
             if (CheckBoxesCollision(iEntity.get<BoxCollider>(),
                                     jEntity.get<BoxCollider>())) {
-                //checkedCollisions[i][j] = true;
+                // checkedCollisions[i][j] = true;
                 registry.send(OnCollisionEnter{.a = iEntity, .b = jEntity});
             }
         }
