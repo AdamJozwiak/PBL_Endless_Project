@@ -28,6 +28,7 @@ GDIPlusManager gdipm;
 Model* nano;
 Animator animator;
 PointLight* light;
+PointLight* light2;
 std::unique_ptr<Text> text;
 
 // /////////////////////////////////////////////////////////////////// System //
@@ -43,7 +44,8 @@ void RenderSystem::setup() {
     sphere = std::make_unique<SolidSphere>(window->Gfx(), 1.0f);
     billboard = std::make_unique<Billboard>(window->Gfx(), camera.get());
     fireParticle = std::make_unique<FireParticle>(window->Gfx(), camera.get());
-    light = new PointLight(window->Gfx());
+    light = new PointLight(window->Gfx(), 0);
+    light2 = new PointLight(window->Gfx(), 1);
     bloom = std::make_unique<PostProcessing>(window->Gfx(), L"Bloom", 2);
     colorCorrection =
         std::make_unique<PostProcessing>(window->Gfx(), L"ColorCorrection", 1);
@@ -108,8 +110,9 @@ void RenderSystem::update(float deltaTime) {
         auto frustum = CFrustum(viewProjection);
 
         // Set lights
-        light->Bind(window->Gfx(), DirectX::XMMatrixIdentity(),
-                    camera->GetCameraPos());
+        light->AddToBuffer(DirectX::XMMatrixIdentity(), camera->GetCameraPos());
+        light2->AddToBuffer(DirectX::XMMatrixIdentity(), camera->GetCameraPos());
+        light2->Bind(window->Gfx());
 
         // Advance the animation time
         animator.animationTime += dt;
@@ -190,7 +193,8 @@ void RenderSystem::update(float deltaTime) {
             }
             ImGui::End();
         }
-        light->SpawnControlWindow();
+        //light->SpawnControlWindow();
+        light2->SpawnControlWindow();
         nano->ShowWindow();
     }
     bloom->End();

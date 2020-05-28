@@ -23,6 +23,7 @@ SamplerState textureSampler {
 };
 
 // //////////////////////////////////////////////////////////////// Constants //
+static const int NUM_LIGHTS = 2;
 static const float PI = 3.14159265359;
 static const int TEXTURE_ALBEDO = 0, TEXTURE_AMBIENT_OCCLUSION = 1,
                  TEXTURE_METALLIC_SMOOTHNESS = 2, TEXTURE_NORMAL = 3,
@@ -35,10 +36,10 @@ static const int MAX_SAMPLE_COUNT = 32;
 cbuffer MaterialParameters : register(b9) { float parallaxHeight; };
 
 cbuffer LightParameters : register(b10) {
-    float3 lightPositionWorld;
+    float3 lightPositionWorld[NUM_LIGHTS];
     float3 viewPositionWorld;
 
-    float3 diffuseColor;
+    float3 diffuseColor[NUM_LIGHTS];
 
     float attenuationConstant;
     float attenuationLinear;
@@ -77,8 +78,12 @@ float3 fresnelSchlick(float cosTheta, float3 f0) {
     return f0 + (1.0f - f0) * pow(1.0f - cosTheta, 5.0f);
 }
 
-float4 pbr(PixelShaderInput input, float3 lightDir, float factor, float3 normal,
-           float2 texCoord) {
+float attenuate(float distance) {
+    return 1.0f / (attenuationConstant + attenuationLinear * distance +
+                   attenuationQuadratic * pow(distance, 2.0f));
+}
+
+float4 pbr(PixelShaderInput input, float3 normal, float2 texCoord) {
     // Load texture parameters
     float3 albedo =
         pow(textures[TEXTURE_ALBEDO].Sample(textureSampler, texCoord).rgb,
@@ -94,41 +99,40 @@ float4 pbr(PixelShaderInput input, float3 lightDir, float factor, float3 normal,
 
     // Calculate view direction
     float3 viewDir = normalize(viewPositionWorld - input.positionWorld);
-
+    float4 Lo = {0.0f, 0.0f, 0.0f, 0.0f};
     // Radiance
-    float3 h = normalize(viewDir + lightDir);
-    float3 radiance = diffuseColor * factor;
+    for (int i = 0; i < NUM_LIGHTS; i++) {
+        float3 lightDir =
+            normalize(lightPositionWorld[i] - input.positionWorld);
+        float3 h = normalize(viewDir + lightDir);
+        float factor = attenuate(length(lightPositionWorld[i] - input.positionWorld));
+        float3 radiance = diffuseColor[i] * factor;
 
-    // Cook-Torrance BRDF
-    float ndf = distributionGGX(normal, h, roughness);
-    float g = geometrySmith(normal, viewDir, lightDir, roughness);
-    float3 f = fresnelSchlick(
-        max(dot(h, viewDir), 0.0f),
-        lerp(0.04f * float3(1.0f, 1.0f, 1.0f), albedo, metalness));
+        // Cook-Torrance BRDF
+        float ndf = distributionGGX(normal, h, roughness);
+        float g = geometrySmith(normal, viewDir, lightDir, roughness);
+        float3 f = fresnelSchlick(
+            max(dot(h, viewDir), 0.0f),
+            lerp(0.04f * float3(1.0f, 1.0f, 1.0f), albedo, metalness));
 
-    float3 kD = (float3(1.0, 1.0f, 1.0f) - f) * (1.0f - metalness);
+        float3 kD = (float3(1.0, 1.0f, 1.0f) - f) * (1.0f - metalness);
 
-    float3 specular =
-        (ndf * g * f) / max((4.0f * max(dot(normal, viewDir), 0.0f) *
-                             max(dot(normal, lightDir), 0.0f)),
-                            0.001f);
-
-    return float4((kD * albedo / PI + specular) * radiance *
-                      max(dot(normal, lightDir), 0.0f),
-                  1.0f);
+        float3 specular =
+            (ndf * g * f) / max((4.0f * max(dot(normal, viewDir), 0.0f) *
+                                 max(dot(normal, lightDir), 0.0f)),
+                                0.001f);
+        Lo += float4((kD * albedo / PI + specular) * radiance *
+                         max(dot(normal, lightDir), 0.0f),
+                     1.0f);
+    }
+    return Lo;
 }
 
 // ////////////////////////////////////////////////////////////// Light types //
-float attenuate(float distance) {
-    return 1.0f / (attenuationConstant + attenuationLinear * distance +
-                   attenuationQuadratic * pow(distance, 2.0f));
-}
+
 
 float4 pointLight(PixelShaderInput input, float3 normal, float2 texCoord) {
-    float3 lightDir = normalize(lightPositionWorld - input.positionWorld);
-    return pbr(input, lightDir,
-               attenuate(length(lightPositionWorld - input.positionWorld)),
-               normal, texCoord);
+    return pbr(input, normal, texCoord);
 }
 
 // /////////////////////////////////////////////// Parallax occlusion mapping //
