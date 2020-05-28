@@ -15,7 +15,7 @@ class PointLight {
     DirectX::XMFLOAT4 lightPositionWorld() const;
 
   private:
-    static constexpr int MAX_LIGHT_COUNT = 2;
+    static constexpr int MAX_LIGHT_COUNT = 8;
     struct LightParametersConstantBuffer {
         alignas(16) DirectX::XMFLOAT4 lightPositionWorld[MAX_LIGHT_COUNT];
         alignas(16) DirectX::XMFLOAT4 viewPositionWorld;

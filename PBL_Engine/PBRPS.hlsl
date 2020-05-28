@@ -23,7 +23,7 @@ SamplerState textureSampler {
 };
 
 // //////////////////////////////////////////////////////////////// Constants //
-static const int NUM_LIGHTS = 2;
+static const int NUM_LIGHTS = 8;
 static const float PI = 3.14159265359;
 static const int TEXTURE_ALBEDO = 0, TEXTURE_AMBIENT_OCCLUSION = 1,
                  TEXTURE_METALLIC_SMOOTHNESS = 2, TEXTURE_NORMAL = 3,
