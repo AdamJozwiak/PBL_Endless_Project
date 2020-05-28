@@ -87,18 +87,15 @@ class Surface {
     static SurfaceReference FromFile(const std::string& name);
     void Save(const std::string& filename) const;
     void Copy(const Surface& src) noexcept(!IS_DEBUG);
-    bool AlphaLoaded() const noexcept;
 
     std::string filename;
 
   private:
     Surface(unsigned int width, unsigned int height,
-            std::unique_ptr<Color[]> pBufferParam,
-            bool alphaLoaded = false) noexcept;
+            std::unique_ptr<Color[]> pBufferParam) noexcept;
 
   private:
     std::unique_ptr<Color[]> pBuffer;
     unsigned int width;
     unsigned int height;
-    bool alphaLoaded = false;
 };
