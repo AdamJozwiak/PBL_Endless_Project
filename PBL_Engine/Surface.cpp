@@ -8,6 +8,7 @@ using std::min;
 }  // namespace Gdiplus
 #include <gdiplus.h>
 
+#include <cstring>
 #include <map>
 #include <sstream>
 
@@ -100,28 +101,8 @@ SurfaceReference Surface::FromFile(const std::string& name) {
         auto rect = Gdiplus::Rect(0, 0, bitmap.GetWidth(), bitmap.GetHeight());
         bitmap.LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB,
                         &bitmapData);
-        {
-            unsigned int* pRawBitmapOrig = (unsigned int*)bitmapData.Scan0;
-
-            for (UINT y = 0u; y < height; ++y) {
-                for (UINT x = 0u; x < width; ++x) {
-                    unsigned int pixel =
-                        pRawBitmapOrig[y * bitmapData.Stride / 4 + x];
-
-                    // Get separate color data
-                    int b = (pixel & Gdiplus::Color::BlueMask) >>
-                            Gdiplus::Color::BlueShift;
-                    int g = (pixel & Gdiplus::Color::GreenMask) >>
-                            Gdiplus::Color::GreenShift;
-                    int r = (pixel & Gdiplus::Color::RedMask) >>
-                            Gdiplus::Color::RedShift;
-                    int a = (pixel & Gdiplus::Color::AlphaMask) >>
-                            Gdiplus::Color::AlphaShift;
-
-                    pBuffer[y * width + x] = pixel;
-                }
-            }
-        }
+        std::memcpy(pBuffer.get(), (UINT*)bitmapData.Scan0,
+                    sizeof(UINT) * width * height);
         bitmap.UnlockBits(&bitmapData);
     }
 
