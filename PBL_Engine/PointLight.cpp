@@ -1,5 +1,7 @@
 #include "PointLight.h"
 
+#include <optional>
+
 #include "imgui/imgui.h"
 
 PointLight::LightParametersConstantBuffer
@@ -12,6 +14,31 @@ PointLight::PointLight(Graphics& gfx, int number, float radius)
 
 DirectX::XMFLOAT4 PointLight::lightPositionWorld() const {
     return lightParametersConstantBuffer.lightPositionWorld[number];
+}
+
+void PointLight::setIntensity(float const intensity) {
+    // Find the vector which contains the target intensity
+    auto& intensityVector = lightParametersConstantBuffer.intensity[number / 4];
+
+    // Choose the specific component inside the found vector
+    std::optional<std::reference_wrapper<float>> targetIntensityComponent;
+    switch (number % 4) {
+        case 0:
+            targetIntensityComponent = intensityVector.x;
+            break;
+        case 1:
+            targetIntensityComponent = intensityVector.y;
+            break;
+        case 2:
+            targetIntensityComponent = intensityVector.z;
+            break;
+        case 3:
+            targetIntensityComponent = intensityVector.w;
+            break;
+    }
+
+    // Set the intensity
+    targetIntensityComponent->get() = intensity;
 }
 
 void PointLight::SpawnControlWindow() noexcept {
@@ -65,6 +92,7 @@ void PointLight::Reset() noexcept {
     lightParametersConstantBuffer.attenuationConstant = 1.0f;
     lightParametersConstantBuffer.attenuationLinear = 0.045f;
     lightParametersConstantBuffer.attenuationQuadratic = 0.0075f;
+    setIntensity(1.0f);
 }
 
 void PointLight::AddToBuffer(DirectX::FXMMATRIX view,

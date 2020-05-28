@@ -41,6 +41,8 @@ cbuffer LightParameters : register(b10) {
 
     float4 diffuseColor[NUM_LIGHTS];
 
+    float4 intensity[NUM_LIGHTS / 4];
+
     float attenuationConstant;
     float attenuationLinear;
     float attenuationQuadratic;
@@ -107,6 +109,7 @@ float4 pbr(PixelShaderInput input, float3 normal, float2 texCoord) {
             normalize(lightPositionWorld[i].xyz - input.positionWorld);
         float3 h = normalize(viewDir + lightDir);
         float factor =
+            ((float[NUM_LIGHTS])intensity)[i] *
             attenuate(length(lightPositionWorld[i].xyz - input.positionWorld));
         float3 radiance = diffuseColor[i].xyz * factor;
 
@@ -124,8 +127,8 @@ float4 pbr(PixelShaderInput input, float3 normal, float2 texCoord) {
                                  max(dot(normal, lightDir), 0.0f)),
                                 0.001f);
         finalColor += float4((kD * albedo / PI + specular) * radiance *
-                         max(dot(normal, lightDir), 0.0f),
-                     1.0f);
+                                 max(dot(normal, lightDir), 0.0f),
+                             1.0f);
     }
     return finalColor;
 }
