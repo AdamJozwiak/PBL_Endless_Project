@@ -1,0 +1,32 @@
+#pragma once
+
+// ///////////////////////////////////////////////////////////////// Includes //
+#include <memory>
+
+#include "ECS/Entity.hpp"
+#include "Events/OnCollisionEnter.hpp"
+#include "PlayerControllerScriptAPI.hpp"
+#include "Script.hpp"
+
+// //////////////////////////////////////////////////////////////////// Class //
+class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
+  public:
+    // ========================================================= Behaviour == //
+    PlayerControllerScript(Entity const &entity);
+
+    // ------------------------------------- System's virtual functions -- == //
+    void setup() override;
+    void update(float const deltaTime) override;
+
+    // --------------------------------------------------------- Events -- == //
+    void onCollisionEnter(OnCollisionEnter const &event);
+
+    // -------------------------------------------------------- Methods -- == //
+    void method();
+
+  private:
+    // ============================================================== Data == //
+    bool (*isKeyPressed)(int const key);
+};
+
+// ////////////////////////////////////////////////////////////////////////// //
