@@ -89,9 +89,9 @@ void PointLight::Reset() noexcept {
     lightParametersConstantBuffer.viewPositionWorld = {0.0f, 0.0f, 0.0f, 0.0f};
     lightParametersConstantBuffer.diffuseColor[number] = {1.0f, 1.0f, 1.0f,
                                                           1.0f};
-    lightParametersConstantBuffer.attenuationConstant = 1.0f;
-    lightParametersConstantBuffer.attenuationLinear = 0.045f;
-    lightParametersConstantBuffer.attenuationQuadratic = 0.0075f;
+    lightParametersConstantBuffer.attenuationConstant = 0.0f;
+    lightParametersConstantBuffer.attenuationLinear = 0.0f;
+    lightParametersConstantBuffer.attenuationQuadratic = 0.02f;
     setIntensity(1.0f);
 }
 
