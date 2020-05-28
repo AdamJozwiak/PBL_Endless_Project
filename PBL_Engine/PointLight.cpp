@@ -5,7 +5,7 @@
 LightParametersConstantBuffer PointLight::lightParametersConstantBuffer;
 
 PointLight::PointLight(Graphics& gfx, int number, float radius)
-    : mesh(gfx, radius), cbuf(gfx, 10), number(number) {
+    : mesh(gfx, radius), number(number) {
     Reset();
 }
 
@@ -81,7 +81,8 @@ void PointLight::Draw(Graphics& gfx) const noexcept(!IS_DEBUG) {
     mesh.Draw(gfx);
 }
 
-void PointLight::Bind(Graphics& gfx) const noexcept {
+void PointLight::Bind(Graphics& gfx) noexcept {
+    static PixelConstantBuffer<LightParametersConstantBuffer> cbuf(gfx, 10);
     cbuf.Update(gfx, lightParametersConstantBuffer);
     cbuf.Bind(gfx);
 }

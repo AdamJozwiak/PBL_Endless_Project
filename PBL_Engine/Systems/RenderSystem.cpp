@@ -113,7 +113,7 @@ void RenderSystem::update(float deltaTime) {
         light->AddToBuffer(DirectX::XMMatrixIdentity(), camera->GetCameraPos());
         light2->AddToBuffer(DirectX::XMMatrixIdentity(),
                             camera->GetCameraPos());
-        light2->Bind(window->Gfx());
+        PointLight::Bind(window->Gfx());
 
         // Advance the animation time
         animator.animationTime += dt;

@@ -29,7 +29,7 @@ class PointLight {
     void AddToBuffer(DirectX::FXMMATRIX view,
                      DirectX::XMVECTOR cameraWorldPosition);
     void Draw(Graphics& gfx) const noexcept(!IS_DEBUG);
-    void Bind(Graphics& gfx) const noexcept;
+    static void Bind(Graphics& gfx) noexcept;
     DirectX::XMFLOAT3 lightPositionWorld() const;
 
   private:
@@ -38,5 +38,4 @@ class PointLight {
   private:
     int number;
     mutable SolidSphere mesh;
-    mutable PixelConstantBuffer<LightParametersConstantBuffer> cbuf;
 };
