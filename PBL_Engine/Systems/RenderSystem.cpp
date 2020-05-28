@@ -9,9 +9,9 @@
 
 #include "FrustumCulling.h"
 #include "GDIPlusManager.h"
-#include "Text.h"
 #include "Mesh.h"
 #include "PBLMath.h"
+#include "Text.h"
 #include "Window.h"
 #include "imgui/imgui.h"
 
@@ -111,7 +111,8 @@ void RenderSystem::update(float deltaTime) {
 
         // Set lights
         light->AddToBuffer(DirectX::XMMatrixIdentity(), camera->GetCameraPos());
-        light2->AddToBuffer(DirectX::XMMatrixIdentity(), camera->GetCameraPos());
+        light2->AddToBuffer(DirectX::XMMatrixIdentity(),
+                            camera->GetCameraPos());
         light2->Bind(window->Gfx());
 
         // Advance the animation time
@@ -193,7 +194,7 @@ void RenderSystem::update(float deltaTime) {
             }
             ImGui::End();
         }
-        //light->SpawnControlWindow();
+        // light->SpawnControlWindow();
         light2->SpawnControlWindow();
         nano->ShowWindow();
     }

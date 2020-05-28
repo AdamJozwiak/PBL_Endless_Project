@@ -100,6 +100,7 @@ float4 pbr(PixelShaderInput input, float3 normal, float2 texCoord) {
     // Calculate view direction
     float3 viewDir = normalize(viewPositionWorld - input.positionWorld);
     float4 Lo = {0.0f, 0.0f, 0.0f, 0.0f};
+
     // Radiance
     for (int i = 0; i < NUM_LIGHTS; i++) {
         float3 lightDir =
@@ -129,8 +130,6 @@ float4 pbr(PixelShaderInput input, float3 normal, float2 texCoord) {
 }
 
 // ////////////////////////////////////////////////////////////// Light types //
-
-
 float4 pointLight(PixelShaderInput input, float3 normal, float2 texCoord) {
     return pbr(input, normal, texCoord);
 }
