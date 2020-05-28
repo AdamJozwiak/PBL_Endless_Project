@@ -99,10 +99,10 @@ float4 pbr(PixelShaderInput input, float3 normal, float2 texCoord) {
 
     // Calculate view direction
     float3 viewDir = normalize(viewPositionWorld.xyz - input.positionWorld);
-    float4 Lo = {0.0f, 0.0f, 0.0f, 0.0f};
+    float4 finalColor = {0.0f, 0.0f, 0.0f, 0.0f};
 
     // Radiance
-    for (int i = 0; i < NUM_LIGHTS; i++) {
+    for (int i = 0; i < NUM_LIGHTS; ++i) {
         float3 lightDir =
             normalize(lightPositionWorld[i].xyz - input.positionWorld);
         float3 h = normalize(viewDir + lightDir);
@@ -123,11 +123,11 @@ float4 pbr(PixelShaderInput input, float3 normal, float2 texCoord) {
             (ndf * g * f) / max((4.0f * max(dot(normal, viewDir), 0.0f) *
                                  max(dot(normal, lightDir), 0.0f)),
                                 0.001f);
-        Lo += float4((kD * albedo / PI + specular) * radiance *
+        finalColor += float4((kD * albedo / PI + specular) * radiance *
                          max(dot(normal, lightDir), 0.0f),
                      1.0f);
     }
-    return Lo;
+    return finalColor;
 }
 
 // ////////////////////////////////////////////////////////////// Light types //
