@@ -17,21 +17,12 @@ class PointLight {
   private:
     static constexpr int MAX_LIGHT_COUNT = 2;
     struct LightParametersConstantBuffer {
-        alignas(16) DirectX::XMFLOAT3 lightPositionWorld[MAX_LIGHT_COUNT];
-        alignas(16) DirectX::XMFLOAT3 viewPositionWorld;
-        alignas(16) DirectX::XMFLOAT3 diffuseColor[MAX_LIGHT_COUNT];
+        alignas(16) DirectX::XMFLOAT4 lightPositionWorld[MAX_LIGHT_COUNT];
+        alignas(16) DirectX::XMFLOAT4 viewPositionWorld;
+        alignas(16) DirectX::XMFLOAT4 diffuseColor[MAX_LIGHT_COUNT];
         float attenuationConstant;
         float attenuationLinear;
         float attenuationQuadratic;
-        double empty1 = 0.0f;
-        double empty2 = 0.0f;
-        double empty3 = 0.0f;
-        double empty4 = 0.0f;
-        double empty5 = 0.0f;
-        double empty6 = 0.0f;
-        double empty7 = 0.0f;
-        double empty8 = 0.0f;
-        double empty9 = 0.0f;
     };
     static LightParametersConstantBuffer lightParametersConstantBuffer;
 

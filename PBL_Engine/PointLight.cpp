@@ -10,7 +10,7 @@ PointLight::PointLight(Graphics& gfx, int number, float radius)
     Reset();
 }
 
-DirectX::XMFLOAT3 PointLight::lightPositionWorld() const {
+DirectX::XMFLOAT4 PointLight::lightPositionWorld() const {
     return lightParametersConstantBuffer.lightPositionWorld[number];
 }
 
@@ -58,9 +58,10 @@ void PointLight::SpawnControlWindow() noexcept {
 
 void PointLight::Reset() noexcept {
     lightParametersConstantBuffer.lightPositionWorld[number] = {0.0f, 0.0f,
-                                                                0.0f};
-    lightParametersConstantBuffer.viewPositionWorld = {0.0f, 0.0f, 0.0f};
-    lightParametersConstantBuffer.diffuseColor[number] = {1.0f, 1.0f, 1.0f};
+                                                                0.0f, 0.0f};
+    lightParametersConstantBuffer.viewPositionWorld = {0.0f, 0.0f, 0.0f, 0.0f};
+    lightParametersConstantBuffer.diffuseColor[number] = {1.0f, 1.0f, 1.0f,
+                                                          1.0f};
     lightParametersConstantBuffer.attenuationConstant = 1.0f;
     lightParametersConstantBuffer.attenuationLinear = 0.045f;
     lightParametersConstantBuffer.attenuationQuadratic = 0.0075f;
@@ -68,17 +69,20 @@ void PointLight::Reset() noexcept {
 
 void PointLight::AddToBuffer(DirectX::FXMMATRIX view,
                              DirectX::XMVECTOR cameraWorldPosition) {
-    const auto lightPosition = DirectX::XMLoadFloat3(
+    const auto lightPosition = DirectX::XMLoadFloat4(
         &lightParametersConstantBuffer.lightPositionWorld[number]);
-    DirectX::XMStoreFloat3(
+    DirectX::XMStoreFloat4(
         &lightParametersConstantBuffer.lightPositionWorld[number],
         DirectX::XMVector3Transform(lightPosition, view));
-    DirectX::XMStoreFloat3(&lightParametersConstantBuffer.viewPositionWorld,
+    DirectX::XMStoreFloat4(&lightParametersConstantBuffer.viewPositionWorld,
                            cameraWorldPosition);
 }
 
 void PointLight::Draw(Graphics& gfx) const noexcept(!IS_DEBUG) {
-    mesh.SetPos(lightParametersConstantBuffer.lightPositionWorld[number]);
+    auto const& lightPositionWorld =
+        lightParametersConstantBuffer.lightPositionWorld[number];
+    mesh.SetPos(
+        {lightPositionWorld.x, lightPositionWorld.y, lightPositionWorld.z});
     mesh.Draw(gfx);
 }
 

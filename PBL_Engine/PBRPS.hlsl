@@ -36,10 +36,10 @@ static const int MAX_SAMPLE_COUNT = 32;
 cbuffer MaterialParameters : register(b9) { float parallaxHeight; };
 
 cbuffer LightParameters : register(b10) {
-    float3 lightPositionWorld[NUM_LIGHTS];
-    float3 viewPositionWorld;
+    float4 lightPositionWorld[NUM_LIGHTS];
+    float4 viewPositionWorld;
 
-    float3 diffuseColor[NUM_LIGHTS];
+    float4 diffuseColor[NUM_LIGHTS];
 
     float attenuationConstant;
     float attenuationLinear;
@@ -98,16 +98,17 @@ float4 pbr(PixelShaderInput input, float3 normal, float2 texCoord) {
                                  .a;
 
     // Calculate view direction
-    float3 viewDir = normalize(viewPositionWorld - input.positionWorld);
+    float3 viewDir = normalize(viewPositionWorld.xyz - input.positionWorld);
     float4 Lo = {0.0f, 0.0f, 0.0f, 0.0f};
 
     // Radiance
     for (int i = 0; i < NUM_LIGHTS; i++) {
         float3 lightDir =
-            normalize(lightPositionWorld[i] - input.positionWorld);
+            normalize(lightPositionWorld[i].xyz - input.positionWorld);
         float3 h = normalize(viewDir + lightDir);
-        float factor = attenuate(length(lightPositionWorld[i] - input.positionWorld));
-        float3 radiance = diffuseColor[i] * factor;
+        float factor =
+            attenuate(length(lightPositionWorld[i].xyz - input.positionWorld));
+        float3 radiance = diffuseColor[i].xyz * factor;
 
         // Cook-Torrance BRDF
         float ndf = distributionGGX(normal, h, roughness);
@@ -212,9 +213,9 @@ PixelShaderOutput main(PixelShaderInput input) {
 
     // Update texture coordinates with parallax mapping
     float3 viewDirectionWorld =
-        normalize(viewPositionWorld - input.positionWorld);
+        normalize(viewPositionWorld.xyz - input.positionWorld);
     float3 viewDirectionTangent =
-        normalize(mul(-viewDirectionWorld, worldToTangent));
+        normalize(mul(-viewDirectionWorld.xyz, worldToTangent));
 
     float2 texCoordParallax = input.texCoord;
     if (parallaxHeight > 0.005f) {
