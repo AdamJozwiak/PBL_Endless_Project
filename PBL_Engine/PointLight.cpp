@@ -2,7 +2,8 @@
 
 #include "imgui/imgui.h"
 
-LightParametersConstantBuffer PointLight::lightParametersConstantBuffer;
+PointLight::LightParametersConstantBuffer
+    PointLight::lightParametersConstantBuffer;
 
 PointLight::PointLight(Graphics& gfx, int number, float radius)
     : mesh(gfx, radius), number(number) {
