@@ -194,8 +194,7 @@ void RenderSystem::update(float deltaTime) {
             }
             ImGui::End();
         }
-        // light->SpawnControlWindow();
-        light2->SpawnControlWindow();
+        light->SpawnControlWindow();
         nano->ShowWindow();
     }
     bloom->End();
