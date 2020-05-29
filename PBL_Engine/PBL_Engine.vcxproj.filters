@@ -1061,6 +1061,9 @@
     <ClInclude Include="soloud\include\soloud_wavstream.h">
       <Filter>soloud\include</Filter>
     </ClInclude>
+    <ClInclude Include="Events\OnButtonClick.hpp">
+      <Filter>Pliki nagłówkowe\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXTrace.inl">

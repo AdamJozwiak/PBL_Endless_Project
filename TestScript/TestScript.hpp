@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "ECS/Entity.hpp"
+#include "Events/OnButtonClick.hpp"
 #include "Events/OnCollisionEnter.hpp"
 #include "Script.hpp"
 #include "TestScriptAPI.hpp"
@@ -20,6 +21,7 @@ class TESTSCRIPT_API TestScript : public Script {
 
     // --------------------------------------------------------- Events -- == //
     void onCollisionEnter(OnCollisionEnter const &event);
+    void onButtonClick(OnButtonClick const &event);
 
     // -------------------------------------------------------- Methods -- == //
     void method();

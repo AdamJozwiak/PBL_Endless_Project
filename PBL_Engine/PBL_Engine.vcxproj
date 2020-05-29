@@ -172,6 +172,7 @@
     <ClInclude Include="ECS\SystemManager.hpp" />
     <ClInclude Include="ECS\Utilities.hpp" />
     <ClInclude Include="Engine.hpp" />
+    <ClInclude Include="Events\OnButtonClick.hpp" />
     <ClInclude Include="Events\OnCollisionEnter.hpp" />
     <ClInclude Include="ExceptionHandler.h" />
     <ClInclude Include="FireParticle.h" />

@@ -22,6 +22,8 @@ TestScript::TestScript(Entity const& entity) : Script(entity){};
 void TestScript::setup() {
     registry.listen<OnCollisionEnter>(
         MethodListener(TestScript::onCollisionEnter));
+    registry.listen<OnButtonClick>(
+        MethodListener(TestScript::onButtonClick));
     isKeyPressed = [](int const key) {
         return registry.system<RenderSystem>()->window->keyboard.KeyIsPressed(
             key);
@@ -117,6 +119,8 @@ void TestScript::onCollisionEnter(OnCollisionEnter const& event) {
         }
     }
 }
+
+void TestScript::onButtonClick(OnButtonClick const& event) {}
 
 // ------------------------------------------------------------ Methods -- == //
 void TestScript::method() {}
