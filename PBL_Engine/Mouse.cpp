@@ -13,13 +13,13 @@ std::optional<Mouse::RawDelta> Mouse::ReadRawDelta() noexcept {
     return d;
 }
 
-int Mouse::GetPosX() const noexcept { return x; }
+ENGINE_API int Mouse::GetPosX() const noexcept { return x; }
 
-int Mouse::GetPosY() const noexcept { return y; }
+ENGINE_API int Mouse::GetPosY() const noexcept { return y; }
 
 bool Mouse::IsInWindow() const noexcept { return isInWindow; }
 
-bool Mouse::LeftIsPressed() const noexcept { return leftIsPressed; }
+ENGINE_API bool Mouse::LeftIsPressed() const noexcept { return leftIsPressed; }
 
 bool Mouse::RightIsPressed() const noexcept { return rightIsPressed; }
 

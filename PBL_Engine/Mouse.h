@@ -2,6 +2,8 @@
 #include <optional>
 #include <queue>
 
+#include "EngineAPI.hpp"
+
 class Mouse {
     friend class Window;
 
@@ -58,10 +60,10 @@ class Mouse {
     Mouse& operator=(const Mouse&) = delete;
     std::pair<int, int> GetPos() const noexcept;
     std::optional<RawDelta> ReadRawDelta() noexcept;
-    int GetPosX() const noexcept;
-    int GetPosY() const noexcept;
+    ENGINE_API int GetPosX() const noexcept;
+    ENGINE_API int GetPosY() const noexcept;
     bool IsInWindow() const noexcept;
-    bool LeftIsPressed() const noexcept;
+    ENGINE_API bool LeftIsPressed() const noexcept;
     bool RightIsPressed() const noexcept;
     Mouse::Event Read() noexcept;
     bool IsEmpty() const noexcept { return buffer.empty(); }
