@@ -26,12 +26,15 @@ void spawnMonkey(Entity entity) {
             .add<Renderer>(entity.get<Renderer>())
             .add<AABB>(Registry::instance().system<ColliderSystem>()->AddAABB(
                 entity.get<MeshFilter>().model->verticesForCollision));
+        Registry::instance().system<SoundSystem>()->play3d(
+            "Assets\\Audio\\SuitFootsteps\\suit-footsteps-01.wav",
+            Entity(monkeys[counter]).get<Transform>().position);
         counter++;
     } else {
         counter = 0;
         for (auto const& entity : monkeys) {
             Registry::instance().destroyEntity(entity);
-    }
+        }
     }
 }
 
