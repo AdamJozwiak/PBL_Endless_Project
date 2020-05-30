@@ -1,3 +1,5 @@
+#pragma once
+
 #include <d2d1_2.h>
 #include <dwrite_2.h>
 #include <wrl/client.h>
