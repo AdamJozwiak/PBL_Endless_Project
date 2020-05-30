@@ -81,6 +81,8 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName,
                                           gfx.GetWindowWidth(),
                                           gfx.GetWindowHeight(), a++));
     }
+    AddBind(std::make_unique<Texture>(
+        gfx, std::ref(Surface::FromFile("Assets/Graphics/map.png")), 20));
 
     struct Vertex {
         dx::XMFLOAT3 pos;

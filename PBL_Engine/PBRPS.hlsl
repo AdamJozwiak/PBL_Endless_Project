@@ -237,16 +237,14 @@ PixelShaderOutput main(PixelShaderInput input) {
     output.color =
         clamp(pointLight(input, normal, texCoordParallax),
               float4(0.0f, 0.0f, 0.0f, 0.0f), float4(1.0f, 1.0f, 1.0f, 1.0f));
-
     // Calculate final pixel color
     float4 pixelColor = float4(textures[TEXTURE_AMBIENT_OCCLUSION]
                                        .Sample(textureSampler, texCoordParallax)
                                        .rgb *
                                    output.color.rgb,
                                1.0f);
-
     output.color =
-        pow(pixelColor, (1.0f / 2.2f) * float4(1.0f, 1.0f, 1.0f, 1.0f));
+       pow(pixelColor, (1.0f / 2.2f) * float4(1.0f, 1.0f, 1.0f, 1.0f));
     output.bloom =
         saturate((output.color - BLOOM_THRESHOLD) / (1 - BLOOM_THRESHOLD));
 
