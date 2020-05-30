@@ -471,6 +471,9 @@
     <ClCompile Include="soloud\src\backend\winmm\soloud_winmm.cpp">
       <Filter>soloud\src\backend\winmm</Filter>
     </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Pliki źródłowe\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -1066,6 +1069,9 @@
     </ClInclude>
     <ClInclude Include="Systems\SoundSystem.hpp">
       <Filter>Pliki nagłówkowe\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.hpp">
+      <Filter>Pliki nagłówkowe\UI</Filter>
     </ClInclude>
     <ClInclude Include="Events\OnButtonClick.hpp">
       <Filter>Pliki nagłówkowe\Events</Filter>

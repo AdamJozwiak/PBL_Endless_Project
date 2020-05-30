@@ -24,6 +24,7 @@
     <ClCompile Include="Blender.cpp" />
     <ClCompile Include="BonesCbuf.cpp" />
     <ClCompile Include="Box.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="dxerr.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="Blender.h" />
     <ClInclude Include="BonesCbuf.h" />
     <ClInclude Include="Box.h" />
+    <ClInclude Include="Button.hpp" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Components\AABB.hpp" />
     <ClInclude Include="Components\Behaviour.hpp" />

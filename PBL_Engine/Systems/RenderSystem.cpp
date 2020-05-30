@@ -7,6 +7,7 @@
 #include <cmath>
 #include <memory>
 
+#include "Button.hpp"
 #include "FrustumCulling.h"
 #include "GDIPlusManager.h"
 #include "Mesh.h"
@@ -29,6 +30,7 @@ Model* nano;
 Animator animator;
 PointLight* light;
 PointLight* light2;
+std::unique_ptr<Button> button;
 std::unique_ptr<Text> text;
 
 // /////////////////////////////////////////////////////////////////// System //
@@ -54,6 +56,9 @@ void RenderSystem::setup() {
     nano = new Model(window->Gfx(), "Assets\\Models\\Wolf-Blender-2.82a.gltf",
                      nullptr, &animator.animationTime);
     text = std::make_unique<Text>(window->Gfx(), L"Arial", 20);
+    button = std::make_unique<Button>(*window, L"Arial", 40,
+                                      DirectX::XMFLOAT2{50.0f, 50.0f},
+                                      DirectX::XMFLOAT2{375.0f, 40.0f});
     window->Gfx().SetProjection(
         dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 400.0f));
 }
@@ -211,6 +216,7 @@ void RenderSystem::update(float deltaTime) {
     text->RenderText(registry.system<RenderSystem>()->window->Gfx(),
                      "Visible entities: " + std::to_string(a), false,
                      {0.0f, 0.0f});
+    button->draw("Create new monkey");
     window->Gfx().EndFrame();
 };
 
