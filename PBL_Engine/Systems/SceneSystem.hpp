@@ -14,6 +14,7 @@ ECS_SYSTEM(SceneSystem) {
     void filters() override;
     void setup() override;
     void update(float deltaTime) override;
+    void release() override;
 
   private:
     // ============================================================== Data == //

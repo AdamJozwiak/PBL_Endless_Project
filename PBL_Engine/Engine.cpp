@@ -30,6 +30,9 @@ ENGINE_API int Engine::run() {
         registry.refresh();
 
         if (auto const exitCode = Window::ProcessMessages()) {
+            for (auto &system : systems) {
+                system->release();
+            }
             return *exitCode;
         }
 

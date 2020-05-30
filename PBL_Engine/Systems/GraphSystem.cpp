@@ -137,6 +137,8 @@ void GraphSystem::update(float const deltaTime) {
     }
 };
 
+void GraphSystem::release() {}
+
 DirectX::XMMATRIX GraphSystem::transform(Entity const& entity) {
     return entityToGraphNode[entity.id].cumulativeTransform;
 }

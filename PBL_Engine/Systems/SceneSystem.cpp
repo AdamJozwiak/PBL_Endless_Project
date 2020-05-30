@@ -103,4 +103,6 @@ void SceneSystem::setup() {
 
 void SceneSystem::update(float deltaTime){};
 
+void SceneSystem::release() {}
+
 // ////////////////////////////////////////////////////////////////////////// //

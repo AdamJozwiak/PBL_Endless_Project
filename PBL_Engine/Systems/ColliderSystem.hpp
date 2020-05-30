@@ -16,6 +16,7 @@ ECS_SYSTEM(ColliderSystem) {
     void filters() override;
     void setup() override;
     void update(float deltaTime) override;
+    void release() override;
 
   public:
     // ========================================================= Behaviour == //

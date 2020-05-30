@@ -40,6 +40,7 @@ struct ENGINE_API System {
     virtual void filters() = 0;
     virtual void setup() = 0;
     virtual void update(float deltaTime) = 0;
+    virtual void release() = 0;
 
     // ============================================================== Data == //
     std::set<Entity> entities;

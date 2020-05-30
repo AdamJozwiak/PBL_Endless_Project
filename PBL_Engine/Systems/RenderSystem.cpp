@@ -212,6 +212,8 @@ void RenderSystem::update(float deltaTime) {
     window->Gfx().EndFrame();
 };
 
+void RenderSystem::release() {}
+
 DirectX::XMMATRIX RenderSystem::transformMatrix(Entity entity) {
     auto& transform = entity.get<Transform>();
 

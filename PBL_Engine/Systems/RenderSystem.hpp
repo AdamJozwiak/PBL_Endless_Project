@@ -25,6 +25,7 @@ ECS_SYSTEM(RenderSystem) {
     void filters() override;
     void setup() override;
     void update(float deltaTime) override;
+    void release() override;
 
     DirectX::XMMATRIX transformMatrix(Entity entity);
 

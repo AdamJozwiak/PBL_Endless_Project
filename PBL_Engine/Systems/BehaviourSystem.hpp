@@ -15,6 +15,7 @@ ECS_SYSTEM(BehaviourSystem) {
     void filters() override;
     void setup() override;
     void update(float deltaTime) override;
+    void release() override;
 
     Behaviour behaviour(std::string name, Entity entity);
 };

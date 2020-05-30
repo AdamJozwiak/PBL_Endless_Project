@@ -25,6 +25,7 @@ void BehaviourSystem::update(float deltaTime) {
         behaviour.script->update(deltaTime);
     }
 };
+void BehaviourSystem::release() {}
 
 Behaviour BehaviourSystem::behaviour(std::string name, Entity entity) {
     HINSTANCE dll = LoadLibrary((name + ".dll").c_str());

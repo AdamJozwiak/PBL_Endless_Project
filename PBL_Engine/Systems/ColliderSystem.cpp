@@ -260,6 +260,8 @@ void ColliderSystem::filters() {
 
 void ColliderSystem::setup() { graphSystem = registry.system<GraphSystem>(); }
 
+void ColliderSystem::release() {}
+
 void ColliderSystem::update(float deltaTime) {
     // Collider Test
     const auto dt = deltaTime * speed_factor;

@@ -17,6 +17,7 @@ ECS_SYSTEM(GraphSystem) {
     void filters() override;
     void setup() override;
     void update(float deltaTime) override;
+    void release() override;
 
     // ----------------------------------------------- Public interface -- == //
     DirectX::XMMATRIX transform(Entity const &entity);
