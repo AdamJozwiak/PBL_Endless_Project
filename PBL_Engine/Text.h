@@ -27,7 +27,8 @@ class Text {
 
     // Text layouts
     wrl::ComPtr<IDWriteTextLayout> textLayoutFPS;
-    void RenderText(Graphics& gfx, std::string text);
+    void RenderText(Graphics& gfx, std::string text, bool yellow,
+                    DirectX::XMFLOAT2 pos);
 
   private:
     inline static bool init = false;

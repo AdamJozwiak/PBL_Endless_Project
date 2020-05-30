@@ -2,14 +2,15 @@
 
 Text::Text(Graphics& gfx, const WCHAR* fontFamily, float fontSize) {
     if (!init) {
-    CreateDevice(gfx);
-    CreateBitmapRenderTarget(gfx);
+        CreateDevice(gfx);
+        CreateBitmapRenderTarget(gfx);
         init = true;
     }
     InitializeTextFormats(fontFamily, fontSize);
 }
 
-void Text::RenderText(Graphics& gfx, std::string text) {
+void Text::RenderText(Graphics& gfx, std::string text, bool yellow,
+                      DirectX::XMFLOAT2 pos) {
     std::wstring tmp = std::wstring(text.begin(), text.end());
     writeFactory->CreateTextLayout(tmp.c_str(), (UINT32)tmp.size(),
                                    textFormatFPS.Get(), gfx.GetWindowWidth(),
@@ -17,10 +18,11 @@ void Text::RenderText(Graphics& gfx, std::string text) {
     devCon->BeginDraw();
 
     devCon->DrawTextLayout(
-        D2D1::Point2F(2.0f, 5.0f),  // origin / position of first letter
-        textLayoutFPS.Get(),        // text layout
-        yellowBrush.Get()           // brush
-    );
+        D2D1::Point2F(pos.x, pos.y),  // origin / position of first letter
+        textLayoutFPS.Get(),          // text layout
+        (yellow ? yellowBrush.Get()   // brush
+                : whiteBrush.Get()    // brush
+         ));
 
     devCon->EndDraw();
 }

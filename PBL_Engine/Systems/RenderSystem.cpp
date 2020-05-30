@@ -208,7 +208,9 @@ void RenderSystem::update(float deltaTime) {
         colorCorrection->Draw(window->Gfx());
     }
 
-    text->RenderText(window->Gfx(), "Visible entities: " + std::to_string(a));
+    text->RenderText(registry.system<RenderSystem>()->window->Gfx(),
+                     "Visible entities: " + std::to_string(a), false,
+                     {0.0f, 0.0f});
     window->Gfx().EndFrame();
 };
 
