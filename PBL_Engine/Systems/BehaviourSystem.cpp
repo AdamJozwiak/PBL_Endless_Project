@@ -18,7 +18,7 @@ void BehaviourSystem::filters() { filter<Behaviour>(); }
 
 void BehaviourSystem::setup() {}
 
-void BehaviourSystem::update(float deltaTime) {
+void BehaviourSystem::update(float const deltaTime) {
     for (auto const &entity : entities) {
         auto const &behaviour = entity.get<Behaviour>();
 
@@ -27,7 +27,8 @@ void BehaviourSystem::update(float deltaTime) {
 };
 void BehaviourSystem::release() {}
 
-Behaviour BehaviourSystem::behaviour(std::string name, Entity entity) {
+Behaviour BehaviourSystem::behaviour(std::string const &name,
+                                     Entity const &entity) {
     HINSTANCE dll = LoadLibrary((name + ".dll").c_str());
     assert(dll && "Behaviour's .dll script must be loaded correctly!");
 

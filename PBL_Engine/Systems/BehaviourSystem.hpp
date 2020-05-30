@@ -17,7 +17,7 @@ ECS_SYSTEM(BehaviourSystem) {
     void update(float deltaTime) override;
     void release() override;
 
-    Behaviour behaviour(std::string name, Entity entity);
+    Behaviour behaviour(std::string const &name, Entity const &entity);
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
