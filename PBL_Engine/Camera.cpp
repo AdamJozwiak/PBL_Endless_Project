@@ -67,3 +67,17 @@ void Camera::Reset() noexcept {
 }
 
 DirectX::XMVECTOR Camera::GetCameraPos() const noexcept { return position; }
+
+DirectX::XMFLOAT3 Camera::pos() const noexcept {
+    dx::XMFLOAT3 result;
+    dx::XMStoreFloat3(&result, position);
+    return result;
+}
+
+DirectX::XMFLOAT3 Camera::at() const noexcept {
+    dx::XMFLOAT3 result;
+    dx::XMVECTOR at = dx::XMVector3Normalize(
+        XMVector3TransformCoord(defaultForward, rotation));
+    dx::XMStoreFloat3(&result, at);
+    return result;
+}

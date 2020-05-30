@@ -7,6 +7,8 @@ class Camera {
     void SpawnControlWindow() noexcept;
     void Reset() noexcept;
     DirectX::XMVECTOR GetCameraPos() const noexcept;
+    DirectX::XMFLOAT3 pos() const noexcept;
+    DirectX::XMFLOAT3 at() const noexcept;
 
   public:
     float r = 20.0f;  // distance from the origin
