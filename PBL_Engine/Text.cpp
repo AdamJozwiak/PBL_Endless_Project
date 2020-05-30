@@ -1,8 +1,11 @@
 #include "Text.h"
 
 Text::Text(Graphics& gfx, const WCHAR* fontFamily, float fontSize) {
+    if (!init) {
     CreateDevice(gfx);
     CreateBitmapRenderTarget(gfx);
+        init = true;
+    }
     InitializeTextFormats(fontFamily, fontSize);
 }
 

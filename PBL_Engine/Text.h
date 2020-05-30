@@ -18,9 +18,9 @@ class Text {
     friend class Graphics;
     Text(Graphics& gfx, const WCHAR* fontFamily, float fontSize);
     // Brushes
-    wrl::ComPtr<ID2D1SolidColorBrush> yellowBrush;
-    wrl::ComPtr<ID2D1SolidColorBrush> whiteBrush;
-    wrl::ComPtr<ID2D1SolidColorBrush> blackBrush;
+    inline static wrl::ComPtr<ID2D1SolidColorBrush> yellowBrush;
+    inline static wrl::ComPtr<ID2D1SolidColorBrush> whiteBrush;
+    inline static wrl::ComPtr<ID2D1SolidColorBrush> blackBrush;
 
     // Text formats
     wrl::ComPtr<IDWriteTextFormat> textFormatFPS;
@@ -30,14 +30,17 @@ class Text {
     void RenderText(Graphics& gfx, std::string text);
 
   private:
-    void CreateDevice(Graphics& gfx);  // creates the device and its context
-    void CreateBitmapRenderTarget(Graphics& gfx);
+    inline static bool init = false;
+    static void CreateDevice(
+        Graphics& gfx);  // creates the device and its context
+    static void CreateBitmapRenderTarget(Graphics& gfx);
     void InitializeTextFormats(const WCHAR* fontFamily, float fontSize);
 
-    wrl::ComPtr<IDWriteFactory1> writeFactory;  // DirectWrite factory
-    wrl::ComPtr<ID2D1Factory1> factory;         // Direct2D factory
-    wrl::ComPtr<ID2D1Device> dev;               // Direct2D device
-    wrl::ComPtr<ID2D1DeviceContext> devCon;     // device context
+    inline static wrl::ComPtr<IDWriteFactory1>
+        writeFactory;                                  // DirectWrite factory
+    inline static wrl::ComPtr<ID2D1Factory1> factory;  // Direct2D factory
+    inline static wrl::ComPtr<ID2D1Device> dev;        // Direct2D device
+    inline static wrl::ComPtr<ID2D1DeviceContext> devCon;  // device context
 };
 
 class TextException : public ExceptionHandler {
