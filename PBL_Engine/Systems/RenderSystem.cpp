@@ -20,6 +20,7 @@
 #include "ColliderSystem.hpp"
 #include "ECS/ECS.hpp"
 #include "GraphSystem.hpp"
+#include "SoundSystem.hpp"
 
 namespace dx = DirectX;
 
@@ -106,6 +107,8 @@ void RenderSystem::update(float deltaTime) {
         }
 
         // Set camera
+        registry.system<SoundSystem>()->setListener(camera->pos(), camera->at(),
+                                                    {0.0f, 1.0f, 0.0f});
         window->Gfx().SetCamera(camera->GetMatrix());
         DirectX::XMFLOAT4X4 viewProjection;
         DirectX::XMStoreFloat4x4(
