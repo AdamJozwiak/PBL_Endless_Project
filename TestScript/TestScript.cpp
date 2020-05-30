@@ -123,7 +123,9 @@ void TestScript::onCollisionEnter(OnCollisionEnter const& event) {
     }
 }
 
-void TestScript::onButtonClick(OnButtonClick const& event) {}
+void TestScript::onButtonClick(OnButtonClick const& event) {
+    spawnMonkey(entity);
+}
 
 // ------------------------------------------------------------ Methods -- == //
 void TestScript::method() {}
