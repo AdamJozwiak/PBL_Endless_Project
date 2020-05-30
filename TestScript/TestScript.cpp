@@ -8,6 +8,33 @@
 #include "Systems/Systems.hpp"
 #include "Window.h"
 
+int counter = 0;
+constexpr int NUMBER_OF_MONKEYS = 10;
+std::array<EntityId, NUMBER_OF_MONKEYS> monkeys;
+void spawnMonkey(Entity entity) {
+    if (counter < 10) {
+        monkeys[counter] = Registry::instance().createEntity().id;
+        Entity(monkeys[counter])
+            .add<Transform>([&]() {
+                auto transform = entity.get<Transform>();
+                transform.position.x = 0.0f;
+                transform.position.y = counter * 2.0f;
+                transform.position.z = 0.0f;
+                return transform;
+            }())
+            .add<MeshFilter>(entity.get<MeshFilter>())
+            .add<Renderer>(entity.get<Renderer>())
+            .add<AABB>(Registry::instance().system<ColliderSystem>()->AddAABB(
+                entity.get<MeshFilter>().model->verticesForCollision));
+        counter++;
+    } else {
+        counter = 0;
+        for (auto const& entity : monkeys) {
+            Registry::instance().destroyEntity(entity);
+    }
+    }
+}
+
 // ///////////////////////////////////////////////////////// Factory function //
 extern "C" TESTSCRIPT_API void create(std::shared_ptr<Script>& script,
                                       Entity entity) {
@@ -63,32 +90,9 @@ void TestScript::update(float const deltaTime) {
     static float timer = 0.0f;
     timer += deltaTime;
     if (isKeyPressed('Q')) {
-        static int counter = 0;
-        static constexpr int NUMBER_OF_MONKEYS = 10;
-        static std::array<EntityId, NUMBER_OF_MONKEYS> monkeys;
-
         if (timer > 0.2f) {
             timer = 0.0f;
-            if (counter < 10) {
-                monkeys[counter] = registry.createEntity().id;
-                Entity(monkeys[counter])
-                    .add<Transform>([this]() {
-                        auto transform = entity.get<Transform>();
-                        transform.position.x = 0.0f;
-                        transform.position.y = (counter++) * 2.0f;
-                        transform.position.z = 0.0f;
-                        return transform;
-                    }())
-                    .add<MeshFilter>(entity.get<MeshFilter>())
-                    .add<Renderer>(entity.get<Renderer>())
-                    .add<AABB>(registry.system<ColliderSystem>()->AddAABB(
-                        entity.get<MeshFilter>().model->verticesForCollision));
-            } else {
-                counter = 0;
-                for (auto const& entity : monkeys) {
-                    registry.destroyEntity(entity);
-                }
-            }
+            spawnMonkey(entity);
         }
     }
 };
