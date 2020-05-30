@@ -465,6 +465,9 @@
     <ClCompile Include="soloud\src\audiosource\wav\stb_vorbis.c">
       <Filter>soloud\src\audiosource\wav</Filter>
     </ClCompile>
+    <ClCompile Include="Systems\SoundSystem.cpp">
+      <Filter>Pliki źródłowe\Systems</Filter>
+    </ClCompile>
     <ClCompile Include="soloud\src\backend\winmm\soloud_winmm.cpp">
       <Filter>soloud\src\backend\winmm</Filter>
     </ClCompile>
@@ -1060,6 +1063,9 @@
     </ClInclude>
     <ClInclude Include="soloud\include\soloud_wavstream.h">
       <Filter>soloud\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\SoundSystem.hpp">
+      <Filter>Pliki nagłówkowe\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Events\OnButtonClick.hpp">
       <Filter>Pliki nagłówkowe\Events</Filter>

@@ -6,5 +6,6 @@
 #include "GraphSystem.hpp"
 #include "RenderSystem.hpp"
 #include "SceneSystem.hpp"
+#include "SoundSystem.hpp"
 
 // ////////////////////////////////////////////////////////////////////////// //
