@@ -1,5 +1,7 @@
 #include "PostProcessing.h"
 
+#include <dxgiformat.h>
+
 #include <array>
 
 #include "BindableBase.h"
@@ -26,7 +28,7 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName,
         outputTextureDesc.Height = gfx.GetWindowHeight();
         outputTextureDesc.MipLevels = 1;
         outputTextureDesc.ArraySize = 1;
-        outputTextureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        outputTextureDesc.Format = DXGI_FORMAT_R16G16B16A16_UNORM;
         outputTextureDesc.SampleDesc.Count = 1;
         outputTextureDesc.SampleDesc.Quality = 0;
         outputTextureDesc.BindFlags =
