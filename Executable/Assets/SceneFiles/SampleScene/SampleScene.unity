@@ -690,7 +690,7 @@ GameObject:
   - component: {fileID: 1045544511}
   m_Layer: 0
   m_Name: Suzanne 4
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2901,8 +2901,8 @@ GameObject:
   - component: {fileID: 5006512735143451981}
   - component: {fileID: 4044710140962596731}
   - component: {fileID: 7718390322722839426}
-  - component: {fileID: 8296172669387616095}
   - component: {fileID: 8296172669387616096}
+  - component: {fileID: 8296172669387616095}
   m_Layer: 0
   m_Name: Suzanne 1
   m_TagString: Untagged

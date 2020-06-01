@@ -57,6 +57,13 @@ void TestScript::setup() {
         return registry.system<RenderSystem>()->window->keyboard.KeyIsPressed(
             key);
     };
+
+    suzanneName = registry.system<PropertySystem>()
+                      ->findEntityByName("Suzanne 3")
+                      .at(0)
+                      .id;
+    suzanneTag =
+        registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
 };
 
 void TestScript::update(float const deltaTime) {
@@ -87,6 +94,15 @@ void TestScript::update(float const deltaTime) {
         if (isKeyPressed('S')) {
             transform.position.z -= 5.0f * deltaTime;
         }
+    }
+
+    if (isKeyPressed('T')) {
+        Entity(suzanneName).get<Transform>().scale.x += 2.0f * deltaTime;
+        Entity(suzanneTag).get<Transform>().scale.y += 2.0f * deltaTime;
+    }
+    if (isKeyPressed('G')) {
+        Entity(suzanneName).get<Transform>().scale.x -= 2.0f * deltaTime;
+        Entity(suzanneTag).get<Transform>().scale.y -= 2.0f * deltaTime;
     }
 
     static float timer = 0.0f;

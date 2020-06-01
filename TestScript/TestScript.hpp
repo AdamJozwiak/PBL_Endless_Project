@@ -31,6 +31,8 @@ class TESTSCRIPT_API TestScript : public Script {
     bool (*isKeyPressed)(int const key);
     float lastX, lastY, lastZ;
     float lastDeltaTime;
+
+    EntityId suzanneName, suzanneTag;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
