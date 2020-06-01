@@ -243,8 +243,7 @@ PixelShaderOutput main(PixelShaderInput input) {
                                        .rgb *
                                    output.color.rgb,
                                1.0f);
-    output.color =
-       pow(pixelColor, (1.0f / 2.2f) * float4(1.0f, 1.0f, 1.0f, 1.0f));
+    output.color = pixelColor;
     output.bloom =
         saturate((output.color - BLOOM_THRESHOLD) / (1 - BLOOM_THRESHOLD));
 
