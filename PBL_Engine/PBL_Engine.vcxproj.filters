@@ -474,6 +474,9 @@
     <ClCompile Include="Button.cpp">
       <Filter>Pliki źródłowe\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Systems\PropertySystem.cpp">
+      <Filter>Pliki źródłowe\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -1078,6 +1081,9 @@
     </ClInclude>
     <ClInclude Include="Components\Properties.hpp">
       <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\PropertySystem.hpp">
+      <Filter>Pliki nagłówkowe\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -19,7 +19,8 @@ Engine::Engine()
       systems{
           registry.system<GraphSystem>(),    registry.system<RenderSystem>(),
           registry.system<SceneSystem>(),    registry.system<BehaviourSystem>(),
-          registry.system<ColliderSystem>(), registry.system<SoundSystem>()} {}
+          registry.system<ColliderSystem>(), registry.system<SoundSystem>(),
+          registry.system<PropertySystem>()} {}
 
 ENGINE_API int Engine::run() {
     for (auto &system : systems) {
