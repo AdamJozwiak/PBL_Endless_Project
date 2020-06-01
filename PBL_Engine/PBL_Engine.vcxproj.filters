@@ -1076,6 +1076,9 @@
     <ClInclude Include="Events\OnButtonClick.hpp">
       <Filter>Pliki nagłówkowe\Events</Filter>
     </ClInclude>
+    <ClInclude Include="Components\Properties.hpp">
+      <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXTrace.inl">

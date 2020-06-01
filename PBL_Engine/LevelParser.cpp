@@ -42,9 +42,19 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
     for (auto const &fileId : fileIds) {
         auto node{nodes[fileId]};
 
-        if (node["GameObject"]) {
+        if (auto const &nodeGameObject = node["GameObject"]; nodeGameObject) {
             auto entity{registry.createEntity()};
             entityIds.insert({fileId, entity.id});
+
+            assert(nodeGameObject["m_Name"] && nodeGameObject["m_TagString"] &&
+                   nodeGameObject["m_IsActive"] &&
+                   "Every property inside GameObject component must be valid!");
+
+            entity.add<Properties>(
+                {.name = nodeGameObject["m_Name"].as<std::string>(),
+                 .tag = nodeGameObject["m_TagString"].as<std::string>(),
+                 .active = static_cast<bool>(
+                     nodeGameObject["m_IsActive"].as<int>())});
         }
     }
 
@@ -429,6 +439,10 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                     Entity(prefabEntityIds[targetFileId])
                         .get<Transform>()
                         .position.z = (*i)["value"].as<float>();
+                } else if (property == "m_Name") {
+                    Entity(prefabEntityIds[targetFileId])
+                        .get<Properties>()
+                        .name = (*i)["value"].as<std::string>();
                 }
             }
         }

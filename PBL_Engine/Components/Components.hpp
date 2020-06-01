@@ -6,6 +6,7 @@
 #include "Behaviour.hpp"
 #include "BoxCollider.h"
 #include "MeshFilter.hpp"
+#include "Properties.hpp"
 #include "Renderer.hpp"
 #include "SphereCollider.h"
 #include "Transform.hpp"
