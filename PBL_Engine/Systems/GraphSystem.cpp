@@ -31,7 +31,7 @@ bool operator!=(Transform const& a, Transform const& b) { return !(a == b); }
 // /////////////////////////////////////////////////////////////////// System //
 // ============================================================= Behaviour == //
 // ----------------------------------------- System's virtual functions -- == //
-void GraphSystem::filters() { filter<Transform>(); }
+void GraphSystem::filters() { filter<Active>().filter<Transform>(); }
 
 void GraphSystem::setup() {
     // Set default values for the root node

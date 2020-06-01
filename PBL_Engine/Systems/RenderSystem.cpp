@@ -38,7 +38,11 @@ std::unique_ptr<Text> text;
 // ============================================================= Behaviour == //
 // ----------------------------------------- System's virtual functions -- == //
 void RenderSystem::filters() {
-    filter<Renderer>().filter<MeshFilter>().filter<Transform>().filter<AABB>();
+    filter<Active>()
+        .filter<Renderer>()
+        .filter<MeshFilter>()
+        .filter<Transform>()
+        .filter<AABB>();
 }
 
 void RenderSystem::setup() {

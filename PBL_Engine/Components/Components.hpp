@@ -9,6 +9,7 @@
 #include "Properties.hpp"
 #include "Renderer.hpp"
 #include "SphereCollider.h"
+#include "Tags.hpp"
 #include "Transform.hpp"
 
 // ////////////////////////////////////////////////////////////////////////// //

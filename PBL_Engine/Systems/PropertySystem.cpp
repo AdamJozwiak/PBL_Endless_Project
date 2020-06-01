@@ -2,6 +2,7 @@
 #include "PropertySystem.hpp"
 
 #include "Components/Properties.hpp"
+#include "Components/Tags.hpp"
 #include "ECS/ECS.hpp"
 
 // /////////////////////////////////////////////////////////////////// System //
@@ -42,6 +43,16 @@ std::vector<Entity> PropertySystem::findEntityByTag(std::string const &tag) {
     }
 
     return foundEntities;
+}
+
+void PropertySystem::activateEntity(Entity entity, bool const active) {
+    auto &properties = entity.get<Properties>();
+
+    properties.active = active;
+    entity.remove<Active>();
+    if (active) {
+        entity.add<Active>({});
+    }
 }
 
 // ////////////////////////////////////////////////////////////////////////// //

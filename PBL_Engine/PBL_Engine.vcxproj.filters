@@ -1085,6 +1085,9 @@
     <ClInclude Include="Systems\PropertySystem.hpp">
       <Filter>Pliki nagłówkowe\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Components\Tags.hpp">
+      <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXTrace.inl">

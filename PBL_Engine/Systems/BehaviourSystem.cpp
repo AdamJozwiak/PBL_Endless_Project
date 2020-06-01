@@ -14,7 +14,7 @@
 // /////////////////////////////////////////////////////////////////// System //
 // ============================================================= Behaviour == //
 // ----------------------------------------- System's virtual functions -- == //
-void BehaviourSystem::filters() { filter<Behaviour>(); }
+void BehaviourSystem::filters() { filter<Active>().filter<Behaviour>(); }
 
 void BehaviourSystem::setup() {}
 

@@ -16,6 +16,7 @@ ECS_SYSTEM(PropertySystem) {
     // ----------------------------------------------- Public interface -- == //
     std::vector<Entity> findEntityByName(std::string const &name);
     std::vector<Entity> findEntityByTag(std::string const &tag);
+    void activateEntity(Entity entity, bool active);
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

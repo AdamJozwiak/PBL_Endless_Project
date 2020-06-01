@@ -155,6 +155,7 @@
     <ClInclude Include="Components\Properties.hpp" />
     <ClInclude Include="Components\Renderer.hpp" />
     <ClInclude Include="Components\SphereCollider.h" />
+    <ClInclude Include="Components\Tags.hpp" />
     <ClInclude Include="Components\Transform.hpp" />
     <ClInclude Include="Cone.h" />
     <ClInclude Include="ConstantBuffers.h" />

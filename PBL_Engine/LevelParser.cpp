@@ -55,6 +55,10 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                  .tag = nodeGameObject["m_TagString"].as<std::string>(),
                  .active = static_cast<bool>(
                      nodeGameObject["m_IsActive"].as<int>())});
+
+            if (entity.get<Properties>().active) {
+                entity.add<Active>({});
+            }
         }
     }
 

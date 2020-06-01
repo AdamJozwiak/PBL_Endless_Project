@@ -254,6 +254,7 @@ bool ColliderSystem::CheckSpheresCollision(
 }
 
 void ColliderSystem::filters() {
+    filter<Active>();
     filter<SphereCollider>();
     filter<Renderer>();
 }

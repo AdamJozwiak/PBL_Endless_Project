@@ -15,6 +15,7 @@ void spawnMonkey(Entity entity) {
     if (counter < 10) {
         monkeys[counter] = Registry::instance().createEntity().id;
         Entity(monkeys[counter])
+            .add<Active>({})
             .add<Transform>([&]() {
                 auto transform = entity.get<Transform>();
                 transform.position.x = 0.0f;
@@ -111,6 +112,9 @@ void TestScript::update(float const deltaTime) {
         if (timer > 0.2f) {
             timer = 0.0f;
             spawnMonkey(entity);
+
+            registry.system<PropertySystem>()->activateEntity(
+                suzanneName, !Entity(suzanneName).get<Properties>().active);
         }
     }
 };
