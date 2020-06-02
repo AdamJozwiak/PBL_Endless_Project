@@ -647,6 +647,11 @@ void LevelParser::finalizeLoading(
                 registry.system<ColliderSystem>()->AddSphereCollider(
                     entity.get<MeshFilter>().model->verticesForCollision);
         }
+        if (entity.has<BoxCollider>()) {
+            entity.get<BoxCollider>() =
+                registry.system<ColliderSystem>()->AddBoxCollider(
+                    entity.get<BoxCollider>());
+        }
 
         // AABBs for the frustum culling
         if (entity.has<AABB>()) {

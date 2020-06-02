@@ -20,9 +20,12 @@ ECS_SYSTEM(ColliderSystem) {
 
   public:
     // ========================================================= Behaviour == //
-    // Box Collider
+    // AABB
     AABB AddAABB(std::vector<DirectX::XMFLOAT3> const& objectVertPos);
     void CalculateAABB(AABB & aabb, DirectX::XMMATRIX const& worldSpace);
+
+    // Box Collider
+    BoxCollider AddBoxCollider(BoxCollider boxCollider);
     bool CheckBoxesCollision(BoxCollider const& boxCollider,
                              BoxCollider const& differentBoxCollider);
     DirectX::XMVECTOR GetColliderMin();
@@ -38,7 +41,8 @@ ECS_SYSTEM(ColliderSystem) {
     // ============================================================== Data == //
   public:
     // Box
-    std::vector<unsigned short> boxColliderIndieces;
+    std::vector<unsigned short> boxColliderIndices;
+    std::vector<unsigned short> aabbColliderIndices;
 
   private:
     float speed_factor = 1.0f;

@@ -4,6 +4,7 @@
 #include "Cube.h"
 #include "Renderable.h"
 #include "Window.h"
+#include "math.h"
 
 // ECS
 #include "Components/Components.hpp"
@@ -99,7 +100,7 @@ AABB ColliderSystem::AddAABB(
     i[34] = 6;
     i[35] = 5;
 
-    for (int j = 0; j < 36; j++) boxColliderIndieces.push_back(i[j]);
+    for (int j = 0; j < 36; j++) aabbColliderIndices.push_back(i[j]);
 
     return aabb;
 }
@@ -146,39 +147,130 @@ void ColliderSystem::CalculateAABB(AABB& aabb,
         DirectX::XMVectorSet(maxVertex.x, maxVertex.y, maxVertex.z, 0.0f);
 }
 
+BoxCollider ColliderSystem::AddBoxCollider(BoxCollider boxCollider) {
+    BoxCollider tmpBox = boxCollider;
+    DirectX::XMFLOAT3 minVertex =
+        DirectX::XMFLOAT3(tmpBox.center.x - 0.5f * tmpBox.size.x,
+                          tmpBox.center.y - 0.5f * tmpBox.size.y,
+                          tmpBox.center.z - 0.5f * tmpBox.size.z);
+    DirectX::XMFLOAT3 maxVertex =
+        DirectX::XMFLOAT3(tmpBox.center.x + 0.5f * tmpBox.size.x,
+                          tmpBox.center.y + 0.5f * tmpBox.size.y,
+                          tmpBox.center.z + 0.5f * tmpBox.size.z);
+
+    // Store Bounding Box's min and max vertices
+    tmpBox.aabb.vertexMin =
+        DirectX::XMVectorSet(minVertex.x, minVertex.y, minVertex.z, 0.0f);
+    tmpBox.aabb.vertexMax =
+        DirectX::XMVectorSet(maxVertex.x, maxVertex.y, maxVertex.z, 0.0f);
+
+    // Front Vertices
+    tmpBox.aabb.vertices[0] =
+        DirectX::XMFLOAT3(minVertex.x, minVertex.y, minVertex.z);
+    tmpBox.aabb.vertices[1] =
+        DirectX::XMFLOAT3(minVertex.x, maxVertex.y, minVertex.z);
+    tmpBox.aabb.vertices[2] =
+        DirectX::XMFLOAT3(maxVertex.x, maxVertex.y, minVertex.z);
+    tmpBox.aabb.vertices[3] =
+        DirectX::XMFLOAT3(maxVertex.x, minVertex.y, minVertex.z);
+
+    // Back Vertices
+    tmpBox.aabb.vertices[4] =
+        DirectX::XMFLOAT3(minVertex.x, minVertex.y, maxVertex.z);
+    tmpBox.aabb.vertices[5] =
+        DirectX::XMFLOAT3(maxVertex.x, minVertex.y, maxVertex.z);
+    tmpBox.aabb.vertices[6] =
+        DirectX::XMFLOAT3(maxVertex.x, maxVertex.y, maxVertex.z);
+    tmpBox.aabb.vertices[7] =
+        DirectX::XMFLOAT3(minVertex.x, maxVertex.y, maxVertex.z);
+
+    // Indieces
+    unsigned short* i = new unsigned short[36];
+    // Front Face
+    i[0] = 0;
+    i[1] = 1;
+    i[2] = 2;
+    i[3] = 0;
+    i[4] = 2;
+    i[5] = 3;
+
+    // Back Face
+    i[6] = 4;
+    i[7] = 5;
+    i[8] = 6;
+    i[9] = 4;
+    i[10] = 6;
+    i[11] = 7;
+
+    // Top Face
+    i[12] = 1;
+    i[13] = 7;
+    i[14] = 6;
+    i[15] = 1;
+    i[16] = 6;
+    i[17] = 2;
+
+    // Bottom Face
+    i[18] = 0;
+    i[19] = 4;
+    i[20] = 5;
+    i[21] = 0;
+    i[22] = 5;
+    i[23] = 3;
+
+    // Left Face
+    i[24] = 4;
+    i[25] = 7;
+    i[26] = 1;
+    i[27] = 4;
+    i[28] = 1;
+    i[29] = 0;
+
+    // Right Face
+    i[30] = 3;
+    i[31] = 2;
+    i[32] = 6;
+    i[33] = 3;
+    i[34] = 6;
+    i[35] = 5;
+
+    for (int j = 0; j < 36; j++) boxColliderIndices.push_back(i[j]);
+    return tmpBox;
+}
+
 bool ColliderSystem::CheckBoxesCollision(
     BoxCollider const& boxCollider, BoxCollider const& differentBoxCollider) {
     // Is obj1's max X greater than obj2's min X? If not, obj1 is to the
     // LEFT of obj2
-    if (DirectX::XMVectorGetX(boxCollider.boxColliderMax) >
-        DirectX::XMVectorGetX(differentBoxCollider.boxColliderMin))
+    if (DirectX::XMVectorGetX(boxCollider.aabb.vertexMax) >
+        DirectX::XMVectorGetX(differentBoxCollider.aabb.vertexMin))
 
         // Is obj1's min X less than obj2's max X? If not, obj1 is to the
         // RIGHT of obj2
-        if (DirectX::XMVectorGetX(boxCollider.boxColliderMin) <
-            DirectX::XMVectorGetX(differentBoxCollider.boxColliderMax))
+        if (DirectX::XMVectorGetX(boxCollider.aabb.vertexMin) <
+            DirectX::XMVectorGetX(differentBoxCollider.aabb.vertexMax))
 
             // Is obj1's max Y greater than obj2's min Y? If not, obj1 is
             // UNDER obj2
-            if (DirectX::XMVectorGetY(boxCollider.boxColliderMax) >
-                DirectX::XMVectorGetY(differentBoxCollider.boxColliderMin))
+            if (DirectX::XMVectorGetY(boxCollider.aabb.vertexMax) >
+                DirectX::XMVectorGetY(differentBoxCollider.aabb.vertexMin))
 
                 // Is obj1's min Y less than obj2's max Y? If not, obj1 is
                 // ABOVE obj2
-                if (DirectX::XMVectorGetY(boxCollider.boxColliderMin) <
-                    DirectX::XMVectorGetY(differentBoxCollider.boxColliderMax))
+                if (DirectX::XMVectorGetY(boxCollider.aabb.vertexMin) <
+                    DirectX::XMVectorGetY(differentBoxCollider.aabb.vertexMax))
 
                     // Is obj1's max Z greater than obj2's min Z? If not,
                     // obj1 is IN FRONT OF obj2
-                    if (DirectX::XMVectorGetZ(boxCollider.boxColliderMax) >
+                    if (DirectX::XMVectorGetZ(boxCollider.aabb.vertexMax) >
                         DirectX::XMVectorGetZ(
-                            differentBoxCollider.boxColliderMin))
+                            differentBoxCollider.aabb.vertexMin))
 
                         // Is obj1's min Z less than obj2's max Z? If not,
                         // obj1 is BEHIND obj2
-                        if (DirectX::XMVectorGetZ(boxCollider.boxColliderMin) <
+                        if (DirectX::XMVectorGetZ(boxCollider.aabb.vertexMin) <
                             DirectX::XMVectorGetZ(
-                                differentBoxCollider.boxColliderMax))
+                                differentBoxCollider.aabb.vertexMax))
 
                             // If we've made it this far, then the two
                             // bounding boxes are colliding
@@ -255,7 +347,7 @@ bool ColliderSystem::CheckSpheresCollision(
 
 void ColliderSystem::filters() {
     filter<Active>();
-    filter<SphereCollider>();
+    filter<BoxCollider>();
     filter<Renderer>();
 }
 
@@ -264,6 +356,14 @@ void ColliderSystem::setup() { graphSystem = registry.system<GraphSystem>(); }
 void ColliderSystem::release() {}
 
 void ColliderSystem::update(float deltaTime) {
+    for (Entity entity : entities) {
+        if (entity.has<BoxCollider>()) {
+            registry.system<ColliderSystem>()->CalculateAABB(
+                entity.get<BoxCollider>().aabb,
+                registry.system<GraphSystem>()->transform(entity));
+        }
+    }
+
     // Collider Test
     const auto dt = deltaTime * speed_factor;
 
@@ -274,10 +374,16 @@ void ColliderSystem::update(float deltaTime) {
             }
             auto iTransform = graphSystem->transform(iEntity);
             auto jTransform = graphSystem->transform(jEntity);
+            /*
             if (CheckSpheresCollision(iEntity.get<SphereCollider>(), iTransform,
                                       jEntity.get<SphereCollider>(),
                                       jTransform)) {
                 // checkedCollisions[i][j] = true;
+                registry.send(OnCollisionEnter{.a = iEntity, .b = jEntity});
+            }
+            */
+            if (CheckBoxesCollision(iEntity.get<BoxCollider>(),
+                                    jEntity.get<BoxCollider>())) {
                 registry.send(OnCollisionEnter{.a = iEntity, .b = jEntity});
             }
         }
