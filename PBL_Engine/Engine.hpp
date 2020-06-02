@@ -19,7 +19,8 @@ class Engine {
   private:
     // ============================================================== Data == //
     Registry &registry;
-    std::vector<std::shared_ptr<System>> systems;
+    std::vector<std::shared_ptr<System>> setupSystems, updateSystems,
+        releaseSystems;
 
     Timer timer;
 };

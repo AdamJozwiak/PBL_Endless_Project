@@ -16,14 +16,24 @@ extern "C" ENGINE_API void create(std::shared_ptr<Engine> &engine) {
 // ============================================================= Behaviour == //
 Engine::Engine()
     : registry(Registry::instance()),
-      systems{
+      setupSystems{
+          registry.system<SceneSystem>(),    registry.system<GraphSystem>(),
+          registry.system<RenderSystem>(),   registry.system<BehaviourSystem>(),
+          registry.system<ColliderSystem>(), registry.system<SoundSystem>(),
+          registry.system<PropertySystem>()},
+      updateSystems{
+          registry.system<SceneSystem>(),     registry.system<GraphSystem>(),
+          registry.system<SoundSystem>(),     registry.system<ColliderSystem>(),
+          registry.system<BehaviourSystem>(), registry.system<PropertySystem>(),
+          registry.system<RenderSystem>()},
+      releaseSystems{
           registry.system<GraphSystem>(),    registry.system<RenderSystem>(),
           registry.system<SceneSystem>(),    registry.system<BehaviourSystem>(),
           registry.system<ColliderSystem>(), registry.system<SoundSystem>(),
           registry.system<PropertySystem>()} {}
 
 ENGINE_API int Engine::run() {
-    for (auto &system : systems) {
+    for (auto &system : setupSystems) {
         system->setup();
     }
 
@@ -31,14 +41,14 @@ ENGINE_API int Engine::run() {
         registry.refresh();
 
         if (auto const exitCode = Window::ProcessMessages()) {
-            for (auto &system : systems) {
+            for (auto &system : updateSystems) {
                 system->release();
             }
             return *exitCode;
         }
 
         auto const &deltaTime = timer.Mark();
-        for (auto &system : systems) {
+        for (auto &system : releaseSystems) {
             system->update(deltaTime);
         }
     }
