@@ -10,9 +10,7 @@
 // //////////////////////////////////////////////////////////////// Component //
 ECS_COMPONENT(BoxCollider) {
     DirectX::XMFLOAT3 size, center;
-    DirectX::XMVECTOR boxColliderMin;
-    DirectX::XMVECTOR boxColliderMax;
-    std::array<DirectX::XMFLOAT3, 8> boxColliderVerts;
+    AABB aabb;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

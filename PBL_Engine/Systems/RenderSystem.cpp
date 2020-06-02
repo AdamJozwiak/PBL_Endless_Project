@@ -63,7 +63,13 @@ void RenderSystem::update(float deltaTime) {
     for (Entity entity : entities) {
         registry.system<ColliderSystem>()->CalculateAABB(
             entity.get<AABB>(),
-            registry.system<GraphSystem>()->transform(entity));
+            registry.system<GraphSystem>()->transform(entity));       
+    }
+
+    for (Entity entity : registry.system<ColliderSystem>()->entities) {
+        registry.system<ColliderSystem>()->CalculateAABB(
+            entity.get<BoxCollider>().aabb,
+            registry.system<GraphSystem>()->transform(entity));  
     }
 
     const auto dt = deltaTime * speed_factor;
