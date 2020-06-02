@@ -138,6 +138,7 @@ GameObject:
   - component: {fileID: 19016267}
   - component: {fileID: 19016266}
   - component: {fileID: 19016265}
+  - component: {fileID: 19016269}
   m_Layer: 0
   m_Name: Suzanne 2 (1)
   m_TagString: Untagged
@@ -145,8 +146,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!135 &19016265
-SphereCollider:
+--- !u!65 &19016265
+BoxCollider:
   id: 19016265
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -157,8 +158,8 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.3671874
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 2.6745403, y: 1.6244378, z: 1.9250674}
+  m_Center: {x: 0, y: -0.012020262, z: -0.013214707}
 --- !u!23 &19016266
 MeshRenderer:
   id: 19016266
@@ -223,6 +224,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: -90.00001, y: 0, z: -305.879}
+--- !u!114 &19016269
+MonoBehaviour:
+  id: 19016269
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19016264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e94501f82131694290c91c43c2d55f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &45455719
 GameObject:
   id: 45455719
@@ -307,8 +321,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: -90.00001, y: 0, z: -230.168}
---- !u!135 &45455723
-SphereCollider:
+--- !u!65 &45455723
+BoxCollider:
   id: 45455723
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -319,8 +333,8 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.3671874
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 2.6745408, y: 1.6244379, z: 1.9250674}
+  m_Center: {x: -3.5823167e-10, y: -0.012020262, z: -0.013214707}
 --- !u!1001 &322208133
 PrefabInstance:
   id: 322208133
@@ -601,6 +615,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -669,13 +684,26 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.10898117, y: -0.2156792, z: 0.024230402, w: 0.9700611}
+  m_LocalPosition: {x: 5.57, y: 2.85, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 12.82, y: -25.07, z: 0}
+--- !u!114 &963194229
+MonoBehaviour:
+  id: 963194229
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaef59fa7869f12498d1d6ff9361a882, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1045544510
 GameObject:
   id: 1045544510
@@ -904,6 +932,7 @@ GameObject:
   - component: {fileID: 1541121871}
   - component: {fileID: 1541121870}
   - component: {fileID: 1541121869}
+  - component: {fileID: 1541121872}
   m_Layer: 0
   m_Name: Suzanne 3
   m_TagString: Untagged
@@ -975,6 +1004,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: -97.494995, y: -249.725, z: 5.5569916}
+--- !u!65 &1541121872
+BoxCollider:
+  id: 1541121872
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541121868}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.67454, y: 1.6244388, z: 1.9250675}
+  m_Center: {x: 4.833869e-10, y: -0.012020259, z: -0.013214707}
 --- !u!1 &1712149905
 GameObject:
   id: 1712149905
@@ -1141,6 +1184,89 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: -160.162, y: -37.774994, z: -44.599976}
+--- !u!1 &2057084837
+GameObject:
+  id: 2057084837
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2057084840}
+  - component: {fileID: 2057084839}
+  - component: {fileID: 2057084838}
+  m_Layer: 0
+  m_Name: Suzanne 3 (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!23 &2057084838
+MeshRenderer:
+  id: 2057084838
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2057084837}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: b56db65bd28018b4a98bcea08cf61b21, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!33 &2057084839
+MeshFilter:
+  id: 2057084839
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2057084837}
+  m_Mesh: {fileID: -2222346464153789849, guid: 9efc716a90adcf54d82c0982bb0f394c, type: 3}
+--- !u!4 &2057084840
+Transform:
+  id: 2057084840
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2057084837}
+  m_LocalRotation: {x: 0.4030118, y: -0.5612327, z: -0.63442296, w: -0.34656438}
+  m_LocalPosition: {x: -10.334096, y: -0.17, z: 12.73}
+  m_LocalScale: {x: 5, y: 0.90345, z: 5}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 16
+  m_LocalEulerAnglesHint: {x: -97.494995, y: -249.725, z: 5.5569916}
 --- !u!4 &27006783982384084
 Transform:
   id: 27006783982384084
@@ -2905,7 +3031,7 @@ GameObject:
   - component: {fileID: 8296172669387616095}
   m_Layer: 0
   m_Name: Suzanne 1
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2920,11 +3046,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 8296172669387616094}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e94501f82131694290c91c43c2d55f8, type: 3}
+  m_Script: {fileID: 11500000, guid: 04980430d54c75d4299694879b2b3003, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!135 &8296172669387616096
-SphereCollider:
+--- !u!65 &8296172669387616096
+BoxCollider:
   id: 8296172669387616096
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2935,8 +3061,8 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.3671875
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 2.674541, y: 1.6244384, z: 1.9250683}
+  m_Center: {x: -1.4189377e-10, y: -0.01202026, z: -0.013214707}
 --- !u!4 &8342306127722265796
 Transform:
   id: 8342306127722265796
@@ -3027,6 +3153,7 @@ GameObject:
   - component: {fileID: 5284244639990902833}
   - component: {fileID: 3751056760100899335}
   - component: {fileID: 7436260285304780542}
+  - component: {fileID: 9155309347314434595}
   m_Layer: 0
   m_Name: rock1a
   m_TagString: Untagged
@@ -3034,6 +3161,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!65 &9155309347314434595
+BoxCollider:
+  id: 9155309347314434595
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9155309347314434594}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10.810629, y: 9.420692, z: 12.414794}
+  m_Center: {x: 0.6240516, y: 1.9548075, z: 1.2386131}
 --- !u!4 &9169230568478960409
 Transform:
   id: 9169230568478960409
