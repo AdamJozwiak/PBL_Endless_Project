@@ -1,6 +1,8 @@
 #pragma once
 
 // ///////////////////////////////////////////////////////////////// Includes //
+#include <DirectXMath.h>
+
 #include <memory>
 
 #include "CameraControllerScriptAPI.hpp"
@@ -22,11 +24,22 @@ class CAMERACONTROLLERSCRIPT_API CameraControllerScript : public Script {
     void onCollisionEnter(OnCollisionEnter const &event);
 
     // -------------------------------------------------------- Methods -- == //
-    void method();
+    void setPosition();  //? May not be useful?
 
   private:
     // ============================================================== Data == //
     bool (*isKeyPressed)(int const key);
+
+    EntityId playerId;
+    float smoothing = 4.0f;
+    DirectX::XMFLOAT3 offset = {0.0f, 0.0f, 0.0f};
+    DirectX::XMFLOAT3 lastPosition = {0.0f, 0.0f, 0.0f};
+    // Entity cameraTarget;
+    // float rotateSpeed = 0.0f;
+    // float rotate;
+    // float offsetDistance = 0.0f;
+    // float offsetHeight = 0.0f;
+    // bool following = true;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

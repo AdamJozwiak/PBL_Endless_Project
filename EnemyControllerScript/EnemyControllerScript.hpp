@@ -20,13 +20,27 @@ class ENEMYCONTROLLERSCRIPT_API EnemyControllerScript : public Script {
 
     // --------------------------------------------------------- Events -- == //
     void onCollisionEnter(OnCollisionEnter const &event);
+    // void onTriggerEnter(OnTriggerEnter const &event);
 
     // -------------------------------------------------------- Methods -- == //
-    void method();
+    void move(float deltaTime);
 
   private:
     // ============================================================== Data == //
     bool (*isKeyPressed)(int const key);
+
+    EntityId loseText;
+
+    /* IEnumerator waitToResetLvl() { */
+    /*     yield return new WaitForSeconds(1.5f); */
+    /*     SceneManager.LoadScene(0); */
+    /* } */
+
+    float speed = 8.0f;
+    float angle = 0.45f;
+    bool movingLeft = true;
+    EntityId playerId;
+    float playerDistance = 30.0f;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
