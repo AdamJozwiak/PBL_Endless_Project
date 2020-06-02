@@ -34,7 +34,7 @@ ECS_SYSTEM(RenderSystem) {
 
   private:
     // ============================================================== Data == //
-    std::unique_ptr<Camera> camera;
+    std::shared_ptr<Camera> mainCamera, freeCamera;
     ImguiManager imgui;
     float speed_factor = 1.0f;
     std::unique_ptr<SolidSphere> sphere;

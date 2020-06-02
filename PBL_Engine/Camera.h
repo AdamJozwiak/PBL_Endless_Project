@@ -1,12 +1,15 @@
 #pragma once
+#include "Components/Transform.hpp"
 #include "Graphics.h"
 
 class Camera {
   public:
-    DirectX::XMMATRIX GetMatrix() noexcept;
+    DirectX::XMMATRIX GetFreeMatrix() noexcept;
+    DirectX::XMMATRIX GetMatrix(Transform const &transform) noexcept;
     void SpawnControlWindow() noexcept;
     void Reset() noexcept;
     DirectX::XMVECTOR GetCameraPos() const noexcept;
+    void setCameraPos(DirectX::XMFLOAT3 const &newPosition);
     DirectX::XMFLOAT3 pos() const noexcept;
     DirectX::XMFLOAT3 at() const noexcept;
 

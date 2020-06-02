@@ -21,6 +21,7 @@
 #include "BehaviourSystem.hpp"
 #include "ColliderSystem.hpp"
 #include "ECS/ECS.hpp"
+#include "PropertySystem.hpp"
 #include "RenderSystem.hpp"
 
 // ////////////////////////////////////////////////////////////////////////// //
@@ -99,6 +100,11 @@ void SceneSystem::setup() {
     for (auto entity : registry.system<BehaviourSystem>()->entities) {
         entity.get<Behaviour>().script->setup();
     }
+
+    registry.system<PropertySystem>()
+        ->findEntityByTag("MainCamera")
+        .at(0)
+        .add<MainCamera>({.camera = std::make_shared<Camera>()});
 }
 
 void SceneSystem::update(float deltaTime){};

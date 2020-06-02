@@ -150,6 +150,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Components\AABB.hpp" />
     <ClInclude Include="Components\Behaviour.hpp" />
+    <ClInclude Include="Components\MainCamera.hpp" />
     <ClInclude Include="Components\Components.hpp" />
     <ClInclude Include="Components\BoxCollider.h" />
     <ClInclude Include="Components\MeshFilter.hpp" />

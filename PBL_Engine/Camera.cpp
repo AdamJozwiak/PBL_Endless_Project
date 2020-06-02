@@ -4,7 +4,7 @@
 
 namespace dx = DirectX;
 
-dx::XMMATRIX Camera::GetMatrix() noexcept {
+dx::XMMATRIX Camera::GetFreeMatrix() noexcept {
     // Set constants
     constexpr float maxPitchAngleValue = 85.0f;
     constexpr float movementSmoothing = 0.8f;
@@ -29,6 +29,38 @@ dx::XMMATRIX Camera::GetMatrix() noexcept {
     // Smoothly slow down the movement
     moveLeftRight = std::lerp(0.0f, moveLeftRight, movementSmoothing);
     moveBackForward = std::lerp(0.0f, moveBackForward, movementSmoothing);
+
+    // Compute target point
+    dx::XMVECTOR target = dx::XMVectorAdd(
+        position, dx::XMVector3Normalize(
+                      XMVector3TransformCoord(defaultForward, rotation)));
+
+    // Return camera's view matrix
+    return dx::XMMatrixLookAtLH(position, target,
+                                dx::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
+}
+
+dx::XMMATRIX Camera::GetMatrix(Transform const &transform) noexcept {
+    // Set position
+    setCameraPos(transform.position);
+
+    // Convert rotation quaternion into axis-angle representation
+    dx::XMVECTOR quaternion =
+        dx::XMVectorSet(transform.rotation.x, transform.rotation.y,
+                        transform.rotation.z, transform.rotation.w);
+
+    dx::XMVECTOR axis;
+    float angle;
+    dx::XMQuaternionToAxisAngle(&axis, &angle, quaternion);
+
+    rotation = dx::XMMatrixIdentity();
+    if (angle) {
+        rotation = dx::XMMatrixRotationAxis(axis, angle);
+    }
+
+    // Compute required directions
+    right = dx::XMVector3TransformCoord(defaultRight, rotation);
+    forward = dx::XMVector3TransformCoord(defaultForward, rotation);
 
     // Compute target point
     dx::XMVECTOR target = dx::XMVectorAdd(
@@ -67,6 +99,10 @@ void Camera::Reset() noexcept {
 }
 
 DirectX::XMVECTOR Camera::GetCameraPos() const noexcept { return position; }
+
+void Camera::setCameraPos(DirectX::XMFLOAT3 const &newPosition) {
+    position = dx::XMLoadFloat3(&newPosition);
+}
 
 DirectX::XMFLOAT3 Camera::pos() const noexcept {
     dx::XMFLOAT3 result;

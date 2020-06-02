@@ -1091,6 +1091,9 @@
     <ClInclude Include="Components\Tags.hpp">
       <Filter>Pliki nagłówkowe\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Components\MainCamera.hpp">
+      <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
     <ClInclude Include="Systems\WindowSystem.hpp">
       <Filter>Pliki nagłówkowe\Systems</Filter>
     </ClInclude>

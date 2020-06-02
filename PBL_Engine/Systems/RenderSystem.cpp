@@ -3,6 +3,7 @@
 
 #include <DirectXMath.h>
 
+#include <Systems/PropertySystem.hpp>
 #include <algorithm>
 #include <cmath>
 #include <memory>
@@ -48,10 +49,16 @@ void RenderSystem::filters() {
 
 void RenderSystem::setup() {
     window = &registry.system<WindowSystem>()->window();
-    camera = std::make_unique<Camera>();
+    mainCamera = registry.system<PropertySystem>()
+                     ->findEntityByTag("MainCamera")
+                     .at(0)
+                     .get<MainCamera>()
+                     .camera;
+    freeCamera = std::make_shared<Camera>();
     sphere = std::make_unique<SolidSphere>(window->Gfx(), 1.0f);
-    billboard = std::make_unique<Billboard>(window->Gfx(), camera.get());
-    fireParticle = std::make_unique<FireParticle>(window->Gfx(), camera.get());
+    billboard = std::make_unique<Billboard>(window->Gfx(), mainCamera.get());
+    fireParticle =
+        std::make_unique<FireParticle>(window->Gfx(), mainCamera.get());
     light = new PointLight(window->Gfx(), 0);
     light2 = new PointLight(window->Gfx(), 1);
     bloom = std::make_unique<PostProcessing>(window->Gfx(), L"Bloom", 2);
@@ -85,8 +92,8 @@ void RenderSystem::update(float deltaTime) {
         // Process mouse movements for free camera
         while (auto const delta = window->mouse.ReadRawDelta()) {
             if (window->mouse.RightIsPressed()) {
-                camera->yaw += delta->x * 0.25f * deltaTime;
-                camera->pitch += delta->y * 0.25f * deltaTime;
+                freeCamera->yaw += delta->x * 0.25f * deltaTime;
+                freeCamera->pitch += delta->y * 0.25f * deltaTime;
             }
         }
         // Process input for free camera movement
@@ -98,34 +105,42 @@ void RenderSystem::update(float deltaTime) {
             speed = std::lerp(0.0f, speed, 0.9f);         // Slow down
 
             if (window->keyboard.KeyIsPressed('A')) {
-                camera->moveLeftRight -= speed;
+                freeCamera->moveLeftRight -= speed;
             }
             if (window->keyboard.KeyIsPressed('D')) {
-                camera->moveLeftRight += speed;
+                freeCamera->moveLeftRight += speed;
             }
             if (window->keyboard.KeyIsPressed('W')) {
-                camera->moveBackForward += speed;
+                freeCamera->moveBackForward += speed;
             }
             if (window->keyboard.KeyIsPressed('S')) {
-                camera->moveBackForward -= speed;
+                freeCamera->moveBackForward -= speed;
             }
         }
 
         // Set camera
-        registry.system<SoundSystem>()->setListener(camera->pos(), camera->at(),
-                                                    {0.0f, 1.0f, 0.0f});
-        window->Gfx().SetCamera(camera->GetMatrix());
+        registry.system<SoundSystem>()->setListener(
+            mainCamera->pos(), mainCamera->at(), {0.0f, 1.0f, 0.0f});
+
+        auto const& mainCameraTransform = registry.system<PropertySystem>()
+                                              ->findEntityByTag("MainCamera")
+                                              .at(0)
+                                              .get<Transform>();
+        mainCamera->setCameraPos(mainCameraTransform.position);
+
+        window->Gfx().SetCamera(mainCamera->GetMatrix(mainCameraTransform));
         DirectX::XMFLOAT4X4 viewProjection;
-        DirectX::XMStoreFloat4x4(
-            &viewProjection,
-            camera->GetMatrix() * window->Gfx().GetProjection());
+        DirectX::XMStoreFloat4x4(&viewProjection,
+                                 mainCamera->GetMatrix(mainCameraTransform) *
+                                     window->Gfx().GetProjection());
 
         auto frustum = CFrustum(viewProjection);
 
         // Set lights
-        light->AddToBuffer(DirectX::XMMatrixIdentity(), camera->GetCameraPos());
+        light->AddToBuffer(DirectX::XMMatrixIdentity(),
+                           mainCamera->GetCameraPos());
         light2->AddToBuffer(DirectX::XMMatrixIdentity(),
-                            camera->GetCameraPos());
+                            mainCamera->GetCameraPos());
         PointLight::Bind(window->Gfx());
 
         // Advance the animation time
