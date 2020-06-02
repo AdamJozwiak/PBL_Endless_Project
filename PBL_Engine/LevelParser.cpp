@@ -562,8 +562,7 @@ void LevelParser::load() {
         auto &renderer = entity.get<Renderer>();
 
         meshFilter.model = std::make_shared<Model>(
-            registry.system<RenderSystem>()->window->Gfx(), meshFilter.path,
-            &renderer);
+            registry.system<WindowSystem>()->gfx(), meshFilter.path, &renderer);
     }
 }
 

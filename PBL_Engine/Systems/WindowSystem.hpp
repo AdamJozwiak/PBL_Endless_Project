@@ -1,24 +1,14 @@
 #pragma once
 
 // ///////////////////////////////////////////////////////////////// Includes //
-#include "Billboard.h"
-#include "Camera.h"
-#include "FireParticle.h"
-#include "ImguiManager.h"
-#include "Mesh.h"
-#include "PointLight.h"
-#include "PostProcessing.h"
-#include "SolidSphere.h"
-
-// ECS
-#include "Components/Components.hpp"
 #include "ECS/System.hpp"
 
 // ///////////////////////////////////////////////////// Forward declarations //
 class Window;
+class Graphics;
 
 // /////////////////////////////////////////////////////////////////// System //
-ECS_SYSTEM(RenderSystem) {
+ECS_SYSTEM(WindowSystem) {
   public:
     // ========================================================= Behaviour == //
     // ------------------------------------- System's virtual functions -- == //
@@ -27,20 +17,13 @@ ECS_SYSTEM(RenderSystem) {
     void update(float deltaTime) override;
     void release() override;
 
-    DirectX::XMMATRIX transformMatrix(Entity entity);
-
-    // ============================================================== Data == //
-    Window *window;
+    // ----------------------------------------------- Public interface -- == //
+    Window &window();
+    Graphics &gfx();
 
   private:
     // ============================================================== Data == //
-    std::unique_ptr<Camera> camera;
-    ImguiManager imgui;
-    float speed_factor = 1.0f;
-    std::unique_ptr<SolidSphere> sphere;
-    std::unique_ptr<Billboard> billboard;
-    std::unique_ptr<FireParticle> fireParticle;
-    std::unique_ptr<PostProcessing> bloom, colorCorrection;
+    std::unique_ptr<Window> windowPtr;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

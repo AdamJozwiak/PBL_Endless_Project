@@ -21,6 +21,7 @@
 #include "ECS/ECS.hpp"
 #include "GraphSystem.hpp"
 #include "SoundSystem.hpp"
+#include "WindowSystem.hpp"
 
 namespace dx = DirectX;
 
@@ -46,7 +47,7 @@ void RenderSystem::filters() {
 }
 
 void RenderSystem::setup() {
-    window = std::make_unique<Window>(1680, 1050, "Ohunkakan");
+    window = &registry.system<WindowSystem>()->window();
     camera = std::make_unique<Camera>();
     sphere = std::make_unique<SolidSphere>(window->Gfx(), 1.0f);
     billboard = std::make_unique<Billboard>(window->Gfx(), camera.get());

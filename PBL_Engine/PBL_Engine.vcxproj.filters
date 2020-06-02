@@ -477,6 +477,9 @@
     <ClCompile Include="Systems\PropertySystem.cpp">
       <Filter>Pliki źródłowe\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Systems\WindowSystem.cpp">
+      <Filter>Pliki źródłowe\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -1087,6 +1090,9 @@
     </ClInclude>
     <ClInclude Include="Components\Tags.hpp">
       <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\WindowSystem.hpp">
+      <Filter>Pliki nagłówkowe\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

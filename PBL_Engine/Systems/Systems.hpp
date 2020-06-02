@@ -8,5 +8,6 @@
 #include "RenderSystem.hpp"
 #include "SceneSystem.hpp"
 #include "SoundSystem.hpp"
+#include "WindowSystem.hpp"
 
 // ////////////////////////////////////////////////////////////////////////// //
