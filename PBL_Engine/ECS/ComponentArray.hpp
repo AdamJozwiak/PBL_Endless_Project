@@ -77,7 +77,7 @@ class ENGINE_API ComponentArray : public IComponentArray {
   private:
     // ========================================================= Behaviour == //
     bool componentExists(EntityId const &entityId) {
-        return indicies.find(entityId) != indicies.end();
+        return indicies.contains(entityId);
     }
 
     // ============================================================== Data == //
