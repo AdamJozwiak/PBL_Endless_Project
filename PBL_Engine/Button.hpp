@@ -17,6 +17,8 @@ class Button {
     // ========================================================= Behaviour == //
     Button(Window& window, const WCHAR* fontFamily, float fontSize,
            DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size);
+    Button(Window& window, const WCHAR* fontFamily, std::wstring const& path,
+           float fontSize, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size);
 
     void draw(std::string const& text);
 

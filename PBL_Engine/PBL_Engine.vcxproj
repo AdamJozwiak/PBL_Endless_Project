@@ -36,6 +36,7 @@
     <ClCompile Include="ECS\SystemManager.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="ExceptionHandler.cpp" />
+    <ClCompile Include="FontLoader.cpp" />
     <ClCompile Include="FrustumCulling.cpp" />
     <ClCompile Include="GDIPlusManager.cpp" />
     <ClCompile Include="GeometryCbuf.cpp" />
@@ -184,6 +185,8 @@
     <ClInclude Include="Events\OnCollisionEnter.hpp" />
     <ClInclude Include="ExceptionHandler.h" />
     <ClInclude Include="FireParticle.h" />
+    <ClInclude Include="FontLoader.h" />
+    <ClInclude Include="FontUtils.h" />
     <ClInclude Include="FrustumCulling.h" />
     <ClInclude Include="GDIPlusManager.h" />
     <ClInclude Include="GeometryCbuf.h" />

@@ -17,6 +17,15 @@ Button::Button(Window& window, const WCHAR* fontFamily, float fontSize,
       position(position),
       size(size) {}
 
+Button::Button(Window& window, const WCHAR* fontFamily,
+               std::wstring const& path, float fontSize,
+               DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size)
+    : window(window),
+      gfx(window.Gfx()),
+      textRenderer(std::make_unique<Text>(gfx, fontFamily, path, fontSize)),
+      position(position),
+      size(size) {}
+
 void Button::draw(std::string const& text) {
     static bool clicked = false;
     static bool hovered = false;

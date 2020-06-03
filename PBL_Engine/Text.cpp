@@ -9,6 +9,23 @@ Text::Text(Graphics& gfx, const WCHAR* fontFamily, float fontSize) {
     InitializeTextFormats(fontFamily, fontSize);
 }
 
+Text::Text(Graphics& gfx, const WCHAR* fontFamily, std::wstring path,
+           float fontSize) {
+    if (!init) {
+        CreateDevice(gfx);
+        CreateBitmapRenderTarget(gfx);
+        init = true;
+
+        // Create font collection
+        FontContext fontContext(writeFactory.Get());
+        std::vector<std::wstring> filePaths;
+        filePaths.push_back(path);
+        HRESULT hr =
+            fontContext.CreateFontCollection(filePaths, &fontCollection);
+    }
+    InitCustomTextFormat(fontFamily, path, fontSize);
+}
+
 void Text::RenderText(Graphics& gfx, std::string text, bool yellow,
                       DirectX::XMFLOAT2 pos) {
     std::wstring tmp = std::wstring(text.begin(), text.end());
@@ -110,6 +127,35 @@ void Text::InitializeTextFormats(const WCHAR* fontFamily, float fontSize) {
         fontFamily,                  // font family
         nullptr,                     // font collection
         DWRITE_FONT_WEIGHT_LIGHT,    // font weight
+        DWRITE_FONT_STYLE_NORMAL,    // font style
+        DWRITE_FONT_STRETCH_NORMAL,  // font stretch
+        fontSize,                    // font size (in dp)
+        L"en-GB",                    // locale
+        &textFormatFPS               // [out] text format object
+    );
+
+    // Text alignment
+    textFormatFPS->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+
+    // Paragraph alignment
+    textFormatFPS->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+}
+
+void Text::InitCustomTextFormat(const WCHAR* fontFamily, std::wstring filePath,
+                                float fontSize) {
+    // Create brushes
+    devCon->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Yellow),
+                                  &yellowBrush);
+    devCon->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black),
+                                  &blackBrush);
+    devCon->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White),
+                                  &whiteBrush);
+
+    // Text format
+    writeFactory.Get()->CreateTextFormat(
+        fontFamily,                  // font family
+        fontCollection.Get(),        // font collection
+        DWRITE_FONT_WEIGHT_REGULAR,  // font weight
         DWRITE_FONT_STYLE_NORMAL,    // font style
         DWRITE_FONT_STRETCH_NORMAL,  // font stretch
         fontSize,                    // font size (in dp)
