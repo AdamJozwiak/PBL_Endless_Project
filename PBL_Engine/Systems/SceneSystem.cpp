@@ -86,21 +86,6 @@ void SceneSystem::setup() {
     // }
     levelParser.load();
 
-    for (auto entity : registry.system<ColliderSystem>()->entities) {
-        entity.get<SphereCollider>() =
-            registry.system<ColliderSystem>()->AddSphereCollider(
-                entity.get<MeshFilter>().model->verticesForCollision);
-    }
-
-    for (auto entity : registry.system<RenderSystem>()->entities) {
-        entity.get<AABB>() = registry.system<ColliderSystem>()->AddAABB(
-            entity.get<MeshFilter>().model->verticesForCollision);
-    }
-
-    for (auto entity : registry.system<BehaviourSystem>()->entities) {
-        entity.get<Behaviour>().script->setup();
-    }
-
     registry.system<PropertySystem>()
         ->findEntityByTag("MainCamera")
         .at(0)
@@ -110,5 +95,10 @@ void SceneSystem::setup() {
 void SceneSystem::update(float deltaTime){};
 
 void SceneSystem::release() {}
+
+// --------------------------------------------------- Public interface -- == //
+Entity SceneSystem::spawnPrefab(std::string const& path) {
+    return levelParser.loadPrefab(path);
+}
 
 // ////////////////////////////////////////////////////////////////////////// //

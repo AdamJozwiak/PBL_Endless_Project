@@ -1,5 +1,6 @@
 #include "LevelParser.h"
 
+#include <Script.hpp>
 #include <cassert>
 #include <filesystem>
 #include <set>
@@ -22,6 +23,7 @@ using FileExtension = std::string;
 
 std::unordered_map<FileId, YAML::Node> nodes;
 std::unordered_map<FileGuid, YAML::Node> materialNodes;
+std::unordered_map<Path, FileGuid> pathToGuid;
 std::unordered_map<FileGuid, Path> guidPaths;
 std::unordered_map<FileGuid, std::set<FileId>> prefabFileIds;
 
@@ -36,7 +38,8 @@ LevelParser::LevelParser() {}
 LevelParser::~LevelParser() {}
 
 std::unordered_map<FileId, EntityId> spawnPrefab(
-    std::set<FileId> const &fileIds) {
+    std::set<FileId> const &fileIds,
+    std::set<EntityId> *recursivePrefabIds = nullptr) {
     // Go through all game objects in scene/prefab file and create entities
     std::unordered_map<FileId, EntityId> entityIds;
     for (auto const &fileId : fileIds) {
@@ -364,7 +367,8 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
             FileGuid prefabGuid =
                 nodePrefabInstance["m_SourcePrefab"]["guid"].as<FileGuid>();
 
-            auto prefabEntityIds = spawnPrefab(prefabFileIds.at(prefabGuid));
+            auto prefabEntityIds =
+                spawnPrefab(prefabFileIds.at(prefabGuid), recursivePrefabIds);
 
             FileId transformParentId =
                 nodePrefabInstance["m_Modification"]["m_TransformParent"]
@@ -475,6 +479,12 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
             entityIdsWithTransform.at(parentFileId));
     }
 
+    if (recursivePrefabIds) {
+        for (auto const &[fileId, entityId] : entityIds) {
+            recursivePrefabIds->insert(entityId);
+        }
+    }
+
     return entityIds;
 }
 
@@ -483,7 +493,6 @@ void LevelParser::load() {
         "Assets\\SceneFiles\\SampleScene\\SampleScene.unity");
 
     std::unordered_map<FileExtension, std::vector<Path>> assetPaths;
-    std::unordered_map<Path, FileGuid> pathToGuid;
 
     // Creating vectors of files with .prefab, .mat, .meta extensions
     Path searchedDirectory{"Assets\\SceneFiles\\SampleScene"};
@@ -554,15 +563,64 @@ void LevelParser::load() {
     }
 
     // Spawn the scene and prefabs
-    spawnPrefab(sceneFileIds);
+    std::set<EntityId> recursivePrefabIds;
+    spawnPrefab(sceneFileIds, &recursivePrefabIds);
+    finalizeLoading(recursivePrefabIds);
+}
 
-    // Create models based on loaded data
-    for (Entity entity : registry.system<RenderSystem>()->entities) {
-        auto &meshFilter = entity.get<MeshFilter>();
-        auto &renderer = entity.get<Renderer>();
+Entity LevelParser::loadPrefab(std::string const &filename) {
+    assert(pathToGuid.contains(filename) &&
+           "There's no prefab with that name!");
 
-        meshFilter.model = std::make_shared<Model>(
-            registry.system<WindowSystem>()->gfx(), meshFilter.path, &renderer);
+    // Spawn the prefab
+    std::set<EntityId> recursivePrefabIds;
+    auto const &prefabGuid = pathToGuid.at(filename);
+    auto prefabEntityIds =
+        spawnPrefab(prefabFileIds.at(prefabGuid), &recursivePrefabIds);
+
+    finalizeLoading(recursivePrefabIds);
+
+    // Find and return the prefab's main entity
+    for (auto const &[fileId, entityId] : prefabEntityIds) {
+        if (Entity(entityId).get<Transform>().parent == std::nullopt) {
+            return Entity(entityId);
+        }
+    }
+}
+
+void LevelParser::finalizeLoading(
+    std::set<EntityId> const &recursivePrefabIds) {
+    // Load further assets for the components
+    for (auto const &entityId : recursivePrefabIds) {
+        auto entity = Entity(entityId);
+
+        // Models
+        if (entity.has<Renderer>() && entity.has<MeshFilter>()) {
+            auto &meshFilter = entity.get<MeshFilter>();
+            auto &renderer = entity.get<Renderer>();
+
+            meshFilter.model =
+                Model::create(registry.system<WindowSystem>()->gfx(),
+                              meshFilter.path, &renderer);
+        }
+
+        // Colliders
+        if (entity.has<SphereCollider>()) {
+            entity.get<SphereCollider>() =
+                registry.system<ColliderSystem>()->AddSphereCollider(
+                    entity.get<MeshFilter>().model->verticesForCollision);
+        }
+
+        // AABBs for the frustum culling
+        if (entity.has<AABB>()) {
+            entity.get<AABB>() = registry.system<ColliderSystem>()->AddAABB(
+                entity.get<MeshFilter>().model->verticesForCollision);
+        }
+
+        // Scripts
+        if (entity.has<Behaviour>()) {
+            entity.get<Behaviour>().script->setup();
+        }
     }
 }
 

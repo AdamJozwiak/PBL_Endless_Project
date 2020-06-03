@@ -16,6 +16,9 @@ ECS_SYSTEM(SceneSystem) {
     void update(float deltaTime) override;
     void release() override;
 
+    // ----------------------------------------------- Public interface -- == //
+    Entity spawnPrefab(std::string const &path);
+
   private:
     // ============================================================== Data == //
     LevelParser levelParser;

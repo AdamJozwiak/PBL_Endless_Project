@@ -13,20 +13,19 @@ constexpr int NUMBER_OF_MONKEYS = 10;
 std::array<EntityId, NUMBER_OF_MONKEYS> monkeys;
 void spawnMonkey(Entity entity) {
     if (counter < NUMBER_OF_MONKEYS) {
-        monkeys[counter] = Registry::instance().createEntity().id;
-        Entity(monkeys[counter])
-            .add<Active>({})
-            .add<Transform>([&]() {
-                auto transform = entity.get<Transform>();
-                transform.position.x = 0.0f;
-                transform.position.y = counter * 2.0f;
-                transform.position.z = 0.0f;
-                return transform;
-            }())
-            .add<MeshFilter>(entity.get<MeshFilter>())
-            .add<Renderer>(entity.get<Renderer>())
-            .add<AABB>(Registry::instance().system<ColliderSystem>()->AddAABB(
-                entity.get<MeshFilter>().model->verticesForCollision));
+        monkeys[counter] =
+            Registry::instance()
+                .system<SceneSystem>()
+                ->spawnPrefab(
+                    "Assets\\SceneFiles\\SampleScene\\Monkey Monster.prefab")
+                .id;
+        Entity(monkeys[counter]).set<Transform>([&]() {
+            auto transform = Entity(monkeys[counter]).get<Transform>();
+            transform.position.x = 0.0f;
+            transform.position.y = counter * 2.0f;
+            transform.position.z = 0.0f;
+            return transform;
+        }());
         Registry::instance().system<SoundSystem>()->play3d(
             "Assets\\Audio\\SuitFootsteps\\suit-footsteps-01.wav",
             Entity(monkeys[counter]).get<Transform>().position);
