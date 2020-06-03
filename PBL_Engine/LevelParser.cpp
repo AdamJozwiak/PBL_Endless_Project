@@ -480,13 +480,13 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
 
 void LevelParser::load() {
     auto const &sceneNodes = YAML::LoadAllFromFile(
-        "Assets/SceneFiles/SampleScene/SampleScene.unity");
+        "Assets\\SceneFiles\\SampleScene\\SampleScene.unity");
 
     std::unordered_map<FileExtension, std::vector<Path>> assetPaths;
     std::unordered_map<Path, FileGuid> pathToGuid;
 
     // Creating vectors of files with .prefab, .mat, .meta extensions
-    Path searchedDirectory{"Assets/SceneFiles/SampleScene"};
+    Path searchedDirectory{"Assets\\SceneFiles\\SampleScene"};
     std::vector<FileExtension> searchedFileExtensions{".meta", ".prefab",
                                                       ".mat"};
 

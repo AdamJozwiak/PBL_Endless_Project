@@ -12,7 +12,7 @@ int counter = 0;
 constexpr int NUMBER_OF_MONKEYS = 10;
 std::array<EntityId, NUMBER_OF_MONKEYS> monkeys;
 void spawnMonkey(Entity entity) {
-    if (counter < 10) {
+    if (counter < NUMBER_OF_MONKEYS) {
         monkeys[counter] = Registry::instance().createEntity().id;
         Entity(monkeys[counter])
             .add<Active>({})
