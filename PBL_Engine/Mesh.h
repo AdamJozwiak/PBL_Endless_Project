@@ -69,6 +69,10 @@ class Node {
 
 class Model {
   public:
+    static std::shared_ptr<Model> create(Graphics& gfx,
+                                         const std::string fileName,
+                                         Renderer* renderer,
+                                         float* animationTime = nullptr);
     Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
           float* animationTime = nullptr);
     void Draw(Graphics& gfx, DirectX::XMMATRIX transform) const

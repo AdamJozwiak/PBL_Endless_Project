@@ -15,6 +15,9 @@
 
 namespace dx = DirectX;
 
+std::vector<std::tuple<std::string, Renderer*, float*, std::shared_ptr<Model>>>
+    cachedModels;
+
 void Mesh::VertexBoneData::AddBoneData(UINT boneID, float boneWeight) {
     int size = sizeof(IDs) / sizeof(*IDs);
     for (UINT i = 0; i < size; i++) {
@@ -215,6 +218,35 @@ class ModelWindow {
     std::unordered_map<int, TransformParameters> transforms;
     float currentAnim = 0.0f;
 };
+
+std::shared_ptr<Model> Model::create(Graphics& gfx, const std::string fileName,
+                                     Renderer* renderer, float* animationTime) {
+    for (auto const& [cachedFilename, cachedRenderer, cachedAnimationTime,
+                      cachedModel] : cachedModels) {
+        if (cachedFilename == fileName &&
+            cachedRenderer->material.albedoPath ==
+                renderer->material.albedoPath &&
+            cachedRenderer->material.ambientOcclusionPath ==
+                renderer->material.ambientOcclusionPath &&
+            cachedRenderer->material.metallicSmoothnessPath ==
+                renderer->material.metallicSmoothnessPath &&
+            cachedRenderer->material.normalPath ==
+                renderer->material.normalPath &&
+            cachedRenderer->material.heightPath ==
+                renderer->material.heightPath &&
+            cachedRenderer->material.parallaxHeight ==
+                renderer->material.parallaxHeight &&
+            cachedAnimationTime == animationTime) {
+            return cachedModel;
+        }
+    }
+
+    auto newModel =
+        std::make_shared<Model>(gfx, fileName, renderer, animationTime);
+    cachedModels.push_back({fileName, renderer, animationTime, newModel});
+
+    return newModel;
+}
 
 Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
              float* animationTime)
