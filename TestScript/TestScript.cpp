@@ -34,7 +34,9 @@ void spawnMonkey(Entity entity) {
     } else {
         counter = 0;
         for (auto const& entity : monkeys) {
-            Registry::instance().destroyEntity(entity);
+            Registry::instance()
+                .system<GraphSystem>()
+                ->destroyEntityWithChildren(entity);
         }
     }
 }

@@ -21,6 +21,7 @@ ECS_SYSTEM(GraphSystem) {
 
     // ----------------------------------------------- Public interface -- == //
     DirectX::XMMATRIX transform(Entity const &entity);
+    void destroyEntityWithChildren(Entity const &entity);
 
   private:
     // ========================================================= Behaviour == //

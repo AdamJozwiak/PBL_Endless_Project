@@ -143,6 +143,19 @@ DirectX::XMMATRIX GraphSystem::transform(Entity const& entity) {
     return entityToGraphNode[entity.id].cumulativeTransform;
 }
 
+void GraphSystem::destroyEntityWithChildren(Entity const& entity) {
+    // Destroy the entity
+    registry.destroyEntity(entity);
+
+    // Destroy the entity's children if they exist
+    auto const& children = entityToGraphNode.at(entity.id).children;
+    if (!children.empty()) {
+        for (auto const& childEntityId : children) {
+            destroyEntityWithChildren(childEntityId);
+        }
+    }
+}
+
 DirectX::XMMATRIX GraphSystem::matrix(Transform const& transform) {
     // Convert rotation quaternion into axis-angle representation
     dx::XMVECTOR quaternion =
