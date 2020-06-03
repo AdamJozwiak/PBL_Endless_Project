@@ -53,7 +53,8 @@ void RenderSystem::setup() {
     // imgui = std::make_unique<ImguiManager>();
     nano = new Model(window->Gfx(), "Assets\\Models\\Wolf-Blender-2.82a.gltf",
                      nullptr, &animator.animationTime);
-    text = std::make_unique<Text>(window->Gfx(), L"Arial", 40);
+    text = std::make_unique<Text>(
+        window->Gfx(), L"Western Samurai", L"Assets\\Fonts\\Western Samurai.otf", 40, true);
     window->Gfx().SetProjection(
         dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 400.0f));
 }
@@ -63,13 +64,13 @@ void RenderSystem::update(float deltaTime) {
     for (Entity entity : entities) {
         registry.system<ColliderSystem>()->CalculateAABB(
             entity.get<AABB>(),
-            registry.system<GraphSystem>()->transform(entity));       
+            registry.system<GraphSystem>()->transform(entity));
     }
 
     for (Entity entity : registry.system<ColliderSystem>()->entities) {
         registry.system<ColliderSystem>()->CalculateAABB(
             entity.get<BoxCollider>().aabb,
-            registry.system<GraphSystem>()->transform(entity));  
+            registry.system<GraphSystem>()->transform(entity));
     }
 
     const auto dt = deltaTime * speed_factor;
