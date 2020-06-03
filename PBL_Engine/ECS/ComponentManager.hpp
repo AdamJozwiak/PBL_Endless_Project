@@ -61,6 +61,11 @@ class ENGINE_API ComponentManager {
         return components<ComponentType>()->get(entityId);
     }
 
+    template <typename ComponentType>
+    bool has(EntityId entityId) {
+        return components<ComponentType>()->contains(entityId);
+    }
+
     // -------------------------------------------------------- Helpers -- == //
     void destroyEntity(EntityId entityId);
 

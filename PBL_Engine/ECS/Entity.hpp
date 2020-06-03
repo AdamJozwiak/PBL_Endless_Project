@@ -37,6 +37,11 @@ class ENGINE_API Entity {
     }
 
     template <typename ComponentType>
+    bool has() {
+        return registry.hasComponent<ComponentType>(id);
+    }
+
+    template <typename ComponentType>
     Entity& set(ComponentType const& component) {
         get<ComponentType>() = component;
         return *this;

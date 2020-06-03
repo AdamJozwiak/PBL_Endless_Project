@@ -67,6 +67,8 @@ class ENGINE_API ComponentArray : public IComponentArray {
         return components[indicies[entityId]];
     }
 
+    bool contains(EntityId entityId) { return componentExists(entityId); }
+
     void destroyEntity(EntityId entityId) override {
         // assert(componentExists(entityId) &&
         //       "Component doesn't exist for given entity!");

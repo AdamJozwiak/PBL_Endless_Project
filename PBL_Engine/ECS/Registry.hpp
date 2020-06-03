@@ -56,6 +56,11 @@ class ENGINE_API Registry {
         return componentManager.id<ComponentType>();
     }
 
+    template <typename ComponentType>
+    bool hasComponent(EntityId entityId) {
+        return componentManager.has<ComponentType>(entityId);
+    }
+
     // --------------------------------------------------------- System -- == //
     template <typename SystemType>
     std::shared_ptr<SystemType> system() {
