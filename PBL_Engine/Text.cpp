@@ -7,7 +7,7 @@ Text::Text(Graphics& gfx, const WCHAR* fontFamily, float fontSize) {
 }
 
 Text::Text(Graphics& gfx, const WCHAR* fontFamily, std::wstring path,
-           float fontSize, bool test) {
+           float fontSize) {
     CreateDevice(gfx);
     CreateBitmapRenderTarget(gfx);
     InitCustomTextFormat(fontFamily, path, fontSize);

@@ -17,7 +17,7 @@ class Text {
     friend class Graphics;
     Text(Graphics& gfx, const WCHAR* fontFamily, float fontSize);
     Text(Graphics& gfx, const WCHAR* fontFamily, std::wstring path,
-         float fontSize, bool test);
+         float fontSize);
     // Brushes
     wrl::ComPtr<ID2D1SolidColorBrush> yellowBrush;
     wrl::ComPtr<ID2D1SolidColorBrush> whiteBrush;
