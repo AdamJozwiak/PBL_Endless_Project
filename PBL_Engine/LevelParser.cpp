@@ -21,7 +21,7 @@ using FileGuid = std::string;
 using Path = std::string;
 using FileExtension = std::string;
 
-std::unordered_map<FileId, YAML::Node> nodes;
+std::unordered_map<FileGuid, std::unordered_map<FileId, YAML::Node>> nodes;
 std::unordered_map<FileGuid, YAML::Node> materialNodes;
 std::unordered_map<Path, FileGuid> pathToGuid;
 std::unordered_map<FileGuid, Path> guidPaths;
@@ -38,12 +38,12 @@ LevelParser::LevelParser() {}
 LevelParser::~LevelParser() {}
 
 std::unordered_map<FileId, EntityId> spawnPrefab(
-    std::set<FileId> const &fileIds,
+    FileGuid guid, std::set<FileId> const &fileIds,
     std::set<EntityId> *recursivePrefabIds = nullptr) {
     // Go through all game objects in scene/prefab file and create entities
     std::unordered_map<FileId, EntityId> entityIds;
     for (auto const &fileId : fileIds) {
-        auto node{nodes[fileId]};
+        auto node{nodes.at(guid)[fileId]};
 
         if (auto const &nodeGameObject = node["GameObject"]; nodeGameObject) {
             auto entity{registry.createEntity()};
@@ -58,13 +58,13 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                  .tag = nodeGameObject["m_TagString"].as<std::string>(),
                  .active = static_cast<bool>(
                      nodeGameObject["m_IsActive"].as<int>())});
-            }
         }
+    }
 
     // Go through all other components in the scene/prefab file
     std::unordered_map<FileId, EntityId> entityIdsWithTransform;
     for (auto const &fileId : fileIds) {
-        auto const &node = nodes[fileId];
+        auto const &node = nodes.at(guid)[fileId];
 
         if (auto const &nodeTransform = node["Transform"]; nodeTransform) {
             assert(nodeTransform["m_PrefabInstance"] &&
@@ -364,7 +364,7 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
 
     /* std::set<FileId> usedFileIds; */
     for (auto const &fileId : fileIds) {
-        auto const &node = nodes[fileId];
+        auto const &node = nodes.at(guid)[fileId];
 
         if (auto const &nodePrefabInstance = node["PrefabInstance"];
             nodePrefabInstance) {
@@ -377,8 +377,8 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
             FileGuid prefabGuid =
                 nodePrefabInstance["m_SourcePrefab"]["guid"].as<FileGuid>();
 
-            auto prefabEntityIds =
-                spawnPrefab(prefabFileIds.at(prefabGuid), recursivePrefabIds);
+            auto prefabEntityIds = spawnPrefab(
+                prefabGuid, prefabFileIds.at(prefabGuid), recursivePrefabIds);
 
             FileId transformParentId =
                 nodePrefabInstance["m_Modification"]["m_TransformParent"]
@@ -473,7 +473,7 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
     // After creating Transform components, update parent references
     // TODO: Consider also adding child references, somehow
     for (auto const &[fileId, entityId] : entityIdsWithTransform) {
-        auto const &node{nodes.at(fileId)};
+        auto const &node{nodes.at(guid).at(fileId)};
         assert(node["Transform"] &&
                "This loop must operate on valid Transform components!");
         assert(node["Transform"]["m_Father"] &&
@@ -533,7 +533,7 @@ void LevelParser::load() {
             if (!i->second["id"]) {
                 continue;
             }
-            nodes.insert({i->second["id"].as<FileId>(), node});
+            nodes["0"].insert({i->second["id"].as<FileId>(), node});
             sceneFileIds.insert(i->second["id"].as<FileId>());
         }
     }
@@ -557,10 +557,12 @@ void LevelParser::load() {
                         }
 
                         // Check for duplicates
-                        assert(!nodes.contains(i->second["id"].as<FileId>()) &&
+                        assert(!nodes[pathToGuid[path]].contains(
+                                   i->second["id"].as<FileId>()) &&
                                "Duplicate file identifiers!");
 
-                        nodes.insert({i->second["id"].as<FileId>(), node});
+                        nodes[pathToGuid[path]].insert(
+                            {i->second["id"].as<FileId>(), node});
                         prefabFileIds[pathToGuid[path]].insert(
                             i->second["id"].as<FileId>());
                     }
@@ -578,7 +580,7 @@ void LevelParser::load() {
 
     // Spawn the scene and prefabs
     std::set<EntityId> recursivePrefabIds;
-    spawnPrefab(sceneFileIds, &recursivePrefabIds);
+    spawnPrefab("0", sceneFileIds, &recursivePrefabIds);
     finalizeLoading(recursivePrefabIds);
 }
 
@@ -589,8 +591,8 @@ Entity LevelParser::loadPrefab(std::string const &filename) {
     // Spawn the prefab
     std::set<EntityId> recursivePrefabIds;
     auto const &prefabGuid = pathToGuid.at(filename);
-    auto prefabEntityIds =
-        spawnPrefab(prefabFileIds.at(prefabGuid), &recursivePrefabIds);
+    auto prefabEntityIds = spawnPrefab(prefabGuid, prefabFileIds.at(prefabGuid),
+                                       &recursivePrefabIds);
 
     finalizeLoading(recursivePrefabIds);
 
