@@ -262,6 +262,48 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
         throw ModelException(__LINE__, __FILE__, importer->GetErrorString());
     }
     root = pScene->mRootNode;
+
+    if (pScene->mMetaData) {
+        // Get model's axes' data
+        int upAxis = 0;
+        pScene->mMetaData->Get<int>("UpAxis", upAxis);
+        int upAxisSign = 1;
+        pScene->mMetaData->Get<int>("UpAxisSign", upAxisSign);
+        int frontAxis = 0;
+        pScene->mMetaData->Get<int>("FrontAxis", frontAxis);
+        int frontAxisSign = 1;
+        pScene->mMetaData->Get<int>("FrontAxisSign", frontAxisSign);
+        int coordAxis = 0;
+        pScene->mMetaData->Get<int>("CoordAxis", coordAxis);
+        int coordAxisSign = 1;
+        pScene->mMetaData->Get<int>("CoordAxisSign", coordAxisSign);
+
+        // Calculate the rotation matrix
+        aiVector3D upVec = upAxis == 0
+                               ? aiVector3D(upAxisSign, 0, 0)
+                               : upAxis == 1 ? aiVector3D(0, upAxisSign, 0)
+                                             : aiVector3D(0, 0, upAxisSign);
+        aiVector3D frontVec =
+            frontAxis == 0 ? aiVector3D(frontAxisSign, 0, 0)
+                           : frontAxis == 1 ? aiVector3D(0, frontAxisSign, 0)
+                                            : aiVector3D(0, 0, frontAxisSign);
+        aiVector3D coordVec =
+            coordAxis == 0 ? aiVector3D(coordAxisSign, 0, 0)
+                           : coordAxis == 1 ? aiVector3D(0, coordAxisSign, 0)
+                                            : aiVector3D(0, 0, coordAxisSign);
+        aiMatrix4x4 mat(coordVec.x, coordVec.y, coordVec.z, 0.0f, upVec.x,
+                        upVec.y, upVec.z, 0.0f, frontVec.x, frontVec.y,
+                        frontVec.z, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+
+        // Rotate the model to fit the engine axes
+        pScene->mRootNode->mTransformation *= mat;
+
+        // Apply additional rotation for the Z axis (needed most probably
+        // because of DirectX/OpenGL differences in model exports)
+        aiMatrix4x4::RotationY(DirectX::XMConvertToRadians(180.0f),
+                               pScene->mRootNode->mTransformation);
+    }
+
     if (pScene->HasAnimations()) {
         for (size_t i = 0; i < pScene->mNumAnimations; i++) {
             animPtrs.push_back(pScene->mAnimations[i]);

@@ -117,12 +117,6 @@ void GraphSystem::update(float const deltaTime) {
 
         if (node.recalculate) {
             node.cumulativeTransform = dx::XMMatrixIdentity();
-            if (node.children.empty()) {
-                node.cumulativeTransform *= dx::XMMatrixRotationRollPitchYaw(
-                    dx::XMConvertToRadians(270.0f),
-                    dx::XMConvertToRadians(180.0f),
-                    dx::XMConvertToRadians(0.0f));
-            }
             node.cumulativeTransform *= matrix(*node.transform);
             node.cumulativeTransform *= node.parent->cumulativeTransform;
         }
