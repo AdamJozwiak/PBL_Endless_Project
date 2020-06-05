@@ -619,4 +619,3 @@ void LevelParser::finalizeLoading(
         }
     }
 }
-
