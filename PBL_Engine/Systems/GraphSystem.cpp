@@ -102,6 +102,7 @@ void GraphSystem::update(float const deltaTime) {
 
         if (currentTransform != previousTransform) {
             entityToGraphNode.at(entityId).recalculate = true;
+            entityToPreviousTransform.at(entityId) = currentTransform;
         }
     }
 
