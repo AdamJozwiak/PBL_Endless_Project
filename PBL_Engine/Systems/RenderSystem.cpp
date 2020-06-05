@@ -74,7 +74,10 @@ void RenderSystem::setup() {
         *window, L"Western Samurai", L"Assets\\Fonts\\Western Samurai.otf", 40,
         DirectX::XMFLOAT2{50.0f, 50.0f}, DirectX::XMFLOAT2{375.0f, 40.0f});
     window->Gfx().SetProjection(
-        dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 400.0f));
+        dx::XMMatrixPerspectiveFovLH(dx::XMConvertToRadians(60.0f),
+                                     float(window->Gfx().GetWindowWidth()) /
+                                         float(window->Gfx().GetWindowHeight()),
+                                     0.3f, 1000.0f));
 }
 
 void RenderSystem::update(float deltaTime) {
