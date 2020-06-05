@@ -220,28 +220,42 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                     auto const &propertiesNode =
                         materialNodes[value]["Material"]["m_SavedProperties"]
                                      ["m_Floats"];
-                    renderer.material.albedoPath =
-                        guidPaths[materialNode[5]["_MainTex"]["m_Texture"]
+                    yamlLoop(i, materialNode) {
+                        if ((*i)["_MainTex"]) {
+                            renderer.material.albedoPath =
+                                guidPaths[(*i)["_MainTex"]["m_Texture"]["guid"]
+                                              .as<std::string>()];
+                        }
+                        if ((*i)["_OcclusionMap"]) {
+                            renderer.material.ambientOcclusionPath =
+                                guidPaths[(*i)["_OcclusionMap"]["m_Texture"]
                                               ["guid"]
                                                   .as<std::string>()];
-                    renderer.material.ambientOcclusionPath =
-                        guidPaths[materialNode[7]["_OcclusionMap"]["m_Texture"]
+                        }
+                        if ((*i)["_MetallicGlossMap"]) {
+                            renderer.material.metallicSmoothnessPath =
+                                guidPaths[(*i)["_MetallicGlossMap"]["m_Texture"]
                                               ["guid"]
                                                   .as<std::string>()];
-                    renderer.material.metallicSmoothnessPath =
-                        guidPaths[materialNode[6]["_MetallicGlossMap"]
-                                              ["m_Texture"]["guid"]
-                                                  .as<std::string>()];
-                    renderer.material.normalPath =
-                        guidPaths[materialNode[0]["_BumpMap"]["m_Texture"]
+                        }
+                        if ((*i)["_BumpMap"]) {
+                            renderer.material.normalPath =
+                                guidPaths[(*i)["_BumpMap"]["m_Texture"]["guid"]
+                                              .as<std::string>()];
+                        }
+                        if ((*i)["_ParallaxMap"]) {
+                            renderer.material.heightPath =
+                                guidPaths[(*i)["_ParallaxMap"]["m_Texture"]
                                               ["guid"]
                                                   .as<std::string>()];
-                    renderer.material.heightPath =
-                        guidPaths[materialNode[8]["_ParallaxMap"]["m_Texture"]
-                                              ["guid"]
-                                                  .as<std::string>()];
-                    renderer.material.parallaxHeight =
-                        propertiesNode[10]["_Parallax"].as<float>();
+                        }
+                    }
+                    yamlLoop(i, propertiesNode) {
+                        if ((*i)["_Parallax"]) {
+                            renderer.material.parallaxHeight =
+                                (*i)["_Parallax"].as<float>();
+                        }
+                    }
                 }
             }
         }
