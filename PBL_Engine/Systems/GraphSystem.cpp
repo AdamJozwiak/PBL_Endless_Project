@@ -31,15 +31,19 @@ bool operator!=(Transform const& a, Transform const& b) { return !(a == b); }
 // /////////////////////////////////////////////////////////////////// System //
 // ============================================================= Behaviour == //
 // ----------------------------------------- System's virtual functions -- == //
-void GraphSystem::filters() { filter<Active>().filter<Transform>(); }
+void GraphSystem::filters() { filter<Properties>().filter<Transform>(); }
 
 void GraphSystem::setup() {
     // Set default values for the root node
     root.parent = nullptr;
     root.children.clear();
+    root.entity = std::nullopt;
     root.transform = nullptr;
+    root.activity = nullptr;
     root.cumulativeTransform = dx::XMMatrixIdentity();
-    root.recalculate = true;
+    root.cumulativeActivity = true;
+    root.recalculateTransforms = true;
+    root.recalculateActivity = true;
 
     entityToGraphNode.clear();
     entityToPreviousTransform.clear();
@@ -53,11 +57,17 @@ void GraphSystem::update(float const deltaTime) {
                 {entity.id,
                  {.parent = nullptr,
                   .children = {},
+                  .entity = std::make_optional<Entity>(entity.id),
                   .transform = &entity.get<Transform>(),
+                  .activity = &entity.get<Properties>().active,
                   .cumulativeTransform = dx::XMMatrixIdentity(),
-                  .recalculate = true}});
+                  .cumulativeActivity = entity.get<Properties>().active,
+                  .recalculateTransforms = true,
+                  .recalculateActivity = true}});
             entityToPreviousTransform.insert(
                 {entity.id, entity.get<Transform>()});
+            entityToPreviousActivity.insert(
+                {entity.id, entity.get<Properties>().active});
         }
     }
 
@@ -101,12 +111,27 @@ void GraphSystem::update(float const deltaTime) {
         auto const& currentTransform = entity.get<Transform>();
 
         if (currentTransform != previousTransform) {
-            entityToGraphNode.at(entityId).recalculate = true;
+            entityToGraphNode.at(entityId).recalculateTransforms = true;
             entityToPreviousTransform.at(entityId) = currentTransform;
         }
     }
 
-    // Update transformations
+    // Check for activities that need to be recalculated
+    for (auto const& [entityId, previousActivity] : entityToPreviousActivity) {
+        auto const& entity = Entity(entityId);
+        if (!entities.contains(entity)) {
+            continue;
+        }
+
+        auto const& currentActivity = entity.get<Properties>().active;
+
+        if (currentActivity != previousActivity) {
+            entityToGraphNode.at(entityId).recalculateActivity = true;
+            entityToPreviousActivity.at(entityId) = currentActivity;
+        }
+    }
+
+    // Update transformations and activities
     std::queue<std::reference_wrapper<GraphNode>> nodes;
     for (auto const& childEntityId : root.children) {
         nodes.push(std::ref(entityToGraphNode[childEntityId]));
@@ -116,19 +141,34 @@ void GraphSystem::update(float const deltaTime) {
         auto& node = nodes.front().get();
         nodes.pop();
 
-        if (node.recalculate) {
+        if (node.recalculateTransforms) {
             node.cumulativeTransform = dx::XMMatrixIdentity();
             node.cumulativeTransform *= matrix(*node.transform);
             node.cumulativeTransform *= node.parent->cumulativeTransform;
         }
+        if (node.recalculateActivity) {
+            if (node.parent->cumulativeActivity) {
+                node.cumulativeActivity = *node.activity;
+            } else {
+                node.cumulativeActivity = false;
+            }
+            if (node.entity->has<Active>() && !node.cumulativeActivity) {
+                node.entity->remove<Active>();
+            }
+            if (!node.entity->has<Active>() && node.cumulativeActivity) {
+                node.entity->add<Active>({});
+            }
+        }
 
         for (auto const& childEntityId : node.children) {
             auto& childGraphNode = entityToGraphNode[childEntityId];
-            childGraphNode.recalculate |= node.recalculate;
+            childGraphNode.recalculateTransforms |= node.recalculateTransforms;
+            childGraphNode.recalculateActivity |= node.recalculateActivity;
             nodes.push(std::ref(childGraphNode));
         }
 
-        node.recalculate = false;
+        node.recalculateTransforms = false;
+        node.recalculateActivity = false;
     }
 };
 

@@ -114,8 +114,8 @@ void TestScript::update(float const deltaTime) {
             timer = 0.0f;
             spawnMonkey(entity);
 
-            registry.system<PropertySystem>()->activateEntity(
-                suzanneName, !Entity(suzanneName).get<Properties>().active);
+            Entity(suzanneName).get<Properties>().active =
+                !Entity(suzanneName).get<Properties>().active;
         }
     }
 };

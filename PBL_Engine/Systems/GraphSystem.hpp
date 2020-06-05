@@ -32,12 +32,16 @@ ECS_SYSTEM(GraphSystem) {
         GraphNode *parent;
         std::set<EntityId> children;
 
+        std::optional<Entity> entity;
         Transform *transform;
+        bool *activity;
         DirectX::XMMATRIX cumulativeTransform;
-        bool recalculate;
+        bool cumulativeActivity;
+        bool recalculateTransforms, recalculateActivity;
     } root;
     std::unordered_map<EntityId, GraphNode> entityToGraphNode;
     std::unordered_map<EntityId, Transform> entityToPreviousTransform;
+    std::unordered_map<EntityId, bool> entityToPreviousActivity;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
