@@ -598,6 +598,17 @@ void LevelParser::finalizeLoading(
             meshFilter.model =
                 Model::create(registry.system<WindowSystem>()->gfx(),
                               meshFilter.path, &renderer);
+
+            assert(entity.has<Transform>());
+            auto &transform = entity.get<Transform>();
+
+            auto const &meta = YAML::LoadAllFromFile(meshFilter.path + ".meta");
+            auto const scale =
+                meta[0]["ModelImporter"]["meshes"]["globalScale"].as<float>();
+
+            transform.scale.x *= scale;
+            transform.scale.y *= scale;
+            transform.scale.z *= scale;
         }
 
         // Colliders
