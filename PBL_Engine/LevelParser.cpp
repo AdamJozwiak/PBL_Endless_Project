@@ -461,6 +461,10 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                     Entity(prefabEntityIds[targetFileId])
                         .get<Properties>()
                         .name = (*i)["value"].as<std::string>();
+                } else if (property == "m_IsActive") {
+                    Entity(prefabEntityIds[targetFileId])
+                        .get<Properties>()
+                        .active = static_cast<bool>((*i)["value"].as<int>());
                 }
             }
         }
