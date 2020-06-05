@@ -367,3 +367,6 @@ compile_commands.json
 
 # Imgui configuration files
 imgui.ini
+
+# Copied Unity assets
+Executable/Assets/Unity
