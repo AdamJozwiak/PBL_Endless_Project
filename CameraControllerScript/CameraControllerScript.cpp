@@ -35,10 +35,8 @@ void CameraControllerScript::setup() {
             key);
     };
 
-    playerId = registry.system<PropertySystem>()
-                   ->findEntityByName("Suzanne 1")
-                   .at(0)
-                   .id;
+    playerId =
+        registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
     // registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
     offset = entity.get<Transform>().position -
              Entity(playerId).get<Transform>().position;
