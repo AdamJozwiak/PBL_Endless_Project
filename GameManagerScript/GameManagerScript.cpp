@@ -33,7 +33,16 @@ void GameManagerScript::setup() {
         registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
 };
 
-void GameManagerScript::update(float const deltaTime){};
+void GameManagerScript::update(float const deltaTime) {
+    static bool spawned = false;
+    if (Entity(playerId).get<Transform>().position.x >= 30.0f && !spawned) {
+        spawned = true;
+        auto chunk = Registry::instance().system<SceneSystem>()->spawnPrefab(
+            "Assets\\Unity\\Prefabs\\Chunks Completely Unpacked\\Chunk "
+            "1.prefab");
+        chunk.get<Transform>().position.x = 60.0f;
+    }
+};
 
 // ------------------------------------------------------------- Events -- == //
 void GameManagerScript::onCollisionEnter(OnCollisionEnter const& event) {
