@@ -79,84 +79,159 @@ void PlayerControllerScript::setup() {
     canChangeForm = true;
     // torchLight = Entity(torch).get<Light>(); // TODO
 
-    // temp
-    humanForm = entity.id;
-    eagleForm = entity.id;
-    catForm = entity.id;
+    // Set the forms
+    eagleForm = registry.system<PropertySystem>()
+                    ->findEntityByName("Eagle Form")
+                    .at(0)
+                    .id;
+    humanForm = registry.system<PropertySystem>()
+                    ->findEntityByName("Human Form")
+                    .at(0)
+                    .id;
+    catForm = registry.system<PropertySystem>()
+                  ->findEntityByName("Cat Form")
+                  .at(0)
+                  .id;
     currentForm = humanForm;
 };
 
 void PlayerControllerScript::update(float const deltaTime) {
-    static bool inputLaneDownKey = false;
-    static bool inputLaneUpKey = false;
+    static float wait = 2.0f;
 
+    if (wait >= 0.0f) {
+        wait -= deltaTime;
+        return;
+    }
+
+    // Set key statuses
+    static bool inputLaneDownKey = false, inputLaneUpKey = false,
+                inputAscendKey = false, inputDescendKey = false,
+                inputChangeFormEagleKey = false, inputChangeFormCatKey = false;
+
+    // Get keyboard input
     inputLaneDown = isKeyPressed('S');
     inputLaneUp = isKeyPressed('W');
+    inputAscend = isKeyPressed('A');
+    inputDescend = isKeyPressed('D');
+    inputChangeFormEagle = isKeyPressed('E');
+    inputChangeFormCat = isKeyPressed('C');
 
+    if (currentForm == eagleForm) {
+        if (inputAscendKey) {
+            moveInput.y = 2.0f;
+        } else if (inputDescendKey) {
+            moveInput.y = -2.0f;
+        } else {
+            moveInput.y = 0.0f;
+        }
+    } else {
+        moveInput.y = 0.0f;
+    }
+
+    // Ascend
+    if (inputAscend && !inputAscendKey) {
+        inputAscendKey = true;
+
+        if (currentForm == eagleForm) {
+            moveInput.y = 2.0f;
+        } else {
+            moveInput.y = 0.0f;
+        }
+    }
+    if (!inputAscend && inputAscendKey) {
+        inputAscendKey = false;
+    }
+
+    // Descend
+    if (inputDescend && !inputDescendKey) {
+        inputDescendKey = true;
+
+        if (currentForm == eagleForm) {
+            moveInput.y = -2.0f;
+        } else {
+            moveInput.y = 0.0f;
+        }
+    }
+    if (!inputDescend && inputDescendKey) {
+        inputDescendKey = false;
+    }
+
+    // Change current lane - down
     if (inputLaneDown && !inputLaneDownKey) {
         inputLaneDownKey = true;
-        // Change current lane
         currentLane -= inputLaneDown ? 1 : 0;
     }
     if (!inputLaneDown && inputLaneDownKey) {
         inputLaneDownKey = false;
     }
 
+    // Change current lane - up
     if (inputLaneUp && !inputLaneUpKey) {
         inputLaneUpKey = true;
-        // Change current lane
         currentLane += inputLaneUp ? 1 : 0;
     }
     if (!inputLaneUp && inputLaneUpKey) {
         inputLaneUpKey = false;
     }
 
-    if (isKeyPressed('E') && canChangeForm) {
-        // TODO: Potential explosion effect
-        // Object.Destroy(GameObject.Instantiate(
-        //                   explosionPrefab,
-        //                   currentForm.transform.position,
-        //                   Quaternion.identity),
-        //               10.0f);
+    // Change form - eagle/human
+    if (inputChangeFormEagle && !inputChangeFormEagleKey) {
+        inputChangeFormEagleKey = true;
 
-        if (currentForm != eagleForm) {
-            changeForm(eagleForm);
+        if (canChangeForm) {
+            // TODO: Potential explosion effect
+            // Object.Destroy(GameObject.Instantiate(
+            //                   explosionPrefab,
+            //                   currentForm.transform.position,
+            //                   Quaternion.identity),
+            //               10.0f);
+
+            if (currentForm != eagleForm) {
+                changeForm(eagleForm);
+            } else {
+                changeForm(humanForm);
+            }
         } else {
-            changeForm(humanForm);
+            // TODO: Potential explosion effect
+            // Object.Destroy(
+            //    GameObject.Instantiate(explosionPrefabFail,
+            //                           currentForm.transform.position,
+            //                           Quaternion.identity),
+            //    10.0f);
         }
     }
-
-    if (isKeyPressed('E') && !canChangeForm) {
-        // TODO: Potential explosion effect
-        // Object.Destroy(
-        //    GameObject.Instantiate(explosionPrefabFail,
-        //                           currentForm.transform.position,
-        //                           Quaternion.identity),
-        //    10.0f);
+    if (!inputChangeFormEagle && inputChangeFormEagleKey) {
+        inputChangeFormEagleKey = false;
     }
 
-    if (isKeyPressed('C') && canChangeForm) {
-        // TODO: Potential explosion effect
-        // Object.Destroy(GameObject.Instantiate(
-        //                   explosionPrefab,
-        //                   currentForm.transform.position,
-        //                   Quaternion.identity),
-        //               10.0f);
+    // Change form - cat/human
+    if (inputChangeFormCat && !inputChangeFormCatKey) {
+        inputChangeFormCatKey = true;
 
-        if (currentForm != catForm) {
-            changeForm(catForm);
-        } else if (currentForm == catForm) {
-            changeForm(humanForm);
+        if (canChangeForm) {
+            // TODO: Potential explosion effect
+            // Object.Destroy(GameObject.Instantiate(
+            //                   explosionPrefab,
+            //                   currentForm.transform.position,
+            //                   Quaternion.identity),
+            //               10.0f);
+
+            if (currentForm != catForm) {
+                changeForm(catForm);
+            } else if (currentForm == catForm) {
+                changeForm(humanForm);
+            }
+        } else {
+            // TODO: Potential explosion effect
+            // Object.Destroy(
+            //    GameObject.Instantiate(explosionPrefabFail,
+            //                           currentForm.transform.position,
+            //                           Quaternion.identity),
+            //    10.0f);
         }
     }
-
-    if (isKeyPressed('C') && !canChangeForm) {
-        // TODO: Potential explosion effect
-        // Object.Destroy(
-        //    GameObject.Instantiate(explosionPrefabFail,
-        //                           currentForm.transform.position,
-        //                           Quaternion.identity),
-        //    10.0f);
+    if (!inputChangeFormCat && inputChangeFormCatKey) {
+        inputChangeFormCatKey = false;
     }
 
     if (!canChangeForm) {
@@ -164,11 +239,10 @@ void PlayerControllerScript::update(float const deltaTime) {
     }
 
     // Move only in lane increments
-    moveInput.x = 0.0f;  // Mathf.Clamp(Input.GetAxisRaw("Horizontal")
+    moveInput.x = 1.0f;  // Mathf.Clamp(Input.GetAxisRaw("Horizontal")
                          // + 1.0f, 0.5f, 1.5f);
     // moveInput.y = -Input.GetAxisRaw("Horizontal");
-    moveInput.z = currentLane * laneWidth -
-                  Entity(currentForm).get<Transform>().position.z;
+    moveInput.z = currentLane * laneWidth - entity.get<Transform>().position.z;
 
     if (currentForm == humanForm) {
         moveInput.y = 0.0f;
@@ -182,17 +256,6 @@ void PlayerControllerScript::update(float const deltaTime) {
         // humanForm
         //    .GetComponent<RPGCharacterAnims.RPGCharacterInputControllerFREE>()
         //    .moveInput = moveInput;
-        currentVelocity = (moveInput * runSpeed) - currentVelocity;
-        if (length(currentVelocity) > movementAcceleration * deltaTime) {
-            currentVelocity /= length(currentVelocity);
-            currentVelocity *= movementAcceleration * deltaTime;
-        }
-        if (length(currentVelocity) <= 10.0f * deltaTime) {
-            currentVelocity *= 0.0f;
-        }
-
-        Entity(humanForm).get<Transform>().position +=
-            (currentVelocity * deltaTime);
     } else if (currentForm == eagleForm) {
         // eagleForm.GetComponent<DemoController>().horizontal =
         //    Input.GetAxisRaw("Horizontal");
@@ -202,15 +265,30 @@ void PlayerControllerScript::update(float const deltaTime) {
         // currentVelocity =
         //    Vector3.MoveTowards(currentVelocity, moveInput * runSpeed,
         //                        movementAcceleration * Time.deltaTime);
-        // Entity(eagleForm).get<Transform>().position += currentVelocity *
-        // deltaTime;
-    } else {
-        // moveInput.y = 0.0f;
+    } else if (currentForm == catForm) {
+        moveInput.y = 0.0f;
+
         // currentVelocity =
         //    Vector3.MoveTowards(currentVelocity, moveInput * runSpeed,
         //                        movementAcceleration * Time.deltaTime);
-        // catForm.transform.position += currentVelocity * Time.deltaTime;
     }
+
+    // Calculate the velocity
+    // currentVelocity = (moveInput * runSpeed) - currentVelocity;
+    currentVelocity = (moveInput * runSpeed);
+    /* if (length(currentVelocity) > runSpeed) { */
+    /*     currentVelocity /= length(currentVelocity); */
+    /*     currentVelocity *= runSpeed; */
+    /* } */
+    /* if (length(currentVelocity) <= 1.0f) { */
+    /*     currentVelocity *= 0.0f; */
+    /* } */
+    /* currentVelocity.x = std::lerp(currentVelocity.x, 0.0f, 0.5f); */
+    /* currentVelocity.y = std::lerp(currentVelocity.y, 0.0f, 0.5f); */
+    /* currentVelocity.z = std::lerp(currentVelocity.z, 0.0f, 0.5f); */
+
+    // Update player's position
+    entity.get<Transform>().position += (currentVelocity * deltaTime);
 
     // Update torch position
     // torch.transform.position = new Vector3(
@@ -244,18 +322,13 @@ void PlayerControllerScript::changeForm(EntityId const& newForm) {
     //                                      Quaternion.identity),
     //               10.0f);
 
+    // Change form
     EntityId previousForm = currentForm;
     currentForm = newForm;
 
-    Entity(newForm).get<Transform>().position =
-        Entity(previousForm).get<Transform>().position;
-
-    registry.system<PropertySystem>()->activateEntity(newForm, true);
-    registry.system<PropertySystem>()->activateEntity(previousForm, false);
-
-    // mainCamera.player = newForm;
-    // mainCamera.cameraTarget = newForm;
-    // mainCamera.SetPosition();
+    // Activate appropriate forms
+    Entity(newForm).get<Properties>().active = true;
+    Entity(previousForm).get<Properties>().active = false;
 }
 
 void PlayerControllerScript::resetTorchLight() {

@@ -29,15 +29,16 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     void resetTorchLight();
 
     bool canChangeForm;
-    bool inputLaneUp;
-    bool inputLaneDown;
+    bool inputLaneUp, inputLaneDown;
+    bool inputAscend, inputDescend;
+    bool inputChangeFormEagle, inputChangeFormCat;
 
   private:
     // ============================================================== Data == //
     bool (*isKeyPressed)(int const key);
 
-    float movementAcceleration = 90.0f;
-    float runSpeed = 6.0f;
+    float movementAcceleration = 40.0f;
+    float runSpeed = 3.0f;
 
     DirectX::XMFLOAT3 currentVelocity = {0.0f, 0.0f, 0.0f};
     int currentLane = 0;
@@ -52,7 +53,7 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     // Light torchLight;              // TODO: Add component for light
     // CameraController
     //    mainCamera;  // TODO: Add reference to the script? may not need
-    DirectX::XMFLOAT3 moveInput;
+    DirectX::XMFLOAT3 moveInput = {0.0f, 0.0f, 0.0f};
 
     // cooldown for changing form after entering a trap
     // IEnumerator trapEntered() {
