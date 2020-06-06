@@ -25,6 +25,10 @@ void GameManagerScript::setup() {
             key);
     };
 
+    Registry::instance().system<SceneSystem>()->spawnPrefab(
+        "Assets\\Unity\\Prefabs\\Chunks Completely Unpacked\\Chunk "
+        "1.prefab");
+
     playerId =
         registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
 };
