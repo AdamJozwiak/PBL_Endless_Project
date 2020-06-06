@@ -22,7 +22,7 @@ using Path = std::string;
 using FileExtension = std::string;
 
 std::unordered_map<FileGuid, std::unordered_map<FileId, YAML::Node>> nodes;
-std::unordered_map<FileGuid, YAML::Node> materialNodes;
+std::unordered_map<FileGuid, YAML::Node> materialNodes, metaNodes;
 std::unordered_map<Path, FileGuid> pathToGuid;
 std::unordered_map<FileGuid, Path> guidPaths;
 std::unordered_map<FileGuid, std::set<FileId>> prefabFileIds;
@@ -550,6 +550,16 @@ void LevelParser::load() {
                         {node["guid"].as<FileGuid>(), pathWithoutExtension});
                     pathToGuid.insert(
                         {pathWithoutExtension, node["guid"].as<FileGuid>()});
+
+                    // Check for duplicates
+                    assert(metaNodes.find(pathToGuid[pathWithoutExtension]) ==
+                               metaNodes.end() &&
+                           "Duplicate file identifiers!");
+
+                    if (!pathToGuid[pathWithoutExtension].empty()) {
+                        metaNodes.insert(
+                            {pathToGuid[pathWithoutExtension], node});
+                    }
                 } else if (extension == ".prefab") {
                     yamlLoop(i, node) {
                         if (!i->second["id"]) {
@@ -622,9 +632,9 @@ void LevelParser::finalizeLoading(
             assert(entity.has<Transform>());
             auto &transform = entity.get<Transform>();
 
-            auto const &meta = YAML::LoadAllFromFile(meshFilter.path + ".meta");
+            auto const &meta = metaNodes.at(pathToGuid.at(meshFilter.path));
             auto const scale =
-                meta[0]["ModelImporter"]["meshes"]["globalScale"].as<float>();
+                meta["ModelImporter"]["meshes"]["globalScale"].as<float>();
 
             transform.scale.x *= scale;
             transform.scale.y *= scale;
