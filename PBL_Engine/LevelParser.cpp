@@ -402,67 +402,67 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                 auto property = (*i)["propertyPath"].as<std::string>();
 
                 if (property == "m_RootOrder") {
-                    Entity(prefabEntityIds[targetFileId])
+                    Entity(prefabEntityIds.at(targetFileId))
                         .get<Transform>()
                         .root_Order = (*i)["value"].as<int>();
                 } else if (property == "m_LocalEulerAnglesHint.x") {
-                    Entity(prefabEntityIds[targetFileId])
+                    Entity(prefabEntityIds.at(targetFileId))
                         .get<Transform>()
                         .euler.x = (*i)["value"].as<float>();
                 } else if (property == "m_LocalEulerAnglesHint.y") {
-                    Entity(prefabEntityIds[targetFileId])
+                    Entity(prefabEntityIds.at(targetFileId))
                         .get<Transform>()
                         .euler.y = (*i)["value"].as<float>();
                 } else if (property == "m_LocalEulerAnglesHint.z") {
-                    Entity(prefabEntityIds[targetFileId])
+                    Entity(prefabEntityIds.at(targetFileId))
                         .get<Transform>()
                         .euler.z = (*i)["value"].as<float>();
                 } else if (property == "m_LocalRotation.w") {
-                    Entity(prefabEntityIds[targetFileId])
+                    Entity(prefabEntityIds.at(targetFileId))
                         .get<Transform>()
                         .rotation.w = (*i)["value"].as<float>();
                 } else if (property == "m_LocalRotation.x") {
-                    Entity(prefabEntityIds[targetFileId])
+                    Entity(prefabEntityIds.at(targetFileId))
                         .get<Transform>()
                         .rotation.x = (*i)["value"].as<float>();
                 } else if (property == "m_LocalRotation.y") {
-                    Entity(prefabEntityIds[targetFileId])
+                    Entity(prefabEntityIds.at(targetFileId))
                         .get<Transform>()
                         .rotation.y = (*i)["value"].as<float>();
                 } else if (property == "m_LocalRotation.z") {
-                    Entity(prefabEntityIds[targetFileId])
+                    Entity(prefabEntityIds.at(targetFileId))
                         .get<Transform>()
                         .rotation.z = (*i)["value"].as<float>();
                 } else if (property == "m_LocalScale.x") {
-                    Entity(prefabEntityIds[targetFileId])
+                    Entity(prefabEntityIds.at(targetFileId))
                         .get<Transform>()
                         .scale.x = (*i)["value"].as<float>();
                 } else if (property == "m_LocalScale.y") {
-                    Entity(prefabEntityIds[targetFileId])
+                    Entity(prefabEntityIds.at(targetFileId))
                         .get<Transform>()
                         .scale.y = (*i)["value"].as<float>();
                 } else if (property == "m_LocalScale.z") {
-                    Entity(prefabEntityIds[targetFileId])
+                    Entity(prefabEntityIds.at(targetFileId))
                         .get<Transform>()
                         .scale.z = (*i)["value"].as<float>();
                 } else if (property == "m_LocalPosition.x") {
-                    Entity(prefabEntityIds[targetFileId])
+                    Entity(prefabEntityIds.at(targetFileId))
                         .get<Transform>()
                         .position.x = (*i)["value"].as<float>();
                 } else if (property == "m_LocalPosition.y") {
-                    Entity(prefabEntityIds[targetFileId])
+                    Entity(prefabEntityIds.at(targetFileId))
                         .get<Transform>()
                         .position.y = (*i)["value"].as<float>();
                 } else if (property == "m_LocalPosition.z") {
-                    Entity(prefabEntityIds[targetFileId])
+                    Entity(prefabEntityIds.at(targetFileId))
                         .get<Transform>()
                         .position.z = (*i)["value"].as<float>();
                 } else if (property == "m_Name") {
-                    Entity(prefabEntityIds[targetFileId])
+                    Entity(prefabEntityIds.at(targetFileId))
                         .get<Properties>()
                         .name = (*i)["value"].as<std::string>();
                 } else if (property == "m_IsActive") {
-                    Entity(prefabEntityIds[targetFileId])
+                    Entity(prefabEntityIds.at(targetFileId))
                         .get<Properties>()
                         .active = static_cast<bool>((*i)["value"].as<int>());
                 }
