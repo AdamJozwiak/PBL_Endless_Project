@@ -89,7 +89,7 @@ void EnemyControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
     if (event.a.id == entity.id || event.b.id == entity.id) {
         auto other = Entity(event.a.id == entity.id ? event.b.id : event.a.id);
 
-        if (other.get<Properties>().tag == "Boundry") {
+        if (other.get<Properties>().tag == "Boundary") {
             movingLeft = !movingLeft;
         }
         if (other.get<Properties>().tag == "Player") {
