@@ -256,8 +256,6 @@ std::string Graphics::InfoException::GetErrorInfo() const noexcept {
     return info;
 }
 
-IDXGISwapChain* Graphics::GetSwapChain() {
-    return pSwap.Get();
-}
+IDXGISwapChain* Graphics::GetSwapChain() { return pSwap.Get(); }
 
 ID3D11Device* Graphics::GetDevice() { return pDevice.Get(); }
