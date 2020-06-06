@@ -27,6 +27,8 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
   private:
     // ============================================================== Data == //
     bool (*isKeyPressed)(int const key);
+
+    EntityId playerId;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

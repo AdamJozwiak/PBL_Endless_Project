@@ -24,6 +24,9 @@ void GameManagerScript::setup() {
         return registry.system<RenderSystem>()->window->keyboard.KeyIsPressed(
             key);
     };
+
+    playerId =
+        registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
 };
 
 void GameManagerScript::update(float const deltaTime){};
