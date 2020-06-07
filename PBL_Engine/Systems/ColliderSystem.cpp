@@ -352,7 +352,6 @@ bool ColliderSystem::CheckSpheresCollision(
 void ColliderSystem::filters() {
     filter<Active>();
     filter<BoxCollider>();
-    filter<Renderer>();
 }
 
 void ColliderSystem::setup() { graphSystem = registry.system<GraphSystem>(); }
