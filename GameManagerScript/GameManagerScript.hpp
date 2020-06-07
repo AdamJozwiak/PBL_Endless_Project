@@ -30,8 +30,13 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
   private:
     // ============================================================== Data == //
     bool (*isKeyPressed)(int const key);
+    void spawnEnemies(int percentage);
+    void spawnEnemy(EntityId spawnPoint, int percentage);
+    bool shouldHappen(int percentage);
+    void findSpawnPoints();
 
     EntityId playerId;
+    std::vector<EntityId> spawnPoints;
 
     // --------------------------------------------------------- Chunks -- == //
     // Types

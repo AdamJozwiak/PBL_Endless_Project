@@ -68,6 +68,8 @@ void EnemyControllerScript::setup() {
         return registry.system<RenderSystem>()->window->keyboard.KeyIsPressed(
             key);
     };
+    playerId =
+        registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
 
     entity.add<CheckCollisions>({});
 };

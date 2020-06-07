@@ -2,6 +2,7 @@
 #include "GameManagerScript.hpp"
 
 #include <filesystem>
+#include <random>
 #include <thread>
 
 #include "Components/Components.hpp"
@@ -101,6 +102,7 @@ void GameManagerScript::setup() {
     nextChunk = "Chunk 1";
 
     updateWaterfallRefraction();
+    spawnEnemies(50);
 
     playerId =
         registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
@@ -114,6 +116,42 @@ void GameManagerScript::update(float const deltaTime) {
 void GameManagerScript::onCollisionEnter(OnCollisionEnter const& event) {
     if (event.a.id == entity.id || event.b.id == entity.id) {
         auto other = Entity(event.a.id == entity.id ? event.b.id : event.a.id);
+    }
+}
+
+void GameManagerScript::spawnEnemies(int percentage) {
+    findSpawnPoints();
+    for (auto it : spawnPoints) {
+        spawnEnemy(it, percentage);
+    }
+}
+
+void GameManagerScript::spawnEnemy(EntityId spawnPoint, int percentage) {
+    if (shouldHappen(percentage)) {
+        auto enemy = Registry::instance().system<SceneSystem>()->spawnPrefab(
+            "Assets\\Unity\\Prefabs\\Enemy.prefab");
+        enemy.get<Transform>().position.x =
+            Entity(spawnPoint).get<Transform>().position.x;
+        enemy.get<Transform>().position.y =
+            Entity(spawnPoint).get<Transform>().position.y + 1.0f;
+        enemy.get<Transform>().position.z =
+            Entity(spawnPoint).get<Transform>().position.z;
+    }
+    registry.destroyEntity(Entity(spawnPoint));
+}
+
+bool GameManagerScript::shouldHappen(int percentage) {
+    std::random_device rnd;
+    std::mt19937 rng(rnd());
+    std::uniform_int_distribution<int> uni(1, 100 / percentage);
+    return (uni(rng) == 1 ? true : false);
+}
+
+void GameManagerScript::findSpawnPoints() {
+    spawnPoints.clear();
+    for (auto it : registry.system<PropertySystem>()->findEntityByTag(
+             "EnemySpawnPoint")) {
+        spawnPoints.push_back(it.id);
     }
 }
 
@@ -157,8 +195,15 @@ void GameManagerScript::handleChunkSpawning() {
                   .entity = chunk.id,
                   .endPositionInParts = generatedLengthInParts});
 
-        // Move the new chunk to its place
+        // Move the new chunk and the enemy spawn points to their place
         chunk.get<Transform>().position.x = generatedLengthInWorldUnits;
+        for (auto it : registry.system<PropertySystem>()->findEntityByTag(
+                 "EnemySpawnPoint")) {
+            it.get<Transform>().position.x += generatedLengthInWorldUnits;
+        }
+
+        // Spawn the enemies
+        spawnEnemies(50);
 
         // Delete the chunks we've already passed
         std::vector<decltype(presentChunks.begin())> toDelete;

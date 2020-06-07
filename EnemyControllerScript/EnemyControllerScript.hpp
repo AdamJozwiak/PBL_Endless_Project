@@ -40,7 +40,7 @@ class ENEMYCONTROLLERSCRIPT_API EnemyControllerScript : public Script {
     float angle = 0.45f;
     bool movingLeft = true;
     EntityId playerId;
-    float playerDistance = 30.0f;
+    float playerDistance = 10.0f;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
