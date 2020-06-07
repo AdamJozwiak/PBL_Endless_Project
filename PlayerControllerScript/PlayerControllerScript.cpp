@@ -310,6 +310,21 @@ void PlayerControllerScript::update(float const deltaTime) {
 void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
     if (event.a.id == entity.id || event.b.id == entity.id) {
         auto other = Entity(event.a.id == entity.id ? event.b.id : event.a.id);
+        auto otherTag = other.get<Properties>().tag;
+
+        if (otherTag == "EnemySpawnPoint") {
+            return;
+        } else if (otherTag == "Torch") {
+            // TODO: Collect the torch
+        } else if (otherTag == "Trap") {
+            // TODO: Handle the trap
+        } else if (otherTag == "Waterfall") {
+            // TODO: Handle the waterfall
+        } else if (otherTag == "Boundary") {
+            return;
+        } else {
+            // TODO: Resolve the collision
+        }
     }
 }
 
