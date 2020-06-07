@@ -8,6 +8,8 @@
 #include "Events/OnCollisionEnter.hpp"
 #include "Script.hpp"
 
+enum MovementType { Rook, Bishop };
+
 // //////////////////////////////////////////////////////////////////// Class //
 class ENEMYCONTROLLERSCRIPT_API EnemyControllerScript : public Script {
   public:
@@ -23,7 +25,9 @@ class ENEMYCONTROLLERSCRIPT_API EnemyControllerScript : public Script {
     // void onTriggerEnter(OnTriggerEnter const &event);
 
     // -------------------------------------------------------- Methods -- == //
-    void move(float deltaTime);
+    void moveBishop(float deltaTime);
+    void moveRook(float const deltaTime);
+    void setMovementType(MovementType mt, bool movingS = true);
 
   private:
     // ============================================================== Data == //
@@ -35,12 +39,16 @@ class ENEMYCONTROLLERSCRIPT_API EnemyControllerScript : public Script {
     /*     yield return new WaitForSeconds(1.5f); */
     /*     SceneManager.LoadScene(0); */
     /* } */
-
-    float speed = 8.0f;
+    MovementType movementType = Bishop;
+    float speed = 7.0f;
     float angle = 0.45f;
     bool movingLeft = true;
+    // for Rook
+    bool movingSideways = true;
     EntityId playerId;
-    float playerDistance = 10.0f;
+    float playerDistance = 5.0f;
+    float timeToBounce = 0.0f;
+    float rookTimer = 0.0f;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

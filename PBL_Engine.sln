@@ -30,6 +30,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameManagerScript", "GameManagerScript\GameManagerScript.vcxproj", "{51FF08A7-81BB-465E-BA6A-6D02EF09A9F2}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3F802D44-5AE6-454E-BFAE-54A8B8ACB0F6} = {3F802D44-5AE6-454E-BFAE-54A8B8ACB0F6}
+		{143079B9-524B-4524-B592-8912B5B80D2F} = {143079B9-524B-4524-B592-8912B5B80D2F}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CameraControllerScript", "CameraControllerScript\CameraControllerScript.vcxproj", "{CCE0876A-E5F7-47D8-83A0-5657FEBAE3D1}"

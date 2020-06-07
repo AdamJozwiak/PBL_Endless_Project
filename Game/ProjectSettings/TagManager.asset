@@ -12,6 +12,8 @@ TagManager:
   - Trap
   - Waterfall
   - Boundary
+  - Rook
+  - EnemySpawnPointRook
   layers:
   - Default
   - TransparentFX

@@ -8,6 +8,9 @@
 #include "Events/OnCollisionEnter.hpp"
 #include "GameManagerScriptAPI.hpp"
 #include "Script.hpp"
+#include "EnemyControllerScript.hpp"
+
+class EnemyControllerScript;
 
 // //////////////////////////////////////////////////////////////////// Class //
 class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
@@ -30,13 +33,17 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
   private:
     // ============================================================== Data == //
     bool (*isKeyPressed)(int const key);
-    void spawnEnemies(int percentage);
-    void spawnEnemy(EntityId spawnPoint, int percentage);
+    void spawnRooks(int percentage, bool movingSideways = true);
+    void spawnBishops(int percentage);
+    void spawnEnemy(MovementType mt, EntityId spawnPoint, int percentage,
+                    bool movingSideways = true);
     bool shouldHappen(int percentage);
-    void findSpawnPoints();
+    void findSpawnPoints(MovementType mt);
+    std::string enumToString(MovementType mt);
 
     EntityId playerId;
     std::vector<EntityId> spawnPoints;
+    std::shared_ptr<EnemyControllerScript> enemyScript;
 
     // --------------------------------------------------------- Chunks -- == //
     // Types

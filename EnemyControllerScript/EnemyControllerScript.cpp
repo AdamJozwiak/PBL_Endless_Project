@@ -78,8 +78,12 @@ void EnemyControllerScript::update(float const deltaTime) {
     if (entity.get<Transform>().position.x -
             Entity(playerId).get<Transform>().position.x <=
         playerDistance) {
-        move(deltaTime);
+        if (movementType == Bishop)
+            moveBishop(deltaTime);
+        else
+            moveRook(deltaTime);
     }
+    timeToBounce += deltaTime;
 };
 
 // ------------------------------------------------------------- Events -- == //
@@ -93,12 +97,14 @@ void EnemyControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
     if (event.a.id == entity.id || event.b.id == entity.id) {
         auto other = Entity(event.a.id == entity.id ? event.b.id : event.a.id);
 
-        if (other.get<Properties>().tag == "Boundary") {
+        if (other.get<Properties>().tag == "Boundary" && timeToBounce >= 0.3f) {
             movingLeft = !movingLeft;
+            timeToBounce = 0.0f;
         }
         if (other.get<Properties>().tag == "Player") {
             registry.destroyEntity(other);
-            registry.system<PropertySystem>()->activateEntity(loseText, true);
+            // registry.system<PropertySystem>()->activateEntity(loseText,
+            // true);
 
             // StartCoroutine(waitToResetLvl());
         }
@@ -108,10 +114,33 @@ void EnemyControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
 // void EnemyControllerScript::onTriggerEnter(OnTriggerEnter const& event) {}
 
 // ------------------------------------------------------------ Methods -- == //
-void EnemyControllerScript::move(float const deltaTime) {
+void EnemyControllerScript::moveBishop(float const deltaTime) {
     entity.get<Transform>().position +=
         DirectX::XMFLOAT3(-angle, 0.0f, (movingLeft ? (-1.0f) : 1.0f) * angle) *
         deltaTime * speed;
 }
 
-// ////////////////////////////////////////////////////////////////////////// //
+void EnemyControllerScript::moveRook(float const deltaTime) {
+    float tmp = deltaTime;
+    // if ((int) tmp % 3 == 0) movingSideways = !movingSideways;
+    if (movingSideways) {
+        entity.get<Transform>().position +=
+            DirectX::XMFLOAT3(0.0f, 0.0f, (movingLeft ? (-1.0f) : 1.0f)) *
+            deltaTime * speed;
+    } else {
+        entity.get<Transform>().position +=
+            DirectX::XMFLOAT3((movingLeft ? (-1.0f) : 1.0f), 0.0f, 0.0f) *
+            deltaTime * speed;
+    }
+}
+
+void EnemyControllerScript::setMovementType(MovementType mt,
+                                            bool movingS) {
+    movementType = mt;
+    if (mt == Rook) {
+        movingSideways = movingS;
+    }
+}
+
+    // //////////////////////////////////////////////////////////////////////////
+    // //
