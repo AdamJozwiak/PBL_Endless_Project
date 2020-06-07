@@ -100,7 +100,9 @@ AABB ColliderSystem::AddAABB(
     i[34] = 6;
     i[35] = 5;
 
-    for (int j = 0; j < 36; j++) aabbColliderIndices.push_back(i[j]);
+    if (aabbColliderIndices.empty()) {
+        for (int j = 0; j < 36; j++) aabbColliderIndices.push_back(i[j]);
+    }
 
     return aabb;
 }
@@ -234,7 +236,9 @@ BoxCollider ColliderSystem::AddBoxCollider(BoxCollider boxCollider) {
     i[34] = 6;
     i[35] = 5;
 
-    for (int j = 0; j < 36; j++) boxColliderIndices.push_back(i[j]);
+    if (boxColliderIndices.empty()) {
+        for (int j = 0; j < 36; j++) boxColliderIndices.push_back(i[j]);
+    }
     return tmpBox;
 }
 
