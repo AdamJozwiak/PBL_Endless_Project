@@ -327,8 +327,8 @@ void PlayerControllerScript::changeForm(EntityId const& newForm) {
     currentForm = newForm;
 
     // Activate appropriate forms
-    Entity(newForm).get<Properties>().active = true;
     Entity(previousForm).get<Properties>().active = false;
+    Entity(newForm).get<Properties>().active = true;
 }
 
 void PlayerControllerScript::resetTorchLight() {
