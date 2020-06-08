@@ -96,6 +96,7 @@
     <ClCompile Include="Systems\BehaviourSystem.cpp" />
     <ClCompile Include="Systems\SoundSystem.cpp" />
     <ClCompile Include="Systems\WindowSystem.cpp" />
+    <ClCompile Include="template-instantiations.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Systems\RenderSystem.cpp" />

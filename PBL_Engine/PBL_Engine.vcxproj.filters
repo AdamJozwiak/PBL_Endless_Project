@@ -483,6 +483,9 @@
     <ClCompile Include="FontLoader.cpp">
       <Filter>Pliki źródłowe\UI</Filter>
     </ClCompile>
+    <ClCompile Include="template-instantiations.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
