@@ -165,11 +165,18 @@ void RenderSystem::update(float deltaTime) {
 
             if (frustum.SphereIntersection(center, radius.x)) {
                 auto& meshFilter = entity.get<MeshFilter>();
-
-                meshFilter.model->Draw(
-                    window->Gfx(),
-                    registry.system<GraphSystem>()->transform(entity));
-                a++;
+                if (entity.has<Refractive>()) {
+                    meshFilter.model->Draw(
+                        window->Gfx(),
+                        registry.system<GraphSystem>()->transform(entity), PassType::refractive);
+                    a++;
+                } else {
+                    meshFilter.model->Draw(
+                        window->Gfx(),
+                        registry.system<GraphSystem>()->transform(entity));
+                    a++;
+                }
+                
             }
         }
 
