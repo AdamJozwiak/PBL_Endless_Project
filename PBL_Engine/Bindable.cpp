@@ -16,3 +16,7 @@ DxgiInfoManager& Bindable::GetInfoManager(Graphics& gfx) {
         "You tried to access gfx.infoManager in Release config");
 #endif
 }
+
+bool Bindable::GetStatus() { return isActive; }
+
+void Bindable::SetStatus(bool status) { isActive = status; }
