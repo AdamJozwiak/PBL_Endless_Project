@@ -91,6 +91,14 @@ template Active const& Entity::get<Active>() const;
 template bool Entity::has<Active>() const;
 template Entity& Entity::set<Active>(Active const&);
 
+// Tags - Refractive
+template Entity& Entity::add<Refractive>(Refractive const&);
+template Entity& Entity::remove<Refractive>();
+template Refractive& Entity::get<Refractive>();
+template Refractive const& Entity::get<Refractive>() const;
+template bool Entity::has<Refractive>() const;
+template Entity& Entity::set<Refractive>(Refractive const&);
+
 // Transform
 template Entity& Entity::add<Transform>(Transform const&);
 template Entity& Entity::remove<Transform>();
