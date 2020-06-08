@@ -30,7 +30,7 @@ void Mesh::VertexBoneData::AddBoneData(UINT boneID, float boneWeight) {
 }
 
 // Mesh
-Mesh::Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bindable>> bindPtrs,
+Mesh::Mesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs,
            Model& parent, float* animationTime,
            std::vector<Mesh::VertexBoneData> Bones)
     : Bones(Bones) {
@@ -41,8 +41,8 @@ Mesh::Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bindable>> bindPtrs,
 
     for (auto& pb : bindPtrs) {
         if (auto pi = dynamic_cast<IndexBuffer*>(pb.get())) {
-            AddIndexBuffer(std::unique_ptr<IndexBuffer>{pi});
-            pb.release();
+            AddIndexBuffer(
+                std::move(std::dynamic_pointer_cast<IndexBuffer>(pb)));
         } else {
             AddBind(std::move(pb));
         }
@@ -65,10 +65,57 @@ Mesh::Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bindable>> bindPtrs,
         std::make_unique<PixelConstantBuffer<Properties>>(gfx, properties, 9u));
 }
 
-void Mesh::Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const
+void Mesh::Draw(
+    Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform, PassType passType,
+    const std::vector<std::shared_ptr<Bindable>>& refShaders,
+    const std::vector<std::shared_ptr<Bindable>>& normalShaders,
+    const std::vector<std::shared_ptr<Bindable>>& animatedRefShaders,
+    const std::vector<std::shared_ptr<Bindable>>& animatedNormalShaders) const
     noexcept(!IS_DEBUG) {
     DirectX::XMStoreFloat4x4(&transform, accumulatedTransform);
-    Renderable::Draw(gfx);
+    for (auto& s : animatedRefShaders) {
+        s->SetStatus(false);
+    }
+    for (auto& n : animatedNormalShaders) {
+        n->SetStatus(false);
+    }
+    for (auto& s : refShaders) {
+        s->SetStatus(false);
+    }
+    for (auto& n : normalShaders) {
+        n->SetStatus(false);
+    }
+
+    if (!Bones.empty()) {
+        switch (passType) {
+            case PassType::normal:
+                for (auto& n : animatedNormalShaders) {
+                    n->SetStatus(true);
+                }
+                break;
+            case PassType::refractive:
+                for (auto& s : animatedRefShaders) {
+                    s->SetStatus(true);
+                }
+                break;
+        }
+
+    } else {
+        switch (passType) {
+            case PassType::normal:
+                for (auto& n : normalShaders) {
+                    n->SetStatus(true);
+                }
+                break;
+            case PassType::refractive:
+                for (auto& s : refShaders) {
+                    s->SetStatus(true);
+                }
+                break;
+        }
+    }
+
+    Renderable::Draw(gfx, passType);
 }
 DirectX::XMMATRIX Mesh::GetTransformXM() const noexcept {
     return DirectX::XMLoadFloat4x4(&transform);
@@ -115,16 +162,23 @@ Node::Node(const std::string& name, std::vector<Mesh*> meshPtrs,
     dx::XMStoreFloat4x4(&appliedTransform, dx::XMMatrixIdentity());
 }
 
-void Node::Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const
+void Node::Draw(
+    Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform, PassType passType,
+    const std::vector<std::shared_ptr<Bindable>>& refShaders,
+    const std::vector<std::shared_ptr<Bindable>>& normalShaders,
+    const std::vector<std::shared_ptr<Bindable>>& animatedRefShaders,
+    const std::vector<std::shared_ptr<Bindable>>& animatedNormalShaders) const
     noexcept(!IS_DEBUG) {
     const auto built = dx::XMLoadFloat4x4(&appliedTransform) *
                        dx::XMLoadFloat4x4(&baseTransform) *
                        accumulatedTransform;
     for (const auto pm : meshPtrs) {
-        pm->Draw(gfx, built);
+        pm->Draw(gfx, built, passType, refShaders, normalShaders,
+                 animatedRefShaders, animatedNormalShaders);
     }
     for (const auto& pc : childPtrs) {
-        pc->Draw(gfx, built);
+        pc->Draw(gfx, built, passType, refShaders, normalShaders,
+                 animatedRefShaders, animatedNormalShaders);
     }
 }
 
@@ -309,6 +363,8 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
             animPtrs.push_back(pScene->mAnimations[i]);
         }
     }
+
+    int textureSlot = 0;
     // Textures
     if (renderer) {
         std::vector<std::unique_ptr<SurfaceReference>> surfaces(5);
@@ -339,12 +395,68 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
             }
         }
 
-        for (size_t i = 0; i < surfaces.size(); ++i) {
-            textures.push_back(std::make_shared<Texture>(gfx, *surfaces[i], i));
+        for (textureSlot = 0; textureSlot < surfaces.size(); ++textureSlot) {
+            textures.push_back(std::make_shared<Texture>(
+                gfx, *surfaces[textureSlot], textureSlot));
         }
 
         parallaxHeight = renderer->material.parallaxHeight;
     }
+
+    std::vector<std::unique_ptr<SurfaceReference>> cubeMapFaces(6);
+    std::string facesPath = "Assets/Textures/Skybox 1024/";
+    cubeMapFaces[0] = std::make_unique<SurfaceReference>(
+        Surface::FromFile(facesPath + "left.png"));
+    cubeMapFaces[1] = std::make_unique<SurfaceReference>(
+        Surface::FromFile(facesPath + "right.png"));
+    cubeMapFaces[2] = std::make_unique<SurfaceReference>(
+        Surface::FromFile(facesPath + "back.png"));
+    cubeMapFaces[3] = std::make_unique<SurfaceReference>(
+        Surface::FromFile(facesPath + "front.png"));
+    cubeMapFaces[4] = std::make_unique<SurfaceReference>(
+        Surface::FromFile(facesPath + "bottom.png"));
+    cubeMapFaces[5] = std::make_unique<SurfaceReference>(
+        Surface::FromFile(facesPath + "top.png"));
+
+    std::vector<SurfaceReference*> cubeMap(6);
+    for (size_t i = 0; i < cubeMapFaces.size(); ++i) {
+        cubeMap[i] = cubeMapFaces[i].get();
+    }
+
+    textures.push_back(std::make_shared<Texture>(gfx, cubeMap, ++textureSlot));
+
+    animRefVert =
+        std::make_shared<VertexShader>(gfx, L"AnimatedRefractiveVS.cso");
+
+    animPbrVert = std::make_shared<VertexShader>(gfx, L"AnimatedPBRVS.cso");
+
+    refVert = std::make_shared<VertexShader>(gfx, L"RefractiveVS.cso");
+
+    pbrVert = std::make_shared<VertexShader>(gfx, L"PBRVS.cso");
+
+    refGeo = std::make_shared<GeometryShader>(gfx, L"RefractiveGS.cso");
+
+    pbrGeo = std::make_shared<GeometryShader>(gfx, L"PBRGS.cso");
+
+    refPixel = std::make_shared<PixelShader>(gfx, L"RefractivePS.cso");
+
+    pbrPixel = std::make_shared<PixelShader>(gfx, L"PBRPS.cso");
+
+    refShaders.push_back(refVert);
+    refShaders.push_back(refGeo);
+    refShaders.push_back(refPixel);
+
+    normalShaders.push_back(pbrVert);
+    normalShaders.push_back(pbrGeo);
+    normalShaders.push_back(pbrPixel);
+
+    refShadersAnimated.push_back(animRefVert);
+    refShadersAnimated.push_back(refGeo);
+    refShadersAnimated.push_back(refPixel);
+
+    normalShadersAnimated.push_back(animPbrVert);
+    normalShadersAnimated.push_back(pbrGeo);
+    normalShadersAnimated.push_back(pbrPixel);
 
     for (size_t i = 0; i < pScene->mNumMeshes; i++) {
         auto pMesh = ParseMesh(gfx, *pScene->mMeshes[i], verticesForCollision);
@@ -355,12 +467,13 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
     pRoot = ParseNode(*pScene->mRootNode);
 }
 
-void Model::Draw(Graphics& gfx, DirectX::XMMATRIX transform) const
-    noexcept(!IS_DEBUG) {
+void Model::Draw(Graphics& gfx, DirectX::XMMATRIX transform,
+                 PassType passType) const noexcept(!IS_DEBUG) {
     if (auto node = pWindow->GetSelectedNode()) {
         node->SetAppliedTransform(pWindow->GetTransform());
     }
-    pRoot->Draw(gfx, transform);
+    pRoot->Draw(gfx, transform, passType, refShaders, normalShaders,
+                refShadersAnimated, normalShadersAnimated);
 }
 
 void Model::ShowWindow(const char* windowName) noexcept {
@@ -433,25 +546,38 @@ std::shared_ptr<Mesh> Model::ParseMesh(
         indices.push_back(face.mIndices[2]);
     }
 
-    std::vector<std::unique_ptr<Bindable>> bindablePtrs;
+    std::vector<std::shared_ptr<Bindable>> bindablePtrs;
 
     bindablePtrs.push_back(std::make_unique<VertexBuffer>(gfx, vbuf));
 
     bindablePtrs.push_back(std::make_unique<IndexBuffer>(gfx, indices));
 
-    auto pvs = std::make_unique<VertexShader>(gfx, L"PBRVS.cso");
+    decltype(pbrVert) vertexShaderType;
     if (mesh.HasBones()) {
-        pvs = std::make_unique<VertexShader>(gfx, L"AnimatedPBRVS.cso");
+        vertexShaderType = animPbrVert;
+    } else {
+        vertexShaderType = pbrVert;
     }
-    auto pvsbc = pvs->GetBytecode();
-    bindablePtrs.push_back(std::move(pvs));
-
-    bindablePtrs.push_back(std::make_unique<GeometryShader>(gfx, L"PBRGS.cso"));
-
-    bindablePtrs.push_back(std::make_unique<PixelShader>(gfx, L"PBRPS.cso"));
-
-    bindablePtrs.push_back(std::make_unique<InputLayout>(
+    auto pvsbc = vertexShaderType->GetBytecode();
+    // bindablePtrs.push_back(std::move(vertexShaderType));
+    bindablePtrs.push_back(std::make_shared<InputLayout>(
         gfx, vbuf.GetLayout().GetD3DLayout(), pvsbc));
+
+    bindablePtrs.push_back(pbrVert);
+
+    bindablePtrs.push_back(refVert);
+
+    bindablePtrs.push_back(refGeo);
+
+    bindablePtrs.push_back(pbrGeo);
+
+    bindablePtrs.push_back(refPixel);
+
+    bindablePtrs.push_back(pbrPixel);
+
+    bindablePtrs.push_back(animRefVert);
+
+    bindablePtrs.push_back(animPbrVert);
 
     struct PSMaterialConstant {
         DirectX::XMFLOAT3 color = {0.6f, 0.6f, 0.8f};

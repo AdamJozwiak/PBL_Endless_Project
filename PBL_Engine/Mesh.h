@@ -11,6 +11,7 @@
 #include "Components/Components.hpp"
 #include "RenderableBase.h"
 #include "Vertex.h"
+
 class Bone {
   public:
     aiMatrix4x4 boneOffset;
@@ -26,11 +27,16 @@ class Mesh : public RenderableBase<Mesh> {
         VertexBoneData() = default;
         void AddBoneData(UINT boneID, float boneWeight);
     };
-    Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bindable>> bindPtrs,
+    Mesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs,
          Model& parent, float* animationTime,
          std::vector<Mesh::VertexBoneData> Bones = {});
-    void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const
-        noexcept(!IS_DEBUG);
+    void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform,
+              PassType passType,
+              const std::vector<std::shared_ptr<Bindable>>& refShaders,
+              const std::vector<std::shared_ptr<Bindable>>& normalShaders,
+              const std::vector<std::shared_ptr<Bindable>>& animatedRefShaders,
+              const std::vector<std::shared_ptr<Bindable>>&
+                  animatedNormalShaders) const noexcept(!IS_DEBUG);
     DirectX::XMMATRIX GetTransformXM() const noexcept override;
     static void LoadBones(UINT meshIndex, aiMesh* pMesh,
                           std::vector<Mesh::VertexBoneData>& Bones,
@@ -50,8 +56,13 @@ class Node {
   public:
     Node(const std::string& name, std::vector<Mesh*> meshPtrs,
          const DirectX::XMMATRIX& transform) noexcept(!IS_DEBUG);
-    void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const
-        noexcept(!IS_DEBUG);
+    void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform,
+              PassType passType,
+              const std::vector<std::shared_ptr<Bindable>>& refShaders,
+              const std::vector<std::shared_ptr<Bindable>>& normalShaders,
+              const std::vector<std::shared_ptr<Bindable>>& animatedRefShaders,
+              const std::vector<std::shared_ptr<Bindable>>&
+                  animatedNormalShaders) const noexcept(!IS_DEBUG);
     void SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept;
 
   private:
@@ -75,8 +86,8 @@ class Model {
                                          float* animationTime = nullptr);
     Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
           float* animationTime = nullptr);
-    void Draw(Graphics& gfx, DirectX::XMMATRIX transform) const
-        noexcept(!IS_DEBUG);
+    void Draw(Graphics& gfx, DirectX::XMMATRIX transform,
+              PassType passType = PassType::normal) const noexcept(!IS_DEBUG);
     void ShowWindow(const char* windowName = nullptr) noexcept;
     ~Model() noexcept;
     void BoneTransform(float time,
@@ -125,6 +136,13 @@ class Model {
     std::vector<aiAnimation*> animPtrs;
     std::unique_ptr<class ModelWindow> pWindow;
     std::unique_ptr<Assimp::Importer> importer;
+
+    std::shared_ptr<VertexShader> refVert, pbrVert, animRefVert, animPbrVert;
+    std::shared_ptr<GeometryShader> refGeo, pbrGeo;
+    std::shared_ptr<PixelShader> refPixel, pbrPixel;
+
+    std::vector<std::shared_ptr<Bindable>> refShaders, normalShaders,
+        refShadersAnimated, normalShadersAnimated;
 };
 
 class ModelException : public ExceptionHandler {
