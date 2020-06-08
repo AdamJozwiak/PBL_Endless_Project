@@ -124,6 +124,12 @@
     <Filter Include="soloud\src\backend\winmm">
       <UniqueIdentifier>{c91cbeb0-d4f2-420a-9391-6520d158bf94}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\Refractive">
+      <UniqueIdentifier>{f066eb7d-c26c-440c-925d-c116cc073f5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Billboarding">
+      <UniqueIdentifier>{f0db14be-5de5-44fa-8085-61ce20263110}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -1177,28 +1183,10 @@
     <FxCompile Include="AnimatedPhongVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="BillboardGS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="BillboardVS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="BillboardPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
     <FxCompile Include="SolidGS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="PhongGS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="FireEffectVS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="FireEffectGS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="FireEffectPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="BloomGS.hlsl">
@@ -1233,6 +1221,36 @@
     </FxCompile>
     <FxCompile Include="TemplateParticleSystemGS.hlsl">
       <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="RefractivePS.hlsl">
+      <Filter>Shader\Refractive</Filter>
+    </FxCompile>
+    <FxCompile Include="RefractiveGS.hlsl">
+      <Filter>Shader\Refractive</Filter>
+    </FxCompile>
+    <FxCompile Include="RefractiveVS.hlsl">
+      <Filter>Shader\Refractive</Filter>
+    </FxCompile>
+    <FxCompile Include="BillboardGS.hlsl">
+      <Filter>Shader\Billboarding</Filter>
+    </FxCompile>
+    <FxCompile Include="BillboardPS.hlsl">
+      <Filter>Shader\Billboarding</Filter>
+    </FxCompile>
+    <FxCompile Include="BillboardVS.hlsl">
+      <Filter>Shader\Billboarding</Filter>
+    </FxCompile>
+    <FxCompile Include="FireEffectGS.hlsl">
+      <Filter>Shader\Billboarding</Filter>
+    </FxCompile>
+    <FxCompile Include="FireEffectPS.hlsl">
+      <Filter>Shader\Billboarding</Filter>
+    </FxCompile>
+    <FxCompile Include="FireEffectVS.hlsl">
+      <Filter>Shader\Billboarding</Filter>
+    </FxCompile>
+    <FxCompile Include="AnimatedRefractiveVS.hlsl">
+      <Filter>Shader\Refractive</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
