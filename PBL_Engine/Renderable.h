@@ -3,6 +3,7 @@
 
 #include "Graphics.h"
 
+enum class PassType { normal, shadowPass, refractive };
 class Bindable;
 
 class Renderable {
@@ -13,7 +14,7 @@ class Renderable {
     Renderable() = default;
     Renderable(const Renderable&) = delete;
     virtual DirectX::XMMATRIX GetTransformXM() const noexcept = 0;
-    void Draw(Graphics& gfx) const noexcept(!IS_DEBUG);
+    void Draw(Graphics& gfx, PassType passType = PassType::normal) const noexcept(!IS_DEBUG);
     virtual void Update(float dt) noexcept {};
     virtual ~Renderable() = default;
 
@@ -28,7 +29,7 @@ class Renderable {
         return nullptr;
     }
     void AddBind(std::shared_ptr<Bindable> bind) noexcept(!IS_DEBUG);
-    void AddIndexBuffer(std::unique_ptr<class IndexBuffer> ibuf) noexcept(
+    void AddIndexBuffer(std::shared_ptr<class IndexBuffer> ibuf) noexcept(
         !IS_DEBUG);
 
   private:

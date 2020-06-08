@@ -1,17 +1,40 @@
 #include "Renderable.h"
-#include "Blender.h"
 
 #include <cassert>
 
+#include "Blender.h"
 #include "GraphicsThrowMacros.h"
 #include "IndexBuffer.h"
 
-void Renderable::Draw(Graphics& gfx) const noexcept(!IS_DEBUG) {
+void Renderable::Draw(Graphics& gfx, PassType passType) const
+    noexcept(!IS_DEBUG) {
     for (auto& b : binds) {
-        b->Bind(gfx);
+        switch (passType) {
+            case PassType::normal:
+                if (b->GetStatus()) {
+                    b->Bind(gfx);
+                }
+                break;
+            case PassType::refractive:
+                if (b->GetStatus()) {
+                    b->Bind(gfx);
+                }
+                break;
+        }
     }
     for (auto& b : GetStaticBinds()) {
-        b->Bind(gfx);
+        switch (passType) {
+            case PassType::normal:
+                if (b->GetStatus()) {
+                    b->Bind(gfx);
+                }
+                break;
+            case PassType::refractive:
+                if (b->GetStatus()) {
+                    b->Bind(gfx);
+                }
+                break;
+        }
     }
     gfx.DrawIndexed(pIndexBuffer->GetCount());
 
@@ -26,7 +49,7 @@ void Renderable::AddBind(std::shared_ptr<Bindable> bind) noexcept(!IS_DEBUG) {
     binds.push_back(bind);
 }
 
-void Renderable::AddIndexBuffer(std::unique_ptr<IndexBuffer> ibuf) noexcept(
+void Renderable::AddIndexBuffer(std::shared_ptr<IndexBuffer> ibuf) noexcept(
     !IS_DEBUG) {
     assert("Attempting to add index buffer a second time" &&
            pIndexBuffer == nullptr);
