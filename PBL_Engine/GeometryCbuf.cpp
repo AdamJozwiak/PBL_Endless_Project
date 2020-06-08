@@ -10,11 +10,11 @@ GeometryCbuf::GeometryCbuf(Graphics& gfx, const Renderable& parent,
 }
 
 void GeometryCbuf::Bind(Graphics& gfx) noexcept {
-    DirectX::XMStoreFloat4(&pCamPos, pCamera->GetCameraPos());
+    DirectX::XMStoreFloat4(&camPos, pCamera->GetCameraPos());
     const Transforms tf = {
         DirectX::XMMatrixTranspose(parent.GetTransformXM()),
         DirectX::XMMatrixTranspose(gfx.GetCamera() * gfx.GetProjection()),
-        pCamPos, textureWidth, textureHeight};
+        camPos, textureWidth, textureHeight};
     pGcbuf->Update(gfx, tf);
     pGcbuf->Bind(gfx);
 }
