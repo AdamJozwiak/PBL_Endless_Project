@@ -37,7 +37,7 @@ class ENGINE_API Entity {
     }
 
     template <typename ComponentType>
-    bool has() {
+    bool has() const {
         return registry.hasComponent<ComponentType>(id);
     }
 
