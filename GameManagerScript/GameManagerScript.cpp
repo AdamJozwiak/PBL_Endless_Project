@@ -29,6 +29,14 @@ void GameManagerScript::setup() {
         "Assets\\Unity\\Prefabs\\Chunks Completely Unpacked\\Chunk "
         "1.prefab");
 
+    auto waterfalls =
+        Registry::instance().system<PropertySystem>()->findEntityByTag(
+            "Waterfall");
+
+    for (auto w : waterfalls) {
+        w.add<Refractive>({});
+    }
+
     playerId =
         registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
 };
