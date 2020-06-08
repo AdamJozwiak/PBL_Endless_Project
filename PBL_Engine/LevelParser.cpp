@@ -360,6 +360,22 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                 }
             }
         }
+
+        if (auto const &nodeRigidbody = node["Rigidbody"]; nodeRigidbody) {
+            assert(nodeRigidbody["m_Mass"] &&
+                   "Every property inside Rigidbody component must be "
+                   "valid!");
+
+            yamlLoop(i, nodeRigidbody["m_GameObject"]) {
+                auto gameObjectFileId = i->second.Scalar();
+                Entity(entityIds[gameObjectFileId]).add<Rigidbody>({});
+                entityIds.insert({fileId, entityIds[gameObjectFileId]});
+            }
+
+            auto &rigidbody = Entity(entityIds[fileId]).get<Rigidbody>();
+
+            rigidbody.mass = nodeRigidbody["m_Mass"].as<float>();
+        }
     }
 
     /* std::set<FileId> usedFileIds; */

@@ -158,6 +158,7 @@
     <ClInclude Include="Components\MeshFilter.hpp" />
     <ClInclude Include="Components\Properties.hpp" />
     <ClInclude Include="Components\Renderer.hpp" />
+    <ClInclude Include="Components\Rigidbody.hpp" />
     <ClInclude Include="Components\SphereCollider.h" />
     <ClInclude Include="Components\Tags.hpp" />
     <ClInclude Include="Components\Transform.hpp" />

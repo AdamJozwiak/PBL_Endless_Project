@@ -67,6 +67,14 @@ template Renderer const& Entity::get<Renderer>() const;
 template bool Entity::has<Renderer>() const;
 template Entity& Entity::set<Renderer>(Renderer const&);
 
+// Rigidbody
+template Entity& Entity::add<Rigidbody>(Rigidbody const&);
+template Entity& Entity::remove<Rigidbody>();
+template Rigidbody& Entity::get<Rigidbody>();
+template Rigidbody const& Entity::get<Rigidbody>() const;
+template bool Entity::has<Rigidbody>() const;
+template Entity& Entity::set<Rigidbody>(Rigidbody const&);
+
 // SphereCollider
 template Entity& Entity::add<SphereCollider>(SphereCollider const&);
 template Entity& Entity::remove<SphereCollider>();

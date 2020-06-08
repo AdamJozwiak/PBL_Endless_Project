@@ -9,6 +9,7 @@
 #include "MeshFilter.hpp"
 #include "Properties.hpp"
 #include "Renderer.hpp"
+#include "Rigidbody.hpp"
 #include "SphereCollider.h"
 #include "Tags.hpp"
 #include "Transform.hpp"
