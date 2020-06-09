@@ -349,6 +349,44 @@ bool ColliderSystem::CheckSpheresCollision(
     return false;
 }
 
+DirectX::XMFLOAT3 ColliderSystem::CalculateSeparatingVector(
+    BoxCollider const& a, BoxCollider const& b) {
+    std::vector<float> x, y, z;
+    x.push_back(std::abs(DirectX::XMVectorGetX(a.aabb.vertexMax) -
+           DirectX::XMVectorGetX(b.aabb.vertexMin)));
+    x.push_back(std::abs(DirectX::XMVectorGetX(b.aabb.vertexMax) -
+           DirectX::XMVectorGetX(a.aabb.vertexMin)));
+
+    y.push_back(std::abs(DirectX::XMVectorGetY(a.aabb.vertexMax) -
+           DirectX::XMVectorGetY(b.aabb.vertexMin)));
+    y.push_back(std::abs(DirectX::XMVectorGetY(b.aabb.vertexMax) -
+           DirectX::XMVectorGetY(a.aabb.vertexMin)));
+
+    z.push_back(std::abs(DirectX::XMVectorGetZ(a.aabb.vertexMax) -
+           DirectX::XMVectorGetZ(b.aabb.vertexMin)));
+    z.push_back(std::abs(DirectX::XMVectorGetZ(b.aabb.vertexMax) -
+           DirectX::XMVectorGetZ(a.aabb.vertexMin)));
+
+    float minX = std::min(x[0], x[1]), minY = std::min(y[0], y[1]),
+          minZ = std::min(z[0], z[1]);
+
+    if (minX < minY && minX < minZ) {
+        minY = 0.0f;
+        minZ = 0.0f;
+    } else if (minY < minX && minY < minZ) {
+        minX = 0.0f;
+        minZ = 0.0f;
+    } else if (minZ < minX && minZ < minY) {
+        minX = 0.0f;
+        minY = 0.0f;
+    }
+
+    
+    return DirectX::XMFLOAT3(((x[0] < x[1]) ? 1 : -1) * minX,
+                             ((y[0] < y[1]) ? 1 : -1) * minY,
+                             ((z[0] < z[1]) ? 1 : -1) * minZ);
+}
+
 void ColliderSystem::filters() {
     filter<Active>();
     filter<BoxCollider>();
@@ -390,7 +428,12 @@ void ColliderSystem::update(float deltaTime) {
             */
             if (CheckBoxesCollision(iEntity.get<BoxCollider>(),
                                     jEntity.get<BoxCollider>())) {
-                registry.send(OnCollisionEnter{.a = iEntity, .b = jEntity});
+                registry.send(OnCollisionEnter{
+                    .a = iEntity,
+                    .b = jEntity,
+                    .minSeparatingVector =
+                        CalculateSeparatingVector(iEntity.get<BoxCollider>(),
+                                                  jEntity.get<BoxCollider>())});
             }
         }
     }

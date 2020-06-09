@@ -1,6 +1,9 @@
 #pragma once
 #define NOMINMAX
 // ///////////////////////////////////////////////////////////////// Includes //
+
+#include <DirectXMath.h>
+
 #include <memory>
 
 // ECS
@@ -38,6 +41,10 @@ ECS_SYSTEM(ColliderSystem) {
         SphereCollider sphereCollider, DirectX::XMMATRIX const& worldSpace,
         SphereCollider differentSphereCollider,
         DirectX::XMMATRIX const& differentSphereWorldSpace);
+
+    DirectX::XMFLOAT3 CalculateSeparatingVector(
+        BoxCollider const& boxCollider,
+        BoxCollider const& differentBoxCollider);
     // ============================================================== Data == //
   public:
     // Box
