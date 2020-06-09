@@ -25,6 +25,14 @@ DirectX::XMFLOAT3 operator-(DirectX::XMFLOAT3 const& a,
     return {a.x - b.x, a.y - b.y, a.z - b.z};
 }
 
+DirectX::XMFLOAT3& operator-=(DirectX::XMFLOAT3& a,
+                              DirectX::XMFLOAT3 const& b) {
+    a.x -= b.x;
+    a.y -= b.y;
+    a.z -= b.z;
+    return a;
+}
+
 DirectX::XMFLOAT3 operator*(DirectX::XMFLOAT3 const& a, float const b) {
     return {a.x * b, a.y * b, a.z * b};
 }
@@ -106,6 +114,7 @@ void PlayerControllerScript::update(float const deltaTime) {
     static float wait = 2.0f;
 
     if (wait >= 0.0f) {
+        entity.get<Transform>().position.y = 0.0f;
         wait -= deltaTime;
         return;
     }
@@ -195,8 +204,13 @@ void PlayerControllerScript::update(float const deltaTime) {
 
             if (currentForm != eagleForm) {
                 changeForm(eagleForm);
+                rb = entity.get<Rigidbody>();
+                entity.remove<Rigidbody>();
             } else {
                 changeForm(humanForm);
+                if (!entity.has<Rigidbody>()) {
+                    entity.add<Rigidbody>(rb);
+                }
             }
         } else {
             // TODO: Potential explosion effect
@@ -295,6 +309,21 @@ void PlayerControllerScript::update(float const deltaTime) {
     /* currentVelocity.z = std::lerp(currentVelocity.z, 0.0f, 0.5f); */
 
     // Update player's position
+    if (cummulatedCounter != 0) {
+        /*if (cummulatedVector.y > 0) {
+            entity.get<Rigidbody>().velocity = 0.0f;
+        }*/
+        entity.get<Transform>().position +=
+            cummulatedVector / cummulatedCounter;
+        cummulatedVector = {0.0f, 0.0f, 0.0f};
+        cummulatedCounter = 0.0f;
+    }
+    
+    if (entity.get<Transform>().position.y < 0.0f)
+    {
+        entity.get<Transform>().position.y = 0.0f;
+    }
+
     entity.get<Transform>().position += (currentVelocity * deltaTime);
 
     // Update torch position
@@ -330,7 +359,8 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
         } else if (otherTag == "Boundary") {
             return;
         } else {
-            // TODO: Resolve the collision
+            cummulatedCounter++;
+            cummulatedVector += event.minSeparatingVector;
         }
     }
 }

@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "ECS/Entity.hpp"
+#include "Components/Components.hpp"
 #include "Events/OnCollisionEnter.hpp"
 #include "PlayerControllerScriptAPI.hpp"
 #include "Script.hpp"
@@ -43,6 +44,9 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     DirectX::XMFLOAT3 currentVelocity = {0.0f, 0.0f, 0.0f};
     int currentLane = 0;
     int laneWidth = 2;
+    float cummulatedCounter = 0;
+    DirectX::XMFLOAT3 cummulatedVector = {0.0f, 0.0f, 0.0f};
+    Rigidbody rb;
     EntityId humanForm;            // TODO: To find the entity
     EntityId eagleForm;            // TODO: To find the entity
     EntityId catForm;              // TODO: To find the entity
