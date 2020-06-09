@@ -99,6 +99,14 @@ template Refractive const& Entity::get<Refractive>() const;
 template bool Entity::has<Refractive>() const;
 template Entity& Entity::set<Refractive>(Refractive const&);
 
+// Tags - CheckCollisions
+template Entity& Entity::add<CheckCollisions>(CheckCollisions const&);
+template Entity& Entity::remove<CheckCollisions>();
+template CheckCollisions& Entity::get<CheckCollisions>();
+template CheckCollisions const& Entity::get<CheckCollisions>() const;
+template bool Entity::has<CheckCollisions>() const;
+template Entity& Entity::set<CheckCollisions>(CheckCollisions const&);
+
 // Transform
 template Entity& Entity::add<Transform>(Transform const&);
 template Entity& Entity::remove<Transform>();

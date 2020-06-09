@@ -93,6 +93,8 @@ void PlayerControllerScript::setup() {
                   .at(0)
                   .id;
     currentForm = humanForm;
+
+    entity.add<CheckCollisions>({});
 };
 
 void PlayerControllerScript::update(float const deltaTime) {

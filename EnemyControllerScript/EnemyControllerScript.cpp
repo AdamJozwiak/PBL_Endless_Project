@@ -68,6 +68,8 @@ void EnemyControllerScript::setup() {
         return registry.system<RenderSystem>()->window->keyboard.KeyIsPressed(
             key);
     };
+
+    entity.add<CheckCollisions>({});
 };
 
 void EnemyControllerScript::update(float const deltaTime) {

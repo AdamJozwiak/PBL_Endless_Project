@@ -371,6 +371,9 @@ void ColliderSystem::update(float deltaTime) {
     const auto dt = deltaTime * speed_factor;
 
     for (auto iEntity : entities) {
+        if (!iEntity.has<CheckCollisions>()) {
+            continue;
+        }
         for (auto jEntity : entities) {
             if (iEntity.id == jEntity.id) {
                 break;
