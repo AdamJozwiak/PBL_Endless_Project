@@ -492,6 +492,9 @@
     <ClCompile Include="template-instantiations.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="Systems\PhysicsSystem.cpp">
+      <Filter>Pliki źródłowe\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -1120,6 +1123,9 @@
     </ClInclude>
     <ClInclude Include="Components\Skybox.hpp">
       <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\PhysicsSystem.hpp">
+      <Filter>Pliki nagłówkowe\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

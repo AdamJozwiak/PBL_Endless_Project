@@ -91,6 +91,7 @@
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Systems\ColliderSystem.cpp" />
     <ClCompile Include="Systems\GraphSystem.cpp" />
+    <ClCompile Include="Systems\PhysicsSystem.cpp" />
     <ClCompile Include="Systems\PropertySystem.cpp" />
     <ClCompile Include="Systems\SceneSystem.cpp" />
     <ClCompile Include="Systems\BehaviourSystem.cpp" />
@@ -272,6 +273,7 @@
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Systems\ColliderSystem.hpp" />
     <ClInclude Include="Systems\GraphSystem.hpp" />
+    <ClInclude Include="Systems\PhysicsSystem.hpp" />
     <ClInclude Include="Systems\PropertySystem.hpp" />
     <ClInclude Include="Systems\SceneSystem.hpp" />
     <ClInclude Include="Systems\BehaviourSystem.hpp" />
