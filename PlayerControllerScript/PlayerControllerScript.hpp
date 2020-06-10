@@ -58,6 +58,8 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     // CameraController
     //    mainCamera;  // TODO: Add reference to the script? may not need
     DirectX::XMFLOAT3 moveInput = {0.0f, 0.0f, 0.0f};
+    float canChangeFormTimer = 0.0f;
+    float canChangeFormCooldown;
 
     // cooldown for changing form after entering a trap
     // IEnumerator trapEntered() {

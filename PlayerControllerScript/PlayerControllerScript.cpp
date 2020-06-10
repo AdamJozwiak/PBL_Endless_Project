@@ -111,6 +111,7 @@ void PlayerControllerScript::setup() {
     Entity(eagleForm).add<Refractive>({});
     Entity(humanForm).add<Refractive>({});
     Entity(catForm).add<Refractive>({});
+    canChangeFormCooldown = 3.0f;
 };
 
 void PlayerControllerScript::update(float const deltaTime) {
@@ -260,6 +261,11 @@ void PlayerControllerScript::update(float const deltaTime) {
 
     if (!canChangeForm) {
         // StartCoroutine(trapEntered());
+        canChangeFormTimer += deltaTime;
+        if (canChangeFormTimer >= canChangeFormCooldown) {
+            canChangeForm = true;
+            canChangeFormTimer = 0.0f;
+        }
     }
 
     // Move only in lane increments
@@ -355,7 +361,8 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
         } else if (otherTag == "Torch") {
             // TODO: Collect the torch
         } else if (otherTag == "Trap") {
-            // TODO: Handle the trap
+            registry.system<GraphSystem>()->destroyEntityWithChildren(other);
+            canChangeForm = false;
         } else if (otherTag == "Waterfall") {
             changeForm(humanForm);
             if (!entity.has<Rigidbody>()) {
