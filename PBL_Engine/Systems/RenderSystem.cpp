@@ -168,7 +168,8 @@ void RenderSystem::update(float deltaTime) {
                 if (entity.has<Refractive>()) {
                     meshFilter.model->Draw(
                         window->Gfx(),
-                        registry.system<GraphSystem>()->transform(entity), PassType::refractive);
+                        registry.system<GraphSystem>()->transform(entity),
+                        PassType::refractive);
                     a++;
                 } else {
                     meshFilter.model->Draw(
@@ -176,7 +177,6 @@ void RenderSystem::update(float deltaTime) {
                         registry.system<GraphSystem>()->transform(entity));
                     a++;
                 }
-                
             }
         }
 
