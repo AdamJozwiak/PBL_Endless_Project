@@ -47,6 +47,7 @@ void GraphSystem::setup() {
 
     entityToGraphNode.clear();
     entityToPreviousTransform.clear();
+    entityToPreviousActivity.clear();
 }
 
 void GraphSystem::update(float const deltaTime) {
