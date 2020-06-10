@@ -48,6 +48,8 @@ void GraphSystem::setup() {
     entityToGraphNode.clear();
     entityToPreviousTransform.clear();
     entityToPreviousActivity.clear();
+
+    update(0.0f);
 }
 
 void GraphSystem::update(float const deltaTime) {
