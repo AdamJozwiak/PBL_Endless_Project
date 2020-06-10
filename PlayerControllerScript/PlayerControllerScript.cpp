@@ -95,6 +95,11 @@ void PlayerControllerScript::setup() {
     currentForm = humanForm;
 
     entity.add<CheckCollisions>({});
+
+    // Make all player forms refractive
+    Entity(eagleForm).add<Refractive>({});
+    Entity(humanForm).add<Refractive>({});
+    Entity(catForm).add<Refractive>({});
 };
 
 void PlayerControllerScript::update(float const deltaTime) {
