@@ -361,6 +361,79 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                 auto &helper = nodeRigidbody["m_Mass"];
                 rigidbody.mass = helper.as<float>();
             }
+        } else if (auto const &nodeSkybox = node["Skybox"]; nodeSkybox) {
+            assert(
+                nodeSkybox["m_GameObject"] && nodeSkybox["m_CustomSkybox"] &&
+                "Every property inside MeshRenderer component must be valid!");
+
+            {
+                auto &helper = nodeSkybox["m_GameObject"];
+                yamlLoop(i, helper) {
+                    auto gameObjectFileId = i->second.Scalar();
+                    Entity(entityIds[gameObjectFileId]).add<Skybox>({});
+                    // cachedSkyboxes.insert({entityIds[gameObjectFileId],
+                    // {}});
+                    entityIds.insert({fileId, entityIds[gameObjectFileId]});
+                }
+            }
+
+            auto &skybox = Entity(entityIds[fileId]).get<Skybox>();
+            // auto &renderer = cachedRenderers.at(entityIds[fileId]);
+
+            {
+                auto &helper = nodeSkybox["m_CustomSkybox"];
+                yamlLoop(i, helper) {
+                    auto const key = i->first.as<std::string>();
+                    auto const value = i->second.as<std::string>();
+
+                    if (key == "guid") {
+                        if (materialNodes.find(value) == materialNodes.end()) {
+                            continue;
+                        }
+                        auto const &materialNode =
+                            materialNodes[value]["Material"]
+                                         ["m_SavedProperties"]["m_TexEnvs"];
+                        yamlLoop(i, materialNode) {
+                            if ((*i)["_BackTex"]) {
+                                skybox.material.backPath =
+                                    guidPaths[(*i)["_BackTex"]["m_Texture"]
+                                                  ["guid"]
+                                                      .as<std::string>()];
+                            }
+                            if ((*i)["_DownTex"]) {
+                                skybox.material.bottomPath =
+                                    guidPaths[(*i)["_DownTex"]["m_Texture"]
+                                                  ["guid"]
+                                                      .as<std::string>()];
+                            }
+                            if ((*i)["_FrontTex"]) {
+                                skybox.material.frontPath =
+                                    guidPaths[(*i)["_FrontTex"]["m_Texture"]
+                                                  ["guid"]
+                                                      .as<std::string>()];
+                            }
+                            if ((*i)["_LeftTex"]) {
+                                skybox.material.leftPath =
+                                    guidPaths[(*i)["_LeftTex"]["m_Texture"]
+                                                  ["guid"]
+                                                      .as<std::string>()];
+                            }
+                            if ((*i)["_RightTex"]) {
+                                skybox.material.rightPath =
+                                    guidPaths[(*i)["_RightTex"]["m_Texture"]
+                                                  ["guid"]
+                                                      .as<std::string>()];
+                            }
+                            if ((*i)["_UpTex"]) {
+                                skybox.material.topPath =
+                                    guidPaths[(*i)["_UpTex"]["m_Texture"]
+                                                  ["guid"]
+                                                      .as<std::string>()];
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -533,10 +606,12 @@ void LevelParser::finalizeLoading(
         if (entity.has<Renderer>() && entity.has<MeshFilter>()) {
             auto &meshFilter = entity.get<MeshFilter>();
             auto &renderer = entity.get<Renderer>();
+            Skybox *skybox =
+                entity.has<Skybox>() ? &entity.get<Skybox>() : nullptr;
 
             meshFilter.model =
                 Model::create(registry.system<WindowSystem>()->gfx(),
-                              meshFilter.path, &renderer);
+                              meshFilter.path, &renderer, skybox);
 
             assert(entity.has<Transform>());
             auto &transform = entity.get<Transform>();

@@ -83,9 +83,10 @@ class Model {
     static std::shared_ptr<Model> create(Graphics& gfx,
                                          const std::string fileName,
                                          Renderer* renderer,
+                                         Skybox* skybox = nullptr,
                                          float* animationTime = nullptr);
     Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
-          float* animationTime = nullptr);
+          Skybox* skybox = nullptr, float* animationTime = nullptr);
     void Draw(Graphics& gfx, DirectX::XMMATRIX transform,
               PassType passType = PassType::normal) const noexcept(!IS_DEBUG);
     void ShowWindow(const char* windowName = nullptr) noexcept;

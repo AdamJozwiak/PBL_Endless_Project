@@ -1118,6 +1118,9 @@
     <ClInclude Include="Components\Rigidbody.hpp">
       <Filter>Pliki nagłówkowe\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Components\Skybox.hpp">
+      <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXTrace.inl">

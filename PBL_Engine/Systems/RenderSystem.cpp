@@ -67,7 +67,7 @@ void RenderSystem::setup() {
     animator.animationTime = 0;
     // imgui = std::make_unique<ImguiManager>();
     nano = new Model(window->Gfx(), "Assets\\Models\\Wolf-Blender-2.82a.gltf",
-                     nullptr, &animator.animationTime);
+                     nullptr, nullptr, &animator.animationTime);
     text = std::make_unique<Text>(window->Gfx(), L"Western Samurai",
                                   L"Assets\\Fonts\\Western Samurai.otf", 20);
     button = std::make_unique<Button>(
