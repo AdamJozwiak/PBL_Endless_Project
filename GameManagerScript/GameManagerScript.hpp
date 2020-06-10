@@ -1,6 +1,7 @@
 #pragma once
 
 // ///////////////////////////////////////////////////////////////// Includes //
+#include <map>
 #include <memory>
 
 #include "ECS/Entity.hpp"
@@ -23,12 +24,45 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
 
     // -------------------------------------------------------- Methods -- == //
     void method();
+    void updateWaterfallRefraction();
+    void handleChunkSpawning();
 
   private:
     // ============================================================== Data == //
     bool (*isKeyPressed)(int const key);
 
     EntityId playerId;
+
+    // --------------------------------------------------------- Chunks -- == //
+    // Types
+    using ChunkName = std::string;
+    using ChunkLength = unsigned int;
+
+    enum WayPosition { LEFT, CENTER, RIGHT };
+
+    struct Chunk {
+        ChunkName name;
+        EntityId entity;
+        int endPositionInParts;
+    };
+
+    // Properties
+    std::vector<ChunkName> chunkNames;
+    std::map<ChunkName, WayPosition> endingOfChunk;
+    std::map<WayPosition, std::vector<ChunkName>> chunksBeginningWith;
+    std::map<ChunkName, ChunkLength> lengthOfChunk;
+
+    int generatedLengthInParts = 0;
+
+    // Chunks
+    std::vector<Chunk> presentChunks;
+    ChunkName nextChunk;
+
+    // Constants
+    static inline constexpr float SPAWN_PADDING_IN_WORLD_UNITS = 60.0f;
+    static inline constexpr float PART_LENGTH_IN_WORLD_UNITS = 20.0f;
+    static inline std::string const CHUNKS_DIRECTORY =
+        "Assets\\Unity\\Prefabs\\Chunks Completely Unpacked";
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
