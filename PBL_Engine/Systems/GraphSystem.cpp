@@ -85,7 +85,7 @@ void GraphSystem::update(float const deltaTime) {
             auto const& parent = Entity(parentId);
 
             if (!graphNode.parent) {
-                graphNode.parent = &entityToGraphNode[parentId];
+                graphNode.parent = &entityToGraphNode.at(parentId);
             }
             if (!graphNode.parent->children.contains(entityId)) {
                 graphNode.parent->children.insert(entityId);
@@ -134,7 +134,7 @@ void GraphSystem::update(float const deltaTime) {
     // Update transformations and activities
     std::queue<std::reference_wrapper<GraphNode>> nodes;
     for (auto const& childEntityId : root.children) {
-        nodes.push(std::ref(entityToGraphNode[childEntityId]));
+        nodes.push(std::ref(entityToGraphNode.at(childEntityId)));
     }
 
     while (!nodes.empty()) {
@@ -161,7 +161,7 @@ void GraphSystem::update(float const deltaTime) {
         }
 
         for (auto const& childEntityId : node.children) {
-            auto& childGraphNode = entityToGraphNode[childEntityId];
+            auto& childGraphNode = entityToGraphNode.at(childEntityId);
             childGraphNode.recalculateTransforms |= node.recalculateTransforms;
             childGraphNode.recalculateActivity |= node.recalculateActivity;
             nodes.push(std::ref(childGraphNode));
@@ -175,7 +175,7 @@ void GraphSystem::update(float const deltaTime) {
 void GraphSystem::release() {}
 
 DirectX::XMMATRIX GraphSystem::transform(Entity const& entity) {
-    return entityToGraphNode[entity.id].cumulativeTransform;
+    return entityToGraphNode.at(entity.id).cumulativeTransform;
 }
 
 void GraphSystem::destroyEntityWithChildren(Entity const& entity) {
