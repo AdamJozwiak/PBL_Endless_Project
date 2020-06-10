@@ -37,6 +37,23 @@ LevelParser::LevelParser() {}
 
 LevelParser::~LevelParser() {}
 
+void LevelParser::cachePrefab(std::string const &filename, bool clear) {
+    std::vector<YAML::Node> assetNodes = YAML::LoadAllFromFile(filename);
+
+    // Don't keep the nodes in memory for longer than necessary
+    if (clear) {
+        nodes.clear();
+    }
+
+    // Map all possible nodes with corresponding identifiers
+    for (auto const &node : assetNodes) {
+        yamlLoop(i, node) {
+            nodes[pathToGuid[filename]].insert(
+                {i->second["id"].as<FileId>(), node});
+        }
+    }
+}
+
 std::unordered_map<FileId, EntityId> spawnPrefab(
     FileGuid guid, std::set<FileId> const &fileIds,
     std::set<EntityId> *recursivePrefabIds = nullptr) {
@@ -362,6 +379,7 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
             FileGuid prefabGuid =
                 nodePrefabInstance["m_SourcePrefab"]["guid"].as<FileGuid>();
 
+            LevelParser::cachePrefab(guidPaths.at(prefabGuid));
             auto prefabEntityIds = spawnPrefab(
                 prefabGuid, prefabFileIds.at(prefabGuid), recursivePrefabIds);
 
@@ -461,95 +479,27 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
     return entityIds;
 }
 
-void LevelParser::load() {
-    auto const &sceneNodes =
-        YAML::LoadAllFromFile("Assets\\Unity\\Scenes\\Main.unity");
+void LevelParser::loadScene(std::string const &scenePath) {
+    auto const &sceneNodes = YAML::LoadAllFromFile(scenePath);
 
-    std::unordered_map<FileExtension, std::vector<Path>> assetPaths;
+    // Assume that the GUID for the scene file is the same as the path
+    // guidPaths.insert({scenePath, scenePath});
 
-    // Creating vectors of files with .prefab, .mat, .meta extensions
-    Path searchedDirectory{"Assets\\Unity"};
-    std::vector<FileExtension> searchedFileExtensions{".meta", ".prefab",
-                                                      ".mat"};
-
-    for (auto const &entry :
-         fs::recursive_directory_iterator(searchedDirectory)) {
-        Path const &path = entry.path().string();
-        FileExtension const &extension = entry.path().extension().string();
-
-        if (std::find(searchedFileExtensions.begin(),
-                      searchedFileExtensions.end(),
-                      extension) != searchedFileExtensions.end()) {
-            assetPaths[extension].emplace_back(path);
-        }
-    }
-
-    // Map all possible nodes with corresponding identifiers and make a set
-    // of all identifiers in scene file
+    // Make a set of all identifiers in scene file
     std::set<FileId> sceneFileIds;
     for (auto const &node : sceneNodes) {
         yamlLoop(i, node) {
             if (!i->second["id"]) {
                 continue;
             }
-            nodes["0"].insert({i->second["id"].as<FileId>(), node});
             sceneFileIds.insert(i->second["id"].as<FileId>());
-        }
-    }
-
-    for (auto const &extension : searchedFileExtensions) {
-        for (auto const &path : assetPaths[extension]) {
-            std::vector<YAML::Node> assetNodes = YAML::LoadAllFromFile(path);
-            for (auto const &node : assetNodes) {
-                if (extension == ".meta") {
-                    auto const pathWithoutExtension{
-                        fs::path(path).parent_path().string() + "\\" +
-                        fs::path(path).stem().string()};
-                    guidPaths.insert(
-                        {node["guid"].as<FileGuid>(), pathWithoutExtension});
-                    pathToGuid.insert(
-                        {pathWithoutExtension, node["guid"].as<FileGuid>()});
-
-                    // Check for duplicates
-                    assert(metaNodes.find(pathToGuid[pathWithoutExtension]) ==
-                               metaNodes.end() &&
-                           "Duplicate file identifiers!");
-
-                    if (!pathToGuid[pathWithoutExtension].empty()) {
-                        metaNodes.insert(
-                            {pathToGuid[pathWithoutExtension], node});
-                    }
-                } else if (extension == ".prefab") {
-                    yamlLoop(i, node) {
-                        if (!i->second["id"]) {
-                            continue;
-                        }
-
-                        // Check for duplicates
-                        assert(!nodes[pathToGuid[path]].contains(
-                                   i->second["id"].as<FileId>()) &&
-                               "Duplicate file identifiers!");
-
-                        nodes[pathToGuid[path]].insert(
-                            {i->second["id"].as<FileId>(), node});
-                        prefabFileIds[pathToGuid[path]].insert(
-                            i->second["id"].as<FileId>());
-                    }
-                } else if (extension == ".mat") {
-                    // Check for duplicates
-                    assert(materialNodes.find(pathToGuid[path]) ==
-                               materialNodes.end() &&
-                           "Duplicate file identifiers!");
-
-                    materialNodes.insert({pathToGuid[path], node});
-                }
-            }
         }
     }
 
     // Spawn the scene and prefabs
     std::set<EntityId> recursivePrefabIds;
-    spawnPrefab("0", sceneFileIds, &recursivePrefabIds);
+    cachePrefab(scenePath);
+    spawnPrefab(pathToGuid.at(scenePath), sceneFileIds, &recursivePrefabIds);
     finalizeLoading(recursivePrefabIds);
 }
 
@@ -621,6 +571,80 @@ void LevelParser::finalizeLoading(
         // Scripts
         if (entity.has<Behaviour>()) {
             entity.get<Behaviour>().script->setup();
+        }
+    }
+}
+
+void LevelParser::initialize() {
+    std::unordered_map<FileExtension, std::vector<Path>> assetPaths;
+
+    // Creating vectors of files with .prefab, .mat, .meta extensions
+    Path searchedDirectory{"Assets\\Unity"};
+    std::vector<FileExtension> searchedFileExtensions{".meta", ".prefab",
+                                                      ".mat"};
+
+    for (auto const &entry :
+         fs::recursive_directory_iterator(searchedDirectory)) {
+        Path const &path = entry.path().string();
+        FileExtension const &extension = entry.path().extension().string();
+
+        if (std::find(searchedFileExtensions.begin(),
+                      searchedFileExtensions.end(),
+                      extension) != searchedFileExtensions.end()) {
+            assetPaths[extension].emplace_back(path);
+        }
+    }
+
+    for (auto const &extension : searchedFileExtensions) {
+        for (auto const &path : assetPaths[extension]) {
+            // if (extension == ".prefab") {
+            //     continue;
+            // }
+            std::vector<YAML::Node> assetNodes = YAML::LoadAllFromFile(path);
+            for (auto const &node : assetNodes) {
+                if (extension == ".meta") {
+                    auto const pathWithoutExtension{
+                        fs::path(path).parent_path().string() + "\\" +
+                        fs::path(path).stem().string()};
+                    guidPaths.insert(
+                        {node["guid"].as<FileGuid>(), pathWithoutExtension});
+                    pathToGuid.insert(
+                        {pathWithoutExtension, node["guid"].as<FileGuid>()});
+
+                    // Check for duplicates
+                    assert(metaNodes.find(pathToGuid[pathWithoutExtension]) ==
+                               metaNodes.end() &&
+                           "Duplicate file identifiers!");
+
+                    if (!pathToGuid[pathWithoutExtension].empty()) {
+                        metaNodes.insert(
+                            {pathToGuid[pathWithoutExtension], node});
+                    }
+                } else if (extension == ".prefab") {
+                    yamlLoop(i, node) {
+                        if (!i->second["id"]) {
+                            continue;
+                        }
+
+                        // Check for duplicates
+                        /* assert(!nodes[pathToGuid[path]].contains( */
+                        /*            i->second["id"].as<FileId>()) && */
+                        /*        "Duplicate file identifiers!"); */
+
+                        /* nodes[pathToGuid[path]].insert( */
+                        /*     {i->second["id"].as<FileId>(), node}); */
+                        prefabFileIds[pathToGuid[path]].insert(
+                            i->second["id"].as<FileId>());
+                    }
+                } else if (extension == ".mat") {
+                    // Check for duplicates
+                    assert(materialNodes.find(pathToGuid[path]) ==
+                               materialNodes.end() &&
+                           "Duplicate file identifiers!");
+
+                    materialNodes.insert({pathToGuid[path], node});
+                }
+            }
         }
     }
 }

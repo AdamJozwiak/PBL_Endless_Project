@@ -84,7 +84,8 @@ void SceneSystem::setup() {
     //             registry.system<ColliderSystem>()->AddSphereCollider(
     //                 Cube::MakeUsunMnie<DirectX::XMFLOAT3>().vertices));
     // }
-    levelParser.load();
+    levelParser.initialize();
+    levelParser.loadScene("Assets\\Unity\\Scenes\\Main.unity");
 
     registry.system<PropertySystem>()
         ->findEntityByTag("MainCamera")
@@ -97,7 +98,14 @@ void SceneSystem::update(float deltaTime){};
 void SceneSystem::release() {}
 
 // --------------------------------------------------- Public interface -- == //
-Entity SceneSystem::spawnPrefab(std::string const& path) {
+void SceneSystem::cachePrefab(std::string const& path) {
+    levelParser.cachePrefab(path, true);
+}
+
+Entity SceneSystem::spawnPrefab(std::string const& path, bool cache) {
+    if (cache) {
+        cachePrefab(path);
+    }
     return levelParser.loadPrefab(path);
 }
 
