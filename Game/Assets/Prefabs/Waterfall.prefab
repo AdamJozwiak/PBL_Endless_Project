@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5628256408830679071}
   - component: {fileID: 2100678576673187046}
   - component: {fileID: 4932039249616448215}
+  - component: {fileID: 1695955789167139930}
   m_Layer: 0
   m_Name: Waterfall
   m_TagString: Waterfall
@@ -89,3 +90,16 @@ Skybox:
   m_GameObject: {fileID: 368109920210571322}
   m_Enabled: 1
   m_CustomSkybox: {fileID: 2100000, guid: 69635641b2c55404cbcd33144e978855, type: 2}
+--- !u!65 &1695955789167139930
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 368109920210571322}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.0017571, y: 2.0013828, z: 0.18995713}
+  m_Center: {x: 0.0006005168, y: 0.00007349253, z: 0.0041710734}
