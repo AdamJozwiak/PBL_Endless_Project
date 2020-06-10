@@ -318,9 +318,8 @@ void PlayerControllerScript::update(float const deltaTime) {
         cummulatedVector = {0.0f, 0.0f, 0.0f};
         cummulatedCounter = 0.0f;
     }
-    
-    if (entity.get<Transform>().position.y < 0.0f)
-    {
+
+    if (entity.get<Transform>().position.y < 0.0f) {
         entity.get<Transform>().position.y = 0.0f;
     }
 

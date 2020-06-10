@@ -353,19 +353,19 @@ DirectX::XMFLOAT3 ColliderSystem::CalculateSeparatingVector(
     BoxCollider const& a, BoxCollider const& b) {
     std::vector<float> x, y, z;
     x.push_back(std::abs(DirectX::XMVectorGetX(a.aabb.vertexMax) -
-           DirectX::XMVectorGetX(b.aabb.vertexMin)));
+                         DirectX::XMVectorGetX(b.aabb.vertexMin)));
     x.push_back(std::abs(DirectX::XMVectorGetX(b.aabb.vertexMax) -
-           DirectX::XMVectorGetX(a.aabb.vertexMin)));
+                         DirectX::XMVectorGetX(a.aabb.vertexMin)));
 
     y.push_back(std::abs(DirectX::XMVectorGetY(a.aabb.vertexMax) -
-           DirectX::XMVectorGetY(b.aabb.vertexMin)));
+                         DirectX::XMVectorGetY(b.aabb.vertexMin)));
     y.push_back(std::abs(DirectX::XMVectorGetY(b.aabb.vertexMax) -
-           DirectX::XMVectorGetY(a.aabb.vertexMin)));
+                         DirectX::XMVectorGetY(a.aabb.vertexMin)));
 
     z.push_back(std::abs(DirectX::XMVectorGetZ(a.aabb.vertexMax) -
-           DirectX::XMVectorGetZ(b.aabb.vertexMin)));
+                         DirectX::XMVectorGetZ(b.aabb.vertexMin)));
     z.push_back(std::abs(DirectX::XMVectorGetZ(b.aabb.vertexMax) -
-           DirectX::XMVectorGetZ(a.aabb.vertexMin)));
+                         DirectX::XMVectorGetZ(a.aabb.vertexMin)));
 
     float minX = std::min(x[0], x[1]), minY = std::min(y[0], y[1]),
           minZ = std::min(z[0], z[1]);
@@ -381,7 +381,6 @@ DirectX::XMFLOAT3 ColliderSystem::CalculateSeparatingVector(
         minY = 0.0f;
     }
 
-    
     return DirectX::XMFLOAT3(((x[0] < x[1]) ? 1 : -1) * minX,
                              ((y[0] < y[1]) ? 1 : -1) * minY,
                              ((z[0] < z[1]) ? 1 : -1) * minZ);
