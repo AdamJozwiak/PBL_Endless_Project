@@ -393,7 +393,7 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
 
         // Load the cubemap
         std::vector<std::unique_ptr<SurfaceReference>> cubeMapFaces(6);
-        std::string facesPath = "Assets/Textures/Skybox 1024/";
+        std::string facesPath = "Assets\\Unity\\Textures\\Skybox Waterfall\\";
         cubeMapFaces[0] = std::make_unique<SurfaceReference>(
             Surface::FromFile(facesPath + "left.png"));
         cubeMapFaces[1] = std::make_unique<SurfaceReference>(
