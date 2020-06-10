@@ -357,7 +357,10 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
         } else if (otherTag == "Trap") {
             // TODO: Handle the trap
         } else if (otherTag == "Waterfall") {
-            // TODO: Handle the waterfall
+            changeForm(humanForm);
+            if (!entity.has<Rigidbody>()) {
+                entity.add<Rigidbody>(rb);
+            }
         } else if (otherTag == "Boundary") {
             return;
         } else {
