@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3693114273046995497}
   - component: {fileID: 5628256408830679071}
   - component: {fileID: 2100678576673187046}
+  - component: {fileID: 4932039249616448215}
   m_Layer: 0
   m_Name: Waterfall
   m_TagString: Waterfall
@@ -79,3 +80,12 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!45 &4932039249616448215
+Skybox:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 368109920210571322}
+  m_Enabled: 1
+  m_CustomSkybox: {fileID: 2100000, guid: 69635641b2c55404cbcd33144e978855, type: 2}

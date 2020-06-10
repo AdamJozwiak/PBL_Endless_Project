@@ -226,6 +226,7 @@ GameObject:
   - component: {fileID: 58078523}
   - component: {fileID: 58078525}
   - component: {fileID: 58078524}
+  - component: {fileID: 58078526}
   m_Layer: 0
   m_Name: Eagle Form
   m_TagString: Untagged
@@ -294,6 +295,15 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 58078522}
   m_Mesh: {fileID: -2222346464153789849, guid: 9efc716a90adcf54d82c0982bb0f394c, type: 3}
+--- !u!45 &58078526
+Skybox:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 58078522}
+  m_Enabled: 1
+  m_CustomSkybox: {fileID: 2100000, guid: e39c921e7a9e1e543b94440d6867c436, type: 2}
 --- !u!64 &227011780
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3011,6 +3021,7 @@ GameObject:
   - component: {fileID: 1296065270}
   - component: {fileID: 1296065272}
   - component: {fileID: 1296065271}
+  - component: {fileID: 1296065273}
   m_Layer: 0
   m_Name: Cat Form
   m_TagString: Untagged
@@ -3079,6 +3090,15 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1296065269}
   m_Mesh: {fileID: -2222346464153789849, guid: 9efc716a90adcf54d82c0982bb0f394c, type: 3}
+--- !u!45 &1296065273
+Skybox:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1296065269}
+  m_Enabled: 1
+  m_CustomSkybox: {fileID: 2100000, guid: fdd6be020a4762243943362b0e308465, type: 2}
 --- !u!33 &1359030500
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -5130,6 +5150,7 @@ GameObject:
   - component: {fileID: 5006512736526873700}
   - component: {fileID: 4044710143033085522}
   - component: {fileID: 7718390322226786987}
+  - component: {fileID: 8296172667467318904}
   m_Layer: 0
   m_Name: Human Form
   m_TagString: Untagged
@@ -5137,6 +5158,15 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!45 &8296172667467318904
+Skybox:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8296172667467318903}
+  m_Enabled: 1
+  m_CustomSkybox: {fileID: 2100000, guid: 812f78f3f6c51df4ea9ea3979c4820b5, type: 2}
 --- !u!33 &8552909977272601721
 MeshFilter:
   m_ObjectHideFlags: 0
