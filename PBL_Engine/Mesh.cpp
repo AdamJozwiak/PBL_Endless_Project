@@ -367,6 +367,7 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
     int textureSlot = 0;
     // Textures
     if (renderer) {
+        // Load the PBR textures
         std::vector<std::unique_ptr<SurfaceReference>> surfaces(5);
         std::vector<std::thread> threads;
         threads.push_back(std::thread([&surfaces, &renderer] {
@@ -389,41 +390,46 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
             surfaces[4] = std::make_unique<SurfaceReference>(
                 Surface::FromFile(renderer->material.heightPath));
         }));
+
+        // Load the cubemap
+        std::vector<std::unique_ptr<SurfaceReference>> cubeMapFaces(6);
+        std::string facesPath = "Assets/Textures/Skybox 1024/";
+        cubeMapFaces[0] = std::make_unique<SurfaceReference>(
+            Surface::FromFile(facesPath + "left.png"));
+        cubeMapFaces[1] = std::make_unique<SurfaceReference>(
+            Surface::FromFile(facesPath + "right.png"));
+        cubeMapFaces[2] = std::make_unique<SurfaceReference>(
+            Surface::FromFile(facesPath + "back.png"));
+        cubeMapFaces[3] = std::make_unique<SurfaceReference>(
+            Surface::FromFile(facesPath + "front.png"));
+        cubeMapFaces[4] = std::make_unique<SurfaceReference>(
+            Surface::FromFile(facesPath + "bottom.png"));
+        cubeMapFaces[5] = std::make_unique<SurfaceReference>(
+            Surface::FromFile(facesPath + "top.png"));
+
+        std::vector<SurfaceReference*> cubeMap(6);
+        for (size_t i = 0; i < cubeMapFaces.size(); ++i) {
+            cubeMap[i] = cubeMapFaces[i].get();
+        }
+
+        // Synchronize the threads
         for (auto& thread : threads) {
             if (thread.joinable()) {
                 thread.join();
             }
         }
 
+        // Create the textures
         for (textureSlot = 0; textureSlot < surfaces.size(); ++textureSlot) {
             textures.push_back(std::make_shared<Texture>(
                 gfx, *surfaces[textureSlot], textureSlot));
         }
+        textures.push_back(
+            std::make_shared<Texture>(gfx, cubeMap, ++textureSlot));
 
+        // Set the material properties
         parallaxHeight = renderer->material.parallaxHeight;
     }
-
-    std::vector<std::unique_ptr<SurfaceReference>> cubeMapFaces(6);
-    std::string facesPath = "Assets/Textures/Skybox 1024/";
-    cubeMapFaces[0] = std::make_unique<SurfaceReference>(
-        Surface::FromFile(facesPath + "left.png"));
-    cubeMapFaces[1] = std::make_unique<SurfaceReference>(
-        Surface::FromFile(facesPath + "right.png"));
-    cubeMapFaces[2] = std::make_unique<SurfaceReference>(
-        Surface::FromFile(facesPath + "back.png"));
-    cubeMapFaces[3] = std::make_unique<SurfaceReference>(
-        Surface::FromFile(facesPath + "front.png"));
-    cubeMapFaces[4] = std::make_unique<SurfaceReference>(
-        Surface::FromFile(facesPath + "bottom.png"));
-    cubeMapFaces[5] = std::make_unique<SurfaceReference>(
-        Surface::FromFile(facesPath + "top.png"));
-
-    std::vector<SurfaceReference*> cubeMap(6);
-    for (size_t i = 0; i < cubeMapFaces.size(); ++i) {
-        cubeMap[i] = cubeMapFaces[i].get();
-    }
-
-    textures.push_back(std::make_shared<Texture>(gfx, cubeMap, ++textureSlot));
 
     animRefVert =
         std::make_shared<VertexShader>(gfx, L"AnimatedRefractiveVS.cso");
