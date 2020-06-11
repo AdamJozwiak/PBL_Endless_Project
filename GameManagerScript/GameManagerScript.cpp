@@ -254,7 +254,8 @@ void GameManagerScript::handleChunkSpawning() {
         }
 
         // Randomly find the next chunk
-        static std::default_random_engine generator;
+        std::random_device device;
+        std::mt19937 generator(device());
 
         auto ending = endingOfChunk.at(presentChunks.back().name);
         auto potentialChunks = chunksBeginningWith.at(ending);
