@@ -609,9 +609,21 @@ void LevelParser::finalizeLoading(
             Skybox *skybox =
                 entity.has<Skybox>() ? &entity.get<Skybox>() : nullptr;
 
-            meshFilter.model =
-                Model::create(registry.system<WindowSystem>()->gfx(),
-                              meshFilter.path, &renderer, skybox);
+            std::string replacedPath = meshFilter.path;
+            if (fs::path(meshFilter.path).stem() == "bird" ||
+                fs::path(meshFilter.path).stem() == "human" ||
+                fs::path(meshFilter.path).stem() == "wolf") {
+                replacedPath = fs::path(meshFilter.path)
+                                   .replace_extension(fs::path("gltf"))
+                                   .string();
+                entity.add<Animator>({.animationTime = 0.0f});
+            }
+
+            meshFilter.model = Model::create(
+                registry.system<WindowSystem>()->gfx(), replacedPath, &renderer,
+                skybox,
+                entity.has<Animator>() ? &entity.get<Animator>().animationTime
+                                       : nullptr);
 
             assert(entity.has<Transform>());
             auto &transform = entity.get<Transform>();
@@ -623,6 +635,8 @@ void LevelParser::finalizeLoading(
             transform.scale.x *= scale;
             transform.scale.y *= scale;
             transform.scale.z *= scale;
+
+            meshFilter.path = replacedPath;
         }
 
         // Colliders
