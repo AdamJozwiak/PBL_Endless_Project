@@ -89,6 +89,7 @@
     <ClCompile Include="soloud\src\core\soloud_queue.cpp" />
     <ClCompile Include="soloud\src\core\soloud_thread.cpp" />
     <ClCompile Include="Surface.cpp" />
+    <ClCompile Include="Systems\AnimatorSystem.cpp" />
     <ClCompile Include="Systems\ColliderSystem.cpp" />
     <ClCompile Include="Systems\GraphSystem.cpp" />
     <ClCompile Include="Systems\PhysicsSystem.cpp" />
@@ -271,6 +272,7 @@
     <ClInclude Include="soloud\src\audiosource\wav\stb_vorbis.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Surface.h" />
+    <ClInclude Include="Systems\AnimatorSystem.hpp" />
     <ClInclude Include="Systems\ColliderSystem.hpp" />
     <ClInclude Include="Systems\GraphSystem.hpp" />
     <ClInclude Include="Systems\PhysicsSystem.hpp" />

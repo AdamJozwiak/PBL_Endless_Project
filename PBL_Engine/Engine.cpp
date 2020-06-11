@@ -17,23 +17,24 @@ extern "C" ENGINE_API void create(std::shared_ptr<Engine> &engine) {
 Engine::Engine()
     : registry(Registry::instance()),
       setupSystems{
-          registry.system<WindowSystem>(),    registry.system<SceneSystem>(),
-          registry.system<GraphSystem>(),     registry.system<RenderSystem>(),
-          registry.system<BehaviourSystem>(), registry.system<ColliderSystem>(),
-          registry.system<SoundSystem>(),     registry.system<PropertySystem>(),
-          registry.system<PhysicsSystem>()},
+          registry.system<WindowSystem>(),   registry.system<SceneSystem>(),
+          registry.system<GraphSystem>(),    registry.system<AnimatorSystem>(),
+          registry.system<RenderSystem>(),   registry.system<BehaviourSystem>(),
+          registry.system<ColliderSystem>(), registry.system<SoundSystem>(),
+          registry.system<PropertySystem>(), registry.system<PhysicsSystem>()},
       updateSystems{
           registry.system<WindowSystem>(),   registry.system<SceneSystem>(),
           registry.system<GraphSystem>(),    registry.system<SoundSystem>(),
           registry.system<ColliderSystem>(), registry.system<BehaviourSystem>(),
-          registry.system<PropertySystem>(), registry.system<RenderSystem>(),
-          registry.system<PhysicsSystem>()},
+          registry.system<PropertySystem>(), registry.system<AnimatorSystem>(),
+          registry.system<RenderSystem>(),   registry.system<PhysicsSystem>()},
       releaseSystems{
-          registry.system<WindowSystem>(),    registry.system<GraphSystem>(),
-          registry.system<RenderSystem>(),    registry.system<SceneSystem>(),
-          registry.system<BehaviourSystem>(), registry.system<ColliderSystem>(),
-          registry.system<SoundSystem>(),     registry.system<PropertySystem>(),
-          registry.system<PhysicsSystem>()} {}
+          registry.system<WindowSystem>(),   registry.system<GraphSystem>(),
+          registry.system<AnimatorSystem>(), registry.system<RenderSystem>(),
+          registry.system<SceneSystem>(),    registry.system<BehaviourSystem>(),
+          registry.system<ColliderSystem>(), registry.system<SoundSystem>(),
+          registry.system<PropertySystem>(), registry.system<PhysicsSystem>()} {
+}
 
 ENGINE_API int Engine::run() {
     for (auto &system : setupSystems) {

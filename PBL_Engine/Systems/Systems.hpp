@@ -1,6 +1,7 @@
 #pragma once
 
 // ///////////////////////////////////////////////// Includes for all systems //
+#include "AnimatorSystem.hpp"
 #include "BehaviourSystem.hpp"
 #include "ColliderSystem.hpp"
 #include "GraphSystem.hpp"

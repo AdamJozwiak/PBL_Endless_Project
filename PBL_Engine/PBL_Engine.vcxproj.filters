@@ -495,6 +495,9 @@
     <ClCompile Include="Systems\PhysicsSystem.cpp">
       <Filter>Pliki źródłowe\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Systems\AnimatorSystem.cpp">
+      <Filter>Pliki źródłowe\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -1125,6 +1128,9 @@
       <Filter>Pliki nagłówkowe\Components</Filter>
     </ClInclude>
     <ClInclude Include="Systems\PhysicsSystem.hpp">
+      <Filter>Pliki nagłówkowe\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\AnimatorSystem.hpp">
       <Filter>Pliki nagłówkowe\Systems</Filter>
     </ClInclude>
   </ItemGroup>
