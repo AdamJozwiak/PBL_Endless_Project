@@ -31,7 +31,7 @@ static const int TEXTURE_ALBEDO = 0, TEXTURE_AMBIENT_OCCLUSION = 1,
                  TEXTURE_HEIGHT = 4;
 static const int MIN_SAMPLE_COUNT = 4;
 static const int MAX_SAMPLE_COUNT = 32;
-static const int NUM_LIGHTS = 8;
+static const int NUM_LIGHTS = 16;
 
 // ///////////////////////////////////////////////////////// Constant buffers //
 cbuffer MaterialParameters : register(b9) { float parallaxHeight; };
