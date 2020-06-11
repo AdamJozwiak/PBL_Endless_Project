@@ -1,5 +1,6 @@
-cbuffer TransformCBuf {
+cbuffer Transform : register(b0) {
     matrix model;
+    matrix modelInverseTranspose;
     matrix viewProj;
 };
 
