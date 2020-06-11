@@ -425,14 +425,14 @@ void ColliderSystem::update(float deltaTime) {
                 registry.send(OnCollisionEnter{.a = iEntity, .b = jEntity});
             }
             */
-            if (CheckBoxesCollision(iEntity.get<BoxCollider>(),
-                                    jEntity.get<BoxCollider>())) {
+            auto iBoxCollider = iEntity.get<BoxCollider>();
+            auto jBoxCollider = jEntity.get<BoxCollider>();
+            if (CheckBoxesCollision(iBoxCollider, jBoxCollider)) {
                 registry.send(OnCollisionEnter{
                     .a = iEntity,
                     .b = jEntity,
                     .minSeparatingVector =
-                        CalculateSeparatingVector(iEntity.get<BoxCollider>(),
-                                                  jEntity.get<BoxCollider>())});
+                        CalculateSeparatingVector(iBoxCollider, jBoxCollider)});
             }
         }
     }
