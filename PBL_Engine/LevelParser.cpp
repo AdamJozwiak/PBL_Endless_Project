@@ -609,6 +609,13 @@ void LevelParser::finalizeLoading(
             Skybox *skybox =
                 entity.has<Skybox>() ? &entity.get<Skybox>() : nullptr;
 
+            // Set Skybox animation speed
+            if (entity.get<Properties>().tag == "Waterfall" && skybox) {
+                skybox->animationSpeed = 0.0f;
+            } else if(skybox){
+                skybox->animationSpeed = 0.5f;
+            }
+
             std::string replacedPath = meshFilter.path;
             if (fs::path(meshFilter.path).stem() == "bird" ||
                 fs::path(meshFilter.path).stem() == "human" ||
