@@ -415,16 +415,7 @@ void ColliderSystem::update(float deltaTime) {
             if (!jEntity.has<CheckCollisions>()) {
                 continue;
             }
-            auto iTransform = graphSystem->transform(iEntity);
-            auto jTransform = graphSystem->transform(jEntity);
-            /*
-            if (CheckSpheresCollision(iEntity.get<SphereCollider>(), iTransform,
-                                      jEntity.get<SphereCollider>(),
-                                      jTransform)) {
-                // checkedCollisions[i][j] = true;
-                registry.send(OnCollisionEnter{.a = iEntity, .b = jEntity});
-            }
-            */
+
             auto iBoxCollider = iEntity.get<BoxCollider>();
             auto jBoxCollider = jEntity.get<BoxCollider>();
             if (CheckBoxesCollision(iBoxCollider, jBoxCollider)) {
