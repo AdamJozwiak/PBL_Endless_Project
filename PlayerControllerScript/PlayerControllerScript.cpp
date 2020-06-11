@@ -134,7 +134,7 @@ void PlayerControllerScript::update(float const deltaTime) {
     inputAscend = isKeyPressed('A');
     inputDescend = isKeyPressed('D');
     inputChangeFormEagle = isKeyPressed(' ');
-    inputChangeFormCat = isKeyPressed('C');
+    inputChangeFormCat = false;
 
     if (currentForm == eagleForm) {
         if (inputAscendKey) {
