@@ -11,6 +11,7 @@ ECS_COMPONENT(Skybox) {
         std::string leftPath, rightPath, backPath, frontPath, bottomPath,
             topPath;
     } material;
+    float animationSpeed;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
