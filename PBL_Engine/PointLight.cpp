@@ -84,14 +84,14 @@ void PointLight::SpawnControlWindow() noexcept {
 }
 
 void PointLight::Reset() noexcept {
-    lightParametersConstantBuffer.lightPositionWorld[number] = {10.0f, 10.0f,
+    lightParametersConstantBuffer.lightPositionWorld[number] = {30.0f, 1.0f,
                                                                 0.0f, 0.0f};
     lightParametersConstantBuffer.viewPositionWorld = {0.0f, 0.0f, 0.0f, 0.0f};
-    lightParametersConstantBuffer.diffuseColor[number] = {1.0f, 1.0f, 1.0f,
+    lightParametersConstantBuffer.diffuseColor[number] = {1.0f, 0.8f, 0.6f,
                                                           1.0f};
-    lightParametersConstantBuffer.attenuationConstant = 0.3f;
+    lightParametersConstantBuffer.attenuationConstant = 0.0f;
     lightParametersConstantBuffer.attenuationLinear = 0.0f;
-    lightParametersConstantBuffer.attenuationQuadratic = 0.0f;
+    lightParametersConstantBuffer.attenuationQuadratic = 0.025f;
     setIntensity(1.0f);
 }
 
