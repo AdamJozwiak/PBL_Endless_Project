@@ -351,21 +351,21 @@ bool ColliderSystem::CheckSpheresCollision(
 
 DirectX::XMFLOAT3 ColliderSystem::CalculateSeparatingVector(
     BoxCollider const& a, BoxCollider const& b) {
-    std::vector<float> x, y, z;
-    x.push_back(std::abs(DirectX::XMVectorGetX(a.aabb.vertexMax) -
-                         DirectX::XMVectorGetX(b.aabb.vertexMin)));
-    x.push_back(std::abs(DirectX::XMVectorGetX(b.aabb.vertexMax) -
-                         DirectX::XMVectorGetX(a.aabb.vertexMin)));
+    std::array<float, 2> x, y, z;
+    x[0] = (std::abs(DirectX::XMVectorGetX(a.aabb.vertexMax) -
+                     DirectX::XMVectorGetX(b.aabb.vertexMin)));
+    x[1] = (std::abs(DirectX::XMVectorGetX(b.aabb.vertexMax) -
+                     DirectX::XMVectorGetX(a.aabb.vertexMin)));
 
-    y.push_back(std::abs(DirectX::XMVectorGetY(a.aabb.vertexMax) -
-                         DirectX::XMVectorGetY(b.aabb.vertexMin)));
-    y.push_back(std::abs(DirectX::XMVectorGetY(b.aabb.vertexMax) -
-                         DirectX::XMVectorGetY(a.aabb.vertexMin)));
+    y[0] = (std::abs(DirectX::XMVectorGetY(a.aabb.vertexMax) -
+                     DirectX::XMVectorGetY(b.aabb.vertexMin)));
+    y[1] = (std::abs(DirectX::XMVectorGetY(b.aabb.vertexMax) -
+                     DirectX::XMVectorGetY(a.aabb.vertexMin)));
 
-    z.push_back(std::abs(DirectX::XMVectorGetZ(a.aabb.vertexMax) -
-                         DirectX::XMVectorGetZ(b.aabb.vertexMin)));
-    z.push_back(std::abs(DirectX::XMVectorGetZ(b.aabb.vertexMax) -
-                         DirectX::XMVectorGetZ(a.aabb.vertexMin)));
+    z[0] = (std::abs(DirectX::XMVectorGetZ(a.aabb.vertexMax) -
+                     DirectX::XMVectorGetZ(b.aabb.vertexMin)));
+    z[1] = (std::abs(DirectX::XMVectorGetZ(b.aabb.vertexMax) -
+                     DirectX::XMVectorGetZ(a.aabb.vertexMin)));
 
     float minX = std::min(x[0], x[1]), minY = std::min(y[0], y[1]),
           minZ = std::min(z[0], z[1]);
@@ -396,35 +396,36 @@ void ColliderSystem::setup() { graphSystem = registry.system<GraphSystem>(); }
 void ColliderSystem::release() {}
 
 void ColliderSystem::update(float deltaTime) {
-    for (Entity entity : entities) {
-        if (entity.has<BoxCollider>()) {
-            registry.system<ColliderSystem>()->CalculateAABB(
-                entity.get<BoxCollider>().aabb,
-                registry.system<GraphSystem>()->transform(entity));
-        }
+    for (auto entity : entities) {
+        CalculateAABB(entity.get<BoxCollider>().aabb,
+                      graphSystem->transform(entity));
     }
 
-    // Collider Test
-    const auto dt = deltaTime * speed_factor;
-
+    std::set<std::pair<Entity, Entity>> checks;
     for (auto iEntity : entities) {
         for (auto jEntity : entities) {
             if (iEntity.id == jEntity.id) {
                 break;
             }
-            if (!jEntity.has<CheckCollisions>()) {
+            if (!iEntity.has<CheckCollisions>() &&
+                !jEntity.has<CheckCollisions>()) {
                 continue;
             }
 
-            auto iBoxCollider = iEntity.get<BoxCollider>();
-            auto jBoxCollider = jEntity.get<BoxCollider>();
-            if (CheckBoxesCollision(iBoxCollider, jBoxCollider)) {
-                registry.send(OnCollisionEnter{
-                    .a = iEntity,
-                    .b = jEntity,
-                    .minSeparatingVector =
-                        CalculateSeparatingVector(iBoxCollider, jBoxCollider)});
-            }
+            checks.insert({iEntity < jEntity ? iEntity : jEntity,
+                           iEntity < jEntity ? jEntity : iEntity});
+        }
+    }
+
+    for (auto [iEntity, jEntity] : checks) {
+        auto iBoxCollider = iEntity.get<BoxCollider>();
+        auto jBoxCollider = jEntity.get<BoxCollider>();
+        if (CheckBoxesCollision(iBoxCollider, jBoxCollider)) {
+            registry.send(OnCollisionEnter{
+                .a = iEntity,
+                .b = jEntity,
+                .minSeparatingVector =
+                    CalculateSeparatingVector(iBoxCollider, jBoxCollider)});
         }
     }
 }

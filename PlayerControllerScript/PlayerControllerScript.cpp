@@ -322,17 +322,19 @@ void PlayerControllerScript::update(float const deltaTime) {
         /*if (cummulatedVector.y > 0) {
             entity.get<Rigidbody>().velocity = 0.0f;
         }*/
-        entity.get<Transform>().position +=
-            cummulatedVector / cummulatedCounter;
+        entity.get<Transform>().position -=
+            cummulatedVector * 1.0f / cummulatedCounter;
         cummulatedVector = {0.0f, 0.0f, 0.0f};
         cummulatedCounter = 0.0f;
     }
 
-    if (entity.get<Transform>().position.y < 0.0f) {
-        entity.get<Transform>().position.y = 0.0f;
-    }
+    // if (entity.get<Transform>().position.y < 0.0f) {
+    //     entity.get<Transform>().position.y = 0.0f;
+    // }
 
-    entity.get<Transform>().position += (currentVelocity * deltaTime);
+    else {
+        entity.get<Transform>().position += (currentVelocity * deltaTime);
+    }
 
     // Update torch position
     // torch.transform.position = new Vector3(
