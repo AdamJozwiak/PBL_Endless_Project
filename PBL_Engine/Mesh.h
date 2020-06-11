@@ -100,6 +100,7 @@ class Model {
     std::vector<DirectX::XMFLOAT3> verticesForCollision;
     std::vector<std::shared_ptr<Texture>> textures;
     float parallaxHeight;
+    Skybox* modelSkybox;
 
   private:
     std::shared_ptr<Mesh> ParseMesh(

@@ -64,6 +64,15 @@ Mesh::Mesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs,
     } properties{.parallaxHeight = parent.parallaxHeight};
     AddBind(
         std::make_unique<PixelConstantBuffer<Properties>>(gfx, properties, 9u));
+
+    if (parent.modelSkybox) {
+        struct SkyboxAnimation {
+            float animationSpeed;
+            float padding[3];
+        } speed{.animationSpeed = parent.modelSkybox->animationSpeed};
+        AddBind(std::make_unique<PixelConstantBuffer<SkyboxAnimation>>(
+            gfx, speed, 8u));
+    }
 }
 
 void Mesh::Draw(
@@ -307,7 +316,9 @@ std::shared_ptr<Model> Model::create(Graphics& gfx, const std::string fileName,
 
 Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
              Skybox* skybox, float* animationTime)
-    : pWindow(std::make_unique<ModelWindow>()), animationTime(animationTime) {
+    : pWindow(std::make_unique<ModelWindow>()),
+      animationTime(animationTime),
+      modelSkybox(skybox) {
     importer = std::make_unique<Assimp::Importer>();
     const auto pScene = importer->ReadFile(
         fileName.c_str(),
@@ -396,19 +407,25 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
 
         // Load the cubemap
         std::vector<std::unique_ptr<SurfaceReference>> cubeMapFaces(6);
-        std::string facesPath = "Assets\\Unity\\Textures\\Skybox Waterfall\\";
+        std::string defaultSkybox =
+            "Assets\\Unity\\Textures\\Skybox Waterfall\\";
         cubeMapFaces[0] = std::make_unique<SurfaceReference>(Surface::FromFile(
-            skybox ? skybox->material.leftPath : facesPath + "left.png"));
+            skybox ? skybox->material.leftPath : defaultSkybox + "left.png"));
         cubeMapFaces[1] = std::make_unique<SurfaceReference>(Surface::FromFile(
-            skybox ? skybox->material.rightPath : facesPath + "right.png"));
+            skybox ? skybox->material.rightPath : defaultSkybox + "right.png"));
         cubeMapFaces[2] = std::make_unique<SurfaceReference>(Surface::FromFile(
-            skybox ? skybox->material.backPath : facesPath + "back.png"));
+            skybox ? skybox->material.backPath : defaultSkybox + "back.png"));
         cubeMapFaces[3] = std::make_unique<SurfaceReference>(Surface::FromFile(
-            skybox ? skybox->material.frontPath : facesPath + "front.png"));
-        cubeMapFaces[4] = std::make_unique<SurfaceReference>(Surface::FromFile(
-            skybox ? skybox->material.bottomPath : facesPath + "bottom.png"));
+            skybox ? skybox->material.frontPath : defaultSkybox + "front.png"));
+        cubeMapFaces[4] = std::make_unique<SurfaceReference>(
+            Surface::FromFile(skybox ? skybox->material.bottomPath
+                                     : defaultSkybox + "bottom.png"));
         cubeMapFaces[5] = std::make_unique<SurfaceReference>(Surface::FromFile(
-            skybox ? skybox->material.topPath : facesPath + "top.png"));
+            skybox ? skybox->material.topPath : defaultSkybox + "top.png"));
+
+        if (skybox) {
+            modelSkybox->animationSpeed = skybox->animationSpeed;
+        }
 
         std::vector<SurfaceReference*> cubeMap(6);
         for (size_t i = 0; i < cubeMapFaces.size(); ++i) {
