@@ -152,17 +152,17 @@ PixelShaderOutput main(PixelShaderInput input) {
                                        normalize(input.normalWorld)));
 
     // Calculate additional cubemap rotation
-    // float theta = 0.2f * input.positionWorld.x;
-    // float3x3 rotationMatrix = float3x3(
-    //     float3(cos(theta), -sin(theta), 0.0f),
-    //     float3(sin(theta), cos(theta), 0.0f),
-    //     float3(0.0f, 0.0f, 1.0f));
+    float theta = 0.2f * input.positionWorld.x;
+    float3x3 rotationMatrix = float3x3(
+        float3(cos(theta), -sin(theta), 0.0f),
+        float3(sin(theta), cos(theta), 0.0f),
+        float3(0.0f, 0.0f, 1.0f));
 
     // Calculate the refraction
     float3 refractionDirection =
         normalize(input.positionWorld - viewPositionWorld);
 
-    // refractionDirection = normalize(mul(refractionDirection, rotationMatrix));
+    refractionDirection = normalize(mul(refractionDirection, rotationMatrix));
 
     float3 refractionCoord = refract(
         refractionDirection, normalize(lerp(normal, input.normalWorld, 0.8f)),
