@@ -12,7 +12,9 @@ void PhysicsSystem::filters() { filter<Active>().filter<Rigidbody>(); }
 
 void PhysicsSystem::setup() {
     gravityFactor = 9.81f;
-    maxVelocity = -1000.0f;
+    secondsToAchieveMaxVelocity = 0.5f;
+    maxVelocity = secondsToAchieveMaxVelocity * (-gravityFactor);
+    movementFactor = 4.0f;
 }
 
 void PhysicsSystem::update(float deltaTime) {
@@ -30,12 +32,11 @@ void PhysicsSystem::update(float deltaTime) {
 void PhysicsSystem::release() {}
 
 void PhysicsSystem::gravity(Entity& entity, float deltaTime) {
-    if (entity.get<Rigidbody>().velocity < maxVelocity * deltaTime) {
-        entity.get<Rigidbody>().velocity = maxVelocity * deltaTime;
-    } else {
-        entity.get<Rigidbody>().velocity -= gravityFactor * deltaTime;
+    entity.get<Rigidbody>().velocity -= gravityFactor * deltaTime;
+    if (entity.get<Rigidbody>().velocity < maxVelocity) {
+        entity.get<Rigidbody>().velocity = maxVelocity;
     }
 
     entity.get<Transform>().position.y +=
-        entity.get<Rigidbody>().velocity * deltaTime;
+        movementFactor * entity.get<Rigidbody>().velocity * deltaTime;
 }

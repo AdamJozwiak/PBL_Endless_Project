@@ -22,6 +22,8 @@ ECS_SYSTEM(PhysicsSystem) {
     // ============================================================== Data == //
     float gravityFactor;
     float maxVelocity;
+    float secondsToAchieveMaxVelocity;
+    float movementFactor;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
