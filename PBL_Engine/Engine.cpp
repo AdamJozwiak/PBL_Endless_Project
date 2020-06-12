@@ -24,10 +24,11 @@ Engine::Engine()
           registry.system<PropertySystem>(), registry.system<PhysicsSystem>()},
       updateSystems{
           registry.system<WindowSystem>(),   registry.system<SceneSystem>(),
-          registry.system<GraphSystem>(),    registry.system<SoundSystem>(),
-          registry.system<ColliderSystem>(), registry.system<BehaviourSystem>(),
-          registry.system<PropertySystem>(), registry.system<AnimatorSystem>(),
-          registry.system<RenderSystem>(),   registry.system<PhysicsSystem>()},
+          registry.system<SoundSystem>(),    registry.system<BehaviourSystem>(),
+          registry.system<PhysicsSystem>(),  registry.system<GraphSystem>(),
+          registry.system<ColliderSystem>(), registry.system<PropertySystem>(),
+          registry.system<AnimatorSystem>(), registry.system<RenderSystem>(),
+      },
       releaseSystems{
           registry.system<WindowSystem>(),   registry.system<GraphSystem>(),
           registry.system<AnimatorSystem>(), registry.system<RenderSystem>(),
