@@ -5,8 +5,8 @@
 
 #include <memory>
 
-#include "ECS/Entity.hpp"
 #include "Components/Components.hpp"
+#include "ECS/Entity.hpp"
 #include "Events/OnCollisionEnter.hpp"
 #include "PlayerControllerScriptAPI.hpp"
 #include "Script.hpp"
