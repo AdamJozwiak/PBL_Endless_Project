@@ -39,7 +39,7 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     bool (*isKeyPressed)(int const key);
 
     float movementAcceleration = 40.0f;
-    float runSpeed = 5.0f;
+    float runSpeed = 7.5f;
 
     DirectX::XMFLOAT3 currentVelocity = {0.0f, 0.0f, 0.0f};
     int currentLane = 0;
