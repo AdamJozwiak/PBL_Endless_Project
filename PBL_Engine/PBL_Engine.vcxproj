@@ -170,6 +170,7 @@
     <ClInclude Include="CPlane.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Cylinder.h" />
+    <ClInclude Include="easings.hpp" />
     <ClInclude Include="EngineAPI.hpp" />
     <ClInclude Include="dxerr.h" />
     <ClInclude Include="DxgiInfoManager.h" />

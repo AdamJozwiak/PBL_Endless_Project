@@ -1133,6 +1133,9 @@
     <ClInclude Include="Systems\AnimatorSystem.hpp">
       <Filter>Pliki nagłówkowe\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="easings.hpp">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXTrace.inl">
