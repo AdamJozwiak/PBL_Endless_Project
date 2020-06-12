@@ -1,3 +1,6 @@
+// ////////////////////////////////////////////////////////////////// Defines //
+#define _USE_MATH_DEFINES
+
 // ///////////////////////////////////////////////////////////////// Includes //
 #include "PlayerControllerScript.hpp"
 
@@ -5,6 +8,7 @@
 #include "ECS/ECS.hpp"
 #include "Systems/Systems.hpp"
 #include "Window.h"
+#include "easings.hpp"
 
 // //////////////////////////////////////////////////////////////// Utilities //
 DirectX::XMFLOAT3 operator+(DirectX::XMFLOAT3 const& a,
@@ -273,6 +277,14 @@ void PlayerControllerScript::update(float const deltaTime) {
                          // + 1.0f, 0.5f, 1.5f);
     // moveInput.y = -Input.GetAxisRaw("Horizontal");
     moveInput.z = currentLane * laneWidth - entity.get<Transform>().position.z;
+
+    // Rotate slightly when changing the lane
+    entity.get<Transform>().euler.y = interpolate(
+        easeOutSine, entity.get<Transform>().euler.y,
+        (moveInput.z > 0.0f ? -1.0f : 1.0f) *
+            std::min(35.0f * DirectX::XMConvertToRadians(std::abs(moveInput.z)),
+                     DirectX::XMConvertToRadians(30.0f)),
+        0.004f, deltaTime);
 
     if (currentForm == humanForm) {
         moveInput.y = 0.0f;

@@ -210,10 +210,14 @@ DirectX::XMMATRIX GraphSystem::matrix(Transform const& transform) {
     // Scaling
     result *= dx::XMMatrixScaling(transform.scale.x, transform.scale.y,
                                   transform.scale.z);
-    // Rotation
+    // Rotation (Unity)
     if (angle) {
         result *= dx::XMMatrixRotationAxis(axis, angle);
     }
+
+    // Rotation (game)
+    result *= dx::XMMatrixRotationRollPitchYaw(
+        transform.euler.x, transform.euler.y, transform.euler.z);
 
     // Translation
     result *= dx::XMMatrixTranslation(
