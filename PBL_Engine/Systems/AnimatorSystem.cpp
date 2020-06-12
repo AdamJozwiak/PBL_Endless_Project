@@ -10,8 +10,8 @@
 void AnimatorSystem::filters() { filter<Active>().filter<Animator>(); }
 
 void AnimatorSystem::setup() {
-    factors.insert({"Human Form", 24.0f});
-    factors.insert({"Eagle Form", 48.0f});
+    factors.insert({"Human Form", 30.0f});
+    factors.insert({"Eagle Form", 54.0f});
 }
 
 void AnimatorSystem::update(float deltaTime) {
