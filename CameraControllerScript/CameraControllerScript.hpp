@@ -31,7 +31,7 @@ class CAMERACONTROLLERSCRIPT_API CameraControllerScript : public Script {
     bool (*isKeyPressed)(int const key);
 
     EntityId playerId;
-    float smoothing = 4.0f;
+    float smoothing = 0.2f;
     DirectX::XMFLOAT3 offset = {0.0f, 0.0f, 0.0f};
     DirectX::XMFLOAT3 lastPosition = {0.0f, 0.0f, 0.0f};
     // Entity cameraTarget;

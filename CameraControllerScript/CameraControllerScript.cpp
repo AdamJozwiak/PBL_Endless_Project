@@ -1,3 +1,6 @@
+// ////////////////////////////////////////////////////////////////// Defines //
+#define _USE_MATH_DEFINES
+
 // ///////////////////////////////////////////////////////////////// Includes //
 #include "CameraControllerScript.hpp"
 
@@ -5,6 +8,7 @@
 #include "ECS/ECS.hpp"
 #include "Systems/Systems.hpp"
 #include "Window.h"
+#include "easings.hpp"
 
 // //////////////////////////////////////////////////////////////// Utilities //
 DirectX::XMFLOAT3 operator-(DirectX::XMFLOAT3 const& a,
@@ -46,12 +50,15 @@ void CameraControllerScript::update(float const deltaTime) {
     auto const& playerTransform = Entity(playerId).get<Transform>();
 
     entity.get<Transform>().position = DirectX::XMFLOAT3{
-        std::lerp(lastPosition.x, playerTransform.position.x + offset.x,
-                  smoothing * deltaTime),
-        std::lerp(lastPosition.y, playerTransform.position.y * 0.75f + offset.y,
-                  smoothing * deltaTime),
-        std::lerp(lastPosition.z, playerTransform.position.z + offset.z,
-                  smoothing * deltaTime)};
+        interpolate(easeOutQuad, lastPosition.x,
+                    playerTransform.position.x + offset.x, smoothing,
+                    deltaTime),
+        interpolate(easeOutQuad, lastPosition.y,
+                    playerTransform.position.y * 0.75f + offset.y, smoothing,
+                    deltaTime),
+        interpolate(easeOutQuad, lastPosition.z,
+                    playerTransform.position.z + offset.z, smoothing,
+                    deltaTime)};
 
     //! This line was in late update, may not work
     lastPosition = entity.get<Transform>().position;
