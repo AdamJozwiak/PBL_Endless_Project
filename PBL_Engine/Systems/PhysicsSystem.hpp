@@ -16,7 +16,7 @@ ECS_SYSTEM(PhysicsSystem) {
     void release() override;
 
     // ------------------------------------------------------ Functions -- == //
-    void gravity(Entity& entity, float deltaTime);
+    void gravity(Entity & entity, float deltaTime);
 
   protected:
     // ============================================================== Data == //
