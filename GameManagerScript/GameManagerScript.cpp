@@ -232,6 +232,11 @@ void GameManagerScript::handleChunkSpawning() {
             it.get<Transform>().position.x += generatedLengthInWorldUnits;
         }
 
+        // Fix the adjacent box colliders problem by spawning the next chunk
+        // slightly lower
+        static int spawnedChunks = 0;
+        chunk.get<Transform>().position.y = -0.1f * ++spawnedChunks;
+
         // Spawn the enemies
         spawnBishops(50);
         spawnRooks(50, false);
