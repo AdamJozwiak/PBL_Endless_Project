@@ -351,21 +351,21 @@ bool ColliderSystem::CheckSpheresCollision(
 
 DirectX::XMFLOAT3 ColliderSystem::CalculateSeparatingVector(
     BoxCollider const& a, BoxCollider const& b) {
-    std::vector<float> x, y, z;
-    x.push_back(std::abs(DirectX::XMVectorGetX(a.aabb.vertexMax) -
-                         DirectX::XMVectorGetX(b.aabb.vertexMin)));
-    x.push_back(std::abs(DirectX::XMVectorGetX(b.aabb.vertexMax) -
-                         DirectX::XMVectorGetX(a.aabb.vertexMin)));
+    std::array<float, 2> x, y, z;
+    x[0] = (std::abs(DirectX::XMVectorGetX(a.aabb.vertexMax) -
+                     DirectX::XMVectorGetX(b.aabb.vertexMin)));
+    x[1] = (std::abs(DirectX::XMVectorGetX(b.aabb.vertexMax) -
+                     DirectX::XMVectorGetX(a.aabb.vertexMin)));
 
-    y.push_back(std::abs(DirectX::XMVectorGetY(a.aabb.vertexMax) -
-                         DirectX::XMVectorGetY(b.aabb.vertexMin)));
-    y.push_back(std::abs(DirectX::XMVectorGetY(b.aabb.vertexMax) -
-                         DirectX::XMVectorGetY(a.aabb.vertexMin)));
+    y[0] = (std::abs(DirectX::XMVectorGetY(a.aabb.vertexMax) -
+                     DirectX::XMVectorGetY(b.aabb.vertexMin)));
+    y[1] = (std::abs(DirectX::XMVectorGetY(b.aabb.vertexMax) -
+                     DirectX::XMVectorGetY(a.aabb.vertexMin)));
 
-    z.push_back(std::abs(DirectX::XMVectorGetZ(a.aabb.vertexMax) -
-                         DirectX::XMVectorGetZ(b.aabb.vertexMin)));
-    z.push_back(std::abs(DirectX::XMVectorGetZ(b.aabb.vertexMax) -
-                         DirectX::XMVectorGetZ(a.aabb.vertexMin)));
+    z[0] = (std::abs(DirectX::XMVectorGetZ(a.aabb.vertexMax) -
+                     DirectX::XMVectorGetZ(b.aabb.vertexMin)));
+    z[1] = (std::abs(DirectX::XMVectorGetZ(b.aabb.vertexMax) -
+                     DirectX::XMVectorGetZ(a.aabb.vertexMin)));
 
     float minX = std::min(x[0], x[1]), minY = std::min(y[0], y[1]),
           minZ = std::min(z[0], z[1]);
