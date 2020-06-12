@@ -218,6 +218,7 @@ void PlayerControllerScript::update(float const deltaTime) {
                 changeForm(humanForm);
                 if (!entity.has<Rigidbody>()) {
                     entity.add<Rigidbody>(rb);
+                    entity.get<Rigidbody>().velocity = 0.0f;
                 }
             }
         } else {
