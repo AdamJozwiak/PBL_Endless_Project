@@ -58,7 +58,7 @@ void RenderSystem::setup() {
     sphere = std::make_unique<SolidSphere>(window->Gfx(), 1.0f);
     billboard = std::make_unique<Billboard>(window->Gfx(), mainCamera.get());
     fireParticle =
-        std::make_unique<FireParticle>(window->Gfx(), mainCamera.get());
+        std::make_unique<FireParticle>(window->Gfx(), mainCamera.get(), EnemyType::pawn);
     light = new PointLight(window->Gfx(), 0);
     light2 = new PointLight(window->Gfx(), 1);
     bloom = std::make_unique<PostProcessing>(window->Gfx(), L"Bloom", 2);
