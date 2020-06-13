@@ -1270,6 +1270,9 @@
     <FxCompile Include="AnimatedRefractiveVS.hlsl">
       <Filter>Shader\Refractive</Filter>
     </FxCompile>
+    <FxCompile Include="EnemyPS.hlsl">
+      <Filter>Shader\Billboarding</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="yaml-cpp\src\contrib\yaml-cpp.natvis">
