@@ -13,6 +13,19 @@
 #include "Systems/GraphSystem.hpp"
 #include "Systems/RenderSystem.hpp"
 
+DirectX::XMFLOAT3& operator-=(DirectX::XMFLOAT3& a,
+                              DirectX::XMFLOAT3 const& b) {
+    a.x -= b.x;
+    a.y -= b.y;
+    a.z -= b.z;
+    return a;
+}
+
+DirectX::XMFLOAT3 operator/(DirectX::XMFLOAT3 const& a,
+                            DirectX::XMFLOAT3 const& b) {
+    return {a.x / b.x, a.y / b.y, a.z / b.z};
+}
+
 // /////////////////////////////////////////////////////////////////// System //
 // ============================================================= Behaviour == //
 AABB ColliderSystem::AddAABB(
@@ -396,35 +409,58 @@ void ColliderSystem::setup() { graphSystem = registry.system<GraphSystem>(); }
 void ColliderSystem::release() {}
 
 void ColliderSystem::update(float deltaTime) {
-    for (Entity entity : entities) {
-        if (entity.has<BoxCollider>()) {
-            registry.system<ColliderSystem>()->CalculateAABB(
-                entity.get<BoxCollider>().aabb,
-                registry.system<GraphSystem>()->transform(entity));
-        }
+    for (auto entity : entities) {
+        auto& boxCollider = entity.get<BoxCollider>();
+
+        CalculateAABB(boxCollider.aabb, graphSystem->transform(entity));
+
+        boxCollider.separatingVectorSum = {0.0f, 0.0f, 0.0f};
+        boxCollider.numberOfCollisions = {0.0f, 0.0f, 0.0f};
     }
 
-    // Collider Test
-    const auto dt = deltaTime * speed_factor;
-
+    std::set<std::pair<Entity, Entity>> checks;
     for (auto iEntity : entities) {
         for (auto jEntity : entities) {
             if (iEntity.id == jEntity.id) {
                 break;
             }
-            if (!jEntity.has<CheckCollisions>()) {
+            if (!iEntity.has<CheckCollisions>() &&
+                !jEntity.has<CheckCollisions>()) {
                 continue;
             }
 
-            auto iBoxCollider = iEntity.get<BoxCollider>();
-            auto jBoxCollider = jEntity.get<BoxCollider>();
-            if (CheckBoxesCollision(iBoxCollider, jBoxCollider)) {
-                registry.send(OnCollisionEnter{
-                    .a = iEntity,
-                    .b = jEntity,
-                    .minSeparatingVector =
-                        CalculateSeparatingVector(iBoxCollider, jBoxCollider)});
-            }
+            checks.insert({iEntity < jEntity ? iEntity : jEntity,
+                           iEntity < jEntity ? jEntity : iEntity});
         }
+    }
+
+    for (auto [iEntity, jEntity] : checks) {
+        auto iBoxCollider = iEntity.get<BoxCollider>();
+        auto jBoxCollider = jEntity.get<BoxCollider>();
+        if (CheckBoxesCollision(iBoxCollider, jBoxCollider)) {
+            registry.send(OnCollisionEnter{
+                .a = iEntity,
+                .b = jEntity,
+                .minSeparatingVector =
+                    CalculateSeparatingVector(iBoxCollider, jBoxCollider)});
+        }
+    }
+
+    for (auto entity : entities) {
+        auto& boxCollider = entity.get<BoxCollider>();
+        auto& transform = entity.get<Transform>();
+
+        if (boxCollider.numberOfCollisions.x == 0.0f) {
+            boxCollider.numberOfCollisions.x = 1.0f;
+        }
+        if (boxCollider.numberOfCollisions.y == 0.0f) {
+            boxCollider.numberOfCollisions.y = 1.0f;
+        }
+        if (boxCollider.numberOfCollisions.z == 0.0f) {
+            boxCollider.numberOfCollisions.z = 1.0f;
+        }
+
+        transform.position -=
+            boxCollider.separatingVectorSum / boxCollider.numberOfCollisions;
     }
 }

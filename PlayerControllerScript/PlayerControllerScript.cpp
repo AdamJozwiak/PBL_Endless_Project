@@ -343,21 +343,6 @@ void PlayerControllerScript::update(float const deltaTime) {
     /* currentVelocity.y = std::lerp(currentVelocity.y, 0.0f, 0.5f); */
     /* currentVelocity.z = std::lerp(currentVelocity.z, 0.0f, 0.5f); */
 
-    // Update player's position
-    if (cummulatedCounter != 0) {
-        /*if (cummulatedVector.y > 0) {
-            entity.get<Rigidbody>().velocity = 0.0f;
-        }*/
-        entity.get<Transform>().position +=
-            cummulatedVector / cummulatedCounter;
-        cummulatedVector = {0.0f, 0.0f, 0.0f};
-        cummulatedCounter = 0.0f;
-    }
-
-    if (entity.get<Transform>().position.y < 0.0f) {
-        entity.get<Transform>().position.y = 0.0f;
-    }
-
     entity.get<Transform>().position += (currentVelocity * deltaTime);
 
     // Update torch position
@@ -397,8 +382,28 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
         } else if (otherTag == "Boundary") {
             return;
         } else {
-            cummulatedCounter++;
-            cummulatedVector += event.minSeparatingVector;
+            auto& boxCollider = entity.get<BoxCollider>();
+            boxCollider.separatingVectorSum += event.minSeparatingVector;
+
+            if (std::abs(event.minSeparatingVector.x) > 0.0f) {
+                boxCollider.numberOfCollisions.x++;
+            }
+            if (std::abs(event.minSeparatingVector.y) > 0.0f) {
+                boxCollider.numberOfCollisions.y++;
+                if (entity.has<Rigidbody>()) {
+                    entity.get<Rigidbody>().velocity = 0.0f;
+                }
+            }
+            if (std::abs(event.minSeparatingVector.z) > 0.0f) {
+                boxCollider.numberOfCollisions.z++;
+            }
+
+            // Possible solution to the adjacent box colliders problem
+            // if (boxCollider.numberOfCollisions.x > 1 &&
+            //     event.minSeparatingVector.x > 0.0f) {
+            //     entity.get<Transform>().position.x +=
+            //         std::abs(event.minSeparatingVector.x) * 0.5f;
+            // }
         }
     }
 }

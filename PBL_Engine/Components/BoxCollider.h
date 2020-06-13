@@ -8,7 +8,7 @@
 
 // //////////////////////////////////////////////////////////////// Component //
 ECS_COMPONENT(BoxCollider) {
-    DirectX::XMFLOAT3 size, center;
+    DirectX::XMFLOAT3 size, center, separatingVectorSum, numberOfCollisions;
     AABB aabb;
 };
 
