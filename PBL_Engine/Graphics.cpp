@@ -114,7 +114,7 @@ void Graphics::EndFrame() {
 #ifndef NDEBUG
     infoManager.Set();
 #endif
-    if (FAILED(hr = pSwap->Present(0u, 0u)))  // 60 fps, 30 would be 2u
+    if (FAILED(hr = pSwap->Present(1u, 0u)))  // 60 fps, 30 would be 2u
     {
         if (hr == DXGI_ERROR_DEVICE_REMOVED) {
             throw GFX_DEVICE_REMOVED_EXCEPT(pDevice->GetDeviceRemovedReason());
