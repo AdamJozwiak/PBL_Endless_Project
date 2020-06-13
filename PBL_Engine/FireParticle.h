@@ -6,9 +6,11 @@
 #include "Sampler.h"
 #include "Surface.h"
 
+enum EnemyType { none = 0, pawn, rook, bishop };
+
 class FireParticle : public RenderableBase<FireParticle> {
   public:
-    FireParticle(Graphics& gfx, Camera* camera) {
+    FireParticle(Graphics& gfx, Camera* camera, EnemyType enemyType = none) {
         namespace dx = DirectX;
         if (!IsStaticInitialized()) {
             struct Vertex {
@@ -27,24 +29,6 @@ class FireParticle : public RenderableBase<FireParticle> {
             vertices.push_back(model.pos);
             indices.push_back(1);
 
-            AddStaticBind(std::make_unique<Texture>(
-                gfx,
-                std::ref(Surface::FromFile("Assets/Graphics/fire-albedo.png")),
-                0));
-            AddStaticBind(std::make_unique<Texture>(
-                gfx,
-                std::ref(Surface::FromFile("Assets/Graphics/fire-noise.png")),
-                1));
-            AddStaticBind(std::make_unique<Texture>(
-                gfx,
-                std::ref(
-                    Surface::FromFile("Assets/Graphics/fire-gradient.png")),
-                2));
-            AddStaticBind(std::make_unique<Texture>(
-                gfx,
-                std::ref(Surface::FromFile("Assets/Graphics/fire-mask.png")),
-                3));
-
             AddStaticBind(std::make_unique<VertexBuffer>(gfx, vertices));
 
             AddStaticBind(std::make_unique<Sampler>(gfx));
@@ -55,9 +39,6 @@ class FireParticle : public RenderableBase<FireParticle> {
 
             AddStaticBind(
                 std::make_unique<GeometryShader>(gfx, L"FireEffectGS.cso"));
-
-            AddStaticBind(
-                std::make_unique<PixelShader>(gfx, L"FireEffectPS.cso"));
 
             AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, indices));
 
@@ -71,12 +52,73 @@ class FireParticle : public RenderableBase<FireParticle> {
 
             AddStaticBind(std::make_unique<Topology>(
                 gfx, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST));
+
+            AddStaticBind(std::make_unique<Blender>(gfx, true));
         } else {
             SetIndexFromStatic();
         }
 
-        auto texture = Texture(
-            gfx, std::ref(Surface::FromFile("Assets/Graphics/red.png")));
+        if (enemyType == none) {
+            AddBind(std::make_unique<PixelShader>(gfx, L"FireEffectPS.cso"));
+
+            AddBind(std::make_unique<Texture>(
+                gfx,
+                std::ref(Surface::FromFile(assetsPath + "fire-albedo.png")),
+                0));
+            AddBind(std::make_unique<Texture>(
+                gfx, std::ref(Surface::FromFile(assetsPath + "fire-noise.png")),
+                1));
+            AddBind(std::make_unique<Texture>(
+                gfx,
+                std::ref(Surface::FromFile(assetsPath + "fire-gradient.png")),
+                2));
+            AddBind(std::make_unique<Texture>(
+                gfx, std::ref(Surface::FromFile(assetsPath + "fire-mask.png")),
+                3));
+        } else {
+            scale = 0.08f;
+
+            AddBind(std::make_unique<PixelShader>(gfx, L"EnemyPS.cso"));
+
+            AddBind(std::make_unique<Texture>(
+                gfx,
+                std::ref(Surface::FromFile(assetsPath + "enemy-noise.png")),
+                1));
+            AddBind(std::make_unique<Texture>(
+                gfx,
+                std::ref(Surface::FromFile(assetsPath + "fire-gradient.png")),
+                2));
+            AddBind(std::make_unique<Texture>(
+                gfx, std::ref(Surface::FromFile(assetsPath + "enemy-mask.png")),
+                3));
+
+            switch (enemyType) {
+                case pawn:
+                    AddBind(std::make_unique<Texture>(
+                        gfx,
+                        std::ref(
+                            Surface::FromFile(assetsPath + "enemy-albedo.png")),
+                        0));
+                    break;
+                case rook:
+                    AddBind(std::make_unique<Texture>(
+                        gfx,
+                        std::ref(
+                            Surface::FromFile(assetsPath + "enemy-albedo1.png")),
+                        0));
+                    break;
+                case bishop:
+                    AddBind(std::make_unique<Texture>(
+                        gfx,
+                        std::ref(Surface::FromFile(assetsPath +
+                                                   "enemy-albedo2.png")),
+                        0));
+                    break;
+            }
+        }
+
+        auto texture =
+            Texture(gfx, std::ref(Surface::FromFile(assetsPath + "red.png")));
 
         auto geoCbuf = GeometryCbuf(gfx, *this, camera);
         geoCbuf.SetTextureWidth(texture.GetTextureWidth());
@@ -87,8 +129,6 @@ class FireParticle : public RenderableBase<FireParticle> {
         AddBind(std::make_unique<GeometryCbuf>(geoCbuf));
 
         AddBind(std::make_unique<TimerCbuf>(gfx, *this));
-
-        AddBind(std::make_unique<Blender>(gfx, true));
     }
 
     void Update(float dt) noexcept {}
@@ -101,4 +141,7 @@ class FireParticle : public RenderableBase<FireParticle> {
   public:
     float scale = 0.05f;
     DirectX::XMFLOAT4 pos = {0.0f, 0.0f, 0.0f, 0.0f};
+
+  private:
+    const std::string assetsPath = "Assets/Graphics/";
 };
