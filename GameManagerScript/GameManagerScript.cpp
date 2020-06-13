@@ -128,6 +128,8 @@ void GameManagerScript::spawnTorches() {
         if (!it.has<Light>()) {
             it.add<Light>({.pointLight = std::make_shared<PointLight>(
                                registry.system<WindowSystem>()->gfx())});
+        }
+        if (!it.has<Flame>()) {
             it.add<Flame>({.fireParticle = std::make_shared<FireParticle>(
                                registry.system<WindowSystem>()->gfx(),
                                Registry::instance()
