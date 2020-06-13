@@ -28,6 +28,7 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     // void changeToHuman() { changeForm(humanForm); }
     void changeForm(EntityId const &newForm);
     void resetTorchLight();
+    void transitionForms(float deltaTime);
 
     bool canChangeForm;
     bool inputLaneUp, inputLaneDown;
@@ -40,6 +41,9 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
 
     float movementAcceleration = 40.0f;
     float runSpeed = 7.5f;
+
+    DirectX::XMFLOAT3 originalScaleWolf, originalScaleEagle;
+    float originalOffsetWolf, originalOffsetEagle;
 
     DirectX::XMFLOAT3 currentVelocity = {0.0f, 0.0f, 0.0f};
     int currentLane = 0;

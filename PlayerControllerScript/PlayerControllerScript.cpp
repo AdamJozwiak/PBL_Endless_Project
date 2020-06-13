@@ -106,6 +106,17 @@ void PlayerControllerScript::setup() {
                   .id;
     currentForm = humanForm;
 
+    // Activate all forms
+    Entity(humanForm).get<Properties>().active = true;
+    Entity(eagleForm).get<Properties>().active = true;
+
+    originalScaleWolf = Entity(humanForm).get<Transform>().scale;
+    originalScaleEagle = Entity(eagleForm).get<Transform>().scale;
+    originalOffsetWolf = entity.get<Transform>().position.y -
+                         Entity(humanForm).get<Transform>().position.y;
+    originalOffsetEagle = entity.get<Transform>().position.y -
+                          Entity(eagleForm).get<Transform>().position.y;
+
     entity.add<CheckCollisions>({});
     Entity(eagleForm).add<CheckCollisions>({});
     Entity(humanForm).add<CheckCollisions>({});
@@ -273,6 +284,8 @@ void PlayerControllerScript::update(float const deltaTime) {
         }
     }
 
+    transitionForms(deltaTime);
+
     // Move only in lane increments
     moveInput.x = 1.0f;  // Mathf.Clamp(Input.GetAxisRaw("Horizontal")
                          // + 1.0f, 0.5f, 1.5f);
@@ -402,15 +415,53 @@ void PlayerControllerScript::changeForm(EntityId const& newForm) {
     // Change form
     EntityId previousForm = currentForm;
     currentForm = newForm;
-
-    // Activate appropriate forms
-    Entity(previousForm).get<Properties>().active = false;
-    Entity(newForm).get<Properties>().active = true;
 }
 
 void PlayerControllerScript::resetTorchLight() {
     // torchLight.range = 20;
     // torchLight.intensity = 4;
+}
+
+void PlayerControllerScript::transitionForms(float const deltaTime) {
+    auto& currentTransform = Entity(currentForm).get<Transform>();
+    auto& otherTransform =
+        Entity(currentForm == eagleForm ? humanForm : eagleForm)
+            .get<Transform>();
+
+    // Upscale the current form
+    constexpr float UPSCALE_SMOOTHING = 0.1f;
+    currentTransform.scale.x = interpolate(
+        easeOutQuint, currentTransform.scale.x,
+        currentForm == humanForm ? originalScaleWolf.x : originalScaleEagle.x,
+        UPSCALE_SMOOTHING, deltaTime);
+    currentTransform.scale.y = interpolate(
+        easeOutQuint, currentTransform.scale.y,
+        currentForm == humanForm ? originalScaleWolf.y : originalScaleEagle.y,
+        UPSCALE_SMOOTHING, deltaTime);
+    currentTransform.scale.z = interpolate(
+        easeOutQuint, currentTransform.scale.z,
+        currentForm == humanForm ? originalScaleWolf.z : originalScaleEagle.z,
+        UPSCALE_SMOOTHING, deltaTime);
+
+    // Downscale the other form
+    constexpr float DOWNSCALE_SMOOTHING = 0.1f;
+    otherTransform.scale.x = interpolate(easeOutQuint, otherTransform.scale.x,
+                                         0.0f, DOWNSCALE_SMOOTHING, deltaTime);
+    otherTransform.scale.y = interpolate(easeOutQuint, otherTransform.scale.y,
+                                         0.0f, DOWNSCALE_SMOOTHING, deltaTime);
+    otherTransform.scale.z = interpolate(easeOutQuint, otherTransform.scale.z,
+                                         0.0f, DOWNSCALE_SMOOTHING, deltaTime);
+
+    // Additionally move the wolf when scaling
+    if (currentForm == humanForm) {
+        currentTransform.position.y = interpolate(
+            easeOutQuint, currentTransform.position.y,
+            currentForm == humanForm ? originalOffsetWolf : originalOffsetEagle,
+            0.1f, deltaTime);
+    } else {
+        otherTransform.position.y = interpolate(
+            easeOutQuad, otherTransform.position.y, 2.0f, 0.1f, deltaTime);
+    }
 }
 
 // ////////////////////////////////////////////////////////////////////////// //
