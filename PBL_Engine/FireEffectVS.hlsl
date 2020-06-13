@@ -12,6 +12,7 @@ struct VsIn {
 struct VSOut {
     float4 pos : SV_POSITION;
     float4 worldPos : POSITION;
+    float4 localPos : NORMAL;
     float2 tex : TEXCOORD;
 };
 
@@ -19,6 +20,7 @@ VSOut main(VsIn input) {
     VSOut output;
     output.pos = mul(input.position, mul(model, viewProj));
     output.worldPos = mul(input.position, model);
+    output.localPos = input.position;
     output.tex = input.tex;
     return output;
 }

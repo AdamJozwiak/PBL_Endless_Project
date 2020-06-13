@@ -22,8 +22,7 @@ void LightSystem::update(float deltaTime) {
     for (Entity entity : entities) {
         auto pointLight = entity.get<Light>().pointLight;
         auto localPos = entity.get<Transform>().position;
-        DirectX::XMVECTOR vec =
-            DirectX::XMVectorSet(localPos.x, localPos.y + 1.0f, localPos.z, 0.0f);
+        DirectX::XMVECTOR vec = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
         vec = XMVector3TransformCoord(
             vec, Registry::instance().system<GraphSystem>()->transform(entity));
         auto camera = Registry::instance()

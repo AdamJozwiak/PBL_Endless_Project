@@ -253,11 +253,6 @@ void GameManagerScript::handleChunkSpawning() {
                  "EnemySpawnPoint")) {
             it.get<Transform>().position.x += generatedLengthInWorldUnits;
         }
-        
-        for (auto it : registry.system<PropertySystem>()->findEntityByTag("Torch")) {
-            it.get<Transform>().position.x += generatedLengthInWorldUnits;
-        }
-        
 
         // Fix the adjacent box colliders problem by spawning the next chunk
         // slightly lower

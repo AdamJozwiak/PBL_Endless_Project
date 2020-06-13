@@ -9,6 +9,7 @@ cbuffer CBuf {
 struct VSOut {
     float4 pos : SV_POSITION;
     float4 worldPos : POSITION;
+    float4 localPos : NORMAL;
     float2 tex : TEXCOORD;
 };
 
@@ -30,12 +31,12 @@ struct VSOut {
     // Create the billboards quad
     float3 vert[4];
 
-    vert[0] = input[0].worldPos - rightVector;  // Get bottom left vertex
-    vert[1] = input[0].worldPos + rightVector;  // Get bottom right vertex
+    vert[0] = input[0].localPos - rightVector;  // Get bottom left vertex
+    vert[1] = input[0].localPos + rightVector;  // Get bottom right vertex
     vert[2] =
-        input[0].worldPos - rightVector + upVector;  // Get top left vertex
+        input[0].localPos - rightVector + upVector;  // Get top left vertex
     vert[3] =
-        input[0].worldPos + rightVector + upVector;  // Get top right vertex
+        input[0].localPos + rightVector + upVector;  // Get top right vertex
 
     // Get billboards texture coordinates
     float2 texCoord[4];
@@ -47,7 +48,8 @@ struct VSOut {
     VSOut outputVert;
     for (int i = 0; i < 4; i++) {
         outputVert.pos = mul(float4(vert[i], 1.0f), modelViewProj);
-        outputVert.worldPos = float4(vert[i], 0.0f);
+        outputVert.worldPos = mul(float4(vert[i], 1.0f), model);
+        outputVert.localPos = float4(vert[i], 0.0f);
         outputVert.tex = texCoord[i];
         OutputStream.Append(outputVert);
     }
