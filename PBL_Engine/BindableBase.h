@@ -6,6 +6,7 @@
 #include "IndexBuffer.h"
 #include "InputLayout.h"
 #include "PixelShader.h"
+#include "PostProcessCbuf.h"
 #include "Texture.h"
 #include "TimerCbuf.h"
 #include "Topology.h"

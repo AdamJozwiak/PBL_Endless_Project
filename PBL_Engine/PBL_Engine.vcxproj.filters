@@ -501,6 +501,9 @@
     <ClCompile Include="Systems\LightSystem.cpp">
       <Filter>Pliki źródłowe\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="PostProcessCbuf.cpp">
+      <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -1159,6 +1162,9 @@
     </ClInclude>
     <ClInclude Include="Oscillator.h">
       <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessCbuf.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
