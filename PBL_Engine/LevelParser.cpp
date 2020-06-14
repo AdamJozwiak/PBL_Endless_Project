@@ -661,7 +661,7 @@ void LevelParser::finalizeLoading(
             // Set Skybox animation speed
             if (entity.get<Properties>().tag == "Waterfall" && skybox) {
                 skybox->animationSpeed = 0.0f;
-            } else if(skybox){
+            } else if (skybox) {
                 skybox->animationSpeed = 0.5f;
             }
 

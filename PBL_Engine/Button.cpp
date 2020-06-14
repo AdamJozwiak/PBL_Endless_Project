@@ -37,7 +37,6 @@ void Button::draw(std::string const& text) {
                mousePosition.y > position.y &&
                mousePosition.y < position.y + size.y;
     };
-
     bool const mouse = window.mouse.LeftIsPressed();
 
     // Handle the mouse clicks
