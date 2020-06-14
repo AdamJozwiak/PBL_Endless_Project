@@ -44,6 +44,7 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
 
     float movementAcceleration = 40.0f;
     float runSpeed = 7.5f;
+    float previousAnimSpeed = 0.0f;
 
     DirectX::XMFLOAT3 originalScaleWolf, originalScaleEagle;
     float originalOffsetWolf, originalOffsetEagle;

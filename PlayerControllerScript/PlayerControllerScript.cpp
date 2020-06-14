@@ -294,10 +294,20 @@ void PlayerControllerScript::update(float const deltaTime) {
 
     if (!canChangeForm) {
         // StartCoroutine(trapEntered());
+        if (previousAnimSpeed == 0.0f) {
+            previousAnimSpeed =
+                Entity(currentForm).get<Skybox>().animationSpeed;
+        }
+        
+        Entity(currentForm).get<Skybox>().animationSpeed = 2.0f;
+
         canChangeFormTimer += deltaTime;
         if (canChangeFormTimer >= canChangeFormCooldown) {
             canChangeForm = true;
             canChangeFormTimer = 0.0f;
+            Entity(currentForm).get<Skybox>().animationSpeed =
+                previousAnimSpeed;
+            previousAnimSpeed = 0.0f;
         }
     }
 
