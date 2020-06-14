@@ -153,11 +153,15 @@ void PlayerControllerScript::update(float const deltaTime) {
 
     if (currentForm == eagleForm) {
         if (inputAscendKey) {
-            moveInput.y = 2.0f;
+           // moveInput.y = 2.0f;
+             moveInput.y = interpolate(easeOutSine, moveInput.y,
+                                         1.7f, 0.3f, deltaTime);
         } else if (inputDescendKey) {
-            moveInput.y = -2.0f;
+            moveInput.y = interpolate(easeOutSine, moveInput.y,
+                                         -1.7f, 0.3f, deltaTime);
         } else {
-            moveInput.y = 0.0f;
+             moveInput.y = interpolate(easeOutSine, moveInput.y,
+                                         0.0f, 0.3f, deltaTime);
         }
     } else {
         moveInput.y = 0.0f;
@@ -168,7 +172,8 @@ void PlayerControllerScript::update(float const deltaTime) {
         inputAscendKey = true;
 
         if (currentForm == eagleForm) {
-            moveInput.y = 2.0f;
+           moveInput.y = interpolate(easeOutSine, moveInput.y,
+                                         1.0f, 0.1f, deltaTime);
         } else {
             moveInput.y = 0.0f;
         }
@@ -182,9 +187,10 @@ void PlayerControllerScript::update(float const deltaTime) {
         inputDescendKey = true;
 
         if (currentForm == eagleForm) {
-            moveInput.y = -2.0f;
+            moveInput.y = interpolate(easeOutSine, moveInput.y,
+                                         -1.0f, 0.1f, deltaTime);
         } else {
-            moveInput.y = 0.0f;
+             moveInput.y = 0.0f;
         }
     }
     if (!inputDescend && inputDescendKey) {
