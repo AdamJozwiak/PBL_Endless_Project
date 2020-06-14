@@ -296,7 +296,7 @@ void PlayerControllerScript::update(float const deltaTime) {
     entity.get<Transform>().euler.y = interpolate(
         easeOutSine, entity.get<Transform>().euler.y,
         (moveInput.z > 0.0f ? -1.0f : 1.0f) *
-            std::min(35.0f * DirectX::XMConvertToRadians(std::abs(moveInput.z)),
+            (std::min)(35.0f * DirectX::XMConvertToRadians(std::abs(moveInput.z)),
                      DirectX::XMConvertToRadians(30.0f)),
         0.004f, deltaTime);
 
