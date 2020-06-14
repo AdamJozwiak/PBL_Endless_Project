@@ -513,6 +513,9 @@
     <ClCompile Include="Systems\UIRenderSystem.cpp">
       <Filter>Pliki źródłowe\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="SkyboxCbuf.cpp">
+      <Filter>Pliki źródłowe\Bindable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -1183,6 +1186,9 @@
     </ClInclude>
     <ClInclude Include="Systems\UIRenderSystem.hpp">
       <Filter>Pliki nagłówkowe\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyboxCbuf.h">
+      <Filter>Pliki nagłówkowe\Bindable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

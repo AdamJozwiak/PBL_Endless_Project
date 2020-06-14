@@ -64,6 +64,7 @@
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="Sheet.cpp" />
     <ClCompile Include="SkinnedBox.cpp" />
+    <ClCompile Include="SkyboxCbuf.cpp" />
     <ClCompile Include="SolidSphere.cpp" />
     <ClCompile Include="soloud\src\audiosource\wav\dr_impl.cpp" />
     <ClCompile Include="soloud\src\audiosource\wav\soloud_wav.cpp" />
@@ -243,6 +244,7 @@
     <ClInclude Include="Script.hpp" />
     <ClInclude Include="Sheet.h" />
     <ClInclude Include="SkinnedBox.h" />
+    <ClInclude Include="SkyboxCbuf.h" />
     <ClInclude Include="SolidSphere.h" />
     <ClInclude Include="soloud\include\soloud.h" />
     <ClInclude Include="soloud\include\soloud_audiosource.h" />

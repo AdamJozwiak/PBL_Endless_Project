@@ -7,6 +7,7 @@
 #include "InputLayout.h"
 #include "PixelShader.h"
 #include "PostProcessCbuf.h"
+#include "SkyboxCbuf.h"
 #include "Texture.h"
 #include "TimerCbuf.h"
 #include "Topology.h"
