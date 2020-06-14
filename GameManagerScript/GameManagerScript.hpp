@@ -9,6 +9,7 @@
 #include "GameManagerScriptAPI.hpp"
 #include "Script.hpp"
 #include "EnemyControllerScript.hpp"
+#include "CameraControllerScript.hpp"
 
 class EnemyControllerScript;
 
@@ -28,7 +29,7 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
     // -------------------------------------------------------- Methods -- == //
     void method();
     void updateWaterfallRefraction();
-    void handleChunkSpawning();
+    void handleChunkSpawning(float deltaTime);
 
   private:
     // ============================================================== Data == //
@@ -45,6 +46,9 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
     EntityId playerId;
     std::vector<EntityId> spawnPoints;
     std::shared_ptr<EnemyControllerScript> enemyScript;
+    std::shared_ptr<CameraControllerScript> cameraScript;
+    bool shake = false;
+    float shakeTimer = 0.0f;
 
     // --------------------------------------------------------- Chunks -- == //
     // Types

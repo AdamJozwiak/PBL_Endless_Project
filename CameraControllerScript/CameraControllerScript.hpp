@@ -25,6 +25,7 @@ class CAMERACONTROLLERSCRIPT_API CameraControllerScript : public Script {
 
     // -------------------------------------------------------- Methods -- == //
     void setPosition();  //? May not be useful?
+    void shake(float deltaTime);
 
   private:
     // ============================================================== Data == //
@@ -32,6 +33,7 @@ class CAMERACONTROLLERSCRIPT_API CameraControllerScript : public Script {
 
     EntityId playerId;
     float smoothing = 0.2f;
+    DirectX::XMFLOAT3 shakeOffset;
     DirectX::XMFLOAT3 offset = {0.0f, 0.0f, 0.0f};
     DirectX::XMFLOAT3 lastPosition = {0.0f, 0.0f, 0.0f};
     // Entity cameraTarget;

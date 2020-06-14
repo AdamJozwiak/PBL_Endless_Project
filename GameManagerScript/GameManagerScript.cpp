@@ -112,7 +112,7 @@ void GameManagerScript::setup() {
 };
 
 void GameManagerScript::update(float const deltaTime) {
-    handleChunkSpawning();
+    handleChunkSpawning(deltaTime);
 };
 
 // ------------------------------------------------------------- Events -- == //
@@ -221,7 +221,7 @@ void GameManagerScript::updateWaterfallRefraction() {
     }
 }
 
-void GameManagerScript::handleChunkSpawning() {
+void GameManagerScript::handleChunkSpawning(float deltaTime) {
     auto const& playerPositionInWorldUnits =
         Entity(playerId).get<Transform>().position.x;
     auto const& generatedLengthInWorldUnits =
@@ -239,6 +239,7 @@ void GameManagerScript::handleChunkSpawning() {
         generatedLengthInParts += lengthOfChunk.at(nextChunk);
 
         // Spawn the new chunk
+        shake = true;
         auto chunk = Registry::instance().system<SceneSystem>()->spawnPrefab(
             CHUNKS_DIRECTORY + "\\" + nextChunk + ".prefab", false);
 
@@ -300,6 +301,21 @@ void GameManagerScript::handleChunkSpawning() {
 
         // Update the spawned objects if needed
         updateWaterfallRefraction();
+    }
+    if (shake) {
+        shakeTimer += deltaTime;
+        auto camera = Registry::instance()
+                          .system<PropertySystem>()
+                          ->findEntityByTag("MainCamera")
+                          .at(0)
+                          .id;
+        cameraScript = std::static_pointer_cast<CameraControllerScript>(
+            Entity(camera).get<Behaviour>().script);
+        cameraScript->shake(deltaTime);
+        if (shakeTimer >= 1.5f) {
+            shake = false;
+            shakeTimer = 0.0f;
+        }
     }
 }
 
