@@ -1,5 +1,8 @@
+cbuffer BlackInterpolation : register(b10) { float blackProportion; };
+
 Texture2D ColorTexture : register(t0);
 Texture2D Gradient : register(t20);
+
 SamplerState splr {
     Filter = MIN_MAG_MIP_LINEAR;
     AddressU = Clamp;
@@ -14,6 +17,7 @@ struct VSOut {
 static const float BRIGHTNESS = -0.025f;
 static const float CONTRAST = 0.95f;
 static const float CURVES_PROPORTION = 0.8f;
+static const float4 BLACK_COLOR = float4(0.0f, 0.0f, 0.0f, 1.0f);
 
 float4 main(VSOut input) : SV_TARGET {
     // Loading texture
@@ -32,5 +36,6 @@ float4 main(VSOut input) : SV_TARGET {
         Gradient.Sample(splr, float2(clamp(color.b, 0.001f, 0.999f), 0.5f)).b,
         color.a);
 
-    return lerp(color, curves, CURVES_PROPORTION);
+    return lerp(BLACK_COLOR, lerp(color, curves, CURVES_PROPORTION),
+                blackProportion);
 }
