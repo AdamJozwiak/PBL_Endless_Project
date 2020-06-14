@@ -10,7 +10,7 @@ TimerCbuf::TimerCbuf(Graphics& gfx, const Renderable& parent, UINT slot)
 
 void TimerCbuf::Bind(Graphics& gfx) noexcept {
     float time = timer.Peek();
-    const Transforms tf = {time, 0.0f, 0.0f, 0.0f};
+    const Transforms tf = {.time = time};
     pPcbuf->Update(gfx, tf);
     pPcbuf->Bind(gfx);
 }

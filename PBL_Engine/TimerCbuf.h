@@ -9,9 +9,7 @@ class TimerCbuf : public Bindable {
   private:
     struct Transforms {
         float time;
-        float emptyFloat1;
-        float emptyFloat2;
-        float emptyFloat3;
+        float padding[3];
     };
 
   public:
