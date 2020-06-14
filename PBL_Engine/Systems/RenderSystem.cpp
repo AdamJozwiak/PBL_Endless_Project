@@ -68,11 +68,12 @@ void RenderSystem::setup() {
     // imgui = std::make_unique<ImguiManager>();
     nano = new Model(window->Gfx(), "Assets\\Models\\Wolf-Blender-2.82a.gltf",
                      nullptr, nullptr, &animator.animationTime);
-    text = std::make_unique<Text>(window->Gfx(), L"Western Samurai",
-                                  L"Assets\\Fonts\\Western Samurai.otf", 20);
+    text = std::make_unique<Text>(window->Gfx(), L"Montserrat",
+                                  L"Assets\\Unity\\Fonts\\montserrat-bold.otf",
+                                  20);
     button = std::make_unique<Button>(
-        *window, L"Western Samurai", L"Assets\\Fonts\\Western Samurai.otf", 40,
-        DirectX::XMFLOAT2{50.0f, 50.0f}, DirectX::XMFLOAT2{375.0f, 40.0f});
+        *window, L"Montserrat", L"Assets\\Unity\\Fonts\\montserrat-bold.otf",
+        40, DirectX::XMFLOAT2{50.0f, 50.0f}, DirectX::XMFLOAT2{375.0f, 40.0f});
     window->Gfx().SetProjection(
         dx::XMMatrixPerspectiveFovLH(dx::XMConvertToRadians(60.0f),
                                      float(window->Gfx().GetWindowWidth()) /
