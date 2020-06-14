@@ -64,16 +64,10 @@ PixelShaderOutput main(VSOut input) {
     albedo.g *= 1.0f * greenShine * (1.0f - noises[0]) * greenShine;
     albedo.b *= 1.0f * blueShine * (1.0f - noises[0]) * blueShine;
 
-    if (shape.r < 0.3f) {
-        albedo.a *= shape.a * 0.85f;
-    } else if (shape.r > 0.3f && shape.r < 0.8f) {
-        albedo.r = 1.0f;
-        albedo.g = 1.0f;
-        albedo.b = 1.0f;
-        albedo.a *= shape.a;
-    } else {
-        albedo.a = 0.0f;
-    }
+    albedo.r += shape.r * shape.r;
+    albedo.g += shape.g * shape.g;
+    albedo.b += shape.b * shape.b;
+    albedo.a *= shape.a;
 
     static const float BLOOM_THRESHOLD = 0.3f;
     PixelShaderOutput output;
