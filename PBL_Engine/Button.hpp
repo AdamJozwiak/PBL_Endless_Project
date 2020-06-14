@@ -27,6 +27,9 @@ class Button {
     Window& window;
     Graphics& gfx;
 
+    bool clicked = false;
+    bool hovered = false;
+
     std::shared_ptr<Text> textRenderer;
     DirectX::XMFLOAT2 position, size;
 };

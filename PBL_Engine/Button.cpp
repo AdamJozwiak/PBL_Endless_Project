@@ -27,9 +27,7 @@ Button::Button(Window& window, const WCHAR* fontFamily,
       size(size) {}
 
 void Button::draw(std::string const& text) {
-    static bool clicked = false;
-    static bool hovered = false;
-    static auto isMouseInside = [this] {
+    auto isMouseInside = [this] {
         DirectX::XMINT2 const mousePosition{window.mouse.GetPosX(),
                                             window.mouse.GetPosY()};
         return mousePosition.x > position.x &&
