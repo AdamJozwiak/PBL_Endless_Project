@@ -130,6 +130,10 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName,
 
     AddBind(std::make_unique<Topology>(pGfx,
                                        D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+
+    pCbuf = std::make_shared<PostProcessCbuf>(gfx, *this, 1.0f, 10u);
+
+    AddBind(pCbuf);
 }
 
 std::vector<WRL::ComPtr<ID3D11RenderTargetView>>
@@ -167,6 +171,10 @@ void PostProcessing::End() {
 }
 
 void PostProcessing::Bind(Graphics& gfx) noexcept {}
+
+void PostProcessing::SetBlackProportion(float black) {
+    pCbuf->SetBlackProportion(black);
+}
 
 void PostProcessing::Update(float dt) noexcept {}
 

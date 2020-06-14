@@ -25,6 +25,7 @@ class PostProcessing : public Bindable, public RenderableBase<PostProcessing> {
     void Begin();
     void End();
     void Bind(Graphics& gfx) noexcept override;
+    void SetBlackProportion(float black);
 
   private:
     Graphics& pGfx;
@@ -32,6 +33,7 @@ class PostProcessing : public Bindable, public RenderableBase<PostProcessing> {
     std::vector<Microsoft::WRL::ComPtr<ID3D11RenderTargetView>> pRenderTargets;
     Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pOutputTexture;
+    std::shared_ptr<PostProcessCbuf> pCbuf;
 
     DirectX::XMFLOAT3 pos = {1.0f, 1.0f, 1.0f};
     float scale = 1.0f;
