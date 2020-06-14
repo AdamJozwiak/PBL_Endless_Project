@@ -3,6 +3,7 @@
 #include <Script.hpp>
 #include <cassert>
 #include <filesystem>
+#include <memory>
 #include <set>
 #include <unordered_map>
 #include <vector>
@@ -151,6 +152,35 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                 transform.euler.y = helper["y"].as<float>();
                 transform.euler.z = helper["z"].as<float>();
             }
+        } else if (auto const &nodeRectTransform = node["RectTransform"];
+                   nodeRectTransform) {
+            assert(
+                nodeRectTransform["m_GameObject"] &&
+                nodeRectTransform["m_AnchoredPosition"] &&
+                nodeRectTransform["m_SizeDelta"] &&
+                "Every property inside RectTransform component must be valid!");
+
+            {
+                auto &helper = nodeRectTransform["m_GameObject"];
+                auto gameObjectFileId = helper["fileID"].Scalar();
+                Entity(entityIds[gameObjectFileId]).add<RectTransform>({});
+                entityIds.insert({fileId, entityIds[gameObjectFileId]});
+            }
+
+            auto &rectTransform =
+                Entity(entityIds[fileId]).get<RectTransform>();
+
+            {
+                auto &helper = nodeRectTransform["m_AnchoredPosition"];
+                rectTransform.position.x = helper["x"].as<float>();
+                rectTransform.position.y = -helper["y"].as<float>();
+            }
+
+            {
+                auto &helper = nodeRectTransform["m_SizeDelta"];
+                rectTransform.size.x = helper["x"].as<float>();
+                rectTransform.size.y = helper["y"].as<float>();
+            }
         } else if (auto const &nodeMonoBehaviour = node["MonoBehaviour"];
                    nodeMonoBehaviour) {
             assert(
@@ -162,20 +192,39 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                 auto &helper = nodeMonoBehaviour["m_GameObject"];
                 yamlLoop(i, helper) {
                     auto gameObjectFileId = i->second.Scalar();
-                    Entity(entityIds[gameObjectFileId]).add<Behaviour>({});
+                    if (nodeMonoBehaviour["m_Text"]) {
+                        Entity(entityIds[gameObjectFileId]).add<UIElement>({});
+                    } else if (guidPaths.contains(
+                                   nodeMonoBehaviour["m_Script"]["guid"]
+                                       .as<std::string>())) {
+                        Entity(entityIds[gameObjectFileId]).add<Behaviour>({});
+                    }
                     entityIds.insert({fileId, entityIds[gameObjectFileId]});
                 }
             }
 
-            auto &behaviour = Entity(entityIds[fileId]).get<Behaviour>();
+            if (Entity(entityIds[fileId]).has<Behaviour>()) {
+                auto &behaviour = Entity(entityIds[fileId]).get<Behaviour>();
 
-            {
-                auto &helper = nodeMonoBehaviour["m_Script"];
-                behaviour = registry.system<BehaviourSystem>()->behaviour(
-                    fs::path(guidPaths[helper["guid"].as<std::string>()])
-                        .stem()
-                        .string(),
-                    Entity(entityIds[fileId]));
+                {
+                    auto &helper = nodeMonoBehaviour["m_Script"];
+                    behaviour = registry.system<BehaviourSystem>()->behaviour(
+                        fs::path(guidPaths[helper["guid"].as<std::string>()])
+                            .stem()
+                            .string(),
+                        Entity(entityIds[fileId]));
+                }
+            } else if (Entity(entityIds[fileId]).has<UIElement>()) {
+                auto &uiElement = Entity(entityIds[fileId]).get<UIElement>();
+
+                {
+                    auto &helper = nodeMonoBehaviour["m_Text"];
+                    uiElement.content = helper.as<std::string>();
+                }
+                {
+                    auto &helper = nodeMonoBehaviour["m_FontData"];
+                    uiElement.fontSize = helper["m_FontSize"].as<int>();
+                }
             }
         } else if (auto const &nodeMeshRenderer = node["MeshRenderer"];
                    nodeMeshRenderer) {
@@ -667,6 +716,27 @@ void LevelParser::finalizeLoading(
         // Scripts
         if (entity.has<Behaviour>()) {
             entity.get<Behaviour>().script->setup();
+        }
+
+        // UI
+        if (entity.has<RectTransform>() && entity.has<UIElement>()) {
+            auto const &tag = entity.get<Properties>().tag;
+            auto const &rectTransform = entity.get<RectTransform>();
+            auto &uiElement = entity.get<UIElement>();
+
+            if (tag == "TextUI") {
+                uiElement.text = std::make_shared<Text>(
+                    registry.system<WindowSystem>()->gfx(), L"Montserrat",
+                    L"Assets\\Unity\\Fonts\\montserrat-bold.otf",
+                    uiElement.fontSize);
+
+            } else if (tag == "ButtonUI") {
+                uiElement.button = std::make_shared<Button>(
+                    registry.system<WindowSystem>()->window(), L"Montserrat",
+                    L"Assets\\Unity\\Fonts\\montserrat-bold.otf",
+                    uiElement.fontSize, rectTransform.position,
+                    rectTransform.size);
+            }
         }
 
         // Zero the euler angles but leave them for the coded chunk start

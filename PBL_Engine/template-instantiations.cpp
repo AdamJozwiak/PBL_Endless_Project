@@ -59,6 +59,14 @@ template Properties const& Entity::get<Properties>() const;
 template bool Entity::has<Properties>() const;
 template Entity& Entity::set<Properties>(Properties const&);
 
+// RectTransform
+template Entity& Entity::add<RectTransform>(RectTransform const&);
+template Entity& Entity::remove<RectTransform>();
+template RectTransform& Entity::get<RectTransform>();
+template RectTransform const& Entity::get<RectTransform>() const;
+template bool Entity::has<RectTransform>() const;
+template Entity& Entity::set<RectTransform>(RectTransform const&);
+
 // Renderer
 template Entity& Entity::add<Renderer>(Renderer const&);
 template Entity& Entity::remove<Renderer>();
@@ -114,5 +122,13 @@ template Transform& Entity::get<Transform>();
 template Transform const& Entity::get<Transform>() const;
 template bool Entity::has<Transform>() const;
 template Entity& Entity::set<Transform>(Transform const&);
+
+// UIElement
+template Entity& Entity::add<UIElement>(UIElement const&);
+template Entity& Entity::remove<UIElement>();
+template UIElement& Entity::get<UIElement>();
+template UIElement const& Entity::get<UIElement>() const;
+template bool Entity::has<UIElement>() const;
+template Entity& Entity::set<UIElement>(UIElement const&);
 
 // ////////////////////////////////////////////////////////////////////////// //

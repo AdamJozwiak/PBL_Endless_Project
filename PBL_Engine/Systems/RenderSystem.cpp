@@ -252,6 +252,25 @@ void RenderSystem::update(float deltaTime) {
                      "Visible entities: " + std::to_string(a), false,
                      {0.0f, 0.0f});
     button->draw("Create new monkey");
+
+    // Render UI
+    for (auto e :
+         registry.system<PropertySystem>()->findEntityByTag("TextUI")) {
+        auto const& rectTransform = e.get<RectTransform>();
+        auto const& uiElement = e.get<UIElement>();
+
+        uiElement.text->RenderText(registry.system<WindowSystem>()->gfx(),
+                                   uiElement.content, false,
+                                   rectTransform.position);
+    }
+    for (auto e :
+         registry.system<PropertySystem>()->findEntityByTag("ButtonUI")) {
+        auto const& rectTransform = e.get<RectTransform>();
+        auto const& uiElement = e.get<UIElement>();
+
+        uiElement.button->draw(uiElement.content);
+    }
+
     window->Gfx().EndFrame();
 };
 
