@@ -18,7 +18,9 @@ class ENGINE_API PointLight {
     DirectX::XMFLOAT4 lightPositionWorld() const;
     void setLightPositionWorld(DirectX::XMVECTOR newWorldPos);
     void setIntensity(float intensity);
-    float getIntesity();
+    float getIntensity();
+    void setAttenuationQ(float value);
+    float getAttenuationQ();
     static void initTorchNumbers();
 
   private:
@@ -34,6 +36,7 @@ class ENGINE_API PointLight {
         float attenuationQuadratic;
     };
     static LightParametersConstantBuffer lightParametersConstantBuffer;
+    float lightIntensity;
 
   private:
     int number;

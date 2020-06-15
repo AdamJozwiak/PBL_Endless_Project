@@ -28,6 +28,7 @@ void PointLight::setLightPositionWorld(DirectX::XMVECTOR newWorldPos) {
 }
 
 void PointLight::setIntensity(float const intensity) {
+    lightIntensity = intensity;
     // Find the vector which contains the target intensity
     auto& intensityVector = lightParametersConstantBuffer.intensity[number / 4];
 
@@ -50,6 +51,16 @@ void PointLight::setIntensity(float const intensity) {
 
     // Set the intensity
     targetIntensityComponent->get() = intensity;
+}
+
+float PointLight::getIntensity() { return lightIntensity; }
+
+void PointLight::setAttenuationQ(float value) {
+    lightParametersConstantBuffer.attenuationQuadratic = value;
+}
+
+float PointLight::getAttenuationQ() {
+    return lightParametersConstantBuffer.attenuationQuadratic;
 }
 
 void PointLight::SpawnControlWindow() noexcept {
@@ -103,7 +114,7 @@ void PointLight::Reset() noexcept {
     lightParametersConstantBuffer.attenuationConstant = 0.0f;
     lightParametersConstantBuffer.attenuationLinear = 0.0f;
     lightParametersConstantBuffer.attenuationQuadratic = 0.025f;
-    setIntensity(1.0f);
+    setIntensity(1.5f);
 }
 
 void PointLight::AddToBuffer(DirectX::FXMMATRIX view,

@@ -222,6 +222,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="LevelParser.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Oscillator.h" />
     <ClInclude Include="PBLMath.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Plane.h" />

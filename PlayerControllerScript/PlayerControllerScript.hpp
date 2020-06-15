@@ -27,7 +27,7 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     // -------------------------------------------------------- Methods -- == //
     // void changeToHuman() { changeForm(humanForm); }
     void changeForm(EntityId const &newForm);
-    void resetTorchLight();
+    void resetTorchLight(Entity light);
     void transitionForms(float deltaTime);
 
     bool canChangeForm;
@@ -38,6 +38,7 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
   private:
     // ============================================================== Data == //
     bool (*isKeyPressed)(int const key);
+    float oscilate(float input, float factor, float max, float min = 0.0f);
 
     float movementAcceleration = 40.0f;
     float runSpeed = 7.5f;
@@ -62,12 +63,6 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     DirectX::XMFLOAT3 moveInput = {0.0f, 0.0f, 0.0f};
     float canChangeFormTimer = 0.0f;
     float canChangeFormCooldown;
-
-    // cooldown for changing form after entering a trap
-    // IEnumerator trapEntered() {
-    //    yield return new WaitForSeconds(1f);
-    //    canChangeForm = true;
-    //}
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

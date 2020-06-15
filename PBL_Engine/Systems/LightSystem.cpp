@@ -6,7 +6,6 @@
 #include "Components/Components.hpp"
 #include "ECS/ECS.hpp"
 #include "Systems/Systems.hpp"
-#define _XM_NO_INTRINSICS_
 
 // /////////////////////////////////////////////////////////////////// System //
 // ============================================================= Behaviour == //
@@ -35,7 +34,12 @@ void LightSystem::update(float deltaTime) {
         pointLight->AddToBuffer(DirectX::XMMatrixIdentity(),
                                 camera->GetCameraPos());
         pointLight->Bind(Registry::instance().system<WindowSystem>()->gfx());
-
+        lightIntensity = pointLight->getIntensity();
+        if (lightIntensity <= 1.20f || lightIntensity >= 2.0f) {
+            lightFactor = -lightFactor;
+        }
+        lightIntensity += lightFactor;
+        pointLight->setIntensity(lightIntensity);
     }
 };
 

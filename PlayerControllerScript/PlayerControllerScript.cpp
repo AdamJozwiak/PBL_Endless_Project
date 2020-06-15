@@ -4,6 +4,8 @@
 // ///////////////////////////////////////////////////////////////// Includes //
 #include "PlayerControllerScript.hpp"
 
+#include <cmath>
+
 #include "Components/Components.hpp"
 #include "ECS/ECS.hpp"
 #include "PointLight.h"
@@ -113,6 +115,7 @@ void PlayerControllerScript::setup() {
 
     Entity(torch).add<Light>({.pointLight = std::make_shared<PointLight>(
                                   registry.system<WindowSystem>()->gfx())});
+    //Entity(torch).get<Light>().pointLight->setAttenuationQ(0.05f);
 
     // Activate all forms
     Entity(humanForm).get<Properties>().active = true;
@@ -353,7 +356,8 @@ void PlayerControllerScript::update(float const deltaTime) {
 
     entity.get<Transform>().position += (currentVelocity * deltaTime);
 
-    // Update torch position
+    // Update torch range
+
     // torch.transform.position = new Vector3(
     //    currentForm.transform.position.x, currentForm.transform.position.y +
     //    3,
@@ -378,7 +382,8 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
         if (otherTag == "EnemySpawnPoint") {
             return;
         } else if (otherTag == "Torch") {
-            // TODO: Collect the torch
+            registry.system<GraphSystem>()->destroyEntityWithChildren(other);
+            resetTorchLight(other);
         } else if (otherTag == "Trap") {
             registry.system<GraphSystem>()->destroyEntityWithChildren(other);
             canChangeForm = false;
@@ -430,9 +435,9 @@ void PlayerControllerScript::changeForm(EntityId const& newForm) {
     currentForm = newForm;
 }
 
-void PlayerControllerScript::resetTorchLight() {
-    // torchLight.range = 20;
-    // torchLight.intensity = 4;
+void PlayerControllerScript::resetTorchLight(Entity light) {
+    light.get<Light>().pointLight->setIntensity(1.5f);
+    //light.get<Light>().pointLight->setAttenuationQ(0.05f);
 }
 
 void PlayerControllerScript::transitionForms(float const deltaTime) {
