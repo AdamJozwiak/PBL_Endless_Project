@@ -193,7 +193,8 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                 yamlLoop(i, helper) {
                     auto gameObjectFileId = i->second.Scalar();
                     if (nodeMonoBehaviour["m_Text"]) {
-                        Entity(entityIds[gameObjectFileId]).add<UIElement>({});
+                        Entity(entityIds[gameObjectFileId])
+                            .add<UIElement>({.alpha = 1.0f});
                     } else if (guidPaths.contains(
                                    nodeMonoBehaviour["m_Script"]["guid"]
                                        .as<std::string>())) {
