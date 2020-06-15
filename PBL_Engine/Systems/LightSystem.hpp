@@ -14,9 +14,12 @@ ECS_SYSTEM(LightSystem) {
     void release() override;
 
   private:
+    // ========================================================= Behaviour == //
+    float oscillator(float const x);
+
     // ============================================================== Data == //
-    float lightIntensity;
-    float lightFactor = -0.001f;
+    float baseLightIntensity;
+    float timer;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

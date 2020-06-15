@@ -22,6 +22,7 @@ class ENGINE_API PointLight {
     void setAttenuationQ(float value);
     float getAttenuationQ();
     static void initTorchNumbers();
+    int getNumber();
 
   private:
     static constexpr int MAX_LIGHT_COUNT = 16;

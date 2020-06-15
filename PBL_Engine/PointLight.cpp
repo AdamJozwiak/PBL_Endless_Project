@@ -147,5 +147,6 @@ void PointLight::initTorchNumbers() {
         torchNumbers.push(i);
     }
 }
+int PointLight::getNumber() { return number; }
 // zrobic oddzielna metode przydzielajaca zasoby i ostatnie swiatlo wywoluje,
 // moze byc static, bind
