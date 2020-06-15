@@ -83,16 +83,15 @@ void CameraControllerScript::shake(float deltaTime) {
     shakeOffset = {(float)uni(rng), (float)uni(rng), 0.0f};
     entity.get<Transform>().position = DirectX::XMFLOAT3{
         interpolate(easeOutQuad, lastPosition.x,
-                    playerTransform.position.x + offset.x + shakeOffset.x, smoothing,
-                    deltaTime),
-        interpolate(easeOutQuad, lastPosition.y,
+                    playerTransform.position.x + offset.x + shakeOffset.x,
+                    smoothing, deltaTime),
+        interpolate(
+            easeOutQuad, lastPosition.y,
             playerTransform.position.y * 0.75f + offset.y + shakeOffset.y,
-            smoothing,
-                    deltaTime),
+            smoothing, deltaTime),
         interpolate(easeOutQuad, lastPosition.z,
                     playerTransform.position.z + offset.z + shakeOffset.z,
-                    smoothing,
-                    deltaTime)};
+                    smoothing, deltaTime)};
 
     //! This line was in late update, may not work
     lastPosition = entity.get<Transform>().position;
