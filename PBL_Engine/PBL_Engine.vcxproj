@@ -91,6 +91,7 @@
     <ClCompile Include="soloud\src\core\soloud_thread.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Systems\AnimatorSystem.cpp" />
+    <ClCompile Include="Systems\BillboardRenderSystem.cpp" />
     <ClCompile Include="Systems\CheckCollisionsSystem.cpp" />
     <ClCompile Include="Systems\ColliderSystem.cpp" />
     <ClCompile Include="Systems\GraphSystem.cpp" />
@@ -100,6 +101,7 @@
     <ClCompile Include="Systems\SceneSystem.cpp" />
     <ClCompile Include="Systems\BehaviourSystem.cpp" />
     <ClCompile Include="Systems\SoundSystem.cpp" />
+    <ClCompile Include="Systems\UIRenderSystem.cpp" />
     <ClCompile Include="Systems\WindowSystem.cpp" />
     <ClCompile Include="template-instantiations.cpp" />
     <ClCompile Include="Text.cpp" />
@@ -284,6 +286,7 @@
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Systems\AnimatorSystem.hpp" />
+    <ClInclude Include="Systems\BillboardRenderSystem.hpp" />
     <ClInclude Include="Systems\CheckCollisionsSystem.hpp" />
     <ClInclude Include="Systems\ColliderSystem.hpp" />
     <ClInclude Include="Systems\GraphSystem.hpp" />
@@ -293,6 +296,7 @@
     <ClInclude Include="Systems\SceneSystem.hpp" />
     <ClInclude Include="Systems\BehaviourSystem.hpp" />
     <ClInclude Include="Systems\SoundSystem.hpp" />
+    <ClInclude Include="Systems\UIRenderSystem.hpp" />
     <ClInclude Include="Systems\WindowSystem.hpp" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />

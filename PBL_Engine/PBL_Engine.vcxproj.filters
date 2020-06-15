@@ -507,6 +507,12 @@
     <ClCompile Include="Systems\CheckCollisionsSystem.cpp">
       <Filter>Pliki źródłowe\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Systems\BillboardRenderSystem.cpp">
+      <Filter>Pliki źródłowe\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Systems\UIRenderSystem.cpp">
+      <Filter>Pliki źródłowe\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -1170,6 +1176,12 @@
       <Filter>Pliki nagłówkowe\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="Systems\CheckCollisionsSystem.hpp">
+      <Filter>Pliki nagłówkowe\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\BillboardRenderSystem.hpp">
+      <Filter>Pliki nagłówkowe\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\UIRenderSystem.hpp">
       <Filter>Pliki nagłówkowe\Systems</Filter>
     </ClInclude>
   </ItemGroup>
