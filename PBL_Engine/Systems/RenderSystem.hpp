@@ -27,8 +27,6 @@ ECS_SYSTEM(RenderSystem) {
     void update(float deltaTime) override;
     void release() override;
 
-    DirectX::XMMATRIX transformMatrix(Entity entity);
-
     // ============================================================== Data == //
     Window *window;
 

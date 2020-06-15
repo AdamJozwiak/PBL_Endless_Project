@@ -198,23 +198,4 @@ void RenderSystem::update(float deltaTime) {
 
 void RenderSystem::release() {}
 
-DirectX::XMMATRIX RenderSystem::transformMatrix(Entity entity) {
-    auto& transform = entity.get<Transform>();
-
-    return dx::XMMatrixRotationRollPitchYaw(dx::XMConvertToRadians(270.0f),
-                                            dx::XMConvertToRadians(180.0f),
-                                            dx::XMConvertToRadians(0.0f)) *
-           dx::XMMatrixScaling(transform.scale.x, transform.scale.y,
-                               transform.scale.z) *
-           dx::XMMatrixRotationRollPitchYaw(
-               dx::XMConvertToRadians(transform.euler.x),
-               dx::XMConvertToRadians(transform.euler.y),
-               dx::XMConvertToRadians(transform.euler.z)) *
-           // dx::XMMatrixRotationQuaternion(dx::XMLoadFloat4(
-           //     &dx::XMFLOAT4{transform.rotation_x, transform.rotation_y,
-           //                   transform.rotation_z, transform.rotation_w})) *
-           dx::XMMatrixTranslation(transform.position.x, transform.position.y,
-                                   transform.position.z);
-}
-
 // ////////////////////////////////////////////////////////////////////////// //
