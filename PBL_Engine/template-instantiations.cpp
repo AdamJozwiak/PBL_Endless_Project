@@ -35,6 +35,15 @@ template BoxCollider const& Entity::get<BoxCollider>() const;
 template bool Entity::has<BoxCollider>() const;
 template Entity& Entity::set<BoxCollider>(BoxCollider const&);
 
+// Flame
+
+template Entity& Entity::add<Flame>(Flame const&);
+template Entity& Entity::remove<Flame>();
+template Flame& Entity::get<Flame>();
+template Flame const& Entity::get<Flame>() const;
+template bool Entity::has<Flame>() const;
+template Entity& Entity::set<Flame>(Flame const&);
+
 // Light
 template Entity& Entity::add<Light>(Light const&);
 template Entity& Entity::remove<Light>();

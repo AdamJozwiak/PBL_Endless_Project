@@ -5,6 +5,7 @@
 #include "Animator.h"
 #include "Behaviour.hpp"
 #include "BoxCollider.h"
+#include "Flame.hpp"
 #include "Light.hpp"
 #include "MainCamera.hpp"
 #include "MeshFilter.hpp"
