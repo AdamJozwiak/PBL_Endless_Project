@@ -23,6 +23,11 @@ void LightSystem::filters() {
 void LightSystem::setup() {
     baseLightIntensity = 1.0f;
     timer = 0.0f;
+    camera = registry.system<PropertySystem>()
+                 ->findEntityByTag("MainCamera")
+                 .at(0)
+                 .get<MainCamera>()
+                 .camera;
 }
 
 void LightSystem::update(float deltaTime) {
@@ -34,12 +39,6 @@ void LightSystem::update(float deltaTime) {
         DirectX::XMVECTOR vec = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
         vec = XMVector3TransformCoord(
             vec, Registry::instance().system<GraphSystem>()->transform(entity));
-        auto camera = Registry::instance()
-                          .system<PropertySystem>()
-                          ->findEntityByTag("MainCamera")
-                          .at(0)
-                          .get<MainCamera>()
-                          .camera;
         pointLight->setLightPositionWorld(vec);
         pointLight->AddToBuffer(DirectX::XMMatrixIdentity(),
                                 camera->GetCameraPos());
