@@ -33,6 +33,10 @@ class Text {
     void RenderText(Graphics& gfx, std::string text, bool yellow,
                     DirectX::XMFLOAT2 pos);
 
+    // Rendering
+    static void beginDrawing();
+    static void endDrawing();
+
   private:
     inline static bool init = false;
     static void CreateDevice(

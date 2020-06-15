@@ -26,13 +26,16 @@ Text::Text(Graphics& gfx, const WCHAR* fontFamily, std::wstring path,
     InitCustomTextFormat(fontFamily, path, fontSize);
 }
 
+void Text::beginDrawing() { devCon->BeginDraw(); }
+
+void Text::endDrawing() { devCon->EndDraw(); }
+
 void Text::RenderText(Graphics& gfx, std::string text, bool yellow,
                       DirectX::XMFLOAT2 pos) {
     std::wstring tmp = std::wstring(text.begin(), text.end());
     writeFactory->CreateTextLayout(tmp.c_str(), (UINT32)tmp.size(),
                                    textFormatFPS.Get(), gfx.GetWindowWidth(),
                                    gfx.GetWindowHeight(), &textLayoutFPS);
-    devCon->BeginDraw();
 
     devCon->DrawTextLayout(
         D2D1::Point2F(pos.x, pos.y),  // origin / position of first letter
@@ -40,8 +43,6 @@ void Text::RenderText(Graphics& gfx, std::string text, bool yellow,
         (yellow ? yellowBrush.Get()   // brush
                 : whiteBrush.Get()    // brush
          ));
-
-    devCon->EndDraw();
 }
 
 void Text::CreateDevice(Graphics& gfx) {
