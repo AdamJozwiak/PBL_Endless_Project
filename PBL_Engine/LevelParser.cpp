@@ -648,6 +648,11 @@ Entity LevelParser::loadPrefab(std::string const &filename) {
 void LevelParser::finalizeLoading(
     std::set<EntityId> const &recursivePrefabIds) {
     // Load further assets for the components
+    auto camera =
+        registry.system<PropertySystem>()->findEntityByTag("MainCamera").at(0);
+    if (!camera.has<MainCamera>()) {
+        camera.add<MainCamera>({.camera = std::make_shared<Camera>()});
+    }
     for (auto const &entityId : recursivePrefabIds) {
         auto entity = Entity(entityId);
 

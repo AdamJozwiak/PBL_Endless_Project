@@ -28,5 +28,5 @@ class GeometryCbuf : public Bindable {
     float textureWidth = 0;
     float textureHeight = 0;
     DirectX::XMFLOAT4 camPos;
-    std::shared_ptr<Camera> pCamera;
+    Camera* pCamera;
 };

@@ -88,11 +88,6 @@ void SceneSystem::setup() {
     PointLight::initTorchNumbers();
     levelParser.initialize();
     levelParser.loadScene("Assets\\Unity\\Scenes\\Main.unity");
-
-    registry.system<PropertySystem>()
-        ->findEntityByTag("MainCamera")
-        .at(0)
-        .add<MainCamera>({.camera = std::make_shared<Camera>()});
 }
 
 void SceneSystem::update(float deltaTime){};
