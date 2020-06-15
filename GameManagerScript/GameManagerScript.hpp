@@ -29,6 +29,7 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
     // -------------------------------------------------------- Methods -- == //
     void method();
     void updateWaterfallRefraction();
+    void updateTrapRefraction();
     void handleChunkSpawning(float deltaTime);
 
   private:

@@ -103,6 +103,7 @@ void GameManagerScript::setup() {
     nextChunk = "Chunk 1";
 
     updateWaterfallRefraction();
+    updateTrapRefraction();
     spawnTorches();
     spawnBishops(100);
     spawnRooks(100, false);
@@ -221,6 +222,24 @@ void GameManagerScript::updateWaterfallRefraction() {
     }
 }
 
+void GameManagerScript::updateTrapRefraction() {
+    auto const& soilModels =
+        registry.system<PropertySystem>()->findEntityByName("Soil");
+    for (auto model : soilModels) {
+        if (!model.has<Refractive>()) {
+            model.add<Refractive>({});
+        }
+    }
+
+    auto const& spikesModels =
+        registry.system<PropertySystem>()->findEntityByName("Spikes");
+    for (auto model : spikesModels) {
+        if (!model.has<Refractive>()) {
+            model.add<Refractive>({});
+        }
+    }
+}
+
 void GameManagerScript::handleChunkSpawning(float deltaTime) {
     auto const& playerPositionInWorldUnits =
         Entity(playerId).get<Transform>().position.x;
@@ -301,6 +320,7 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
 
         // Update the spawned objects if needed
         updateWaterfallRefraction();
+        updateTrapRefraction();
     }
     if (shake) {
         shakeTimer += deltaTime;
