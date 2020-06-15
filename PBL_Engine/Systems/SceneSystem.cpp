@@ -84,6 +84,8 @@ void SceneSystem::setup() {
     //             registry.system<ColliderSystem>()->AddSphereCollider(
     //                 Cube::MakeUsunMnie<DirectX::XMFLOAT3>().vertices));
     // }
+
+    PointLight::initTorchNumbers();
     levelParser.initialize();
     levelParser.loadScene("Assets\\Unity\\Scenes\\Main.unity");
 

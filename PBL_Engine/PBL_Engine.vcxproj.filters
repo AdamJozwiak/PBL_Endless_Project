@@ -498,6 +498,9 @@
     <ClCompile Include="Systems\AnimatorSystem.cpp">
       <Filter>Pliki źródłowe\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Systems\LightSystem.cpp">
+      <Filter>Pliki źródłowe\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHeader.h">
@@ -1145,8 +1148,14 @@
     <ClInclude Include="Components\Light.hpp">
       <Filter>Pliki nagłówkowe\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Systems\LightSystem.hpp">
+      <Filter>Pliki nagłówkowe\Systems</Filter>
+    </ClInclude>
     <ClInclude Include="Components\Flame.hpp">
       <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="FixedQueue.h">
+      <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

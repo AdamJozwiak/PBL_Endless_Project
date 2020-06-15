@@ -112,7 +112,7 @@ void PlayerControllerScript::setup() {
                 .id;
 
     Entity(torch).add<Light>({.pointLight = std::make_shared<PointLight>(
-                                  registry.system<WindowSystem>()->gfx(), 0)});
+                                  registry.system<WindowSystem>()->gfx())});
 
     // Activate all forms
     Entity(humanForm).get<Properties>().active = true;

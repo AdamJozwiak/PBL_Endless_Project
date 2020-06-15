@@ -5,6 +5,7 @@
 #include "BehaviourSystem.hpp"
 #include "ColliderSystem.hpp"
 #include "GraphSystem.hpp"
+#include "LightSystem.hpp"
 #include "PhysicsSystem.hpp"
 #include "PropertySystem.hpp"
 #include "RenderSystem.hpp"

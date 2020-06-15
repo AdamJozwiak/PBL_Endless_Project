@@ -7,13 +7,24 @@
 PointLight::LightParametersConstantBuffer
     PointLight::lightParametersConstantBuffer;
 
-PointLight::PointLight(Graphics& gfx, int number, float radius)
-    : mesh(gfx, radius), number(number) {
+FixedQueue<int, PointLight::MAX_LIGHT_COUNT> PointLight::torchNumbers;
+
+PointLight::PointLight(Graphics& gfx, float radius) : mesh(gfx, radius) {
+    number = PointLight::torchNumbers.pop();
     Reset();
 }
 
+PointLight::~PointLight() { torchNumbers.push(number); }
+
 DirectX::XMFLOAT4 PointLight::lightPositionWorld() const {
     return lightParametersConstantBuffer.lightPositionWorld[number];
+}
+
+void PointLight::setLightPositionWorld(DirectX::XMVECTOR newWorldPos) {
+    DirectX::XMFLOAT4 tmp = {
+        DirectX::XMVectorGetX(newWorldPos), DirectX::XMVectorGetY(newWorldPos),
+        DirectX::XMVectorGetZ(newWorldPos), DirectX::XMVectorGetW(newWorldPos)};
+    lightParametersConstantBuffer.lightPositionWorld[number] = tmp;
 }
 
 void PointLight::setIntensity(float const intensity) {
@@ -118,6 +129,12 @@ void PointLight::Bind(Graphics& gfx) noexcept {
     static PixelConstantBuffer<LightParametersConstantBuffer> cbuf(gfx, 10);
     cbuf.Update(gfx, lightParametersConstantBuffer);
     cbuf.Bind(gfx);
+}
+
+void PointLight::initTorchNumbers() {
+    for (int i = 0; i < PointLight::MAX_LIGHT_COUNT; i++) {
+        torchNumbers.push(i);
+    }
 }
 // zrobic oddzielna metode przydzielajaca zasoby i ostatnie swiatlo wywoluje,
 // moze byc static, bind

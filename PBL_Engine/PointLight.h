@@ -1,11 +1,14 @@
 #pragma once
 #include "ConstantBuffers.h"
+#include "EngineAPI.hpp"
+#include "FixedQueue.h"
 #include "Graphics.h"
 #include "SolidSphere.h"
 
-class PointLight {
+class ENGINE_API PointLight {
   public:
-    PointLight(Graphics& gfx, int number, float radius = 0.5f);
+    PointLight(Graphics& gfx, float radius = 0.5f);
+    ~PointLight();
     void SpawnControlWindow() noexcept;
     void Reset() noexcept;
     void AddToBuffer(DirectX::FXMMATRIX view,
@@ -13,10 +16,14 @@ class PointLight {
     void Draw(Graphics& gfx) const noexcept(!IS_DEBUG);
     static void Bind(Graphics& gfx) noexcept;
     DirectX::XMFLOAT4 lightPositionWorld() const;
+    void setLightPositionWorld(DirectX::XMVECTOR newWorldPos);
     void setIntensity(float intensity);
+    float getIntesity();
+    static void initTorchNumbers();
 
   private:
     static constexpr int MAX_LIGHT_COUNT = 16;
+    static FixedQueue<int, MAX_LIGHT_COUNT> torchNumbers;
     struct LightParametersConstantBuffer {
         alignas(16) DirectX::XMFLOAT4 lightPositionWorld[MAX_LIGHT_COUNT];
         alignas(16) DirectX::XMFLOAT4 viewPositionWorld;

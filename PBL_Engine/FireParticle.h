@@ -1,6 +1,7 @@
 #pragma once
 #include "BindableBase.h"
 #include "Camera.h"
+#include "EngineAPI.hpp"
 #include "GraphicsThrowMacros.h"
 #include "RenderableBase.h"
 #include "Sampler.h"
@@ -8,7 +9,7 @@
 
 enum EnemyType { none = 0, pawn, rook, bishop };
 
-class FireParticle : public RenderableBase<FireParticle> {
+class ENGINE_API FireParticle : public RenderableBase<FireParticle> {
   public:
     FireParticle(Graphics& gfx, Camera* camera, EnemyType enemyType = none) {
         namespace dx = DirectX;
