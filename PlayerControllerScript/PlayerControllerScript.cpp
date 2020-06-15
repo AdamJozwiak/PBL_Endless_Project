@@ -105,6 +105,10 @@ void PlayerControllerScript::setup() {
                   .at(0)
                   .id;
     currentForm = humanForm;
+    torch = registry.system<PropertySystem>()
+                ->findEntityByName("Player Torch")
+                .at(0)
+                .id;
 
     // Activate all forms
     Entity(humanForm).get<Properties>().active = true;
