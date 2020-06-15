@@ -33,6 +33,7 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
   private:
     // ============================================================== Data == //
     bool (*isKeyPressed)(int const key);
+    void spawnTorches();
     void spawnRooks(int percentage, bool movingSideways = true);
     void spawnBishops(int percentage);
     void spawnEnemy(MovementType mt, EntityId spawnPoint, int percentage,

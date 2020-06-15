@@ -5,6 +5,7 @@
 #include <random>
 #include <thread>
 
+#include "Camera.h"
 #include "Components/Components.hpp"
 #include "ECS/ECS.hpp"
 #include "Systems/Systems.hpp"
@@ -102,6 +103,7 @@ void GameManagerScript::setup() {
     nextChunk = "Chunk 1";
 
     updateWaterfallRefraction();
+    spawnTorches();
     spawnBishops(100);
     spawnRooks(100, false);
 
@@ -117,6 +119,24 @@ void GameManagerScript::update(float const deltaTime) {
 void GameManagerScript::onCollisionEnter(OnCollisionEnter const& event) {
     if (event.a.id == entity.id || event.b.id == entity.id) {
         auto other = Entity(event.a.id == entity.id ? event.b.id : event.a.id);
+    }
+}
+
+void GameManagerScript::spawnTorches() {
+    for (auto it :
+         registry.system<PropertySystem>()->findEntityByTag("Torch")) {
+        if (!it.has<Light>()) {
+            it.add<Light>({.pointLight = std::make_shared<PointLight>(
+                               registry.system<WindowSystem>()->gfx())});
+            it.add<Flame>({.fireParticle = std::make_shared<FireParticle>(
+                               registry.system<WindowSystem>()->gfx(),
+                               Registry::instance()
+                                   .system<PropertySystem>()
+                                   ->findEntityByTag("MainCamera")
+                                   .at(0)
+                                   .get<MainCamera>()
+                                   .camera.get())});
+        }
     }
 }
 
@@ -231,6 +251,11 @@ void GameManagerScript::handleChunkSpawning() {
                  "EnemySpawnPoint")) {
             it.get<Transform>().position.x += generatedLengthInWorldUnits;
         }
+        
+        for (auto it : registry.system<PropertySystem>()->findEntityByTag("Torch")) {
+            it.get<Transform>().position.x += generatedLengthInWorldUnits;
+        }
+        
 
         // Fix the adjacent box colliders problem by spawning the next chunk
         // slightly lower
@@ -238,6 +263,7 @@ void GameManagerScript::handleChunkSpawning() {
         chunk.get<Transform>().position.y = -0.1f * ++spawnedChunks;
 
         // Spawn the enemies
+        spawnTorches();
         spawnBishops(50);
         spawnRooks(50, false);
 
