@@ -34,11 +34,13 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     bool inputLaneUp, inputLaneDown;
     bool inputAscend, inputDescend;
     bool inputChangeFormEagle, inputChangeFormCat;
-
+    bool firstThrust = false;
+    bool isGrounded = true;
   private:
     // ============================================================== Data == //
     bool (*isKeyPressed)(int const key);
     float oscilate(float input, float factor, float max, float min = 0.0f);
+    float ascend(float const x, float const thrustForce);
 
     float movementAcceleration = 40.0f;
     float runSpeed = 7.5f;
@@ -47,6 +49,8 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     float originalOffsetWolf, originalOffsetEagle;
 
     DirectX::XMFLOAT3 currentVelocity = {0.0f, 0.0f, 0.0f};
+    DirectX::XMFLOAT3 moveInput = {0.0f, 0.0f, 0.0f};
+    DirectX::XMFLOAT3 idlePosition = {0.0f, 0.0f, 0.0f};
     int currentLane = 0;
     int laneWidth = 2;
     Rigidbody rb;
@@ -57,10 +61,10 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     EntityId explosionPrefabFail;  // TODO: To find the entity
     EntityId torch;                // TODO: To find the entity
     EntityId currentForm;          // TODO: To find the entity
+    EntityId groundCheck;
     // Light torchLight;              // TODO: Add component for light
     // CameraController
     //    mainCamera;  // TODO: Add reference to the script? may not need
-    DirectX::XMFLOAT3 moveInput = {0.0f, 0.0f, 0.0f};
     float canChangeFormTimer = 0.0f;
     float canChangeFormCooldown;
 };
