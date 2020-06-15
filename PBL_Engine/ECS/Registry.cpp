@@ -12,13 +12,16 @@ Registry& Registry::instance() {
 }
 
 // -------------------------------------------- Delayed entity deletion -- == //
-void Registry::refresh() {
+bool Registry::refresh() {
+    bool removed = false;
     for (auto const& entity : entitiesToRemove) {
         entityManager.destroy(entity.id);
         componentManager.destroyEntity(entity.id);
         systemManager.destroyEntity(entity.id);
+        removed = true;
     }
     entitiesToRemove.clear();
+    return removed;
 }
 
 // ------------------------------------------------------------- Entity -- == //

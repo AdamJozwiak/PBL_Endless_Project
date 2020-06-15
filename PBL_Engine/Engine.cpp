@@ -61,7 +61,9 @@ ENGINE_API int Engine::run() {
     }
 
     while (true) {
-        registry.refresh();
+        if (registry.refresh()) {
+            registry.system<GraphSystem>()->setup();
+        }
 
         if (auto const exitCode = Window::ProcessMessages()) {
             for (auto &system : updateSystems) {

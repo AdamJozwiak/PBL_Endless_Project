@@ -27,7 +27,7 @@ class ENGINE_API Registry {
     Registry& operator=(Registry&&) = delete;
 
     // ---------------------------------------- Delayed entity deletion -- == //
-    void refresh();
+    bool refresh();
 
     // --------------------------------------------------------- Entity -- == //
     Entity createEntity();
