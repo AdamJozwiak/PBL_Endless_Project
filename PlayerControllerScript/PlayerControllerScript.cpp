@@ -6,6 +6,7 @@
 
 #include "Components/Components.hpp"
 #include "ECS/ECS.hpp"
+#include "PointLight.h"
 #include "Systems/Systems.hpp"
 #include "Window.h"
 #include "easings.hpp"
@@ -109,6 +110,9 @@ void PlayerControllerScript::setup() {
                 ->findEntityByName("Player Torch")
                 .at(0)
                 .id;
+
+    Entity(torch).add<Light>({.pointLight = std::make_shared<PointLight>(
+                                  registry.system<WindowSystem>()->gfx(), 0)});
 
     // Activate all forms
     Entity(humanForm).get<Properties>().active = true;
