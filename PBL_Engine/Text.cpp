@@ -31,7 +31,12 @@ void Text::beginDrawing() { devCon->BeginDraw(); }
 void Text::endDrawing() { devCon->EndDraw(); }
 
 void Text::RenderText(Graphics& gfx, std::string text, bool yellow,
-                      DirectX::XMFLOAT2 pos) {
+                      DirectX::XMFLOAT2 pos, float a, float r, float g,
+                      float b) {
+    // Create brushes
+    devCon->CreateSolidColorBrush(D2D1::ColorF(r, g, b, a), &brush);
+    devCon->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Yellow, a),
+                                  &yellowBrush);
     std::wstring tmp = std::wstring(text.begin(), text.end());
     writeFactory->CreateTextLayout(tmp.c_str(), (UINT32)tmp.size(),
                                    textFormatFPS.Get(), gfx.GetWindowWidth(),
@@ -41,7 +46,7 @@ void Text::RenderText(Graphics& gfx, std::string text, bool yellow,
         D2D1::Point2F(pos.x, pos.y),  // origin / position of first letter
         textLayoutFPS.Get(),          // text layout
         (yellow ? yellowBrush.Get()   // brush
-                : whiteBrush.Get()    // brush
+                : brush.Get()         // brush
          ));
 }
 
@@ -113,14 +118,6 @@ void Text::CreateBitmapRenderTarget(Graphics& gfx) {
 }
 
 void Text::InitializeTextFormats(const WCHAR* fontFamily, float fontSize) {
-    // Create brushes
-    devCon->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Yellow),
-                                  &yellowBrush);
-    devCon->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black),
-                                  &blackBrush);
-    devCon->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White),
-                                  &whiteBrush);
-
     // Set text parameters
 
     // Text format
@@ -144,14 +141,6 @@ void Text::InitializeTextFormats(const WCHAR* fontFamily, float fontSize) {
 
 void Text::InitCustomTextFormat(const WCHAR* fontFamily, std::wstring filePath,
                                 float fontSize) {
-    // Create brushes
-    devCon->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Yellow),
-                                  &yellowBrush);
-    devCon->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black),
-                                  &blackBrush);
-    devCon->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White),
-                                  &whiteBrush);
-
     // Text format
     writeFactory.Get()->CreateTextFormat(
         fontFamily,                  // font family

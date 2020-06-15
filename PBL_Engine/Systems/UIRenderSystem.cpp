@@ -30,10 +30,11 @@ void UIRenderSystem::update(float deltaTime) {
 
             if (uiElement.text) {
                 uiElement.text->RenderText(window->Gfx(), uiElement.content,
-                                           false, rectTransform.position);
+                                           false, rectTransform.position,
+                                           uiElement.alpha);
             }
             if (uiElement.button) {
-                uiElement.button->draw(uiElement.content);
+                uiElement.button->draw(uiElement.content, uiElement.alpha);
             }
         }
     }

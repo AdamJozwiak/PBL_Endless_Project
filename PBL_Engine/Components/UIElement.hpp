@@ -11,6 +11,7 @@
 ECS_COMPONENT(UIElement) {
     std::string content;
     int fontSize;
+    float alpha = 1.0f;
 
     std::shared_ptr<Text> text;
     std::shared_ptr<Button> button;

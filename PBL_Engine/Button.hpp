@@ -20,7 +20,8 @@ class Button {
     Button(Window& window, const WCHAR* fontFamily, std::wstring const& path,
            float fontSize, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size);
 
-    void draw(std::string const& text);
+    void draw(std::string const& text, float a = 1.0f, float r = 255.0f,
+              float g = 255.0f, float b = 255.0f);
 
   private:
     // ============================================================== Data == //

@@ -22,8 +22,7 @@ class Text {
          float fontSize);
     // Brushes
     inline static wrl::ComPtr<ID2D1SolidColorBrush> yellowBrush;
-    inline static wrl::ComPtr<ID2D1SolidColorBrush> whiteBrush;
-    inline static wrl::ComPtr<ID2D1SolidColorBrush> blackBrush;
+    inline static wrl::ComPtr<ID2D1SolidColorBrush> brush;
 
     // Text formats
     wrl::ComPtr<IDWriteTextFormat> textFormatFPS;
@@ -31,7 +30,8 @@ class Text {
     // Text layouts
     wrl::ComPtr<IDWriteTextLayout> textLayoutFPS;
     void RenderText(Graphics& gfx, std::string text, bool yellow,
-                    DirectX::XMFLOAT2 pos);
+                    DirectX::XMFLOAT2 pos, float a = 1.0f, float r = 255.0f,
+                    float g = 255.0f, float b = 255.0f);
 
     // Rendering
     static void beginDrawing();
