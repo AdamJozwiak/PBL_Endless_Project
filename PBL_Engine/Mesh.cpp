@@ -495,9 +495,6 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
 
 void Model::Draw(Graphics& gfx, DirectX::XMMATRIX transform,
                  PassType passType) const noexcept(!IS_DEBUG) {
-    if (auto node = pWindow->GetSelectedNode()) {
-        node->SetAppliedTransform(pWindow->GetTransform());
-    }
     pRoot->Draw(gfx, transform, passType, refShaders, normalShaders,
                 refShadersAnimated, normalShadersAnimated);
 }
