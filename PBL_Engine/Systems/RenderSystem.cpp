@@ -28,14 +28,6 @@ namespace dx = DirectX;
 
 GDIPlusManager gdipm;
 
-// testing models
-Model* nano;
-Animator animator;
-// PointLight* light;
-// PointLight* light2;
-std::unique_ptr<Button> button;
-std::unique_ptr<Text> text;
-
 // /////////////////////////////////////////////////////////////////// System //
 // ============================================================= Behaviour == //
 // ----------------------------------------- System's virtual functions -- == //
@@ -55,25 +47,9 @@ void RenderSystem::setup() {
                      .get<MainCamera>()
                      .camera;
     freeCamera = std::make_shared<Camera>();
-    sphere = std::make_unique<SolidSphere>(window->Gfx(), 1.0f);
-    billboard = std::make_unique<Billboard>(window->Gfx(), mainCamera.get());
-    // fireParticle = std::make_unique<FireParticle>(
-    //     window->Gfx(), mainCamera.get(), EnemyType::pawn);
-    // light2 = new PointLight(window->Gfx(), 1);
-    // light = new PointLight(window->Gfx(), 0);
     bloom = std::make_unique<PostProcessing>(window->Gfx(), L"Bloom", 2);
     colorCorrection =
         std::make_unique<PostProcessing>(window->Gfx(), L"ColorCorrection", 1);
-    animator.animationTime = 0;
-    // imgui = std::make_unique<ImguiManager>();
-    nano = new Model(window->Gfx(), "Assets\\Models\\Wolf-Blender-2.82a.gltf",
-                     nullptr, nullptr, &animator.animationTime);
-    text = std::make_unique<Text>(window->Gfx(), L"Montserrat",
-                                  L"Assets\\Unity\\Fonts\\montserrat-bold.otf",
-                                  20);
-    button = std::make_unique<Button>(
-        *window, L"Montserrat", L"Assets\\Unity\\Fonts\\montserrat-bold.otf",
-        40, DirectX::XMFLOAT2{50.0f, 50.0f}, DirectX::XMFLOAT2{375.0f, 40.0f});
     window->Gfx().SetProjection(
         dx::XMMatrixPerspectiveFovLH(dx::XMConvertToRadians(60.0f),
                                      float(window->Gfx().GetWindowWidth()) /
@@ -89,9 +65,7 @@ void RenderSystem::update(float deltaTime) {
             registry.system<GraphSystem>()->transform(entity));
     }
 
-    const auto dt = deltaTime * speed_factor;
     window->Gfx().BeginFrame(0.0f, 0.0f, 0.0f);
-    int a = 0;
     bloom->Begin();
     {
         // Process mouse movements for free camera
@@ -141,16 +115,6 @@ void RenderSystem::update(float deltaTime) {
 
         auto frustum = CFrustum(viewProjection);
 
-        // Set lights
-        // light->AddToBuffer(DirectX::XMMatrixIdentity(),
-        //                   mainCamera->GetCameraPos());
-        // light2->AddToBuffer(DirectX::XMMatrixIdentity(),
-        //                    mainCamera->GetCameraPos());
-        // PointLight::Bind(window->Gfx());
-
-        // Advance the animation time
-        animator.animationTime += dt;
-
         // Render all renderable models
         for (auto const& entity : entities) {
             auto div = DirectX::XMVectorSubtract(entity.get<AABB>().vertexMax,
@@ -171,39 +135,15 @@ void RenderSystem::update(float deltaTime) {
                         window->Gfx(),
                         registry.system<GraphSystem>()->transform(entity),
                         PassType::refractive);
-                    a++;
                 } else {
                     meshFilter.model->Draw(
                         window->Gfx(),
                         registry.system<GraphSystem>()->transform(entity));
-                    a++;
                 }
             }
         }
 
-        // Show colliders
-        static bool showColliders = false;
-        // for (auto const& entity :
-        // registry.system<ColliderSystem>()->entities) {
-        //     auto& transform = entity.get<Transform>();
-        //     auto& sphereCollider = entity.get<SphereCollider>();
-
-        //     DirectX::XMFLOAT4 center;
-        //     DirectX::XMStoreFloat4(&center,
-        //     sphereCollider.objectCenterOffset);
-
-        //     sphere->SetPos({center.x + transform.position.x,
-        //                     center.y + transform.position.y,
-        //                     center.z + transform.position.z});
-        //     sphere->scale = 3 * transform.scale.x * sphereCollider.radius;
-        //     if (!showColliders) {
-        //         sphere->scale = 0.0f;
-        //     }
-        //     sphere->Draw(window->Gfx());
-        // }
-
         // Render billboards
-        billboard->Draw(window->Gfx());
         auto torches =
             Registry::instance().system<PropertySystem>()->findEntityByTag(
                 "Torch");
@@ -215,38 +155,14 @@ void RenderSystem::update(float deltaTime) {
                 flame->Draw(window->Gfx());
             }
         }
-        // fireParticle->pos = light->lightPositionWorld();
-        // fireParticle->Draw(window->Gfx());
-
-        // Render other test models
-        nano->Draw(window->Gfx(),
-                   dx::XMMatrixScaling(10.0f, 10.0f, 10.0f) *
-                       dx::XMMatrixTranslation(0.0f, -2.5f, 7.5f));
-
-        // Render light dummy
-        // light->Draw(window->Gfx());
-
-        // Render interface
-        // {
-        //     if (ImGui::Begin("Colliders")) {
-        //         if (ImGui::Button("Dummies")) {
-        //             showColliders = !showColliders;
-        //         }
-        //     }
-        //     ImGui::End();
-        // }
         {
             if (ImGui::Begin("Simulation Speed")) {
-                ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 10.0f,
-                                   "%.4f", 3.2f);
                 ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
                             1000.0f / ImGui::GetIO().Framerate,
                             ImGui::GetIO().Framerate);
             }
             ImGui::End();
         }
-        // light->SpawnControlWindow();
-        nano->ShowWindow();
     }
     bloom->End();
 
@@ -258,11 +174,6 @@ void RenderSystem::update(float deltaTime) {
         window->Gfx().BeginFrame(0.07f, 0.0f, 0.12f, false);
         colorCorrection->Draw(window->Gfx());
     }
-
-    text->RenderText(registry.system<RenderSystem>()->window->Gfx(),
-                     "Visible entities: " + std::to_string(a), false,
-                     {0.0f, 0.0f});
-    button->draw("Create new monkey");
 
     // Render UI
     for (auto e :
