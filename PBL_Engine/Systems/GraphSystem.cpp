@@ -155,11 +155,14 @@ void GraphSystem::update(float const deltaTime) {
             } else {
                 node.cumulativeActivity = false;
             }
-            if (node.entity->has<Active>() && !node.cumulativeActivity) {
-                node.entity->remove<Active>();
-            }
-            if (!node.entity->has<Active>() && node.cumulativeActivity) {
-                node.entity->add<Active>({});
+            if (node.entity->has<Active>()) {
+                if (!node.cumulativeActivity) {
+                    node.entity->remove<Active>();
+                }
+            } else {
+                if (node.cumulativeActivity) {
+                    node.entity->add<Active>({});
+                }
             }
         }
 
