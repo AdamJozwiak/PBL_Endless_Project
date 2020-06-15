@@ -102,7 +102,8 @@ void EnemyControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
             timeToBounce = 0.0f;
         }
         if (other.get<Properties>().tag == "Player") {
-            registry.destroyEntity(other);
+            // registry.destroyEntity(other);
+            registry.system<PropertySystem>()->activateEntity(other, false);
             // registry.system<PropertySystem>()->activateEntity(loseText,
             // true);
 
@@ -134,13 +135,12 @@ void EnemyControllerScript::moveRook(float const deltaTime) {
     }
 }
 
-void EnemyControllerScript::setMovementType(MovementType mt,
-                                            bool movingS) {
+void EnemyControllerScript::setMovementType(MovementType mt, bool movingS) {
     movementType = mt;
     if (mt == Rook) {
         movingSideways = movingS;
     }
 }
 
-    // //////////////////////////////////////////////////////////////////////////
-    // //
+// //////////////////////////////////////////////////////////////////////////
+// //
