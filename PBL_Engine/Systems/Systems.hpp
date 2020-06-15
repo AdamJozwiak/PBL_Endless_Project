@@ -3,6 +3,7 @@
 // ///////////////////////////////////////////////// Includes for all systems //
 #include "AnimatorSystem.hpp"
 #include "BehaviourSystem.hpp"
+#include "CheckCollisionsSystem.hpp"
 #include "ColliderSystem.hpp"
 #include "GraphSystem.hpp"
 #include "LightSystem.hpp"

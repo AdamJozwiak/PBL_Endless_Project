@@ -12,6 +12,7 @@
 
 // ///////////////////////////////////////////////////// Forward declarations //
 class GraphSystem;
+class CheckCollisionsSystem;
 
 // /////////////////////////////////////////////////////////////////// System //
 ECS_SYSTEM(ColliderSystem) {
@@ -54,5 +55,6 @@ ECS_SYSTEM(ColliderSystem) {
   private:
     float speed_factor = 1.0f;
     std::shared_ptr<GraphSystem> graphSystem;
+    std::shared_ptr<CheckCollisionsSystem> checkCollisionsSystem;
 };
 // ////////////////////////////////////////////////////////////////////////// //

@@ -10,6 +10,7 @@
 #include "Components/Components.hpp"
 #include "ECS/ECS.hpp"
 #include "Events/OnCollisionEnter.hpp"
+#include "Systems/CheckCollisionsSystem.hpp"
 #include "Systems/GraphSystem.hpp"
 #include "Systems/RenderSystem.hpp"
 
@@ -404,7 +405,10 @@ void ColliderSystem::filters() {
     filter<BoxCollider>();
 }
 
-void ColliderSystem::setup() { graphSystem = registry.system<GraphSystem>(); }
+void ColliderSystem::setup() {
+    graphSystem = registry.system<GraphSystem>();
+    checkCollisionsSystem = registry.system<CheckCollisionsSystem>();
+}
 
 void ColliderSystem::release() {}
 
@@ -420,13 +424,9 @@ void ColliderSystem::update(float deltaTime) {
 
     std::set<std::pair<Entity, Entity>> checks;
     for (auto iEntity : entities) {
-        for (auto jEntity : entities) {
+        for (auto jEntity : checkCollisionsSystem->entities) {
             if (iEntity.id == jEntity.id) {
                 break;
-            }
-            if (!iEntity.has<CheckCollisions>() &&
-                !jEntity.has<CheckCollisions>()) {
-                continue;
             }
 
             checks.insert({iEntity < jEntity ? iEntity : jEntity,
@@ -446,7 +446,7 @@ void ColliderSystem::update(float deltaTime) {
         }
     }
 
-    for (auto entity : entities) {
+    for (auto entity : checkCollisionsSystem->entities) {
         auto& boxCollider = entity.get<BoxCollider>();
         auto& transform = entity.get<Transform>();
 
