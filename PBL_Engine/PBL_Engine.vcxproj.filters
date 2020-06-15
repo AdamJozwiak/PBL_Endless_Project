@@ -1142,6 +1142,9 @@
     <ClInclude Include="Components\UIElement.hpp">
       <Filter>Pliki nagłówkowe\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Components\Light.hpp">
+      <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXTrace.inl">

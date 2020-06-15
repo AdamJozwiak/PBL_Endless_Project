@@ -35,6 +35,14 @@ template BoxCollider const& Entity::get<BoxCollider>() const;
 template bool Entity::has<BoxCollider>() const;
 template Entity& Entity::set<BoxCollider>(BoxCollider const&);
 
+// Light
+template Entity& Entity::add<Light>(Light const&);
+template Entity& Entity::remove<Light>();
+template Light& Entity::get<Light>();
+template Light const& Entity::get<Light>() const;
+template bool Entity::has<Light>() const;
+template Entity& Entity::set<Light>(Light const&);
+
 // MainCamera
 template Entity& Entity::add<MainCamera>(MainCamera const&);
 template Entity& Entity::remove<MainCamera>();
