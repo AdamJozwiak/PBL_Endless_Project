@@ -31,8 +31,8 @@ void BillboardRenderSystem::update(float deltaTime) {
             auto const &light = entity.get<Light>().pointLight;
             flame->pos = light->lightPositionWorld();
         } else {
-            flame->pos =
-                DirectX::XMFLOAT4{position.x, position.y, position.z, 0.0f};
+            flame->pos = DirectX::XMFLOAT4{position.x, position.y - 2.0f,
+                                           position.z, 0.0f};
         }
         flame->Draw(window->Gfx());
     }
