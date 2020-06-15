@@ -79,7 +79,7 @@ void CameraControllerScript::shake(float deltaTime) {
     auto const& cameraPosition = entity.get<Transform>().position;
     std::random_device rnd;
     std::mt19937 rng(rnd());
-    std::uniform_int_distribution<int> uni(-4, 4);
+    std::uniform_int_distribution<int> uni(-1, 1);
     shakeOffset = {(float)uni(rng), (float)uni(rng), 0.0f};
     entity.get<Transform>().position = DirectX::XMFLOAT3{
         interpolate(easeOutQuad, lastPosition.x,
