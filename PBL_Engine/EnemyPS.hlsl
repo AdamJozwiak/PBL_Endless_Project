@@ -3,6 +3,7 @@ cbuffer Cbuf { float time; }
 struct VSOut {
     float4 pos : SV_POSITION;
     float4 worldPos : POSITION;
+    float4 localPos : NORMAL;
     float2 tex : TEXCOORD;
 };
 struct PixelShaderOutput {

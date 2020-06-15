@@ -161,14 +161,34 @@ void GameManagerScript::spawnEnemy(MovementType mt, EntityId spawnPoint,
                                    int percentage, bool movingSideways) {
     if (shouldHappen(percentage)) {
         std::shared_ptr<Entity> enemy;
-        if (mt == Bishop)
+        if (mt == Bishop) {
             enemy = std::make_shared<Entity>(
                 Registry::instance().system<SceneSystem>()->spawnPrefab(
                     "Assets\\Unity\\Prefabs\\Enemy.prefab"));
-        else if (mt == Rook)
+            enemy->add<Flame>({.fireParticle = std::make_shared<FireParticle>(
+                                   registry.system<WindowSystem>()->gfx(),
+                                   Registry::instance()
+                                       .system<PropertySystem>()
+                                       ->findEntityByTag("MainCamera")
+                                       .at(0)
+                                       .get<MainCamera>()
+                                       .camera.get(),
+                                   bishop)});
+        } else if (mt == Rook) {
             enemy = std::make_shared<Entity>(
                 Registry::instance().system<SceneSystem>()->spawnPrefab(
                     "Assets\\Unity\\Prefabs\\EnemyRook.prefab"));
+            enemy->add<Flame>({.fireParticle = std::make_shared<FireParticle>(
+                                   registry.system<WindowSystem>()->gfx(),
+                                   Registry::instance()
+                                       .system<PropertySystem>()
+                                       ->findEntityByTag("MainCamera")
+                                       .at(0)
+                                       .get<MainCamera>()
+                                       .camera.get(),
+                                   rook)});
+        }
+
         enemyScript = std::static_pointer_cast<EnemyControllerScript>(
             enemy->get<Behaviour>().script);
         enemyScript->setMovementType(mt, movingSideways);

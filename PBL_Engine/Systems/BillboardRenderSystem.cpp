@@ -10,7 +10,7 @@
 // /////////////////////////////////////////////////////////////////// System //
 // ----------------------------------------- System's virtual functions -- == //
 void BillboardRenderSystem::filters() {
-    filter<Active>().filter<Flame>().filter<Light>();
+    filter<Active>().filter<Transform>().filter<Properties>().filter<Flame>();
 }
 
 void BillboardRenderSystem::setup() {
@@ -23,10 +23,17 @@ void BillboardRenderSystem::release() {}
 
 void BillboardRenderSystem::update(float deltaTime) {
     // Render billboards
-    for (auto torch : entities) {
-        auto flame = torch.get<Flame>().fireParticle;
-        auto light = torch.get<Light>().pointLight;
-        flame->pos = light->lightPositionWorld();
+    for (auto entity : entities) {
+        auto const &flame = entity.get<Flame>().fireParticle;
+        auto const &position = entity.get<Transform>().position;
+        auto const &tag = entity.get<Properties>().tag;
+        if (tag == "Torch") {
+            auto const &light = entity.get<Light>().pointLight;
+            flame->pos = light->lightPositionWorld();
+        } else {
+            flame->pos =
+                DirectX::XMFLOAT4{position.x, position.y, position.z, 0.0f};
+        }
         flame->Draw(window->Gfx());
     }
     {
