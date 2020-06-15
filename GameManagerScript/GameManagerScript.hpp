@@ -4,12 +4,12 @@
 #include <map>
 #include <memory>
 
+#include "CameraControllerScript.hpp"
 #include "ECS/Entity.hpp"
+#include "EnemyControllerScript.hpp"
 #include "Events/OnCollisionEnter.hpp"
 #include "GameManagerScriptAPI.hpp"
 #include "Script.hpp"
-#include "EnemyControllerScript.hpp"
-#include "CameraControllerScript.hpp"
 
 class EnemyControllerScript;
 
