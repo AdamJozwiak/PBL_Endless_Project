@@ -31,8 +31,8 @@ GDIPlusManager gdipm;
 // testing models
 Model* nano;
 Animator animator;
-//PointLight* light;
-//PointLight* light2;
+// PointLight* light;
+// PointLight* light2;
 std::unique_ptr<Button> button;
 std::unique_ptr<Text> text;
 
@@ -57,10 +57,10 @@ void RenderSystem::setup() {
     freeCamera = std::make_shared<Camera>();
     sphere = std::make_unique<SolidSphere>(window->Gfx(), 1.0f);
     billboard = std::make_unique<Billboard>(window->Gfx(), mainCamera.get());
-    fireParticle = std::make_unique<FireParticle>(
-        window->Gfx(), mainCamera.get(), EnemyType::pawn);
-    //light2 = new PointLight(window->Gfx(), 1);
-    //light = new PointLight(window->Gfx(), 0);
+    // fireParticle = std::make_unique<FireParticle>(
+    //     window->Gfx(), mainCamera.get(), EnemyType::pawn);
+    // light2 = new PointLight(window->Gfx(), 1);
+    // light = new PointLight(window->Gfx(), 0);
     bloom = std::make_unique<PostProcessing>(window->Gfx(), L"Bloom", 2);
     colorCorrection =
         std::make_unique<PostProcessing>(window->Gfx(), L"ColorCorrection", 1);
@@ -142,11 +142,11 @@ void RenderSystem::update(float deltaTime) {
         auto frustum = CFrustum(viewProjection);
 
         // Set lights
-        //light->AddToBuffer(DirectX::XMMatrixIdentity(),
+        // light->AddToBuffer(DirectX::XMMatrixIdentity(),
         //                   mainCamera->GetCameraPos());
-        //light2->AddToBuffer(DirectX::XMMatrixIdentity(),
+        // light2->AddToBuffer(DirectX::XMMatrixIdentity(),
         //                    mainCamera->GetCameraPos());
-        //PointLight::Bind(window->Gfx());
+        // PointLight::Bind(window->Gfx());
 
         // Advance the animation time
         animator.animationTime += dt;
@@ -204,8 +204,19 @@ void RenderSystem::update(float deltaTime) {
 
         // Render billboards
         billboard->Draw(window->Gfx());
-        //fireParticle->pos = light->lightPositionWorld();
-        fireParticle->Draw(window->Gfx());
+        auto torches =
+            Registry::instance().system<PropertySystem>()->findEntityByTag(
+                "Torch");
+        for (auto torch : torches) {
+            if (torch.has<Flame>()) {
+                auto flame = torch.get<Flame>().fireParticle;
+                auto light = torch.get<Light>().pointLight;
+                flame->pos = light->lightPositionWorld();
+                flame->Draw(window->Gfx());
+            }
+        }
+        // fireParticle->pos = light->lightPositionWorld();
+        // fireParticle->Draw(window->Gfx());
 
         // Render other test models
         nano->Draw(window->Gfx(),
@@ -234,7 +245,7 @@ void RenderSystem::update(float deltaTime) {
             }
             ImGui::End();
         }
-        //light->SpawnControlWindow();
+        // light->SpawnControlWindow();
         nano->ShowWindow();
     }
     bloom->End();

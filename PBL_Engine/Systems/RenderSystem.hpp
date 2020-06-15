@@ -39,7 +39,7 @@ ECS_SYSTEM(RenderSystem) {
     float speed_factor = 1.0f;
     std::unique_ptr<SolidSphere> sphere;
     std::unique_ptr<Billboard> billboard;
-    std::unique_ptr<FireParticle> fireParticle;
+    // std::unique_ptr<FireParticle> fireParticle;
     std::unique_ptr<PostProcessing> bloom, colorCorrection;
 };
 
