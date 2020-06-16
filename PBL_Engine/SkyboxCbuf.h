@@ -1,9 +1,10 @@
 #pragma once
 #include <DirectXMath.h>
 
-#include "Components/Components.hpp"
 #include "ConstantBuffers.h"
 #include "Renderable.h"
+
+struct Skybox;
 
 class SkyboxCbuf : public Bindable {
   private:

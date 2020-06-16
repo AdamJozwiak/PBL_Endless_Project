@@ -1,5 +1,7 @@
 #include "SkyboxCbuf.h"
 
+#include "Components/Components.hpp"
+
 SkyboxCbuf::SkyboxCbuf(Graphics& gfx, const Renderable& parent, Skybox* skybox,
                        UINT slot)
     : parent(parent), pSkybox(skybox) {
