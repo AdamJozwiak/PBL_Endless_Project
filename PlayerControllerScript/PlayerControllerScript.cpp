@@ -148,7 +148,7 @@ void PlayerControllerScript::setup() {
 
 void PlayerControllerScript::update(float const deltaTime) {
     static float wait = 2.0f;
-    static float flightHeight = 4.5f;
+    static float flightHeight = 1.0f;
 
     if (wait >= 0.0f) {
         entity.get<Transform>().position.y = 0.0f;
@@ -170,12 +170,18 @@ void PlayerControllerScript::update(float const deltaTime) {
     if (!firstThrust) {
         if (currentForm == eagleForm) {
             if (inputAscendKey) {
-                moveInput.y = ascend(deltaTime, 10.0f);
+                // moveInput.y = ascend(deltaTime, 10.0f);
+                moveInput.y = interpolate(easeOutQuad, moveInput.y, 0.75f, 0.1f,
+                                          deltaTime);
             } else {
-                moveInput.y = -0.5f;
+                // moveInput.y = -0.5f;
+                moveInput.y = interpolate(easeOutSine, moveInput.y, -1.0f, 0.1f,
+                                          deltaTime);
             }
         } else {
             moveInput.y = 0.0f;
+            // moveInput.y =
+            //     interpolate(easeOutSine, moveInput.y, 0.0f, 0.1f, deltaTime);
         }
 
         // Ascend
@@ -188,7 +194,12 @@ void PlayerControllerScript::update(float const deltaTime) {
     } else {
         if (entity.get<Transform>().position.y - idlePosition.y <
             flightHeight) {
-            moveInput.y = ascend(deltaTime, 20.0f);
+            // moveInput.y = ascend(deltaTime, 20.0f);
+            moveInput.y =
+                interpolate(easeOutCubic, moveInput.y, 3.0f, 0.1f, deltaTime);
+            /* moveInput.y = */
+            /*     interpolate(easeOutSine, moveInput.y, -1.0f, 0.1f,
+             * deltaTime); */
         } else {
             firstThrust = false;
         }
@@ -307,13 +318,13 @@ void PlayerControllerScript::update(float const deltaTime) {
                 DirectX::XMConvertToRadians(30.0f)),
         0.004f, deltaTime);
 
-    entity.get<Transform>().euler.z = interpolate(
-        easeOutSine, entity.get<Transform>().euler.z,
-        (moveInput.y > 0.0f ? 1.0f : -1.0f) *
-            (std::min)(
-                35.0f * DirectX::XMConvertToRadians(std::abs(moveInput.y)),
-                DirectX::XMConvertToRadians(30.0f)),
-        0.3f, deltaTime);
+    entity.get<Transform>().euler.z =
+        interpolate(easeOutSine, entity.get<Transform>().euler.z,
+                    (moveInput.y + 0.5f > 0.0f ? 1.0f : -1.0f) *
+                        (std::min)(15.0f * DirectX::XMConvertToRadians(
+                                               std::abs(moveInput.y + 0.5f)),
+                                   DirectX::XMConvertToRadians(15.0f)),
+                    0.04f, deltaTime);
 
     if (currentForm == humanForm) {
         moveInput.y = 0.0f;
@@ -383,8 +394,7 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
          Entity(event.b.id).get<Properties>().name == "Collider Ground") ||
         (Entity(event.a.id).get<Properties>().name == "Collider Ground" &&
          event.b.id == groundCheck)) {
-        if (!firstThrust)
-        {
+        if (!firstThrust) {
             isGrounded = true;
         }
     } else {
