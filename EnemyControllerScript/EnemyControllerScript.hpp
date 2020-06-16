@@ -46,7 +46,7 @@ class ENEMYCONTROLLERSCRIPT_API EnemyControllerScript : public Script {
     // for Rook
     bool movingSideways = true;
     EntityId playerId;
-    float playerDistance = 5.0f;
+    float playerDistance = 10.0f;
     float timeToBounce = 0.0f;
     float rookTimer = 0.0f;
 };
