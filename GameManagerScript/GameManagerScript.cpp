@@ -331,7 +331,6 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
         spawnRooks(50, false);
 
         // Delete the chunks we've already passed
-        std::vector<decltype(presentChunks.begin())> toDelete;
         auto i = presentChunks.begin();
         for (auto const& chunk : presentChunks) {
             if (chunk.endPositionInParts * PART_LENGTH_IN_WORLD_UNITS <=
@@ -339,12 +338,10 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
                 registry.system<GraphSystem>()->destroyEntityWithChildren(
                     chunk.entity);
                 registry.system<GraphSystem>()->setup();
-                toDelete.push_back(i);
+                presentChunks.erase(i);
+                break;
             }
             ++i;
-        }
-        for (auto const& i : toDelete) {
-            presentChunks.erase(i);
         }
 
         // Randomly find the next chunk
