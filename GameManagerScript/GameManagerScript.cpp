@@ -10,6 +10,7 @@
 #include "ECS/ECS.hpp"
 #include "Systems/Systems.hpp"
 #include "Window.h"
+#include "Timer.h"
 
 // //////////////////////////////////////////////////////// Namespace aliases //
 namespace fs = std::filesystem;
@@ -220,6 +221,22 @@ void GameManagerScript::findSpawnPoints(MovementType mt) {
     }
 }
 
+void GameManagerScript::shakeCamera(float deltaTime) {
+    shakeTimer += deltaTime;
+    auto camera = Registry::instance()
+                      .system<PropertySystem>()
+                      ->findEntityByTag("MainCamera")
+                      .at(0)
+                      .id;
+    cameraScript = std::static_pointer_cast<CameraControllerScript>(
+        Entity(camera).get<Behaviour>().script);
+    cameraScript->shake(deltaTime);
+    if (shakeTimer >= 0.75f) {
+        shake = false;
+        shakeTimer = 0.0f;
+    }
+}
+
 std::string GameManagerScript::enumToString(MovementType mt) {
     switch (mt) {
         case Rook:
@@ -282,9 +299,10 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
 
         // Spawn the new chunk
         shake = true;
+        chunkSpawnTime = Timer();
         auto chunk = Registry::instance().system<SceneSystem>()->spawnPrefab(
             CHUNKS_DIRECTORY + "\\" + nextChunk + ".prefab", false);
-
+        spawnDuration = chunkSpawnTime.Peek();
         presentChunks.push_back(
             Chunk{.name = nextChunk,
                   .entity = chunk.id,
@@ -345,19 +363,11 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
         updateWaterfallRefraction();
         updateTrapRefraction();
     }
-    if (shake) {
-        shakeTimer += deltaTime;
-        auto camera = Registry::instance()
-                          .system<PropertySystem>()
-                          ->findEntityByTag("MainCamera")
-                          .at(0)
-                          .id;
-        cameraScript = std::static_pointer_cast<CameraControllerScript>(
-            Entity(camera).get<Behaviour>().script);
-        cameraScript->shake(deltaTime);
-        if (shakeTimer >= 1.5f) {
-            shake = false;
-            shakeTimer = 0.0f;
+    if (shake && spawnDuration >= 2.0f) {
+        shakeCamera(deltaTime);
+    } else if (shake && spawnDuration < 2.0f) {
+        if (shouldHappen(40)) {
+            shakeCamera(deltaTime);
         }
     }
 }

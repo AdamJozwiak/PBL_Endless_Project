@@ -1,7 +1,8 @@
 #pragma once
 #include <chrono>
+#include "EngineAPI.hpp"
 
-class Timer {
+class ENGINE_API Timer {
   public:
     Timer();
     float Mark();

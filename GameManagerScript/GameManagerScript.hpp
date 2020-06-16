@@ -10,6 +10,7 @@
 #include "Events/OnCollisionEnter.hpp"
 #include "GameManagerScriptAPI.hpp"
 #include "Script.hpp"
+#include "Timer.h"
 
 class EnemyControllerScript;
 
@@ -42,6 +43,7 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
                     bool movingSideways = true);
     bool shouldHappen(int percentage);
     void findSpawnPoints(MovementType mt);
+    void shakeCamera(float deltaTime);
     std::string enumToString(MovementType mt);
 
     EntityId playerId;
@@ -50,6 +52,8 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
     std::shared_ptr<CameraControllerScript> cameraScript;
     bool shake = false;
     float shakeTimer = 0.0f;
+    Timer chunkSpawnTime;
+    float spawnDuration;
 
     // --------------------------------------------------------- Chunks -- == //
     // Types
