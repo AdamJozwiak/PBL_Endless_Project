@@ -1,3 +1,6 @@
+// ////////////////////////////////////////////////////////////////// Defines //
+#define _USE_MATH_DEFINES
+
 // ///////////////////////////////////////////////////////////////// Includes //
 #include "EnemyControllerScript.hpp"
 
@@ -5,6 +8,7 @@
 #include "ECS/ECS.hpp"
 #include "Systems/Systems.hpp"
 #include "Window.h"
+#include "easings.hpp"
 
 // //////////////////////////////////////////////////////////////// Utilities //
 DirectX::XMFLOAT3 operator+(DirectX::XMFLOAT3 const& a,
@@ -116,22 +120,31 @@ void EnemyControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
 
 // ------------------------------------------------------------ Methods -- == //
 void EnemyControllerScript::moveBishop(float const deltaTime) {
-    entity.get<Transform>().position +=
-        DirectX::XMFLOAT3(-angle, 0.0f, (movingLeft ? (-1.0f) : 1.0f) * angle) *
-        deltaTime * speed;
+    auto& position = entity.get<Transform>().position;
+    position.x = interpolate(easeOutQuad, position.x,
+                             position.x + (-angle) * deltaTime * speed, 0.01f,
+                             deltaTime);
+    position.z =
+        interpolate(easeOutQuad, position.z,
+                    position.z + ((movingLeft ? (-1.0f) : 1.0f) * angle) *
+                                     deltaTime * speed,
+                    0.01f, deltaTime);
 }
 
 void EnemyControllerScript::moveRook(float const deltaTime) {
     float tmp = deltaTime;
+    auto& position = entity.get<Transform>().position;
     // if ((int) tmp % 3 == 0) movingSideways = !movingSideways;
     if (movingSideways) {
-        entity.get<Transform>().position +=
-            DirectX::XMFLOAT3(0.0f, 0.0f, (movingLeft ? (-1.0f) : 1.0f)) *
-            deltaTime * speed;
+        position.z = interpolate(
+            easeOutQuad, position.z,
+            position.z + ((movingLeft ? (-1.0f) : 1.0f)) * deltaTime * speed,
+            0.01f, deltaTime);
     } else {
-        entity.get<Transform>().position +=
-            DirectX::XMFLOAT3((movingLeft ? (-1.0f) : 1.0f), 0.0f, 0.0f) *
-            deltaTime * speed;
+        position.x = interpolate(
+            easeOutQuad, position.x,
+            position.x + ((movingLeft ? (-1.0f) : 1.0f)) * deltaTime * speed,
+            0.01f, deltaTime);
     }
 }
 

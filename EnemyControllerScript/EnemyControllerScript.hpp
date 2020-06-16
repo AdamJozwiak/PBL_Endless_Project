@@ -40,7 +40,7 @@ class ENEMYCONTROLLERSCRIPT_API EnemyControllerScript : public Script {
     /*     SceneManager.LoadScene(0); */
     /* } */
     MovementType movementType = Bishop;
-    float speed = 7.0f;
+    float speed = 30.0f;
     float angle = 0.45f;
     bool movingLeft = true;
     // for Rook
