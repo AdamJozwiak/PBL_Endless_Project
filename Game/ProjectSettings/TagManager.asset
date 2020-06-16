@@ -16,6 +16,8 @@ TagManager:
   - EnemySpawnPointRook
   - TextUI
   - ButtonUI
+  - ObstacleCollider
+  - DeathCollider
   layers:
   - Default
   - TransparentFX
