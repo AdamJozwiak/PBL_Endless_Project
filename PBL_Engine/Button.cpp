@@ -48,7 +48,7 @@ void Button::draw(std::string const& text, float a, float r, float g, float b) {
 
         if (mouse && !clicked) {
             clicked = true;
-            Registry::instance().send(OnButtonClick{});
+            Registry::instance().send(OnButtonClick{.button = this});
 
             Registry::instance().system<SoundSystem>()->play(
                 "Assets\\Audio\\gui\\01.wav");
