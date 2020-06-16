@@ -104,8 +104,8 @@ class ENGINE_API FireParticle : public RenderableBase<FireParticle> {
                 case rook:
                     AddBind(std::make_unique<Texture>(
                         gfx,
-                        std::ref(
-                            Surface::FromFile(assetsPath + "enemy-albedo1.png")),
+                        std::ref(Surface::FromFile(assetsPath +
+                                                   "enemy-albedo1.png")),
                         0));
                     break;
                 case bishop:
