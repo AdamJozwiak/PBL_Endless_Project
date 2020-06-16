@@ -66,6 +66,8 @@ ENGINE_API int Engine::run() {
         system->setup();
     }
 
+    timer.Mark();
+
     while (true) {
         if (registry.refresh()) {
             registry.system<GraphSystem>()->setup();
