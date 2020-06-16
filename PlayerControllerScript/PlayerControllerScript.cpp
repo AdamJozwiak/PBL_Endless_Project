@@ -428,6 +428,10 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
                 entity.add<Rigidbody>(rb);
             }
             canChangeForm = false;
+        } else if (otherTag == "DeathCollider") {
+            registry.system<PropertySystem>()->activateEntity(
+                Entity(event.a.id == entity.id ? event.a.id : event.b.id),
+                false);
         } else if (otherTag == "Boundary") {
             return;
         } else if (other.id == groundCheck) {
