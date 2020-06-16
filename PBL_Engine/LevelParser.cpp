@@ -1,3 +1,5 @@
+#define _HAS_ITERATOR_DEBUGGING 0
+
 #include "LevelParser.h"
 
 #include <Script.hpp>
@@ -40,6 +42,16 @@ LevelParser::~LevelParser() {}
 
 void LevelParser::cachePrefab(std::string const &filename, bool clear) {
     std::vector<YAML::Node> assetNodes = YAML::LoadAllFromFile(filename);
+
+    for (auto const &node : assetNodes) {
+        yamlLoop(i, node) {
+            if (!i->second["id"]) {
+                continue;
+            }
+            prefabFileIds[pathToGuid[filename]].insert(
+                i->second["id"].as<FileId>());
+        }
+    }
 
     // Don't keep the nodes in memory for longer than necessary
     if (clear) {
@@ -777,9 +789,9 @@ void LevelParser::initialize() {
 
     for (auto const &extension : searchedFileExtensions) {
         for (auto const &path : assetPaths[extension]) {
-            // if (extension == ".prefab") {
-            //     continue;
-            // }
+            if (extension == ".prefab") {
+                continue;
+            }
             std::vector<YAML::Node> assetNodes = YAML::LoadAllFromFile(path);
             for (auto const &node : assetNodes) {
                 if (extension == ".meta") {
