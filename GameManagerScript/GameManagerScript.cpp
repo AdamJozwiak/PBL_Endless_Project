@@ -231,7 +231,7 @@ void GameManagerScript::shakeCamera(float deltaTime) {
     cameraScript = std::static_pointer_cast<CameraControllerScript>(
         Entity(camera).get<Behaviour>().script);
     cameraScript->shake(deltaTime);
-    if (shakeTimer >= 0.75f) {
+    if (shakeTimer >= SHAKE_DURATION) {
         shake = false;
         shakeTimer = 0.0f;
     }
@@ -298,15 +298,20 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
         generatedLengthInParts += lengthOfChunk.at(nextChunk);
 
         // Spawn the new chunk
-        shake = true;
         chunkSpawnTime = Timer();
+
         auto chunk = Registry::instance().system<SceneSystem>()->spawnPrefab(
             CHUNKS_DIRECTORY + "\\" + nextChunk + ".prefab", false);
-        spawnDuration = chunkSpawnTime.Peek();
         presentChunks.push_back(
             Chunk{.name = nextChunk,
                   .entity = chunk.id,
                   .endPositionInParts = generatedLengthInParts});
+
+        spawnDuration = chunkSpawnTime.Peek();
+
+        shake = (spawnDuration >= SHAKE_THRESHOLD_TIME_IN_SECONDS) ||
+                ((spawnDuration < SHAKE_THRESHOLD_TIME_IN_SECONDS) &&
+                 shouldHappen(SHAKE_PROBABILITY_UNDER_THRESHOLD));
 
         // Move the new chunk and the enemy spawn points to their place
         chunk.get<Transform>().position.x = generatedLengthInWorldUnits;
@@ -363,12 +368,8 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
         updateWaterfallRefraction();
         updateTrapRefraction();
     }
-    if (shake && spawnDuration >= 2.0f) {
+    if (shake) {
         shakeCamera(deltaTime);
-    } else if (shake && spawnDuration < 2.0f) {
-        if (shouldHappen(40)) {
-            shakeCamera(deltaTime);
-        }
     }
 }
 

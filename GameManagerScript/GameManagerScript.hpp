@@ -54,6 +54,9 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
     float shakeTimer = 0.0f;
     Timer chunkSpawnTime;
     float spawnDuration;
+    float const SHAKE_THRESHOLD_TIME_IN_SECONDS = 0.5f;
+    int const SHAKE_PROBABILITY_UNDER_THRESHOLD = 50;
+    float const SHAKE_DURATION = 0.75f;
 
     // --------------------------------------------------------- Chunks -- == //
     // Types
