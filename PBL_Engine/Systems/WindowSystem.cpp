@@ -10,7 +10,7 @@
 void WindowSystem::filters() {}
 
 void WindowSystem::setup() {
-    windowPtr = std::make_unique<Window>(1680, 1050, "Ohunkakan");
+    windowPtr = std::make_unique<Window>(1920, 1080, "Ohunkakan");
 }
 
 void WindowSystem::update(float deltaTime){};

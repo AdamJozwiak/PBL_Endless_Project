@@ -65,7 +65,7 @@ float4 main(VSOut input) : SV_TARGET {
     float originalIntensity = 1.0f;
     float bloomSaturation = 0.5f;
     float originalSaturation = 1.0f;
-    float2 resolution = float2(1680.0f, 1050.0f);
+    float2 resolution = float2(1920.0f, 1080.0f);
 
     // blur
     bloomColor = gaussianBlur(blurDistance, input.tex, resolution,
