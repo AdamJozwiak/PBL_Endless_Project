@@ -401,8 +401,8 @@ void PlayerControllerScript::update(float const deltaTime) {
 // ------------------------------------------------------------- Events -- == //
 void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
     if ((event.a.id == groundCheck &&
-         Entity(event.b.id).get<Properties>().name == "Collider Ground") ||
-        (Entity(event.a.id).get<Properties>().name == "Collider Ground" &&
+         Entity(event.b.id).get<Properties>().tag == "Ground") ||
+        (Entity(event.a.id).get<Properties>().tag == "Ground" &&
          event.b.id == groundCheck)) {
         if (!firstThrust) {
             isGrounded = true;
