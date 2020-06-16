@@ -12,7 +12,8 @@ class PostProcessCbuf : public Bindable {
     };
 
   public:
-    PostProcessCbuf(Graphics& gfx, const Renderable& parent, float blackProportion = 1.0f, UINT slot = 0u);
+    PostProcessCbuf(Graphics& gfx, const Renderable& parent,
+                    float blackProportion = 1.0f, UINT slot = 0u);
     void Bind(Graphics& gfx) noexcept override;
     void SetBlackProportion(float blackProportion);
 
