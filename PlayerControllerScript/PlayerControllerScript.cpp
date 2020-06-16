@@ -148,6 +148,36 @@ void PlayerControllerScript::setup() {
 };
 
 void PlayerControllerScript::update(float const deltaTime) {
+    switch (currentState) {
+        case GAME_LAUNCH_FADE_IN: {
+        } break;
+        case MENU: {
+        } break;
+        case CHANGE_MENU_TYPE_TO_MAIN: {
+        } break;
+        case CHANGE_MENU_TYPE_TO_PAUSE: {
+        } break;
+        case MENU_TO_GAME_FADE_OUT: {
+        } break;
+        case NEW_GAME_SETUP: {
+        } break;
+        case GAME_FADE_IN: {
+        } break;
+        case GAME: {
+            doGameLogic(deltaTime);
+        } break;
+        case DEATH_RESULTS: {
+        } break;
+        case RESULTS_TO_GAME_FADE_OUT: {
+        } break;
+        case GAME_EXIT_FADE_OUT: {
+        } break;
+        default: {
+        } break;
+    };
+}
+
+void PlayerControllerScript::doGameLogic(float const deltaTime) {
     static float wait = 2.0f;
     static float flightHeight = 1.0f;
 

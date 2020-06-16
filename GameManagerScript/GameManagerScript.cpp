@@ -116,7 +116,33 @@ void GameManagerScript::setup() {
 };
 
 void GameManagerScript::update(float const deltaTime) {
-    handleChunkSpawning(deltaTime);
+    switch (currentState) {
+        case GAME_LAUNCH_FADE_IN: {
+        } break;
+        case MENU: {
+        } break;
+        case CHANGE_MENU_TYPE_TO_MAIN: {
+        } break;
+        case CHANGE_MENU_TYPE_TO_PAUSE: {
+        } break;
+        case MENU_TO_GAME_FADE_OUT: {
+        } break;
+        case NEW_GAME_SETUP: {
+        } break;
+        case GAME_FADE_IN: {
+        } break;
+        case GAME: {
+            handleChunkSpawning(deltaTime);
+        } break;
+        case DEATH_RESULTS: {
+        } break;
+        case RESULTS_TO_GAME_FADE_OUT: {
+        } break;
+        case GAME_EXIT_FADE_OUT: {
+        } break;
+        default: {
+        } break;
+    };
 };
 
 // ------------------------------------------------------------- Events -- == //

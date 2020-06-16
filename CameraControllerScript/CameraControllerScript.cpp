@@ -49,21 +49,47 @@ void CameraControllerScript::setup() {
 };
 
 void CameraControllerScript::update(float const deltaTime) {
-    auto const& playerTransform = Entity(playerId).get<Transform>();
+    switch (currentState) {
+        case GAME_LAUNCH_FADE_IN: {
+        } break;
+        case MENU: {
+        } break;
+        case CHANGE_MENU_TYPE_TO_MAIN: {
+        } break;
+        case CHANGE_MENU_TYPE_TO_PAUSE: {
+        } break;
+        case MENU_TO_GAME_FADE_OUT: {
+        } break;
+        case NEW_GAME_SETUP: {
+        } break;
+        case GAME_FADE_IN: {
+        } break;
+        case GAME: {
+            auto const& playerTransform = Entity(playerId).get<Transform>();
 
-    entity.get<Transform>().position = DirectX::XMFLOAT3{
-        interpolate(easeOutQuad, lastPosition.x,
-                    playerTransform.position.x + offset.x, smoothing,
-                    deltaTime),
-        interpolate(easeOutQuad, lastPosition.y,
-                    playerTransform.position.y * 0.75f + offset.y, smoothing,
-                    deltaTime),
-        interpolate(easeOutQuad, lastPosition.z,
-                    playerTransform.position.z + offset.z, smoothing,
-                    deltaTime)};
+            entity.get<Transform>().position = DirectX::XMFLOAT3{
+                interpolate(easeOutQuad, lastPosition.x,
+                            playerTransform.position.x + offset.x, smoothing,
+                            deltaTime),
+                interpolate(easeOutQuad, lastPosition.y,
+                            playerTransform.position.y * 0.75f + offset.y,
+                            smoothing, deltaTime),
+                interpolate(easeOutQuad, lastPosition.z,
+                            playerTransform.position.z + offset.z, smoothing,
+                            deltaTime)};
 
-    //! This line was in late update, may not work
-    lastPosition = entity.get<Transform>().position;
+            //! This line was in late update, may not work
+            lastPosition = entity.get<Transform>().position;
+        } break;
+        case DEATH_RESULTS: {
+        } break;
+        case RESULTS_TO_GAME_FADE_OUT: {
+        } break;
+        case GAME_EXIT_FADE_OUT: {
+        } break;
+        default: {
+        } break;
+    };
 };
 
 // ------------------------------------------------------------- Events -- == //
