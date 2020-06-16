@@ -6757,7 +6757,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1492295184}
   m_Layer: 0
-  m_Name: 'Chunk11PP '
+  m_Name: Chunk11PP
   m_TagString: ChunkStartEndProperty
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6933,7 +6933,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1523367227}
   m_Layer: 0
-  m_Name: 'Chunk10PP '
+  m_Name: Chunk10PP
   m_TagString: ChunkStartEndProperty
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 2793776387794585472}
   - component: {fileID: 2793776387794585487}
   m_Layer: 0
-  m_Name: Ground Collider
-  m_TagString: Untagged
+  m_Name: Collider Ground
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -42,8 +42,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 39.94624, y: 1, z: 17.957909}
-  m_Center: {x: 19.47312, y: 0, z: 8.478954}
+  m_Size: {x: 39.94624, y: 8.300804, z: 17.957909}
+  m_Center: {x: 19.47312, y: -3.650402, z: 8.478954}
 --- !u!1 &2793776387819235145
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,8 +174,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 9.964575, y: 8.914993, z: 11.922719}
-  m_Center: {x: 4.4822874, y: 3.9574966, z: -5.4613595}
+  m_Size: {x: 9.964575, y: 8.914993, z: 14.315179}
+  m_Center: {x: 4.4822874, y: 3.9574966, z: -6.6575894}
 --- !u!1 &2793776388224702098
 GameObject:
   m_ObjectHideFlags: 0
@@ -306,8 +306,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 28.132122, y: 9.646233, z: 1}
-  m_Center: {x: 13.586376, y: 4.3231163, z: 0}
+  m_Size: {x: 28.132122, y: 9.646233, z: 10.240148}
+  m_Center: {x: 13.586376, y: 4.3231163, z: 4.620074}
 --- !u!1 &2793776389246357727
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,8 +350,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 39.94624, y: 1, z: 17.957909}
-  m_Center: {x: 19.47312, y: 0, z: 8.478954}
+  m_Size: {x: 39.94624, y: 6.3733025, z: 17.957909}
+  m_Center: {x: 19.47312, y: 2.6866512, z: 8.478954}
 --- !u!1 &2793776389291347432
 GameObject:
   m_ObjectHideFlags: 0
@@ -394,8 +394,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 29.96158, y: 9.646233, z: 1}
-  m_Center: {x: 14.48079, y: 4.3231163, z: 0}
+  m_Size: {x: 29.96158, y: 9.646233, z: 8.435835}
+  m_Center: {x: 14.48079, y: 4.3231163, z: -3.7179174}
 --- !u!1 &2793776389388951551
 GameObject:
   m_ObjectHideFlags: 0
@@ -469,8 +469,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 11.8740425, y: 8.914993, z: 11.922719}
-  m_Center: {x: 3.5275538, y: 3.9574966, z: -5.4613595}
+  m_Size: {x: 11.8740425, y: 8.914993, z: 15.654227}
+  m_Center: {x: 3.5275536, y: 3.9574966, z: -3.5956054}
 --- !u!1001 &2793776387399402009
 PrefabInstance:
   m_ObjectHideFlags: 0

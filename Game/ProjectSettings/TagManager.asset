@@ -18,6 +18,7 @@ TagManager:
   - ButtonUI
   - ObstacleCollider
   - DeathCollider
+  - Ground
   layers:
   - Default
   - TransparentFX

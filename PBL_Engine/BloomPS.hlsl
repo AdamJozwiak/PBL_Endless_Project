@@ -20,7 +20,7 @@ float normpdf(in float x, in float sigma) {
 
 float4 gaussianBlur(float blurDistance, float2 texCoords, float2 resolution,
                     Texture2D sampledTexture, SamplerState textureSampler) {
-    const int mSize = 21;
+    const int mSize = 11;
     const int kSize = (mSize - 1) / 2;
     float kernel[mSize];
     float3 final_colour = float3(0, 0, 0);

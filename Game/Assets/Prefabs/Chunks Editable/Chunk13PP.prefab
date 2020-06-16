@@ -42,8 +42,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 19.998417, y: 10.530572, z: 1}
-  m_Center: {x: 9.499208, y: 4.765285, z: 0}
+  m_Size: {x: 19.998417, y: 10.530572, z: 10.323017}
+  m_Center: {x: 9.499208, y: 4.765285, z: -4.6615086}
 --- !u!1 &7275741036504955766
 GameObject:
   m_ObjectHideFlags: 0
@@ -117,8 +117,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 19.998417, y: 10.530572, z: 1}
-  m_Center: {x: 9.499208, y: 4.765285, z: 0}
+  m_Size: {x: 19.998417, y: 10.530572, z: 12.380717}
+  m_Center: {x: 9.499208, y: 4.765285, z: 5.6903586}
 --- !u!1 &7275741037144463789
 GameObject:
   m_ObjectHideFlags: 0
@@ -293,8 +293,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 20.08071, y: 1, z: 6.015958}
-  m_Center: {x: 9.540355, y: 0, z: 2.507979}
+  m_Size: {x: 20.08071, y: 5.936203, z: 6.015958}
+  m_Center: {x: 9.540355, y: 2.4681015, z: 2.507979}
 --- !u!1 &7275741038170873912
 GameObject:
   m_ObjectHideFlags: 0
@@ -306,8 +306,8 @@ GameObject:
   - component: {fileID: 7275741038170873915}
   - component: {fileID: 7275741038170873914}
   m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
+  m_Name: Collider Ground
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -337,8 +337,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 20.08071, y: 1, z: 6.015958}
-  m_Center: {x: 9.540355, y: 0, z: 2.507979}
+  m_Size: {x: 20.08071, y: 6.842102, z: 6.015958}
+  m_Center: {x: 9.540355, y: -2.921051, z: 2.507979}
 --- !u!1001 &7275741036749925798
 PrefabInstance:
   m_ObjectHideFlags: 0

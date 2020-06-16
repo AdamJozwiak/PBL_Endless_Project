@@ -42,8 +42,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 15.957793, y: 12.532426, z: 6.1508427}
-  m_Center: {x: 7.3198495, y: 5.766213, z: -2.5754218}
+  m_Size: {x: 15.957793, y: 12.532426, z: 7.454856}
+  m_Center: {x: 7.3198495, y: 5.766213, z: -3.2274284}
 --- !u!1 &589524244063811085
 GameObject:
   m_ObjectHideFlags: 0
@@ -86,8 +86,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 20.027206, y: 12.532426, z: 6.1508427}
-  m_Center: {x: 9.119677, y: 5.766213, z: -2.5754218}
+  m_Size: {x: 20.027206, y: 12.532426, z: 12.763109}
+  m_Center: {x: 9.119677, y: 5.766213, z: 0.730711}
 --- !u!1 &1484149579997971951
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,8 +174,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 14.191477, y: 12.532426, z: 6.1508427}
-  m_Center: {x: 6.201812, y: 5.766213, z: -2.5754218}
+  m_Size: {x: 14.191477, y: 12.532426, z: 9.864342}
+  m_Center: {x: 6.201812, y: 5.766213, z: -0.718673}
 --- !u!1 &3889782954366377323
 GameObject:
   m_ObjectHideFlags: 0
@@ -187,8 +187,8 @@ GameObject:
   - component: {fileID: 2396046974446718844}
   - component: {fileID: 4699081401407929109}
   m_Layer: 0
-  m_Name: Ground Collider
-  m_TagString: Untagged
+  m_Name: Collider Ground
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -218,8 +218,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 60, y: 1, z: 18}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 60, y: 7.00436, z: 18}
+  m_Center: {x: 0, y: -3.00218, z: 0}
 --- !u!1 &5123677952570022809
 GameObject:
   m_ObjectHideFlags: 0
@@ -306,8 +306,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 26.25114, y: 12.532426, z: 2.253542}
-  m_Center: {x: 6.0077095, y: 5.766213, z: -4.7881947}
+  m_Size: {x: 26.25114, y: 12.532426, z: 8.0301285}
+  m_Center: {x: 6.0077095, y: 5.766213, z: -1.8999014}
 --- !u!1 &6138487276211807811
 GameObject:
   m_ObjectHideFlags: 0
@@ -381,8 +381,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 19.926582, y: 12.532426, z: 6.1508427}
-  m_Center: {x: 9.069365, y: 5.766213, z: -2.5754218}
+  m_Size: {x: 19.926582, y: 12.532426, z: 7.8028874}
+  m_Center: {x: 9.069365, y: 5.766213, z: -3.4014442}
 --- !u!1 &6337957736979213688
 GameObject:
   m_ObjectHideFlags: 0
@@ -469,8 +469,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 23.699255, y: 12.532426, z: 6.1508427}
-  m_Center: {x: 10.955701, y: 5.766213, z: -2.5754218}
+  m_Size: {x: 23.699255, y: 12.532426, z: 9.4007435}
+  m_Center: {x: 10.955701, y: 5.766213, z: -4.2003727}
 --- !u!1 &8489838300402184082
 GameObject:
   m_ObjectHideFlags: 0
@@ -513,8 +513,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 60, y: 1, z: 18}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 60, y: 6.8125305, z: 18}
+  m_Center: {x: 0, y: 2.9062653, z: 0}
 --- !u!1 &9192304170084497577
 GameObject:
   m_ObjectHideFlags: 0
@@ -574,7 +574,7 @@ PrefabInstance:
     - target: {fileID: 7875142844343846256, guid: 28ad047140a06cb4bb6a7652068c130e,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7875142844745518826, guid: 28ad047140a06cb4bb6a7652068c130e,
         type: 3}
@@ -1536,7 +1536,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 55f94b3dfaaba26458dbf470efc8cfa4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.04
+      value: 1.71
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 55f94b3dfaaba26458dbf470efc8cfa4, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2073,7 +2073,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 55f94b3dfaaba26458dbf470efc8cfa4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.65
+      value: 4.32
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 55f94b3dfaaba26458dbf470efc8cfa4, type: 3}
       propertyPath: m_LocalPosition.y

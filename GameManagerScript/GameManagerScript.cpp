@@ -98,9 +98,9 @@ void GameManagerScript::setup() {
               .endPositionInParts = generatedLengthInParts});
     cacheThread = std::make_unique<std::thread>([this] {
         Registry::instance().system<SceneSystem>()->cachePrefab(
-            CHUNKS_DIRECTORY + "\\Chunk 1.prefab");
+            CHUNKS_DIRECTORY + "\\Chunk15PP.prefab");
     });
-    nextChunk = "Chunk 1";
+    nextChunk = "Chunk15PP";
 
     updateWaterfallRefraction();
     updateTrapRefraction();
