@@ -337,8 +337,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 8.396736, y: 2.0926285, z: 6.2441177}
-  m_Center: {x: -0.61784744, y: 0.54631424, z: -0.865551}
+  m_Size: {x: 5.3563004, y: 2.0926285, z: 6.2441177}
+  m_Center: {x: -0.86561775, y: 0.54631424, z: -0.865551}
 --- !u!1 &3750929077534830559
 GameObject:
   m_ObjectHideFlags: 0
@@ -3582,6 +3582,14 @@ PrefabInstance:
     - target: {fileID: 400008, guid: f696a81957e80df439600b80ea8667ec, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400008, guid: f696a81957e80df439600b80ea8667ec, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 400008, guid: f696a81957e80df439600b80ea8667ec, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f696a81957e80df439600b80ea8667ec, type: 3}
