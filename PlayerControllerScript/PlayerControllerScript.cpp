@@ -297,7 +297,7 @@ void PlayerControllerScript::update(float const deltaTime) {
             previousAnimSpeed =
                 Entity(currentForm).get<Skybox>().animationSpeed;
         }
-        
+
         Entity(currentForm).get<Skybox>().animationSpeed = 2.0f;
 
         canChangeFormTimer += deltaTime;

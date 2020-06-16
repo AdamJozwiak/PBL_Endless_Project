@@ -36,6 +36,7 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     bool inputChangeFormEagle, inputChangeFormCat;
     bool firstThrust = false;
     bool isGrounded = true;
+
   private:
     // ============================================================== Data == //
     bool (*isKeyPressed)(int const key);
