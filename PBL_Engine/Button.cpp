@@ -2,6 +2,7 @@
 #include "Button.hpp"
 
 #include <Events/OnButtonClick.hpp>
+#include <Events/OnButtonHover.hpp>
 
 #include "ECS/ECS.hpp"
 #include "Systems/SoundSystem.hpp"
@@ -39,6 +40,8 @@ void Button::draw(std::string const& text, float a, float r, float g, float b) {
 
     // Handle the mouse clicks
     if (isMouseInside()) {
+        Registry::instance().send(OnButtonHover{.button = this});
+
         if (!hovered) {
             hovered = true;
 

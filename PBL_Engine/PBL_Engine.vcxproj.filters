@@ -1190,6 +1190,9 @@
     <ClInclude Include="SkyboxCbuf.h">
       <Filter>Pliki nagłówkowe\Bindable</Filter>
     </ClInclude>
+    <ClInclude Include="Events\OnButtonHover.hpp">
+      <Filter>Pliki nagłówkowe\Events</Filter>
+    </ClInclude>
     <ClInclude Include="Events\OnGameStateChange.hpp">
       <Filter>Pliki nagłówkowe\Events</Filter>
     </ClInclude>
