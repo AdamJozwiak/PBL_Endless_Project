@@ -189,6 +189,9 @@ void GraphSystem::destroyEntityWithChildren(Entity const& entity) {
     registry.destroyEntity(entity);
 
     // Destroy the entity's children if they exist
+    if (!entityToGraphNode.contains(entity.id)) {
+        return; 
+    }
     auto const& children = entityToGraphNode.at(entity.id).children;
     if (!children.empty()) {
         for (auto const& childEntityId : children) {
