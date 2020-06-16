@@ -16,6 +16,7 @@ class PostProcessCbuf : public Bindable {
                     float blackProportion = 1.0f, UINT slot = 0u);
     void Bind(Graphics& gfx) noexcept override;
     void SetBlackProportion(float blackProportion);
+    float GetBlackProportion();
 
   private:
     static std::unique_ptr<PixelConstantBuffer<Transforms>> pPcbuf;

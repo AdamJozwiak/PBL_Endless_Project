@@ -16,5 +16,10 @@ ECS_SYSTEM(BillboardRenderSystem) {
     // ============================================================== Data == //
     Window *window;
     std::shared_ptr<PostProcessing> bloom, colorCorrection;
+
+  public:
+    // ========================================================= Behaviour == //
+    void setBlackProportion(float proportion);
+    float getBlackProportion();
 };
 // ////////////////////////////////////////////////////////////////////////// //

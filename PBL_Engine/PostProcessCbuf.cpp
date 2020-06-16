@@ -17,6 +17,7 @@ void PostProcessCbuf::Bind(Graphics& gfx) noexcept {
 void PostProcessCbuf::SetBlackProportion(float blackProportion) {
     black = blackProportion;
 }
+float PostProcessCbuf::GetBlackProportion() { return black; }
 
 std::unique_ptr<PixelConstantBuffer<PostProcessCbuf::Transforms>>
     PostProcessCbuf::pPcbuf;

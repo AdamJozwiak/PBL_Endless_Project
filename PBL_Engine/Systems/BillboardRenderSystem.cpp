@@ -57,4 +57,11 @@ void BillboardRenderSystem::update(float deltaTime) {
     }
 }
 
+void BillboardRenderSystem::setBlackProportion(float proportion) {
+    colorCorrection->SetBlackProportion(proportion);
+}
+float BillboardRenderSystem::getBlackProportion() {
+    return colorCorrection->GetBlackProportion();
+}
+
 // ////////////////////////////////////////////////////////////////////////// //

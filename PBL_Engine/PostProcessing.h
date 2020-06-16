@@ -26,6 +26,7 @@ class PostProcessing : public Bindable, public RenderableBase<PostProcessing> {
     void End();
     void Bind(Graphics& gfx) noexcept override;
     void SetBlackProportion(float black);
+    float GetBlackProportion();
 
   private:
     Graphics& pGfx;

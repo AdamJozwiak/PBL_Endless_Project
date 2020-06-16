@@ -175,6 +175,9 @@ void PostProcessing::Bind(Graphics& gfx) noexcept {}
 void PostProcessing::SetBlackProportion(float black) {
     pCbuf->SetBlackProportion(black);
 }
+float PostProcessing::GetBlackProportion() {
+    return pCbuf->GetBlackProportion();
+}
 
 void PostProcessing::Update(float dt) noexcept {}
 
