@@ -29,12 +29,12 @@ void UIRenderSystem::update(float deltaTime) {
             auto const& uiElement = entity.get<UIElement>();
 
             if (uiElement.text) {
-                uiElement.text->RenderText(window->Gfx(), uiElement.content,
-                                           false, rectTransform.position,
-                                           uiElement.alpha);
+                // uiElement.text->RenderText(window->Gfx(), uiElement.content,
+                //                            false, rectTransform.position,
+                //                            uiElement.alpha);
             }
             if (uiElement.button) {
-                uiElement.button->draw(uiElement.content, uiElement.alpha);
+                // uiElement.button->draw(uiElement.content, uiElement.alpha);
             }
         }
     }
