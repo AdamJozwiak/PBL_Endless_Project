@@ -9,8 +9,8 @@
 #include "Components/Components.hpp"
 #include "ECS/ECS.hpp"
 #include "Systems/Systems.hpp"
-#include "Window.h"
 #include "Timer.h"
+#include "Window.h"
 
 // //////////////////////////////////////////////////////// Namespace aliases //
 namespace fs = std::filesystem;
