@@ -139,6 +139,9 @@ void GameManagerScript::spawnTorches() {
                                    .at(0)
                                    .get<MainCamera>()
                                    .camera.get())});
+            if (it.get<Properties>().name == "Menu Torch") {
+                it.get<Flame>().fireParticle->scale = 0.02f;
+            }
         }
     }
 }
