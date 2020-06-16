@@ -82,6 +82,8 @@ void PlayerControllerScript::setup() {
     // Set event listeners
     registry.listen<OnCollisionEnter>(
         MethodListener(PlayerControllerScript::onCollisionEnter));
+    registry.listen<OnGameStateChange>(
+        MethodListener(PlayerControllerScript::onGameStateChange));
 
     // Set utility functors
     isKeyPressed = [](int const key) {
@@ -461,6 +463,9 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
             // }
         }
     }
+}
+void PlayerControllerScript::onGameStateChange(OnGameStateChange const& event) {
+    currentState = event.nextState;
 }
 
 // ------------------------------------------------------------ Methods -- == //

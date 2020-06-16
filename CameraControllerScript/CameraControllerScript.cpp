@@ -32,6 +32,8 @@ void CameraControllerScript::setup() {
     // Set event listeners
     registry.listen<OnCollisionEnter>(
         MethodListener(CameraControllerScript::onCollisionEnter));
+    registry.listen<OnGameStateChange>(
+        MethodListener(CameraControllerScript::onGameStateChange));
 
     // Set utility functors
     isKeyPressed = [](int const key) {
@@ -69,6 +71,9 @@ void CameraControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
     if (event.a.id == entity.id || event.b.id == entity.id) {
         auto other = Entity(event.a.id == entity.id ? event.b.id : event.a.id);
     }
+}
+void CameraControllerScript::onGameStateChange(OnGameStateChange const& event) {
+    currentState = event.nextState;
 }
 
 // ------------------------------------------------------------ Methods -- == //

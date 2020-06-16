@@ -6,6 +6,7 @@
 #include "ECS/Entity.hpp"
 #include "EnemyControllerScriptAPI.hpp"
 #include "Events/OnCollisionEnter.hpp"
+#include "Events/OnGameStateChange.hpp"
 #include "Script.hpp"
 
 enum MovementType { Rook, Bishop };
@@ -22,6 +23,7 @@ class ENEMYCONTROLLERSCRIPT_API EnemyControllerScript : public Script {
 
     // --------------------------------------------------------- Events -- == //
     void onCollisionEnter(OnCollisionEnter const &event);
+    void onGameStateChange(OnGameStateChange const &event);
     // void onTriggerEnter(OnTriggerEnter const &event);
 
     // -------------------------------------------------------- Methods -- == //
@@ -31,6 +33,8 @@ class ENEMYCONTROLLERSCRIPT_API EnemyControllerScript : public Script {
 
   private:
     // ============================================================== Data == //
+    GameState currentState = GAME_LAUNCH_FADE_IN;
+
     bool (*isKeyPressed)(int const key);
 
     EntityId loseText;

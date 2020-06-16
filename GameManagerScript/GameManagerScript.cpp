@@ -33,6 +33,8 @@ void GameManagerScript::setup() {
     // Set event listeners
     registry.listen<OnCollisionEnter>(
         MethodListener(GameManagerScript::onCollisionEnter));
+    registry.listen<OnGameStateChange>(
+        MethodListener(GameManagerScript::onGameStateChange));
 
     // Set helpers
     isKeyPressed = [](int const key) {
@@ -122,6 +124,9 @@ void GameManagerScript::onCollisionEnter(OnCollisionEnter const& event) {
     if (event.a.id == entity.id || event.b.id == entity.id) {
         auto other = Entity(event.a.id == entity.id ? event.b.id : event.a.id);
     }
+}
+void GameManagerScript::onGameStateChange(OnGameStateChange const& event) {
+    currentState = event.nextState;
 }
 
 void GameManagerScript::spawnTorches() {

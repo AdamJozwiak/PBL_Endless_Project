@@ -8,6 +8,7 @@
 #include "Components/Components.hpp"
 #include "ECS/Entity.hpp"
 #include "Events/OnCollisionEnter.hpp"
+#include "Events/OnGameStateChange.hpp"
 #include "PlayerControllerScriptAPI.hpp"
 #include "Script.hpp"
 
@@ -23,6 +24,7 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
 
     // --------------------------------------------------------- Events -- == //
     void onCollisionEnter(OnCollisionEnter const &event);
+    void onGameStateChange(OnGameStateChange const &event);
 
     // -------------------------------------------------------- Methods -- == //
     // void changeToHuman() { changeForm(humanForm); }
@@ -39,6 +41,8 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
 
   private:
     // ============================================================== Data == //
+    GameState currentState = GAME_LAUNCH_FADE_IN;
+
     bool (*isKeyPressed)(int const key);
     float oscilate(float input, float factor, float max, float min = 0.0f);
     float ascend(float const x, float const thrustForce);

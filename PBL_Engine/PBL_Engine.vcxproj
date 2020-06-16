@@ -199,6 +199,7 @@
     <ClInclude Include="Engine.hpp" />
     <ClInclude Include="Events\OnButtonClick.hpp" />
     <ClInclude Include="Events\OnCollisionEnter.hpp" />
+    <ClInclude Include="Events\OnGameStateChange.hpp" />
     <ClInclude Include="ExceptionHandler.h" />
     <ClInclude Include="FireParticle.h" />
     <ClInclude Include="FixedQueue.h" />

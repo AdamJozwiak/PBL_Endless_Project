@@ -66,6 +66,8 @@ EnemyControllerScript::EnemyControllerScript(Entity const& entity)
 void EnemyControllerScript::setup() {
     registry.listen<OnCollisionEnter>(
         MethodListener(EnemyControllerScript::onCollisionEnter));
+    registry.listen<OnGameStateChange>(
+        MethodListener(EnemyControllerScript::onGameStateChange));
     // registry.listen<OnTriggerEnter>(
     //    MethodListener(EnemyControllerScript::onTriggerEnter));
     isKeyPressed = [](int const key) {
@@ -114,6 +116,9 @@ void EnemyControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
             // StartCoroutine(waitToResetLvl());
         }
     }
+}
+void EnemyControllerScript::onGameStateChange(OnGameStateChange const& event) {
+    currentState = event.nextState;
 }
 
 // void EnemyControllerScript::onTriggerEnter(OnTriggerEnter const& event) {}
