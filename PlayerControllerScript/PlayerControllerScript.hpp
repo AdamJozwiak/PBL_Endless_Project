@@ -67,7 +67,7 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     // CameraController
     //    mainCamera;  // TODO: Add reference to the script? may not need
     float canChangeFormTimer = 0.0f;
-    float canChangeFormCooldown;
+    float canChangeFormCooldown = 2.5f;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

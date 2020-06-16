@@ -143,7 +143,6 @@ void PlayerControllerScript::setup() {
     Entity(eagleForm).add<Refractive>({});
     Entity(humanForm).add<Refractive>({});
     Entity(catForm).add<Refractive>({});
-    canChangeFormCooldown = 3.0f;
 };
 
 void PlayerControllerScript::update(float const deltaTime) {
@@ -428,6 +427,7 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
             if (!entity.has<Rigidbody>()) {
                 entity.add<Rigidbody>(rb);
             }
+            canChangeForm = false;
         } else if (otherTag == "Boundary") {
             return;
         } else if (other.id == groundCheck) {
