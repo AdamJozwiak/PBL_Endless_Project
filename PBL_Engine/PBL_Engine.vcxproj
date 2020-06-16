@@ -205,6 +205,7 @@
     <ClInclude Include="FontLoader.h" />
     <ClInclude Include="FontUtils.h" />
     <ClInclude Include="FrustumCulling.h" />
+    <ClInclude Include="game-states.hpp" />
     <ClInclude Include="GDIPlusManager.h" />
     <ClInclude Include="GeometryCbuf.h" />
     <ClInclude Include="GeometryShader.h" />
