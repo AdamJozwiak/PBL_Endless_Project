@@ -31,6 +31,14 @@ class Button {
     bool clicked = false;
     bool hovered = false;
 
+    float hoverR = 1.0f;
+    float hoverG = 0.65;
+    float hoverB = 0.40;
+
+    float currentR = 1.0f;
+    float currentG = 1.0f;
+    float currentB = 1.0f;
+
     std::shared_ptr<Text> textRenderer;
     DirectX::XMFLOAT2 position, size;
 };

@@ -1,3 +1,6 @@
+// ////////////////////////////////////////////////////////////////// Defines //
+#define _USE_MATH_DEFINES
+
 // ///////////////////////////////////////////////////////////////// Includes //
 #include "Button.hpp"
 
@@ -7,6 +10,7 @@
 #include "ECS/ECS.hpp"
 #include "Systems/SoundSystem.hpp"
 #include "Text.h"
+#include "easings.hpp"
 
 // //////////////////////////////////////////////////////////////////// Class //
 // ============================================================= Behaviour == //
@@ -43,6 +47,13 @@ void Button::draw(float const deltaTime, std::string const& text, float a,
     if (isMouseInside()) {
         Registry::instance().send(OnButtonHover{.button = this});
 
+        currentR =
+            interpolate(easeOutQuint, currentR, hoverR, 0.05f, deltaTime);
+        currentG =
+            interpolate(easeOutQuint, currentG, hoverG, 0.05f, deltaTime);
+        currentB =
+            interpolate(easeOutQuint, currentB, hoverB, 0.05f, deltaTime);
+
         if (!hovered) {
             hovered = true;
 
@@ -60,6 +71,10 @@ void Button::draw(float const deltaTime, std::string const& text, float a,
             clicked = false;
         }
     } else {
+        currentR = interpolate(easeOutSine, currentR, 1.0f, 0.1f, deltaTime);
+        currentG = interpolate(easeOutSine, currentG, 1.0f, 0.1f, deltaTime);
+        currentB = interpolate(easeOutSine, currentB, 1.0f, 0.1f, deltaTime);
+
         if (hovered) {
             hovered = false;
 
@@ -68,7 +83,8 @@ void Button::draw(float const deltaTime, std::string const& text, float a,
         }
     }
 
-    textRenderer->RenderText(gfx, text, isMouseInside(), position, a, r, g, b);
+    textRenderer->RenderText(gfx, text, false, position, a, currentR, currentG,
+                             currentB);
 }
 
 // ///////////////////////////////////////////////////////////////////////// //
