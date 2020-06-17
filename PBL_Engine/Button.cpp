@@ -45,8 +45,6 @@ void Button::draw(float const deltaTime, std::string const& text, float a,
 
     // Handle the mouse clicks
     if (isMouseInside()) {
-        Registry::instance().send(OnButtonHover{.button = this});
-
         currentR =
             interpolate(easeOutQuint, currentR, hoverR, 0.05f, deltaTime);
         currentG =
@@ -56,6 +54,8 @@ void Button::draw(float const deltaTime, std::string const& text, float a,
 
         if (!hovered) {
             hovered = true;
+            Registry::instance().send(
+                OnButtonHover{.button = this, .on = true});
 
             Registry::instance().system<SoundSystem>()->play(
                 "Assets\\Audio\\Airlock\\airlock-door-click-01.wav", 0.025f);
@@ -77,6 +77,8 @@ void Button::draw(float const deltaTime, std::string const& text, float a,
 
         if (hovered) {
             hovered = false;
+            Registry::instance().send(
+                OnButtonHover{.button = this, .on = false});
 
             Registry::instance().system<SoundSystem>()->play(
                 "Assets\\Audio\\Airlock\\airlock-door-click-01.wav", 0.0125f);

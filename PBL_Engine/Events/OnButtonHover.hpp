@@ -4,4 +4,7 @@
 #include "ECS/Entity.hpp"
 #include "ECS/Event.hpp"
 
-ECS_EVENT(OnButtonHover) { Button *button; };
+ECS_EVENT(OnButtonHover) {
+    Button *button;
+    bool on;
+};
