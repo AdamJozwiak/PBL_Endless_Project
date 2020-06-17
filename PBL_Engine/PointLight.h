@@ -19,6 +19,10 @@ class ENGINE_API PointLight {
     void setLightPositionWorld(DirectX::XMVECTOR newWorldPos);
     void setIntensity(float intensity);
     float getIntensity();
+    void setAttenuationC(float value);
+    float getAttenuationC();
+    void setAttenuationL(float value);
+    float getAttenuationL();
     void setAttenuationQ(float value);
     float getAttenuationQ();
     static void initTorchNumbers();
@@ -32,12 +36,15 @@ class ENGINE_API PointLight {
         alignas(16) DirectX::XMFLOAT4 viewPositionWorld;
         alignas(16) DirectX::XMFLOAT4 diffuseColor[MAX_LIGHT_COUNT];
         alignas(16) DirectX::XMFLOAT4 intensity[MAX_LIGHT_COUNT / 4];
-        float attenuationConstant;
-        float attenuationLinear;
-        float attenuationQuadratic;
+        alignas(16) DirectX::XMFLOAT4 attenuationConstant[MAX_LIGHT_COUNT / 4];
+        alignas(16) DirectX::XMFLOAT4 attenuationLinear[MAX_LIGHT_COUNT / 4];
+        alignas(16) DirectX::XMFLOAT4 attenuationQuadratic[MAX_LIGHT_COUNT / 4];
     };
     static LightParametersConstantBuffer lightParametersConstantBuffer;
     float lightIntensity;
+    float attenuationConstant;
+    float attenuationLinear;
+    float attenuationQuadratic;
 
   private:
     int number;

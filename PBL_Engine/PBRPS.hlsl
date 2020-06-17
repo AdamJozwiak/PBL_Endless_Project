@@ -42,10 +42,9 @@ cbuffer LightParameters : register(b10) {
     float4 diffuseColor[NUM_LIGHTS];
 
     float4 intensity[NUM_LIGHTS / 4];
-
-    float attenuationConstant;
-    float attenuationLinear;
-    float attenuationQuadratic;
+    float4 attenuationConstant[NUM_LIGHTS / 4];
+    float4 attenuationLinear[NUM_LIGHTS / 4];
+    float4 attenuationQuadratic[NUM_LIGHTS / 4];
 };
 
 // /////////////////////////////////////////////////////////// Normal mapping //
@@ -80,9 +79,15 @@ float3 fresnelSchlick(float cosTheta, float3 f0) {
     return f0 + (1.0f - f0) * pow(1.0f - cosTheta, 5.0f);
 }
 
-float attenuate(float distance) {
-    return 1.0f / (attenuationConstant + attenuationLinear * distance +
-                   attenuationQuadratic * pow(distance, 2.0f));
+float attenuate(float distance, int iterator) {
+    return 1.0f / (((float[NUM_LIGHTS])attenuationConstant)[iterator] +
+                   ((float[NUM_LIGHTS])attenuationLinear)[iterator] * distance +
+                   ((float[NUM_LIGHTS])attenuationQuadratic)[iterator] *
+                       pow(distance, 2.0f));
+    /*return 1.0f / (0.0f +
+                   0.0f * distance +
+                   0.0f *
+                       pow(distance, 2.0f));*/
 }
 
 float4 pbr(PixelShaderInput input, float3 normal, float2 texCoord) {
@@ -110,7 +115,7 @@ float4 pbr(PixelShaderInput input, float3 normal, float2 texCoord) {
         float3 h = normalize(viewDir + lightDir);
         float factor =
             ((float[NUM_LIGHTS])intensity)[i] *
-            attenuate(length(lightPositionWorld[i].xyz - input.positionWorld));
+            attenuate(length(lightPositionWorld[i].xyz - input.positionWorld), i);
         float3 radiance = diffuseColor[i].xyz * factor;
 
         // Cook-Torrance BRDF
