@@ -193,10 +193,10 @@ void PointLight::Reset() noexcept {
     lightParametersConstantBuffer.viewPositionWorld = {0.0f, 0.0f, 0.0f, 0.0f};
     lightParametersConstantBuffer.diffuseColor[number] = {1.0f, 0.8f, 0.6f,
                                                           1.0f};
-    setAttenuationC(0.0f);
+    setAttenuationC(0.15f);
     setAttenuationL(0.0f);
-    setAttenuationQ(0.025f);
-    setIntensity(1.5f);
+    setAttenuationQ(0.0375f);
+    setIntensity(1.0f);
 }
 
 void PointLight::AddToBuffer(DirectX::FXMMATRIX view,

@@ -21,7 +21,7 @@ void LightSystem::filters() {
 }
 
 void LightSystem::setup() {
-    baseLightIntensity = 1.0f;
+    baseLightIntensity = 1.5f;
     timer = 0.0f;
     camera = registry.system<PropertySystem>()
                  ->findEntityByTag("MainCamera")
@@ -46,7 +46,8 @@ void LightSystem::update(float deltaTime) {
         if (entity.get<Properties>().name != "Player Torch") {
             pointLight->setIntensity(
                 baseLightIntensity +
-                oscillator(timer + pointLight->getNumber()));
+                baseLightIntensity *
+                    oscillator(timer + pointLight->getNumber()));
         }
     }
 };
