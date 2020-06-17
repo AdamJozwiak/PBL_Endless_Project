@@ -197,6 +197,11 @@ void GameManagerScript::update(float const deltaTime) {
                 screenFade);
         } break;
         case MENU: {
+            // Fade from black to the menu
+            screenFade =
+                interpolate(easeOutSine, screenFade, 1.0f, 0.5f, deltaTime);
+            registry.system<BillboardRenderSystem>()->setBlackProportion(
+                screenFade);
         } break;
         case CHANGE_MENU_TYPE_TO_MAIN: {
         } break;
