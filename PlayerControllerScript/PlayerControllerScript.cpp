@@ -120,7 +120,7 @@ void PlayerControllerScript::setup() {
 
     Entity(torch).add<Light>({.pointLight = std::make_shared<PointLight>(
                                   registry.system<WindowSystem>()->gfx())});
-    // Entity(torch).get<Light>().pointLight->setAttenuationQ(0.05f);
+    Entity(torch).get<Light>().pointLight->setIntensity(lightValue);
 
     // Activate all forms
     Entity(humanForm).get<Properties>().active = true;
@@ -298,7 +298,7 @@ void PlayerControllerScript::update(float const deltaTime) {
             previousAnimSpeed =
                 Entity(currentForm).get<Skybox>().animationSpeed;
         }
-        
+
         Entity(currentForm).get<Skybox>().animationSpeed = 2.0f;
 
         canChangeFormTimer += deltaTime;
@@ -396,6 +396,39 @@ void PlayerControllerScript::update(float const deltaTime) {
     //    torchLight.intensity =
     //        Mathf.Lerp(3f, 3.5f, Mathf.PingPong(Time.time, 1f));
     //}
+
+    aCValue = std::lerp(maxC, minC, lightValue);
+
+    aQValue = std::lerp(maxQ, minQ, lightValue);
+
+    intensityValue = std::lerp(minIntensity, maxIntensity, lightValue);
+
+    lightValue = interpolate(easeOutSine, lightValue, lightValue - 0.1f, 0.65f,
+                             deltaTime);
+
+    // Turn off screen after light reaches certain value
+    if (lightValue < 0.4 && lightValue >= 0.0f) {
+        deathTimer += deltaTime / 2;
+        blackProportion = std::lerp(1.0f, 0.0f, deathTimer);
+        registry.system<BillboardRenderSystem>()->SetBlackProportion(
+            blackProportion);
+        if (blackProportion < 0.0f) {
+            registry.system<PropertySystem>()->activateEntity(entity, false);
+        }
+    } else {
+        // This line reasures that when player picks up flame after screen goes
+        // black it will turn it back on
+        blackProportion = 1.0f;
+        registry.system<BillboardRenderSystem>()->SetBlackProportion(
+            blackProportion);
+    }
+    if (lightValue < 0.0f) {
+        lightValue = 0.0f;
+    }
+
+    Entity(torch).get<Light>().pointLight->setIntensity(intensityValue);
+    Entity(torch).get<Light>().pointLight->setAttenuationC(aCValue);
+    Entity(torch).get<Light>().pointLight->setAttenuationQ(aQValue);
 };
 
 // ------------------------------------------------------------- Events -- == //
@@ -419,7 +452,7 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
             return;
         } else if (otherTag == "Torch") {
             registry.system<GraphSystem>()->destroyEntityWithChildren(other);
-            resetTorchLight(other);
+            resetTorchLight();
         } else if (otherTag == "Trap") {
             registry.system<GraphSystem>()->destroyEntityWithChildren(other);
             canChangeForm = false;
@@ -473,10 +506,7 @@ void PlayerControllerScript::changeForm(EntityId const& newForm) {
     currentForm = newForm;
 }
 
-void PlayerControllerScript::resetTorchLight(Entity light) {
-    light.get<Light>().pointLight->setIntensity(1.5f);
-    // light.get<Light>().pointLight->setAttenuationQ(0.05f);
-}
+void PlayerControllerScript::resetTorchLight() { lightValue = 1.0f; }
 
 void PlayerControllerScript::transitionForms(float const deltaTime) {
     auto& currentTransform = Entity(currentForm).get<Transform>();

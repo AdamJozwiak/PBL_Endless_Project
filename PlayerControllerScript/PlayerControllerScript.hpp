@@ -27,7 +27,7 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     // -------------------------------------------------------- Methods -- == //
     // void changeToHuman() { changeForm(humanForm); }
     void changeForm(EntityId const &newForm);
-    void resetTorchLight(Entity light);
+    void resetTorchLight();
     void transitionForms(float deltaTime);
 
     bool canChangeForm;
@@ -36,6 +36,7 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     bool inputChangeFormEagle, inputChangeFormCat;
     bool firstThrust = false;
     bool isGrounded = true;
+
   private:
     // ============================================================== Data == //
     bool (*isKeyPressed)(int const key);
@@ -45,6 +46,19 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     float movementAcceleration = 40.0f;
     float runSpeed = 7.5f;
     float previousAnimSpeed = 0.0f;
+
+    float aCValue = 0.0f;
+    float aQValue = 0.0f;
+    float minC = 0.0f;
+    float minQ = 0.025f;
+    float maxC = 1.0f;
+    float maxQ = 3.0f;
+    float intensityValue = 0.0f;
+    float maxIntensity = 1.5f;
+    float minIntensity = 0.0f;
+    float lightValue = 1.0f;
+    float blackProportion = 1.0f;
+    float deathTimer = 0.0f;
 
     DirectX::XMFLOAT3 originalScaleWolf, originalScaleEagle;
     float originalOffsetWolf, originalOffsetEagle;
