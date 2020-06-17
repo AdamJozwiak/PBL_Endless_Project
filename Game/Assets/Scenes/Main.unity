@@ -2261,7 +2261,7 @@ GameObject:
   - component: {fileID: 446893784}
   - component: {fileID: 446893783}
   m_Layer: 5
-  m_Name: 'Explanation2 Text '
+  m_Name: Explanation2 Text
   m_TagString: TextUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
