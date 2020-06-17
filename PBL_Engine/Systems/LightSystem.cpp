@@ -43,8 +43,11 @@ void LightSystem::update(float deltaTime) {
         pointLight->AddToBuffer(DirectX::XMMatrixIdentity(),
                                 camera->GetCameraPos());
         pointLight->Bind(Registry::instance().system<WindowSystem>()->gfx());
-        pointLight->setIntensity(baseLightIntensity +
-                                 oscillator(timer + pointLight->getNumber()));
+        if (entity.get<Properties>().name != "Player Torch") {
+            pointLight->setIntensity(
+                baseLightIntensity +
+                oscillator(timer + pointLight->getNumber()));
+        }
     }
 };
 
