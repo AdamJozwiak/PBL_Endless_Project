@@ -1,3 +1,6 @@
+// ////////////////////////////////////////////////////////////////// Defines //
+#define _USE_MATH_DEFINES
+
 // ///////////////////////////////////////////////////////////////// Includes //
 #include "GameManagerScript.hpp"
 
@@ -11,6 +14,7 @@
 #include "Systems/Systems.hpp"
 #include "Timer.h"
 #include "Window.h"
+#include "easings.hpp"
 
 // //////////////////////////////////////////////////////// Namespace aliases //
 namespace fs = std::filesystem;
@@ -118,6 +122,11 @@ void GameManagerScript::setup() {
 void GameManagerScript::update(float const deltaTime) {
     switch (currentState) {
         case GAME_LAUNCH_FADE_IN: {
+            // Fade from black to the menu
+            screenFade =
+                interpolate(easeOutSine, screenFade, 1.0f, 0.5f, deltaTime);
+            registry.system<BillboardRenderSystem>()->setBlackProportion(
+                screenFade);
         } break;
         case MENU: {
         } break;

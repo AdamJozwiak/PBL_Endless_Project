@@ -38,6 +38,7 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
   private:
     // ============================================================== Data == //
     GameState currentState = GAME_LAUNCH_FADE_IN;
+    float screenFade = 0.0f;
 
     bool (*isKeyPressed)(int const key);
     void spawnTorches();

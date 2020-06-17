@@ -3,6 +3,7 @@
 // ///////////////////////////////////////////////////////////////// Includes //
 #include <DirectXMath.h>
 
+#include <Components/Transform.hpp>
 #include <memory>
 
 #include "CameraControllerScriptAPI.hpp"
@@ -36,6 +37,8 @@ class CAMERACONTROLLERSCRIPT_API CameraControllerScript : public Script {
     bool (*isKeyPressed)(int const key);
 
     EntityId playerId;
+    EntityId menuCameraId;
+    Transform originalTransform;
     float smoothing = 0.2f;
     DirectX::XMFLOAT3 shakeOffset;
     DirectX::XMFLOAT3 offset = {0.0f, 0.0f, 0.0f};

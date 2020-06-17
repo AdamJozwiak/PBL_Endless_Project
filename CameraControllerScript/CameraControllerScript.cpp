@@ -43,6 +43,13 @@ void CameraControllerScript::setup() {
 
     playerId =
         registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
+    menuCameraId = registry.system<PropertySystem>()
+                       ->findEntityByName("Menu Camera")
+                       .at(0)
+                       .id;
+    originalTransform = entity.get<Transform>();
+    entity.get<Transform>() = Entity(menuCameraId).get<Transform>();
+    entity.get<Transform>().position.z += 7.5f;
     // registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
     offset = entity.get<Transform>().position -
              Entity(playerId).get<Transform>().position;
@@ -51,6 +58,12 @@ void CameraControllerScript::setup() {
 void CameraControllerScript::update(float const deltaTime) {
     switch (currentState) {
         case GAME_LAUNCH_FADE_IN: {
+            // Get the camera to the starting menu position
+            auto& transform = entity.get<Transform>();
+            transform.position.z =
+                interpolate(easeOutSine, transform.position.z,
+                            Entity(menuCameraId).get<Transform>().position.z,
+                            0.5f, deltaTime);
         } break;
         case MENU: {
         } break;
