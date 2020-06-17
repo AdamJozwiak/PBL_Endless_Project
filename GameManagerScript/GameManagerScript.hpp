@@ -40,6 +40,15 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
     GameState currentState = GAME_LAUNCH_FADE_IN;
     float screenFade = 0.0f;
 
+    // UI
+    EntityId menuPlayButton, menuHelpButton, menuAuthorsButton, menuExitButton;
+    std::vector<EntityId> authorNamesText, helpText;
+    EntityId gameScoreText, gameScoreValueText;
+    EntityId resultsYouDiedText, resultsYourScoreText, resultsScoreValueText,
+        resultsPressAnyKey;
+    EntityId pauseMenuResumeButton, pauseMenuHelpButton, pauseMenuAuthorsButton,
+        pauseMenuExitButton;
+
     bool (*isKeyPressed)(int const key);
     void spawnTorches();
     void spawnRooks(int percentage, bool movingSideways = true);

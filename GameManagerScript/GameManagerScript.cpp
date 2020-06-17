@@ -117,6 +117,74 @@ void GameManagerScript::setup() {
 
     playerId =
         registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
+
+    // Find the UI elements
+    {
+        auto findEntityByName = std::bind(
+            &PropertySystem::findEntityByName,
+            registry.system<PropertySystem>().get(), std::placeholders::_1);
+
+        menuPlayButton = findEntityByName("Play Button").at(0).id;
+        menuHelpButton = findEntityByName("Help Button").at(0).id;
+        menuAuthorsButton = findEntityByName("Credits Button").at(0).id;
+        menuExitButton = findEntityByName("Exit Button").at(0).id;
+
+        authorNamesText.push_back(findEntityByName("AJ Text").at(0).id);
+        authorNamesText.push_back(findEntityByName("JK Text").at(0).id);
+        authorNamesText.push_back(findEntityByName("PP Text").at(0).id);
+        authorNamesText.push_back(findEntityByName("MP Text").at(0).id);
+        authorNamesText.push_back(findEntityByName("TW Text").at(0).id);
+
+        helpText.push_back(findEntityByName("Key1 Text").at(0).id);
+        helpText.push_back(findEntityByName("Key2 Text").at(0).id);
+        helpText.push_back(findEntityByName("Key3 Text").at(0).id);
+        helpText.push_back(findEntityByName("Explanation1 Text").at(0).id);
+        helpText.push_back(findEntityByName("Explanation2 Text").at(0).id);
+        helpText.push_back(findEntityByName("Explanation3 Text").at(0).id);
+
+        gameScoreText = findEntityByName("Score Text").at(0).id;
+        gameScoreValueText = findEntityByName("Score Value Text").at(0).id;
+
+        resultsYouDiedText = findEntityByName("You Died Text").at(0).id;
+        resultsYourScoreText = findEntityByName("Your Score Text").at(0).id;
+        resultsScoreValueText =
+            findEntityByName("Result Score Value Text").at(0).id;
+        resultsPressAnyKey = findEntityByName("Restart Text").at(0).id;
+
+        pauseMenuResumeButton = findEntityByName("Resume Button").at(0).id;
+        pauseMenuHelpButton = findEntityByName("Help Button").at(1).id;
+        pauseMenuAuthorsButton = findEntityByName("Credits Button").at(1).id;
+        pauseMenuExitButton = findEntityByName("Exit Button").at(1).id;
+    }
+
+    // Fade out the UI elements
+    {
+        Entity(menuPlayButton).get<UIElement>().alpha = 0.0f;
+        Entity(menuHelpButton).get<UIElement>().alpha = 0.0f;
+        Entity(menuAuthorsButton).get<UIElement>().alpha = 0.0f;
+        Entity(menuExitButton).get<UIElement>().alpha = 0.0f;
+
+        for (auto const& text : authorNamesText) {
+            Entity(text).get<UIElement>().alpha = 0.0f;
+        }
+
+        for (auto const& text : helpText) {
+            Entity(text).get<UIElement>().alpha = 0.0f;
+        }
+
+        Entity(gameScoreText).get<UIElement>().alpha = 0.0f;
+        Entity(gameScoreValueText).get<UIElement>().alpha = 0.0f;
+
+        Entity(resultsYouDiedText).get<UIElement>().alpha = 0.0f;
+        Entity(resultsYourScoreText).get<UIElement>().alpha = 0.0f;
+        Entity(resultsScoreValueText).get<UIElement>().alpha = 0.0f;
+        Entity(resultsPressAnyKey).get<UIElement>().alpha = 0.0f;
+
+        Entity(pauseMenuResumeButton).get<UIElement>().alpha = 0.0f;
+        Entity(pauseMenuHelpButton).get<UIElement>().alpha = 0.0f;
+        Entity(pauseMenuAuthorsButton).get<UIElement>().alpha = 0.0f;
+        Entity(pauseMenuExitButton).get<UIElement>().alpha = 0.0f;
+    }
 };
 
 void GameManagerScript::update(float const deltaTime) {
