@@ -195,6 +195,11 @@ void GameManagerScript::update(float const deltaTime) {
                 interpolate(easeOutSine, screenFade, 1.0f, 0.5f, deltaTime);
             registry.system<BillboardRenderSystem>()->setBlackProportion(
                 screenFade);
+
+            // Change state
+            if (screenFade > 0.8f) {
+                registry.send(OnGameStateChange{.nextState = MENU});
+            }
         } break;
         case MENU: {
             // Fade from black to the menu
