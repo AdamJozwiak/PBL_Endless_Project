@@ -30,8 +30,8 @@ class Text {
     // Text layouts
     wrl::ComPtr<IDWriteTextLayout> textLayoutFPS;
     void RenderText(Graphics& gfx, std::string text, bool yellow,
-                    DirectX::XMFLOAT2 pos, float a = 1.0f, float r = 255.0f,
-                    float g = 255.0f, float b = 255.0f);
+                    DirectX::XMFLOAT2 pos, float a = 1.0f, float r = 1.0f,
+                    float g = 1.0f, float b = 1.0f);
 
     // Rendering
     static void beginDrawing();

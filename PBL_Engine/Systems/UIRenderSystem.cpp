@@ -34,7 +34,8 @@ void UIRenderSystem::update(float deltaTime) {
                                            uiElement.alpha);
             }
             if (uiElement.button) {
-                uiElement.button->draw(uiElement.content, uiElement.alpha);
+                uiElement.button->draw(deltaTime, uiElement.content,
+                                       uiElement.alpha);
             }
         }
     }

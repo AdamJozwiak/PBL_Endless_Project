@@ -27,7 +27,8 @@ Button::Button(Window& window, const WCHAR* fontFamily,
       position(position),
       size(size) {}
 
-void Button::draw(std::string const& text, float a, float r, float g, float b) {
+void Button::draw(float const deltaTime, std::string const& text, float a,
+                  float r, float g, float b) {
     auto isMouseInside = [this] {
         DirectX::XMINT2 const mousePosition{window.mouse.GetPosX(),
                                             window.mouse.GetPosY()};
