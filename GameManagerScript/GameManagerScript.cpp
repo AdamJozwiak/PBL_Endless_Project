@@ -21,9 +21,9 @@ namespace fs = std::filesystem;
 
 // ////////////////////////////////////////////////////////////////// Helpers //
 void interpolateTextTo(EntityId entity, float const target,
-                       float const deltaTime) {
+                       float const deltaTime, float const smooth = 0.5f) {
     auto& alpha = Entity(entity).get<UIElement>().alpha;
-    alpha = interpolate(easeOutSine, alpha, target, 0.5f, deltaTime);
+    alpha = interpolate(easeOutSine, alpha, target, smooth, deltaTime);
 }
 
 // //////////////////////////////////////////////////////////////// Variables //
@@ -46,6 +46,10 @@ void GameManagerScript::setup() {
         MethodListener(GameManagerScript::onCollisionEnter));
     registry.listen<OnGameStateChange>(
         MethodListener(GameManagerScript::onGameStateChange));
+    registry.listen<OnButtonClick>(
+        MethodListener(GameManagerScript::onButtonClick));
+    registry.listen<OnButtonHover>(
+        MethodListener(GameManagerScript::onButtonHover));
 
     // Set helpers
     isKeyPressed = [](int const key) {
@@ -97,30 +101,7 @@ void GameManagerScript::setup() {
         lengthOfChunk[name] = length;
     }
 
-    // Spawn the starting chunk
-    generatedLengthInParts = lengthOfChunk.at("Chunk Start");
-
-    registry.system<SceneSystem>()->cachePrefab(CHUNKS_DIRECTORY +
-                                                "\\Chunk Start.prefab");
-    presentChunks.push_back(
-        Chunk{.name = "Chunk Start",
-              .entity = registry.system<SceneSystem>()
-                            ->spawnPrefab(CHUNKS_DIRECTORY + "\\Chunk "
-                                                             "Start.prefab",
-                                          false)
-                            .id,
-              .endPositionInParts = generatedLengthInParts});
-    cacheThread = std::make_unique<std::thread>([this] {
-        Registry::instance().system<SceneSystem>()->cachePrefab(
-            CHUNKS_DIRECTORY + "\\Chunk 1.prefab");
-    });
-    nextChunk = "Chunk 1";
-
-    updateWaterfallRefraction();
-    updateTrapRefraction();
     spawnTorches();
-    spawnBishops(100);
-    spawnRooks(100, false);
 
     playerId =
         registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
@@ -216,6 +197,7 @@ void GameManagerScript::setup() {
 };
 
 void GameManagerScript::update(float const deltaTime) {
+    dt = deltaTime;
     switch (currentState) {
         case GAME_LAUNCH_FADE_IN: {
             // Fade from black to the menu
@@ -240,6 +222,16 @@ void GameManagerScript::update(float const deltaTime) {
             for (auto const& entity : menuGroup) {
                 interpolateTextTo(entity, 1.0f, deltaTime);
             }
+            for (auto const& entity : helpText) {
+                interpolateTextTo(
+                    entity, fadeInHelp ? 1.0f : 0.0f, deltaTime,
+                    fadeInHelp ? 0.2f : (fadeInAuthors ? 0.01f : 0.3f));
+            }
+            for (auto const& entity : authorNamesText) {
+                interpolateTextTo(
+                    entity, fadeInAuthors ? 1.0f : 0.0f, deltaTime,
+                    fadeInAuthors ? 0.2f : (fadeInHelp ? 0.01f : 0.3f));
+            }
             for (auto const& entity : gameGroup) {
                 interpolateTextTo(entity, 0.0f, deltaTime);
             }
@@ -255,10 +247,96 @@ void GameManagerScript::update(float const deltaTime) {
         case CHANGE_MENU_TYPE_TO_PAUSE: {
         } break;
         case MENU_TO_GAME_FADE_OUT: {
+            // Fade to black
+            screenFade =
+                interpolate(easeOutQuint, screenFade, 0.0f, 0.1f, deltaTime);
+            registry.system<BillboardRenderSystem>()->setBlackProportion(
+                screenFade);
+
+            // Manage UI fades
+            for (auto const& entity : menuGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : helpText) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : authorNamesText) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : gameGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : resultsGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : pauseMenuGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+
+            // Change state
+            if (screenFade < 0.25f) {
+                registry.send(OnGameStateChange{.nextState = GAME_FADE_IN});
+            }
         } break;
         case NEW_GAME_SETUP: {
+            // Spawn the starting chunk
+            generatedLengthInParts = lengthOfChunk.at("Chunk Start");
+
+            registry.system<SceneSystem>()->cachePrefab(CHUNKS_DIRECTORY +
+                                                        "\\Chunk Start.prefab");
+            presentChunks.push_back(Chunk{
+                .name = "Chunk Start",
+                .entity = registry.system<SceneSystem>()
+                              ->spawnPrefab(CHUNKS_DIRECTORY + "\\Chunk "
+                                                               "Start.prefab",
+                                            false)
+                              .id,
+                .endPositionInParts = generatedLengthInParts});
+            cacheThread = std::make_unique<std::thread>([this] {
+                Registry::instance().system<SceneSystem>()->cachePrefab(
+                    CHUNKS_DIRECTORY + "\\chunk-tmw-a-1-cc-01.prefab");
+            });
+            nextChunk = "chunk-tmw-a-1-cc-01";
+
+            updateWaterfallRefraction();
+            updateTrapRefraction();
+            spawnTorches();
+            spawnBishops(100);
+            spawnRooks(100, false);
+
+            registry.send(OnGameStateChange{.nextState = GAME_LAUNCH_FADE_IN});
         } break;
         case GAME_FADE_IN: {
+            // Fade in
+            screenFade =
+                interpolate(easeOutQuint, screenFade, 1.0f, 0.1f, deltaTime);
+            registry.system<BillboardRenderSystem>()->setBlackProportion(
+                screenFade);
+
+            // Manage UI fades
+            for (auto const& entity : menuGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : helpText) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : authorNamesText) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : gameGroup) {
+                interpolateTextTo(entity, 1.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : resultsGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : pauseMenuGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+
+            // Change state
+            if (screenFade > 0.999f) {
+                registry.send(OnGameStateChange{.nextState = GAME});
+            }
         } break;
         case GAME: {
             handleChunkSpawning(deltaTime);
@@ -282,6 +360,85 @@ void GameManagerScript::onCollisionEnter(OnCollisionEnter const& event) {
 }
 void GameManagerScript::onGameStateChange(OnGameStateChange const& event) {
     currentState = event.nextState;
+}
+void GameManagerScript::onButtonClick(OnButtonClick const& event) {
+    auto isButtonClicked = [this, &event](EntityId const button) {
+        return Entity(button).get<UIElement>().button.get() == event.button;
+    };
+
+    switch (currentState) {
+        case GAME_LAUNCH_FADE_IN: {
+        } break;
+        case MENU: {
+            if (isButtonClicked(menuPlayButton)) {
+                registry.send(
+                    OnGameStateChange{.nextState = MENU_TO_GAME_FADE_OUT});
+            } else if (isButtonClicked(menuExitButton)) {
+                // TODO: Add exiting, but properly, maybe through events
+            }
+        } break;
+        case CHANGE_MENU_TYPE_TO_MAIN: {
+        } break;
+        case CHANGE_MENU_TYPE_TO_PAUSE: {
+        } break;
+        case MENU_TO_GAME_FADE_OUT: {
+        } break;
+        case NEW_GAME_SETUP: {
+        } break;
+        case GAME_FADE_IN: {
+        } break;
+        case GAME: {
+        } break;
+        case DEATH_RESULTS: {
+        } break;
+        case RESULTS_TO_GAME_FADE_OUT: {
+        } break;
+        case GAME_EXIT_FADE_OUT: {
+        } break;
+        default: {
+        } break;
+    };
+}
+void GameManagerScript::onButtonHover(OnButtonHover const& event) {
+    auto isButtonHovered = [this, &event](EntityId const button) {
+        return Entity(button).get<UIElement>().button.get() == event.button;
+    };
+    auto isMouseOnButton = [this, &event](EntityId const button) {
+        return event.on;
+    };
+
+    switch (currentState) {
+        case GAME_LAUNCH_FADE_IN: {
+        } break;
+        case MENU: {
+            if (isButtonHovered(menuHelpButton)) {
+                fadeInHelp = isMouseOnButton(menuHelpButton);
+            }
+            if (isButtonHovered(menuAuthorsButton)) {
+                fadeInAuthors = isMouseOnButton(menuAuthorsButton);
+            }
+        } break;
+        case CHANGE_MENU_TYPE_TO_MAIN: {
+        } break;
+        case CHANGE_MENU_TYPE_TO_PAUSE: {
+        } break;
+        case MENU_TO_GAME_FADE_OUT: {
+        } break;
+        case NEW_GAME_SETUP: {
+        } break;
+        case GAME_FADE_IN: {
+        } break;
+        case GAME: {
+        } break;
+        case DEATH_RESULTS: {
+        } break;
+        case RESULTS_TO_GAME_FADE_OUT: {
+        } break;
+        case GAME_EXIT_FADE_OUT: {
+        } break;
+        default: {
+        } break;
+    };
 }
 
 void GameManagerScript::spawnTorches() {
@@ -479,6 +636,10 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
                  "EnemySpawnPoint")) {
             it.get<Transform>().position.x += generatedLengthInWorldUnits;
         }
+        for (auto it : registry.system<PropertySystem>()->findEntityByTag(
+                 "EnemySpawnPointRook")) {
+            it.get<Transform>().position.x += generatedLengthInWorldUnits;
+        }
 
         // Fix the adjacent box colliders problem by spawning the next chunk
         // slightly lower
@@ -488,7 +649,7 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
         // Spawn the enemies
         spawnTorches();
         spawnBishops(50);
-        spawnRooks(50, false);
+        spawnRooks(50, true);
 
         // Delete the chunks we've already passed
         auto i = presentChunks.begin();

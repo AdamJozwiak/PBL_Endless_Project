@@ -178,7 +178,7 @@ void PlayerControllerScript::update(float const deltaTime) {
 }
 
 void PlayerControllerScript::doGameLogic(float const deltaTime) {
-    static float wait = 2.0f;
+    static float wait = 0.0f;
     static float flightHeight = 1.0f;
 
     if (wait >= 0.0f) {
@@ -202,7 +202,7 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
         if (currentForm == eagleForm) {
             if (inputAscendKey) {
                 // moveInput.y = ascend(deltaTime, 10.0f);
-                moveInput.y = interpolate(easeOutQuad, moveInput.y, 0.75f, 0.1f,
+                moveInput.y = interpolate(easeOutQuad, moveInput.y, 1.75f, 0.1f,
                                           deltaTime);
             } else {
                 // moveInput.y = -0.5f;
@@ -429,32 +429,29 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
     //}
 
     aCValue = std::lerp(maxC, minC, lightValue);
-
     aQValue = std::lerp(maxQ, minQ, lightValue);
-
     intensityValue = std::lerp(minIntensity, maxIntensity, lightValue);
 
-    lightValue = interpolate(easeOutSine, lightValue, lightValue - 0.1f, 0.65f,
-                             deltaTime);
+    lightValue -= 0.05f * deltaTime;  // interpolate(easeInOutSine, lightValue,
+                                      // 0.0f, 0.9f, deltaTime);
 
     // Turn off screen after light reaches certain value
-    if (lightValue < 0.4 && lightValue >= 0.0f) {
-        deathTimer += deltaTime / 2;
-        blackProportion = std::lerp(1.0f, 0.0f, deathTimer);
-        registry.system<BillboardRenderSystem>()->setBlackProportion(
-            blackProportion);
-        if (blackProportion < 0.0f) {
-            registry.system<PropertySystem>()->activateEntity(entity, false);
-        }
-    } else {
+    if (lightValue < 0.2 && lightValue >= 0.0f) {
+        // deathTimer += deltaTime / 2;
+        blackProportion = std::lerp(1.0f, 0.0f, 1.0f - 5.0f * lightValue);
+    } else if (lightValue > 0.0f) {
         // This line reasures that when player picks up flame after screen goes
         // black it will turn it back on
-        blackProportion = 1.0f;
-        registry.system<BillboardRenderSystem>()->setBlackProportion(
-            blackProportion);
+        blackProportion =
+            interpolate(easeOutQuint, blackProportion, 1.0f, 0.1f, deltaTime);
+    } else {
+        blackProportion = 0.0f;
     }
+    registry.system<BillboardRenderSystem>()->setBlackProportion(
+        blackProportion);
     if (lightValue < 0.0f) {
         lightValue = 0.0f;
+        registry.system<PropertySystem>()->activateEntity(entity, false);
     }
 
     Entity(torch).get<Light>().pointLight->setIntensity(intensityValue);
@@ -486,13 +483,13 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
             resetTorchLight();
         } else if (otherTag == "Trap") {
             registry.system<GraphSystem>()->destroyEntityWithChildren(other);
-            canChangeForm = false;
+            // canChangeForm = false;
         } else if (otherTag == "Waterfall") {
             changeForm(humanForm);
             if (!entity.has<Rigidbody>()) {
                 entity.add<Rigidbody>(rb);
             }
-            canChangeForm = false;
+            // canChangeForm = false;
         } else if (otherTag == "DeathCollider") {
             registry.system<PropertySystem>()->activateEntity(
                 Entity(event.a.id == entity.id ? event.a.id : event.b.id),
