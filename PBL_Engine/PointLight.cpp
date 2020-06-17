@@ -14,7 +14,10 @@ PointLight::PointLight(Graphics& gfx, float radius) : mesh(gfx, radius) {
     Reset();
 }
 
-PointLight::~PointLight() { torchNumbers.push(number); }
+PointLight::~PointLight() { 
+    torchNumbers.push(number);
+    setIntensity(0.0f);
+}
 
 DirectX::XMFLOAT4 PointLight::lightPositionWorld() const {
     return lightParametersConstantBuffer.lightPositionWorld[number];
@@ -55,13 +58,92 @@ void PointLight::setIntensity(float const intensity) {
 
 float PointLight::getIntensity() { return lightIntensity; }
 
-void PointLight::setAttenuationQ(float value) {
-    lightParametersConstantBuffer.attenuationQuadratic = value;
+void PointLight::setAttenuationC(float const value) {
+     attenuationConstant = value;
+    // Find the vector which contains the target intensity
+     auto& attenuationCVector =
+        lightParametersConstantBuffer.attenuationConstant[number / 4];
+
+    // Choose the specific component inside the found vector
+     std::optional<std::reference_wrapper<float>> targetAttenuationCComponent;
+     switch (number % 4) {
+        case 0:
+            targetAttenuationCComponent = attenuationCVector.x;
+            break;
+        case 1:
+            targetAttenuationCComponent = attenuationCVector.y;
+            break;
+        case 2:
+            targetAttenuationCComponent = attenuationCVector.z;
+            break;
+        case 3:
+            targetAttenuationCComponent = attenuationCVector.w;
+            break;
+    }
+
+    // Set the intensity
+     targetAttenuationCComponent->get() = value;
 }
 
-float PointLight::getAttenuationQ() {
-    return lightParametersConstantBuffer.attenuationQuadratic;
+float PointLight::getAttenuationC() { return attenuationConstant; }
+
+void PointLight::setAttenuationL(float const value) {
+    attenuationLinear = value;
+    // Find the vector which contains the target intensity
+    auto& attenuationLVector =
+        lightParametersConstantBuffer.attenuationLinear[number / 4];
+
+    // Choose the specific component inside the found vector
+    std::optional<std::reference_wrapper<float>> targetAttenuationLComponent;
+    switch (number % 4) {
+        case 0:
+            targetAttenuationLComponent = attenuationLVector.x;
+            break;
+        case 1:
+            targetAttenuationLComponent = attenuationLVector.y;
+            break;
+        case 2:
+            targetAttenuationLComponent = attenuationLVector.z;
+            break;
+        case 3:
+            targetAttenuationLComponent = attenuationLVector.w;
+            break;
+    }
+
+    // Set the intensity
+    targetAttenuationLComponent->get() = value;
 }
+
+float PointLight::getAttenuationL() { return attenuationLinear; }
+
+void PointLight::setAttenuationQ(float const value) {
+    attenuationQuadratic = value;
+    // Find the vector which contains the target intensity
+    auto& attenuationQVector =
+        lightParametersConstantBuffer.attenuationQuadratic[number / 4];
+
+    // Choose the specific component inside the found vector
+    std::optional<std::reference_wrapper<float>> targetAttenuationQComponent;
+    switch (number % 4) {
+        case 0:
+            targetAttenuationQComponent = attenuationQVector.x;
+            break;
+        case 1:
+            targetAttenuationQComponent = attenuationQVector.y;
+            break;
+        case 2:
+            targetAttenuationQComponent = attenuationQVector.z;
+            break;
+        case 3:
+            targetAttenuationQComponent = attenuationQVector.w;
+            break;
+    }
+
+    // Set the intensity
+    targetAttenuationQComponent->get() = value;
+}
+
+float PointLight::getAttenuationQ() { return attenuationQuadratic; }
 
 void PointLight::SpawnControlWindow() noexcept {
     if (ImGui::Begin("Light")) {
@@ -87,7 +169,7 @@ void PointLight::SpawnControlWindow() noexcept {
         /* ImGui::ColorEdit3("Ambient",
          * &lightParametersConstantBuffer.ambient.x); */
 
-        ImGui::Text("Falloff");
+        /*ImGui::Text("Falloff");
         ImGui::SliderFloat("Constant",
                            &lightParametersConstantBuffer.attenuationConstant,
                            0.05f, 10.0f, "%.2f", 4);
@@ -96,7 +178,7 @@ void PointLight::SpawnControlWindow() noexcept {
                            0.0001f, 4.0f, "%.4f", 8);
         ImGui::SliderFloat("Quadratic",
                            &lightParametersConstantBuffer.attenuationQuadratic,
-                           0.0000001f, 10.0f, "%.7f", 10);
+                           0.0000001f, 10.0f, "%.7f", 10);*/
 
         if (ImGui::Button("Reset")) {
             Reset();
@@ -111,9 +193,9 @@ void PointLight::Reset() noexcept {
     lightParametersConstantBuffer.viewPositionWorld = {0.0f, 0.0f, 0.0f, 0.0f};
     lightParametersConstantBuffer.diffuseColor[number] = {1.0f, 0.8f, 0.6f,
                                                           1.0f};
-    lightParametersConstantBuffer.attenuationConstant = 0.0f;
-    lightParametersConstantBuffer.attenuationLinear = 0.0f;
-    lightParametersConstantBuffer.attenuationQuadratic = 0.025f;
+    setAttenuationC(0.0f);
+    setAttenuationL(0.0f);
+    setAttenuationQ(0.025f);
     setIntensity(1.5f);
 }
 
@@ -145,6 +227,10 @@ void PointLight::Bind(Graphics& gfx) noexcept {
 void PointLight::initTorchNumbers() {
     for (int i = 0; i < PointLight::MAX_LIGHT_COUNT; i++) {
         torchNumbers.push(i);
+    }
+    for (int i = 0; i < MAX_LIGHT_COUNT / 4; i++) {
+        lightParametersConstantBuffer.attenuationConstant[i] =
+            DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f);
     }
 }
 int PointLight::getNumber() { return number; }
