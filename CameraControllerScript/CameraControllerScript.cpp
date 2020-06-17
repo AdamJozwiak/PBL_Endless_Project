@@ -57,15 +57,14 @@ void CameraControllerScript::setup() {
 
 void CameraControllerScript::update(float const deltaTime) {
     switch (currentState) {
-        case GAME_LAUNCH_FADE_IN: {
+        case GAME_LAUNCH_FADE_IN:
+        case MENU: {
             // Get the camera to the starting menu position
             auto& transform = entity.get<Transform>();
             transform.position.z =
                 interpolate(easeOutSine, transform.position.z,
                             Entity(menuCameraId).get<Transform>().position.z,
                             0.5f, deltaTime);
-        } break;
-        case MENU: {
         } break;
         case CHANGE_MENU_TYPE_TO_MAIN: {
         } break;
