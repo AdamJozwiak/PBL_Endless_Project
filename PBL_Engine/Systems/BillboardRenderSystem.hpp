@@ -13,6 +13,8 @@ ECS_SYSTEM(BillboardRenderSystem) {
     void update(float deltaTime) override;
     void release() override;
 
+    void SetBlackProportion(float black);
+
     // ============================================================== Data == //
     Window *window;
     std::shared_ptr<PostProcessing> bloom, colorCorrection;
