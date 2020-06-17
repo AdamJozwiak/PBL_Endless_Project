@@ -43,10 +43,9 @@ cbuffer LightParameters : register(b10) {
     float4 diffuseColor[NUM_LIGHTS];
 
     float4 intensity[NUM_LIGHTS / 4];
-
-    float attenuationConstant;
-    float attenuationLinear;
-    float attenuationQuadratic;
+    float4 attenuationConstant[NUM_LIGHTS / 4];
+    float4 attenuationLinear[NUM_LIGHTS / 4];
+    float4 attenuationQuadratic[NUM_LIGHTS / 4];
 };
 
 cbuffer AnimationSpeed : register(b8) { float animationSpeed = 0.0f; }
