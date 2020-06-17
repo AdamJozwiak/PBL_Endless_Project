@@ -14,7 +14,7 @@ PointLight::PointLight(Graphics& gfx, float radius) : mesh(gfx, radius) {
     Reset();
 }
 
-PointLight::~PointLight() { 
+PointLight::~PointLight() {
     torchNumbers.push(number);
     setIntensity(0.0f);
 }
@@ -59,14 +59,14 @@ void PointLight::setIntensity(float const intensity) {
 float PointLight::getIntensity() { return lightIntensity; }
 
 void PointLight::setAttenuationC(float const value) {
-     attenuationConstant = value;
+    attenuationConstant = value;
     // Find the vector which contains the target intensity
-     auto& attenuationCVector =
+    auto& attenuationCVector =
         lightParametersConstantBuffer.attenuationConstant[number / 4];
 
     // Choose the specific component inside the found vector
-     std::optional<std::reference_wrapper<float>> targetAttenuationCComponent;
-     switch (number % 4) {
+    std::optional<std::reference_wrapper<float>> targetAttenuationCComponent;
+    switch (number % 4) {
         case 0:
             targetAttenuationCComponent = attenuationCVector.x;
             break;
@@ -82,7 +82,7 @@ void PointLight::setAttenuationC(float const value) {
     }
 
     // Set the intensity
-     targetAttenuationCComponent->get() = value;
+    targetAttenuationCComponent->get() = value;
 }
 
 float PointLight::getAttenuationC() { return attenuationConstant; }
