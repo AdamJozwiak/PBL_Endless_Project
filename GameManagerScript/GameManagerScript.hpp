@@ -48,6 +48,7 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
         resultsPressAnyKey;
     EntityId pauseMenuResumeButton, pauseMenuHelpButton, pauseMenuAuthorsButton,
         pauseMenuExitButton;
+    std::vector<EntityId> menuGroup, gameGroup, resultsGroup, pauseMenuGroup;
 
     bool (*isKeyPressed)(int const key);
     void spawnTorches();

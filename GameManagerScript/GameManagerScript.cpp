@@ -19,6 +19,13 @@
 // //////////////////////////////////////////////////////// Namespace aliases //
 namespace fs = std::filesystem;
 
+// ////////////////////////////////////////////////////////////////// Helpers //
+void interpolateTextTo(EntityId entity, float const target,
+                       float const deltaTime) {
+    auto& alpha = Entity(entity).get<UIElement>().alpha;
+    alpha = interpolate(easeOutSine, alpha, target, 0.5f, deltaTime);
+}
+
 // //////////////////////////////////////////////////////////////// Variables //
 std::unique_ptr<std::thread> cacheThread;
 
@@ -185,6 +192,27 @@ void GameManagerScript::setup() {
         Entity(pauseMenuAuthorsButton).get<UIElement>().alpha = 0.0f;
         Entity(pauseMenuExitButton).get<UIElement>().alpha = 0.0f;
     }
+
+    // Segregate the UI entities
+    {
+        menuGroup.push_back(menuPlayButton);
+        menuGroup.push_back(menuHelpButton);
+        menuGroup.push_back(menuAuthorsButton);
+        menuGroup.push_back(menuExitButton);
+
+        gameGroup.push_back(gameScoreText);
+        gameGroup.push_back(gameScoreValueText);
+
+        resultsGroup.push_back(resultsYouDiedText);
+        resultsGroup.push_back(resultsYourScoreText);
+        resultsGroup.push_back(resultsScoreValueText);
+        resultsGroup.push_back(resultsPressAnyKey);
+
+        pauseMenuGroup.push_back(pauseMenuResumeButton);
+        pauseMenuGroup.push_back(pauseMenuHelpButton);
+        pauseMenuGroup.push_back(pauseMenuAuthorsButton);
+        pauseMenuGroup.push_back(pauseMenuExitButton);
+    }
 };
 
 void GameManagerScript::update(float const deltaTime) {
@@ -207,6 +235,20 @@ void GameManagerScript::update(float const deltaTime) {
                 interpolate(easeOutSine, screenFade, 1.0f, 0.5f, deltaTime);
             registry.system<BillboardRenderSystem>()->setBlackProportion(
                 screenFade);
+
+            // Manage UI fades
+            for (auto const& entity : menuGroup) {
+                interpolateTextTo(entity, 1.0f, deltaTime);
+            }
+            for (auto const& entity : gameGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime);
+            }
+            for (auto const& entity : resultsGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime);
+            }
+            for (auto const& entity : pauseMenuGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime);
+            }
         } break;
         case CHANGE_MENU_TYPE_TO_MAIN: {
         } break;
