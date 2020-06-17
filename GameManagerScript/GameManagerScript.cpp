@@ -62,7 +62,7 @@ void GameManagerScript::setup() {
     auto entities = registry.system<PropertySystem>()->findEntityByTag(
         "ChunkStartEndProperty");
     for (auto const& e : entities) {
-        auto const& beginning = e.get<Transform>().euler;
+        auto const& beginning = e.get<Transform>().position;
         assert(beginning.x + beginning.y + beginning.z == 1 &&
                "Wrong chunk beginning!");
 
