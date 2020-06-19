@@ -84,7 +84,7 @@ void CameraControllerScript::update(float const deltaTime) {
                             playerTransform.position.x + offset.x, smoothing,
                             deltaTime),
                 interpolate(easeOutQuad, lastPosition.y,
-                            playerTransform.position.y * 0.75f + offset.y,
+                            playerTransform.position.y * 0.618f + offset.y,
                             smoothing, deltaTime),
                 interpolate(easeOutQuad, lastPosition.z,
                             playerTransform.position.z + offset.z, smoothing,
@@ -130,7 +130,7 @@ void CameraControllerScript::shake(float deltaTime) {
                     smoothing, deltaTime),
         interpolate(
             easeOutQuad, lastPosition.y,
-            playerTransform.position.y * 0.75f + offset.y + shakeOffset.y,
+            playerTransform.position.y * 0.618f + offset.y + shakeOffset.y,
             smoothing, deltaTime),
         interpolate(easeOutQuad, lastPosition.z,
                     playerTransform.position.z + offset.z + shakeOffset.z,
