@@ -19,6 +19,7 @@ TagManager:
   - ObstacleCollider
   - DeathCollider
   - Ground
+  - LastLane
   layers:
   - Default
   - TransparentFX

@@ -441,16 +441,24 @@ void GameManagerScript::updateTrapRefraction() {
 }
 
 void GameManagerScript::handleChunkSpawning(float deltaTime) {
+    static int spawnedChunks = 0;
+    static float const VERTICAL_DELTA = 0.1f;
+    static float const TILE_WIDTH = 2.0f;
+    static float const ALPHA = std::asin(VERTICAL_DELTA / TILE_WIDTH);
+
     auto const& playerPositionInWorldUnits =
         Entity(playerId).get<Transform>().position.x;
     auto const& generatedLengthInWorldUnits =
-        PART_LENGTH_IN_WORLD_UNITS * generatedLengthInParts;
+        PART_LENGTH_IN_WORLD_UNITS * generatedLengthInParts -
+        (spawnedChunks * TILE_WIDTH * (1.0f - std::cos(ALPHA)));
 
     bool const hasPlayerPassedSpawningPoint =
         playerPositionInWorldUnits >=
         generatedLengthInWorldUnits - SPAWN_PADDING_IN_WORLD_UNITS;
 
     if (hasPlayerPassedSpawningPoint) {
+        ++spawnedChunks;
+
         // Potentially wait for this chunk caching to finish
         cacheThread->join();
 
@@ -482,8 +490,15 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
 
         // Fix the adjacent box colliders problem by spawning the next chunk
         // slightly lower
-        static int spawnedChunks = 0;
-        chunk.get<Transform>().position.y = -0.1f * ++spawnedChunks;
+        chunk.get<Transform>().position.y = -VERTICAL_DELTA * spawnedChunks;
+
+        // Rotate the last lanes to compensate for the lowered chunk
+        auto lastLanes =
+            registry.system<PropertySystem>()->findEntityByTag("LastLane");
+        for (Entity& lane : lastLanes) {
+            lane.get<Transform>().position.y = -VERTICAL_DELTA / 2.0f;
+            lane.get<Transform>().euler.z = -ALPHA;
+        }
 
         // Spawn the enemies
         spawnTorches();
