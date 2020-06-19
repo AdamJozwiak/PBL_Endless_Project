@@ -117,13 +117,13 @@ void CameraControllerScript::onGameStateChange(OnGameStateChange const& event) {
 // ------------------------------------------------------------ Methods -- == //
 void CameraControllerScript::setPosition() {}
 
-void CameraControllerScript::shake(float deltaTime) {
+void CameraControllerScript::shake(float const deltaTime) {
     auto const& playerTransform = Entity(playerId).get<Transform>();
     auto const& cameraPosition = entity.get<Transform>().position;
-    std::random_device rnd;
-    std::mt19937 rng(rnd());
-    std::uniform_int_distribution<int> uni(-1, 1);
-    shakeOffset = {(float)uni(rng), (float)uni(rng), 0.0f};
+    static std::random_device rnd;
+    static std::mt19937 rng(rnd());
+    static std::normal_distribution<float> normalDistribution(0.0f, 0.5f);
+    shakeOffset = {normalDistribution(rng), normalDistribution(rng), 0.0f};
     entity.get<Transform>().position = DirectX::XMFLOAT3{
         interpolate(easeOutQuad, lastPosition.x,
                     playerTransform.position.x + offset.x + shakeOffset.x,
