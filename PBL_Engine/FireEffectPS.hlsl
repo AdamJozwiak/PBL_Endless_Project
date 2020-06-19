@@ -1,3 +1,5 @@
+#include "harmonic.hlsl"
+
 cbuffer Cbuf { float time; }
 
 struct VSOut {
@@ -43,6 +45,9 @@ PixelShaderOutput main(VSOut input) {
 
     // Gradient
     float gradient = shaderTextures[2].Sample(splr, input.tex);
+
+    input.tex.x +=
+        gradient * harmonic(0.01f, 0.5f, 0.2f, 0.0f, time, input.tex.y);
 
     // Albedo
     float4 albedo = shaderTextures[0].Sample(

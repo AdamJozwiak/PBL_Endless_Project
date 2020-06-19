@@ -1336,6 +1336,9 @@
     <FxCompile Include="EnemyPS.hlsl">
       <Filter>Shader\Billboarding</Filter>
     </FxCompile>
+    <FxCompile Include="harmonic.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="yaml-cpp\src\contrib\yaml-cpp.natvis">

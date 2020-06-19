@@ -1,3 +1,5 @@
+#include "harmonic.hlsl"
+
 cbuffer Cbuf { float time; }
 
 struct VSOut {
@@ -19,9 +21,18 @@ float4 rand(float2 uv) {
 }
 
 PixelShaderOutput main(VSOut input) {
-    float redShine = 1.0f;
-    float greenShine = 1.0f;
-    float blueShine = 1.0f;
+    input.tex.x += harmonic(0.002f, 0.2f, 0.2f, 0.0f, time, input.tex.y);
+    input.tex.x -= harmonic(0.01f, 2.0f, 0.5f, 0.2f, time, input.tex.x);
+
+    input.tex.y += harmonic(0.01f, 1.0f, 0.3f, 0.1f, time, input.tex.x);
+    input.tex.y -= harmonic(0.02f, 4.0f, 0.8f, 0.4f, time, input.tex.y);
+
+    float redShine =
+        1.0f + harmonic(0.02f, 4.0f, 0.5f, 0.0f, time, input.tex.x);
+    float greenShine =
+        1.0f + harmonic(0.03f, 3.0f, 0.6f, 0.5f, time, input.tex.y);
+    float blueShine =
+        1.0f + harmonic(0.02f, 2.0f, 0.7f, 0.2f, time, input.tex.x);
 
     float2 noisePadding = float2(input.tex.x + rand(input.tex).x,
                                  input.tex.y + rand(input.tex).y);
