@@ -50,12 +50,11 @@ PixelShaderOutput main(VSOut input) {
                      (noisePadding.y + 1.5f) * 2.0f - 0.5f * -time));
 
     // Albedo
-     float4 albedo = shaderTextures[0].Sample(
-        splr,
-        float2(
-            input.tex.x + 0.4 * sin(-time * 0.4f + input.tex.y * 2) *
-            noises[0], input.tex.y + 0.1 * -time +
-                0.1 * cos(time * 0.4f + input.tex.x * 4) * noises[0]));
+    float4 albedo = shaderTextures[0].Sample(
+        splr, float2(input.tex.x +
+                         0.4 * sin(-time * 0.4f + input.tex.y * 2) * noises[0],
+                     input.tex.y + 0.1 * -time +
+                         0.1 * cos(time * 0.4f + input.tex.x * 4) * noises[0]));
 
     // Shape
     float4 shape =
