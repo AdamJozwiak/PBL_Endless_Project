@@ -65,6 +65,7 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
     std::vector<EntityId> spawnPoints;
     std::shared_ptr<EnemyControllerScript> enemyScript;
     std::shared_ptr<CameraControllerScript> cameraScript;
+    EntityId cameraId;
     bool shake = false;
     float shakeTimer = 0.0f;
     Timer chunkSpawnTime;

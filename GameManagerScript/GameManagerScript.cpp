@@ -125,6 +125,13 @@ void GameManagerScript::setup() {
     playerId =
         registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
 
+    cameraId = registry.system<PropertySystem>()
+                   ->findEntityByTag("MainCamera")
+                   .at(0)
+                   .id;
+    cameraScript = std::static_pointer_cast<CameraControllerScript>(
+        Entity(cameraId).get<Behaviour>().script);
+
     // Find the UI elements
     {
         auto findEntityByName = std::bind(
@@ -381,16 +388,11 @@ void GameManagerScript::findSpawnPoints(MovementType mt) {
     }
 }
 
-void GameManagerScript::shakeCamera(float deltaTime) {
+void GameManagerScript::shakeCamera(float const deltaTime) {
     shakeTimer += deltaTime;
-    auto camera = Registry::instance()
-                      .system<PropertySystem>()
-                      ->findEntityByTag("MainCamera")
-                      .at(0)
-                      .id;
-    cameraScript = std::static_pointer_cast<CameraControllerScript>(
-        Entity(camera).get<Behaviour>().script);
+
     cameraScript->shake(deltaTime);
+
     if (shakeTimer >= SHAKE_DURATION) {
         shake = false;
         shakeTimer = 0.0f;
