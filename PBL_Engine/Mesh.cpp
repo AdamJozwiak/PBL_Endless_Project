@@ -66,7 +66,8 @@ Mesh::Mesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs,
         std::make_unique<PixelConstantBuffer<Properties>>(gfx, properties, 9u));
 
     if (parent.modelSkybox) {
-        AddBind(std::make_unique<SkyboxCbuf>(gfx, *this, parent.modelSkybox, 8u));
+        AddBind(
+            std::make_unique<SkyboxCbuf>(gfx, *this, parent.modelSkybox, 8u));
     }
 }
 

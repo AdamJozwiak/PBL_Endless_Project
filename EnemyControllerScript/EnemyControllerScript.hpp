@@ -33,7 +33,7 @@ class ENEMYCONTROLLERSCRIPT_API EnemyControllerScript : public Script {
 
   private:
     // ============================================================== Data == //
-    GameState currentState = GAME_LAUNCH_FADE_IN;
+    GameState currentState = GAME;
 
     bool (*isKeyPressed)(int const key);
 

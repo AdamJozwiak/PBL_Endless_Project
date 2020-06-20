@@ -61,7 +61,7 @@ float4 main(VSOut input) : SV_TARGET {
     float4 baseColor = ColorTexture[0].Sample(splr, input.tex);
     float4 bloomColor = ColorTexture[1].Sample(splr, input.tex);
     float intensity = dot(baseColor.rgb, GrayScaleIntensity);
-    float bloomIntensity = 0.4f;
+    float bloomIntensity = 0.5f;
     float originalIntensity = 1.0f;
     float bloomSaturation = 0.5f;
     float originalSaturation = 1.0f;

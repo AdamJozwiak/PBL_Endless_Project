@@ -1,0 +1,408 @@
+
+{
+  "header": {
+    "reportVersion": 1,
+    "event": "Allocation failed - JavaScript heap out of memory",
+    "trigger": "FatalError",
+    "filename": "report.20200619.202843.4084.0.001.json",
+    "dumpEventTime": "2020-06-19T20:28:43Z",
+    "dumpEventTimeStamp": "1592591323760",
+    "processId": 4084,
+    "cwd": "E:\\pbl\\game",
+    "commandLine": [
+      "C:\\Program Files\\nodejs\\node.EXE",
+      "C:\\Users\\Tomek\\AppData\\Local\\coc\\extensions\\node_modules\\coc-yaml\\node_modules\\yaml-language-server\\out\\server\\src\\server.js",
+      "--node-ipc",
+      "--node-ipc",
+      "--clientProcessId=760"
+    ],
+    "nodejsVersion": "v12.16.1",
+    "wordSize": 64,
+    "arch": "x64",
+    "platform": "win32",
+    "componentVersions": {
+      "node": "12.16.1",
+      "v8": "7.8.279.23-node.31",
+      "uv": "1.34.0",
+      "zlib": "1.2.11",
+      "brotli": "1.0.7",
+      "ares": "1.15.0",
+      "modules": "72",
+      "nghttp2": "1.40.0",
+      "napi": "5",
+      "llhttp": "2.0.4",
+      "http_parser": "2.9.3",
+      "openssl": "1.1.1d",
+      "cldr": "35.1",
+      "icu": "64.2",
+      "tz": "2019c",
+      "unicode": "12.1"
+    },
+    "release": {
+      "name": "node",
+      "lts": "Erbium",
+      "headersUrl": "https://nodejs.org/download/release/v12.16.1/node-v12.16.1-headers.tar.gz",
+      "sourceUrl": "https://nodejs.org/download/release/v12.16.1/node-v12.16.1.tar.gz",
+      "libUrl": "https://nodejs.org/download/release/v12.16.1/win-x64/node.lib"
+    },
+    "osName": "Windows_NT",
+    "osRelease": "6.1.7601",
+    "osVersion": "Windows 7 Ultimate Service Pack 1",
+    "osMachine": "x86_64",
+    "cpus": [
+      {
+        "model": "Intel(R) Core(TM) i5-4690K CPU @ 3.50GHz",
+        "speed": 3500,
+        "user": 1282031,
+        "nice": 0,
+        "sys": 697870,
+        "idle": 13076815,
+        "irq": 109668
+      },
+      {
+        "model": "Intel(R) Core(TM) i5-4690K CPU @ 3.50GHz",
+        "speed": 3500,
+        "user": 1645061,
+        "nice": 0,
+        "sys": 430188,
+        "idle": 12981358,
+        "irq": 3993
+      },
+      {
+        "model": "Intel(R) Core(TM) i5-4690K CPU @ 3.50GHz",
+        "speed": 3500,
+        "user": 1004131,
+        "nice": 0,
+        "sys": 544427,
+        "idle": 13507923,
+        "irq": 10904
+      },
+      {
+        "model": "Intel(R) Core(TM) i5-4690K CPU @ 3.50GHz",
+        "speed": 3500,
+        "user": 1686901,
+        "nice": 0,
+        "sys": 414978,
+        "idle": 12954479,
+        "irq": 5865
+      }
+    ],
+    "networkInterfaces": [
+      {
+        "name": "Połączenie lokalne",
+        "internal": false,
+        "mac": "d8:cb:8a:7a:db:67",
+        "address": "fe80::b06a:5afb:264:faca",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 15
+      },
+      {
+        "name": "Połączenie lokalne",
+        "internal": false,
+        "mac": "d8:cb:8a:7a:db:67",
+        "address": "192.168.1.225",
+        "netmask": "255.255.255.0",
+        "family": "IPv4"
+      },
+      {
+        "name": "VirtualBox Host-Only Network",
+        "internal": false,
+        "mac": "0a:00:27:00:00:0d",
+        "address": "fe80::e100:596a:eb4c:6dde",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 13
+      },
+      {
+        "name": "VirtualBox Host-Only Network",
+        "internal": false,
+        "mac": "0a:00:27:00:00:0d",
+        "address": "192.168.56.1",
+        "netmask": "255.255.255.0",
+        "family": "IPv4"
+      },
+      {
+        "name": "Loopback Pseudo-Interface 1",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "::1",
+        "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+        "family": "IPv6",
+        "scopeid": 0
+      },
+      {
+        "name": "Loopback Pseudo-Interface 1",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "127.0.0.1",
+        "netmask": "255.0.0.0",
+        "family": "IPv4"
+      }
+    ],
+    "host": "Hodor"
+  },
+  "javascriptStack": {
+    "message": "No stack.",
+    "stack": [
+      "Unavailable."
+    ]
+  },
+  "nativeStack": [
+    {
+      "pc": "0x000000013fc019f9",
+      "symbol": "std::basic_ostream<char,std::char_traits<char> >::operator<<+10873"
+    },
+    {
+      "pc": "0x000000013fc05e1c",
+      "symbol": "std::basic_ostream<char,std::char_traits<char> >::operator<<+28316"
+    },
+    {
+      "pc": "0x000000013fc04dd8",
+      "symbol": "std::basic_ostream<char,std::char_traits<char> >::operator<<+24152"
+    },
+    {
+      "pc": "0x000000013fd034cb",
+      "symbol": "v8::base::CPU::has_sse+38363"
+    },
+    {
+      "pc": "0x0000000140519f4e",
+      "symbol": "v8::Isolate::ReportExternalAllocationLimitReached+94"
+    },
+    {
+      "pc": "0x0000000140502021",
+      "symbol": "v8::SharedArrayBuffer::Externalize+833"
+    },
+    {
+      "pc": "0x00000001403ce57c",
+      "symbol": "v8::internal::Heap::EphemeronKeyWriteBarrierFromCode+1436"
+    },
+    {
+      "pc": "0x00000001403d97d0",
+      "symbol": "v8::internal::Heap::ProtectUnprotectedMemoryChunks+1312"
+    },
+    {
+      "pc": "0x00000001403d62f4",
+      "symbol": "v8::internal::Heap::PageFlagsAreConsistent+3204"
+    },
+    {
+      "pc": "0x00000001403cbb13",
+      "symbol": "v8::internal::Heap::CollectGarbage+1283"
+    },
+    {
+      "pc": "0x00000001403ca184",
+      "symbol": "v8::internal::Heap::AddRetainedMap+2452"
+    },
+    {
+      "pc": "0x00000001403eb36d",
+      "symbol": "v8::internal::Factory::NewFillerObject+61"
+    },
+    {
+      "pc": "0x0000000140150adf",
+      "symbol": "v8::internal::interpreter::JumpTableTargetOffsets::iterator::operator=+1295"
+    },
+    {
+      "pc": "0x0000000140964ddd",
+      "symbol": "v8::internal::SetupIsolateDelegate::SetupHeap+546637"
+    },
+    {
+      "pc": "0x0000006593553fd5",
+      "symbol": ""
+    }
+  ],
+  "javascriptHeap": {
+    "totalMemory": 2146500608,
+    "totalCommittedMemory": 2146500608,
+    "usedMemory": 2140030944,
+    "availableMemory": 54605024,
+    "memoryLimit": 2197815296,
+    "heapSpaces": {
+      "read_only_space": {
+        "memorySize": 262144,
+        "committedMemory": 262144,
+        "capacity": 32808,
+        "used": 32808,
+        "available": 0
+      },
+      "new_space": {
+        "memorySize": 2097152,
+        "committedMemory": 2097152,
+        "capacity": 1047456,
+        "used": 438000,
+        "available": 609456
+      },
+      "old_space": {
+        "memorySize": 2138980352,
+        "committedMemory": 2138980352,
+        "capacity": 2136606696,
+        "used": 2134973272,
+        "available": 1633424
+      },
+      "code_space": {
+        "memorySize": 430080,
+        "committedMemory": 430080,
+        "capacity": 291104,
+        "used": 291104,
+        "available": 0
+      },
+      "map_space": {
+        "memorySize": 790528,
+        "committedMemory": 790528,
+        "capacity": 416400,
+        "used": 416400,
+        "available": 0
+      },
+      "large_object_space": {
+        "memorySize": 3891200,
+        "committedMemory": 3891200,
+        "capacity": 3876576,
+        "used": 3876576,
+        "available": 0
+      },
+      "code_large_object_space": {
+        "memorySize": 49152,
+        "committedMemory": 49152,
+        "capacity": 2784,
+        "used": 2784,
+        "available": 0
+      },
+      "new_large_object_space": {
+        "memorySize": 0,
+        "committedMemory": 0,
+        "capacity": 1047456,
+        "used": 0,
+        "available": 1047456
+      }
+    }
+  },
+  "resourceUsage": {
+    "userCpuSeconds": 24.866,
+    "kernelCpuSeconds": 1.84,
+    "cpuConsumptionPercent": 190.757,
+    "maxRss": 2273071104,
+    "pageFaults": {
+      "IORequired": 596748,
+      "IONotRequired": 0
+    },
+    "fsActivity": {
+      "reads": 182,
+      "writes": 110
+    }
+  },
+  "libuv": [
+  ],
+  "environmentVariables": {
+    "ADSK_3DSMAX_x64_2020": "C:\\Program Files\\Autodesk\\3ds Max 2020\\",
+    "ALLUSERSPROFILE": "C:\\ProgramData",
+    "APPDATA": "C:\\Users\\Tomek\\AppData\\Roaming",
+    "COC_CHANNEL_TIMEOUT": "30",
+    "COC_DATA_HOME": "C:\\Users\\Tomek\\AppData\\Local\\coc",
+    "COC_NO_WARNINGS": "0",
+    "COC_VIMCONFIG": "C:\\Users\\Tomek/AppData/Local/nvim",
+    "CommonProgramFiles": "C:\\Program Files\\Common Files",
+    "CommonProgramFiles(x86)": "C:\\Program Files (x86)\\Common Files",
+    "CommonProgramW6432": "C:\\Program Files\\Common Files",
+    "COMPUTERNAME": "HODOR",
+    "ComSpec": "C:\\Windows\\system32\\cmd.exe",
+    "CUDA_PATH": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.2",
+    "CUDA_PATH_V10_2": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.2",
+    "DART_SDK": "C:\\Program Files\\Dart\\dart-sdk",
+    "ESET_OPTIONS": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ",
+    "FP_NO_HOST_CHECK": "NO",
+    "GNUPLOT_LIB": "F:\\gnuplot\\demo;F:\\gnuplot\\demo\\games;F:\\gnuplot\\share",
+    "GTK_BASEPATH": "C:\\Program Files (x86)\\GtkSharp\\2.12\\",
+    "HOMEDRIVE": "C:",
+    "HOMEPATH": "\\Users\\Tomek",
+    "LANG": "en",
+    "LC_MESSAGES": "en",
+    "LOCALAPPDATA": "C:\\Users\\Tomek\\AppData\\Local",
+    "LOGONSERVER": "\\\\HODOR",
+    "MYVIMRC": "C:\\Users\\Tomek\\AppData\\Local\\nvim\\init.vim",
+    "NODE_NO_WARNINGS": "1",
+    "NUMBER_OF_PROCESSORS": "4",
+    "NVCUDASAMPLES10_2_ROOT": "C:\\ProgramData\\NVIDIA Corporation\\CUDA Samples\\v10.2",
+    "NVCUDASAMPLES_ROOT": "C:\\ProgramData\\NVIDIA Corporation\\CUDA Samples\\v10.2",
+    "NVIM_LISTEN_ADDRESS": "\\\\.\\pipe\\nvim-12016-0",
+    "NVTOOLSEXT_PATH": "C:\\Program Files\\NVIDIA Corporation\\NvToolsExt\\",
+    "OS": "Windows_NT",
+    "Path": "C:\\Program Files\\Python38\\Scripts\\;C:\\Program Files\\Python38\\;C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.2\\bin;C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.2\\libnvvp;C:\\Program Files\\Python37\\Scripts\\;C:\\Program Files\\Python37\\;C:\\ProgramData\\Oracle\\Java\\javapath;C:\\Program Files (x86)\\Intel\\iCLS Client\\;C:\\Program Files\\Intel\\iCLS Client\\;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files (x86)\\GtkSharp\\2.12\\bin;C:\\Program Files\\Microsoft SQL Server\\130\\Tools\\Binn\\;F:\\gnuplot\\bin;C:\\Program Files (x86)\\Common Files\\Acronis\\SnapAPI\\;C:\\Program Files\\Dart\\dart-sdk\\bin;C:\\Program Files\\Common Files\\Autodesk Shared\\;C:\\Program Files\\Microsoft SQL Server\\120\\Tools\\Binn\\;C:\\Program Files\\dotnet\\;C:\\Program Files\\NVIDIA Corporation\\Nsight Compute 2019.5.0\\;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\NVIDIA Corporation\\NVIDIA NvDLISR;C:\\Program Files\\MiKTeX 2.9\\miktex\\bin\\x64\\;C:\\Strawberry\\c\\bin;C:\\Strawberry\\perl\\site\\bin;C:\\Strawberry\\perl\\bin;C:\\Program Files\\MiKTeX 2.9\\scripts\\latexindent\\latexindent.exe;C:\\Program Files\\nodejs\\;C:\\Program Files\\Git\\cmd;C:\\Users\\Tomek\\scoop\\apps\\python\\current;C:\\Users\\Tomek\\scoop\\apps\\python\\current\\Scripts;C:\\Users\\Tomek\\scoop\\shims;C:\\Users\\Tomek\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;c:\\Program Files\\Git\\bin\\git.exe;c:\\Program Files\\Cppcheck;c:\\Neovim\\bin;c:\\cmder\\vendor\\git-for-windows\\usr\\bin;C:\\Program Files\\Dart\\bin;C:\\scripts;C:\\Users\\Tomek\\AppData\\Roaming\\Pub\\Cache\\bin;C:\\Program Files\\CMake\\bin;c:\\flutter\\bin\\;C:\\Program Files\\MiKTeX 2.9\\scripts\\latexindent\\latexindent.exe;C:\\Users\\Tomek\\AppData\\Roaming\\npm;C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin;C:\\Program Files\\LLVM\\bin;C:\\Neovim\\bin",
+    "PATHEXT": ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW",
+    "PROCESSOR_ARCHITECTURE": "AMD64",
+    "PROCESSOR_IDENTIFIER": "Intel64 Family 6 Model 60 Stepping 3, GenuineIntel",
+    "PROCESSOR_LEVEL": "6",
+    "PROCESSOR_REVISION": "3c03",
+    "ProgramData": "C:\\ProgramData",
+    "ProgramFiles": "C:\\Program Files",
+    "ProgramFiles(x86)": "C:\\Program Files (x86)",
+    "ProgramW6432": "C:\\Program Files",
+    "PSModulePath": "C:\\Program Files\\WindowsPowerShell\\Modules;C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\Modules",
+    "PUBLIC": "C:\\Users\\Public",
+    "QT_AUTO_SCREEN_SCALE_FACTOR": "1",
+    "SESSIONNAME": "Console",
+    "SystemDrive": "C:",
+    "SystemRoot": "C:\\Windows",
+    "TEMP": "C:\\Users\\Tomek\\AppData\\Local\\Temp",
+    "TMP": "C:\\Users\\Tomek\\AppData\\Local\\Temp",
+    "USERDOMAIN": "Hodor",
+    "USERDOMAIN_ROAMINGPROFILE": "Hodor",
+    "USERNAME": "Tomek",
+    "USERPROFILE": "C:\\Users\\Tomek",
+    "VBOX_MSI_INSTALL_PATH": "F:\\Programy\\Oracle\\VirtualBox\\",
+    "VIM": "C:\\Neovim\\share\\nvim",
+    "VIMRUNTIME": "C:\\Neovim\\share\\nvim\\runtime",
+    "windir": "C:\\Windows",
+    "windows_tracing_flags": "3",
+    "windows_tracing_logfile": "C:\\BVTBin\\Tests\\installpackage\\csilogfile.log"
+  },
+  "sharedObjects": [
+    "C:\\Program Files\\nodejs\\node.EXE",
+    "C:\\Windows\\SYSTEM32\\ntdll.dll",
+    "C:\\Windows\\system32\\kernel32.dll",
+    "C:\\Windows\\system32\\KERNELBASE.dll",
+    "C:\\Windows\\system32\\dbghelp.dll",
+    "C:\\Windows\\system32\\msvcrt.dll",
+    "C:\\Windows\\system32\\WS2_32.dll",
+    "C:\\Windows\\system32\\RPCRT4.dll",
+    "C:\\Windows\\system32\\NSI.dll",
+    "C:\\Windows\\system32\\IPHLPAPI.DLL",
+    "C:\\Windows\\system32\\WINNSI.DLL",
+    "C:\\Windows\\system32\\PSAPI.DLL",
+    "C:\\Windows\\system32\\USERENV.dll",
+    "C:\\Windows\\system32\\profapi.dll",
+    "C:\\Windows\\system32\\ADVAPI32.dll",
+    "C:\\Windows\\SYSTEM32\\sechost.dll",
+    "C:\\Windows\\system32\\USER32.dll",
+    "C:\\Windows\\system32\\GDI32.dll",
+    "C:\\Windows\\system32\\LPK.dll",
+    "C:\\Windows\\system32\\USP10.dll",
+    "C:\\Windows\\system32\\CRYPT32.dll",
+    "C:\\Windows\\system32\\MSASN1.dll",
+    "C:\\Windows\\system32\\bcrypt.dll",
+    "C:\\Windows\\system32\\WINMM.dll",
+    "C:\\Windows\\system32\\IMM32.DLL",
+    "C:\\Windows\\system32\\MSCTF.dll",
+    "C:\\Windows\\system32\\api-ms-win-core-synch-l1-2-0.DLL",
+    "C:\\Windows\\system32\\powrprof.dll",
+    "C:\\Windows\\system32\\SETUPAPI.dll",
+    "C:\\Windows\\system32\\CFGMGR32.dll",
+    "C:\\Windows\\system32\\OLEAUT32.dll",
+    "C:\\Windows\\system32\\ole32.dll",
+    "C:\\Windows\\system32\\DEVOBJ.dll",
+    "C:\\Windows\\system32\\uxtheme.dll",
+    "C:\\Windows\\system32\\mswsock.dll",
+    "C:\\Windows\\System32\\wshtcpip.dll",
+    "C:\\Windows\\System32\\wship6.dll",
+    "C:\\Windows\\system32\\bcryptprimitives.dll",
+    "C:\\Windows\\system32\\dhcpcsvc6.DLL",
+    "C:\\Windows\\system32\\dhcpcsvc.DLL",
+    "C:\\Windows\\system32\\NLAapi.dll",
+    "C:\\Windows\\system32\\napinsp.dll",
+    "C:\\Windows\\system32\\pnrpnsp.dll",
+    "C:\\Windows\\system32\\DNSAPI.dll",
+    "C:\\Windows\\System32\\winrnr.dll",
+    "C:\\Program Files\\Bonjour\\mdnsNSP.dll",
+    "C:\\Windows\\system32\\cryptbase.dll",
+    "C:\\Windows\\system32\\rasadhlp.dll",
+    "C:\\Windows\\System32\\fwpuclnt.dll"
+  ]
+}

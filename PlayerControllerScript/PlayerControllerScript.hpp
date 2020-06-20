@@ -54,13 +54,19 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
 
     float aCValue = 0.0f;
     float aQValue = 0.0f;
-    float minC = 0.0f;
-    float minQ = 0.025f;
-    float maxC = 1.0f;
-    float maxQ = 3.0f;
+    float minC = 0.1f;
+    float minQ = 0.001f;
+    float maxC = 0.01f;
+    float maxQ = 0.1f;
+    // float minC = 0.1f;
+    // float minQ = 0.003f;
+    // float maxC = 0.0f;
+    // float maxQ = 0.5f;
     float intensityValue = 0.0f;
     float maxIntensity = 1.5f;
-    float minIntensity = 0.0f;
+    float minIntensity = 1.5f;
+    // float maxIntensity = 1.5f;
+    // float minIntensity = 0.0f;
     float lightValue = 1.0f;
     float blackProportion = 1.0f;
     float deathTimer = 0.0f;
@@ -86,7 +92,7 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     // CameraController
     //    mainCamera;  // TODO: Add reference to the script? may not need
     float canChangeFormTimer = 0.0f;
-    float canChangeFormCooldown = 2.5f;
+    float canChangeFormCooldown = 1.0f;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

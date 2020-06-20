@@ -1,8 +1,11 @@
 // ///////////////////////////////////////////////////////////////// Includes //
 #include "BillboardRenderSystem.hpp"
 
+#include <DirectXMath.h>
+
 #include "Components/Components.hpp"
 #include "ECS/ECS.hpp"
+#include "GraphSystem.hpp"
 #include "RenderSystem.hpp"
 #include "WindowSystem.hpp"
 #include "imgui/imgui.h"
@@ -25,14 +28,23 @@ void BillboardRenderSystem::update(float deltaTime) {
     // Render billboards
     for (auto entity : entities) {
         auto const &flame = entity.get<Flame>().fireParticle;
-        auto const &position = entity.get<Transform>().position;
+
+        DirectX::XMVECTOR positionWorldVector =
+            DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+        positionWorldVector = DirectX::XMVector3TransformCoord(
+            positionWorldVector,
+            Registry::instance().system<GraphSystem>()->transform(entity));
+
+        DirectX::XMFLOAT4 positionWorld;
+        DirectX::XMStoreFloat4(&positionWorld, positionWorldVector);
+
         auto const &tag = entity.get<Properties>().tag;
         if (tag == "Torch") {
             auto const &light = entity.get<Light>().pointLight;
             flame->pos = light->lightPositionWorld();
         } else {
-            flame->pos = DirectX::XMFLOAT4{position.x, position.y - 2.0f,
-                                           position.z, 0.0f};
+            flame->pos = DirectX::XMFLOAT4{
+                positionWorld.x, positionWorld.y - 0.2f, positionWorld.z, 0.0f};
         }
         flame->Draw(window->Gfx());
     }

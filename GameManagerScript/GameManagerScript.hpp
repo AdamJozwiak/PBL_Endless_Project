@@ -7,6 +7,8 @@
 #include "CameraControllerScript.hpp"
 #include "ECS/Entity.hpp"
 #include "EnemyControllerScript.hpp"
+#include "Events/OnButtonClick.hpp"
+#include "Events/OnButtonHover.hpp"
 #include "Events/OnCollisionEnter.hpp"
 #include "Events/OnGameStateChange.hpp"
 #include "GameManagerScriptAPI.hpp"
@@ -28,6 +30,8 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
     // --------------------------------------------------------- Events -- == //
     void onCollisionEnter(OnCollisionEnter const &event);
     void onGameStateChange(OnGameStateChange const &event);
+    void onButtonClick(OnButtonClick const &event);
+    void onButtonHover(OnButtonHover const &event);
 
     // -------------------------------------------------------- Methods -- == //
     void method();
@@ -37,8 +41,12 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
 
   private:
     // ============================================================== Data == //
-    GameState currentState = GAME_LAUNCH_FADE_IN;
+    GameState currentState = NEW_GAME_SETUP;
     float screenFade = 0.0f;
+
+    bool fadeInHelp = false;
+    bool fadeInAuthors = false;
+    float dt = 0.0f;
 
     // UI
     EntityId menuPlayButton, menuHelpButton, menuAuthorsButton, menuExitButton;
