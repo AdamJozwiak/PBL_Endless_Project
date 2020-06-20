@@ -505,7 +505,7 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
         // Spawn the enemies
         spawnTorches();
         spawnBishops(50);
-        spawnRooks(50, false);
+        spawnRooks(50, true);
 
         // Delete the chunks we've already passed
         auto i = presentChunks.begin();
