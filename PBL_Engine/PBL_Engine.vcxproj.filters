@@ -1196,6 +1196,7 @@
       <Filter>DxErr</Filter>
     </None>
     <None Include="cpp.hint" />
+    <None Include="harmonic.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ColorBlendPS.hlsl">
@@ -1317,9 +1318,6 @@
     </FxCompile>
     <FxCompile Include="EnemyPS.hlsl">
       <Filter>Shader\Billboarding</Filter>
-    </FxCompile>
-    <FxCompile Include="harmonic.hlsl">
-      <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
