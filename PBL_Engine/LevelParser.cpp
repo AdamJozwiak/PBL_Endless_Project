@@ -2,6 +2,8 @@
 
 #include "LevelParser.h"
 
+#include <yaml-cpp/include/yaml-cpp/yaml.h>
+
 #include <Script.hpp>
 #include <cassert>
 #include <filesystem>
@@ -15,7 +17,6 @@
 #include "Mesh.h"
 #include "Systems/Systems.hpp"
 #include "Window.h"
-#include "yaml-cpp/include/yaml-cpp/yaml.h"
 
 namespace fs = std::filesystem;
 
