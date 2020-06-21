@@ -173,7 +173,7 @@ PixelShaderOutput main(PixelShaderInput input) {
 
     PixelShaderOutput output;
     output.color = skybox.Sample(textureSampler, refractionCoord);
-    output.bloom =
+    output.bloom = 5.0f * animationSpeed *
         saturate((output.color - BLOOM_THRESHOLD) / (1 - BLOOM_THRESHOLD));
     return output;
 }
