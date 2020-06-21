@@ -179,7 +179,7 @@ void PlayerControllerScript::update(float const deltaTime) {
 
 void PlayerControllerScript::doGameLogic(float const deltaTime) {
     static float wait = 2.0f;
-    static float flightHeight = 1.0f;
+    static float flightHeight = 1.5f;
 
     if (wait >= 0.0f) {
         entity.get<Transform>().position.y = 0.0f;
@@ -189,8 +189,7 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
 
     // Set key statuses
     static bool inputLaneDownKey = false, inputLaneUpKey = false,
-                inputAscendKey = false, inputDescendKey = false,
-                inputChangeFormEagleKey = false, inputChangeFormCatKey = false;
+                inputAscendKey = false, inputChangeFormCatKey = false;
 
     // Get keyboard input
     inputLaneDown = isKeyPressed('S');
@@ -198,22 +197,31 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
     inputAscend = isKeyPressed(' ');
     inputChangeFormCat = false;
 
-    if (!firstThrust) {
+    registry.system<PropertySystem>()->activateEntity(groundCheck,
+                                                      !inputAscend);
+    isGrounded |= inputAscend;
+
+    if (firstThrust) {
+        if (entity.get<Transform>().position.y - idlePosition.y <
+            flightHeight) {
+            moveInput.y =
+                interpolate(easeOutQuad, moveInput.y, 3.0f, 0.1f, deltaTime);
+        } else {
+            firstThrust = false;
+        }
+    } else {
         if (currentForm == eagleForm) {
-            if (inputAscendKey) {
-                // moveInput.y = ascend(deltaTime, 10.0f);
-                moveInput.y = interpolate(easeOutQuad, moveInput.y, 0.75f, 0.1f,
-                                          deltaTime);
+            if (inputAscend) {
+                moveInput.y = interpolate(easeOutQuint, moveInput.y, 0.75f,
+                                          0.01f, deltaTime);
             } else {
-                // moveInput.y = -0.5f;
                 moveInput.y = interpolate(easeOutSine, moveInput.y, -1.0f, 0.1f,
                                           deltaTime);
             }
         } else {
             moveInput.y = 0.0f;
-            // moveInput.y =
-            //     interpolate(easeOutSine, moveInput.y, 0.0f, 0.1f, deltaTime);
         }
+    }
 
         // Ascend
         if (inputAscend && !inputAscendKey) {
@@ -222,19 +230,6 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
         if (!inputAscend && inputAscendKey) {
             inputAscendKey = false;
         }
-    } else {
-        if (entity.get<Transform>().position.y - idlePosition.y <
-            flightHeight) {
-            // moveInput.y = ascend(deltaTime, 20.0f);
-            moveInput.y =
-                interpolate(easeOutCubic, moveInput.y, 3.0f, 0.1f, deltaTime);
-            /* moveInput.y = */
-            /*     interpolate(easeOutSine, moveInput.y, -1.0f, 0.1f,
-             * deltaTime); */
-        } else {
-            firstThrust = false;
-        }
-    }
 
     // Change current lane - down
     if (inputLaneDown && !inputLaneDownKey) {
@@ -255,9 +250,7 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
     }
 
     // Change form - eagle/human
-    if (inputAscend && !inputChangeFormEagleKey) {
-        inputChangeFormEagleKey = true;
-
+    if (inputAscend) {
         if (canChangeForm) {
             // TODO: Potential explosion effect
             // Object.Destroy(GameObject.Instantiate(
@@ -268,9 +261,11 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
 
             if (currentForm != eagleForm) {
                 changeForm(eagleForm);
+                Entity(eagleForm).get<Animator>().animationTime = 15.0f;
                 rb = entity.get<Rigidbody>();
                 entity.remove<Rigidbody>();
                 firstThrust = true;
+                isGrounded = false;
                 idlePosition = entity.get<Transform>().position;
             }
         } else {
@@ -281,15 +276,12 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
             //                           Quaternion.identity),
             //    10.0f);
         }
-    }
-    if (isGrounded && inputChangeFormEagleKey) {
-        inputChangeFormEagleKey = false;
-        if (canChangeForm) {
-            changeForm(humanForm);
-            if (!entity.has<Rigidbody>()) {
-                entity.add<Rigidbody>(rb);
-                entity.get<Rigidbody>().velocity = 0.0f;
-            }
+    } else if (isGrounded && !firstThrust) {
+        changeForm(humanForm);
+
+        if (!entity.has<Rigidbody>()) {
+            entity.add<Rigidbody>(rb);
+            entity.get<Rigidbody>().velocity = 0.0f;
         }
     }
 
@@ -361,9 +353,9 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
 
     entity.get<Transform>().euler.z =
         interpolate(easeOutSine, entity.get<Transform>().euler.z,
-                    (moveInput.y + 0.5f > 0.0f ? 1.0f : -1.0f) *
+                    (moveInput.y + 0.25f > 0.0f ? 1.0f : -1.0f) *
                         (std::min)(15.0f * DirectX::XMConvertToRadians(
-                                               std::abs(moveInput.y + 0.5f)),
+                                               std::abs(moveInput.y + 0.25f)),
                                    DirectX::XMConvertToRadians(15.0f)),
                     0.04f, deltaTime);
 
@@ -460,19 +452,22 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
     Entity(torch).get<Light>().pointLight->setIntensity(intensityValue);
     Entity(torch).get<Light>().pointLight->setAttenuationC(aCValue);
     Entity(torch).get<Light>().pointLight->setAttenuationQ(aQValue);
+
+    isGrounded = false;
 };
 
 // ------------------------------------------------------------- Events -- == //
 void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
-    if ((event.a.id == groundCheck &&
-         Entity(event.b.id).get<Properties>().tag == "Ground") ||
-        (Entity(event.a.id).get<Properties>().tag == "Ground" &&
-         event.b.id == groundCheck)) {
-        if (!firstThrust) {
-            isGrounded = true;
+    if (event.a.id == groundCheck || event.b.id == groundCheck) {
+        auto other =
+            Entity(event.a.id == groundCheck ? event.b.id : event.a.id);
+        auto otherTag = other.get<Properties>().tag;
+
+        if (other.id == entity.id) {
+            return;
+        } else if (otherTag == "Ground") {
+            isGrounded |= true;
         }
-    } else {
-        isGrounded = false;
     }
 
     if (event.a.id == entity.id || event.b.id == entity.id) {
