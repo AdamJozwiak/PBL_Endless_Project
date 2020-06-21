@@ -178,14 +178,7 @@ void PlayerControllerScript::update(float const deltaTime) {
 }
 
 void PlayerControllerScript::doGameLogic(float const deltaTime) {
-    static float wait = 2.0f;
     static float flightHeight = 1.5f;
-
-    if (wait >= 0.0f) {
-        entity.get<Transform>().position.y = 0.0f;
-        wait -= deltaTime;
-        return;
-    }
 
     // Set key statuses
     static bool inputLaneDownKey = false, inputLaneUpKey = false,
