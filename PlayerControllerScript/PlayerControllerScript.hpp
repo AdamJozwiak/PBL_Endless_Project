@@ -28,6 +28,7 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
 
     // -------------------------------------------------------- Methods -- == //
     // void changeToHuman() { changeForm(humanForm); }
+    void die();
     void doGameLogic(float const deltaTime);
     void changeForm(EntityId const &newForm);
     void resetTorchLight();

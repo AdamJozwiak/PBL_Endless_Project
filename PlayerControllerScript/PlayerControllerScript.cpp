@@ -440,7 +440,7 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
         blackProportion);
     if (lightValue < 0.0f) {
         lightValue = 0.0f;
-        registry.system<PropertySystem>()->activateEntity(entity, false);
+        die();
     }
 
     Entity(torch).get<Light>().pointLight->setIntensity(intensityValue);
@@ -483,16 +483,15 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
             }
             canChangeForm = false;
         } else if (otherTag == "DeathCollider") {
-            registry.system<PropertySystem>()->activateEntity(
-                Entity(event.a.id == entity.id ? event.a.id : event.b.id),
-                false);
+            die();
         } else if (otherTag == "Boundary") {
             return;
         } else if (other.id == groundCheck) {
             return;
         } else if (otherTag == "Enemy" || otherTag == "Rook") {
+            die();
+
             // registry.destroyEntity(other);
-            registry.system<PropertySystem>()->activateEntity(entity, false);
             // registry.system<PropertySystem>()->activateEntity(loseText,
             // true);
 
@@ -528,6 +527,10 @@ void PlayerControllerScript::onGameStateChange(OnGameStateChange const& event) {
 }
 
 // ------------------------------------------------------------ Methods -- == //
+void PlayerControllerScript::die() {
+    registry.send(OnGameStateChange{.nextState = DEATH_RESULTS});
+}
+
 void PlayerControllerScript::changeForm(EntityId const& newForm) {
     // TODO: Add explosion after 10 seconds, needs particle system, low
     // priority
