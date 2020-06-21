@@ -366,9 +366,11 @@ void GameManagerScript::spawnEnemy(MovementType mt, EntityId spawnPoint,
         enemy->get<Transform>().position.x =
             Entity(spawnPoint).get<Transform>().position.x;
         enemy->get<Transform>().position.y =
-            Entity(spawnPoint).get<Transform>().position.y + 1.5f;
+            Entity(spawnPoint).get<Transform>().position.y;
         enemy->get<Transform>().position.z =
             Entity(spawnPoint).get<Transform>().position.z;
+        enemy->get<Transform>().parent =
+            Entity(spawnPoint).get<Transform>().parent;
     }
     registry.destroyEntity(Entity(spawnPoint));
 }
@@ -485,10 +487,6 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
 
         // Move the new chunk and the enemy spawn points to their place
         chunk.get<Transform>().position.x = generatedLengthInWorldUnits;
-        for (auto it : registry.system<PropertySystem>()->findEntityByTag(
-                 "EnemySpawnPoint")) {
-            it.get<Transform>().position.x += generatedLengthInWorldUnits;
-        }
 
         // Fix the adjacent box colliders problem by spawning the next chunk
         // slightly lower
