@@ -420,31 +420,31 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
     //        Mathf.Lerp(3f, 3.5f, Mathf.PingPong(Time.time, 1f));
     //}
 
-    aCValue = std::lerp(maxC, minC, lightValue);
+    auto lightProportion = [](float const x) {
+        return 1.0f / (3.0f * (x + 0.25f)) - 0.25f;
+    };
+    aCValue = std::lerp(minC, maxC, lightProportion(lightValue));
+    aQValue = std::lerp(minQ, maxQ, lightProportion(lightValue));
+    intensityValue =
+        std::lerp(maxIntensity, minIntensity, lightProportion(lightValue));
 
-    aQValue = std::lerp(maxQ, minQ, lightValue);
-
-    intensityValue = std::lerp(minIntensity, maxIntensity, lightValue);
-
-    lightValue = interpolate(easeOutSine, lightValue, lightValue - 0.1f, 0.65f,
-                             deltaTime);
+    lightValue += LIGHT_VALUE_CHANGE_PER_SECOND * deltaTime;
 
     // Turn off screen after light reaches certain value
-    if (lightValue < 0.4 && lightValue >= 0.0f) {
-        deathTimer += deltaTime / 2;
-        blackProportion = std::lerp(1.0f, 0.0f, deathTimer);
-        registry.system<BillboardRenderSystem>()->setBlackProportion(
-            blackProportion);
-        if (blackProportion < 0.0f) {
-            registry.system<PropertySystem>()->activateEntity(entity, false);
-        }
-    } else {
+    if (lightValue < LIGHT_VALUE_BLACK_FADE_START && lightValue >= 0.0f) {
+        blackProportion = std::lerp(
+            1.0f, 0.0f,
+            std::pow(1.0f - lightValue / LIGHT_VALUE_BLACK_FADE_START, 1.5f));
+    } else if (lightValue > 0.0f) {
         // This line reasures that when player picks up flame after screen goes
         // black it will turn it back on
-        blackProportion = 1.0f;
-        registry.system<BillboardRenderSystem>()->setBlackProportion(
-            blackProportion);
+        blackProportion =
+            interpolate(easeOutQuint, blackProportion, 1.0f, 0.1f, deltaTime);
+    } else {
+        blackProportion = 0.0f;
     }
+    registry.system<BillboardRenderSystem>()->setBlackProportion(
+        blackProportion);
     if (lightValue < 0.0f) {
         lightValue = 0.0f;
         registry.system<PropertySystem>()->activateEntity(entity, false);

@@ -54,14 +54,16 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
 
     float aCValue = 0.0f;
     float aQValue = 0.0f;
-    float minC = 0.0f;
-    float minQ = 0.025f;
-    float maxC = 1.0f;
-    float maxQ = 3.0f;
+    float minC = 0.2f;
+    float minQ = 0.001f;
+    float maxC = 0.01f;
+    float maxQ = 0.2f;
     float intensityValue = 0.0f;
-    float maxIntensity = 1.5f;
+    float maxIntensity = 2.0f;
     float minIntensity = 0.0f;
-    float lightValue = 1.0f;
+    float lightValue = 0.6f;
+    float const LIGHT_VALUE_CHANGE_PER_SECOND = -0.05f;
+    float const LIGHT_VALUE_BLACK_FADE_START = 0.38f;
     float blackProportion = 1.0f;
     float deathTimer = 0.0f;
 
