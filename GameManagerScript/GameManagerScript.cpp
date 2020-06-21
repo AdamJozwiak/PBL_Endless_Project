@@ -46,6 +46,10 @@ void GameManagerScript::setup() {
         MethodListener(GameManagerScript::onCollisionEnter));
     registry.listen<OnGameStateChange>(
         MethodListener(GameManagerScript::onGameStateChange));
+    registry.listen<OnButtonClick>(
+        MethodListener(GameManagerScript::onButtonClick));
+    registry.listen<OnButtonHover>(
+        MethodListener(GameManagerScript::onButtonHover));
 
     // Set helpers
     isKeyPressed = [](int const key) {
@@ -289,6 +293,85 @@ void GameManagerScript::onCollisionEnter(OnCollisionEnter const& event) {
 }
 void GameManagerScript::onGameStateChange(OnGameStateChange const& event) {
     currentState = event.nextState;
+}
+void GameManagerScript::onButtonClick(OnButtonClick const& event) {
+    auto isButtonClicked = [this, &event](EntityId const button) {
+        return Entity(button).get<UIElement>().button.get() == event.button;
+    };
+
+    switch (currentState) {
+        case GAME_LAUNCH_FADE_IN: {
+        } break;
+        case MENU: {
+            if (isButtonClicked(menuPlayButton)) {
+                registry.send(
+                    OnGameStateChange{.nextState = MENU_TO_GAME_FADE_OUT});
+            } else if (isButtonClicked(menuExitButton)) {
+                // TODO: Add exiting, but properly, maybe through events
+            }
+        } break;
+        case CHANGE_MENU_TYPE_TO_MAIN: {
+        } break;
+        case CHANGE_MENU_TYPE_TO_PAUSE: {
+        } break;
+        case MENU_TO_GAME_FADE_OUT: {
+        } break;
+        case NEW_GAME_SETUP: {
+        } break;
+        case GAME_FADE_IN: {
+        } break;
+        case GAME: {
+        } break;
+        case DEATH_RESULTS: {
+        } break;
+        case RESULTS_TO_GAME_FADE_OUT: {
+        } break;
+        case GAME_EXIT_FADE_OUT: {
+        } break;
+        default: {
+        } break;
+    };
+}
+void GameManagerScript::onButtonHover(OnButtonHover const& event) {
+    auto isButtonHovered = [this, &event](EntityId const button) {
+        return Entity(button).get<UIElement>().button.get() == event.button;
+    };
+    auto isMouseOnButton = [this, &event](EntityId const button) {
+        return event.on;
+    };
+
+    switch (currentState) {
+        case GAME_LAUNCH_FADE_IN: {
+        } break;
+        case MENU: {
+            if (isButtonHovered(menuHelpButton)) {
+                fadeInHelp = isMouseOnButton(menuHelpButton);
+            }
+            if (isButtonHovered(menuAuthorsButton)) {
+                fadeInAuthors = isMouseOnButton(menuAuthorsButton);
+            }
+        } break;
+        case CHANGE_MENU_TYPE_TO_MAIN: {
+        } break;
+        case CHANGE_MENU_TYPE_TO_PAUSE: {
+        } break;
+        case MENU_TO_GAME_FADE_OUT: {
+        } break;
+        case NEW_GAME_SETUP: {
+        } break;
+        case GAME_FADE_IN: {
+        } break;
+        case GAME: {
+        } break;
+        case DEATH_RESULTS: {
+        } break;
+        case RESULTS_TO_GAME_FADE_OUT: {
+        } break;
+        case GAME_EXIT_FADE_OUT: {
+        } break;
+        default: {
+        } break;
+    };
 }
 
 void GameManagerScript::spawnTorches() {
