@@ -63,7 +63,6 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
 
     EntityId playerId;
     std::vector<EntityId> spawnPoints;
-    std::shared_ptr<EnemyControllerScript> enemyScript;
     std::shared_ptr<CameraControllerScript> cameraScript;
     EntityId cameraId;
     bool shake = false;

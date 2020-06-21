@@ -360,17 +360,16 @@ void GameManagerScript::spawnEnemy(MovementType mt, EntityId spawnPoint,
                                    rook)});
         }
 
-        enemyScript = std::static_pointer_cast<EnemyControllerScript>(
-            enemy->get<Behaviour>().script);
-        enemyScript->setMovementType(mt, movingSideways);
-        enemy->get<Transform>().position.x =
-            Entity(spawnPoint).get<Transform>().position.x;
-        enemy->get<Transform>().position.y =
-            Entity(spawnPoint).get<Transform>().position.y;
-        enemy->get<Transform>().position.z =
-            Entity(spawnPoint).get<Transform>().position.z;
-        enemy->get<Transform>().parent =
-            Entity(spawnPoint).get<Transform>().parent;
+        auto const& enemyBehaviour = enemy->get<Behaviour>();
+        auto const& enemyControllerScript =
+            std::static_pointer_cast<EnemyControllerScript>(
+                enemyBehaviour.script);
+        enemyControllerScript->setMovementType(mt, movingSideways);
+
+        auto& enemyTransform = enemy->get<Transform>();
+        auto const& spawnPointTransform = Entity(spawnPoint).get<Transform>();
+        enemyTransform.position = spawnPointTransform.position;
+        enemyTransform.parent = spawnPointTransform.parent;
     }
     registry.destroyEntity(Entity(spawnPoint));
 }
