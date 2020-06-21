@@ -101,30 +101,7 @@ void GameManagerScript::setup() {
         lengthOfChunk[name] = length;
     }
 
-    // Spawn the starting chunk
-    generatedLengthInParts = lengthOfChunk.at("Chunk Start");
-
-    registry.system<SceneSystem>()->cachePrefab(CHUNKS_DIRECTORY +
-                                                "\\Chunk Start.prefab");
-    presentChunks.push_back(
-        Chunk{.name = "Chunk Start",
-              .entity = registry.system<SceneSystem>()
-                            ->spawnPrefab(CHUNKS_DIRECTORY + "\\Chunk "
-                                                             "Start.prefab",
-                                          false)
-                            .id,
-              .endPositionInParts = generatedLengthInParts});
-    cacheThread = std::make_unique<std::thread>([this] {
-        Registry::instance().system<SceneSystem>()->cachePrefab(
-            CHUNKS_DIRECTORY + "\\Chunk 1.prefab");
-    });
-    nextChunk = "Chunk 1";
-
-    updateWaterfallRefraction();
-    updateTrapRefraction();
     spawnTorches();
-    spawnBishops(100);
-    spawnRooks(100, false);
 
     playerId =
         registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
@@ -268,6 +245,32 @@ void GameManagerScript::update(float const deltaTime) {
         case MENU_TO_GAME_FADE_OUT: {
         } break;
         case NEW_GAME_SETUP: {
+            // Spawn the starting chunk
+            generatedLengthInParts = lengthOfChunk.at("Chunk Start");
+
+            registry.system<SceneSystem>()->cachePrefab(CHUNKS_DIRECTORY +
+                                                        "\\Chunk Start.prefab");
+            presentChunks.push_back(Chunk{
+                .name = "Chunk Start",
+                .entity = registry.system<SceneSystem>()
+                              ->spawnPrefab(CHUNKS_DIRECTORY + "\\Chunk "
+                                                               "Start.prefab",
+                                            false)
+                              .id,
+                .endPositionInParts = generatedLengthInParts});
+            cacheThread = std::make_unique<std::thread>([this] {
+                Registry::instance().system<SceneSystem>()->cachePrefab(
+                    CHUNKS_DIRECTORY + "\\chunk-tmw-a-1-cc-01.prefab");
+            });
+            nextChunk = "chunk-tmw-a-1-cc-01";
+
+            updateWaterfallRefraction();
+            updateTrapRefraction();
+            spawnTorches();
+            spawnBishops(100);
+            spawnRooks(100, false);
+
+            registry.send(OnGameStateChange{.nextState = GAME_LAUNCH_FADE_IN});
         } break;
         case GAME_FADE_IN: {
         } break;

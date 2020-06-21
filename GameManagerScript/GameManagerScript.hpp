@@ -41,7 +41,7 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
 
   private:
     // ============================================================== Data == //
-    GameState currentState = GAME_LAUNCH_FADE_IN;
+    GameState currentState = NEW_GAME_SETUP;
     float screenFade = 0.0f;
 
     bool fadeInHelp = false;
