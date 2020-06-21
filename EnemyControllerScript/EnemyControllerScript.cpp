@@ -133,14 +133,6 @@ void EnemyControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
             movingLeft = !movingLeft;
             timeToBounce = 0.0f;
         }
-        if (other.get<Properties>().tag == "Player") {
-            // registry.destroyEntity(other);
-            registry.system<PropertySystem>()->activateEntity(other, false);
-            // registry.system<PropertySystem>()->activateEntity(loseText,
-            // true);
-
-            // StartCoroutine(waitToResetLvl());
-        }
     }
 }
 void EnemyControllerScript::onGameStateChange(OnGameStateChange const& event) {

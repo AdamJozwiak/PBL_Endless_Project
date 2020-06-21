@@ -490,6 +490,13 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
             return;
         } else if (other.id == groundCheck) {
             return;
+        } else if (otherTag == "Enemy" || otherTag == "Rook") {
+            // registry.destroyEntity(other);
+            registry.system<PropertySystem>()->activateEntity(entity, false);
+            // registry.system<PropertySystem>()->activateEntity(loseText,
+            // true);
+
+            // StartCoroutine(waitToResetLvl());
         } else {
             auto& boxCollider = entity.get<BoxCollider>();
             boxCollider.separatingVectorSum += event.minSeparatingVector;
