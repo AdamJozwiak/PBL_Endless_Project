@@ -228,6 +228,16 @@ void GameManagerScript::update(float const deltaTime) {
             for (auto const& entity : menuGroup) {
                 interpolateTextTo(entity, 1.0f, deltaTime);
             }
+            for (auto const& entity : helpText) {
+                interpolateTextTo(
+                    entity, fadeInHelp ? 1.0f : 0.0f, deltaTime,
+                    fadeInHelp ? 0.2f : (fadeInAuthors ? 0.01f : 0.3f));
+            }
+            for (auto const& entity : authorNamesText) {
+                interpolateTextTo(
+                    entity, fadeInAuthors ? 1.0f : 0.0f, deltaTime,
+                    fadeInAuthors ? 0.2f : (fadeInHelp ? 0.01f : 0.3f));
+            }
             for (auto const& entity : gameGroup) {
                 interpolateTextTo(entity, 0.0f, deltaTime);
             }
@@ -243,6 +253,36 @@ void GameManagerScript::update(float const deltaTime) {
         case CHANGE_MENU_TYPE_TO_PAUSE: {
         } break;
         case MENU_TO_GAME_FADE_OUT: {
+            // Fade to black
+            screenFade =
+                interpolate(easeOutQuint, screenFade, 0.0f, 0.1f, deltaTime);
+            registry.system<BillboardRenderSystem>()->setBlackProportion(
+                screenFade);
+
+            // Manage UI fades
+            for (auto const& entity : menuGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : helpText) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : authorNamesText) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : gameGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : resultsGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : pauseMenuGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+
+            // Change state
+            if (screenFade < 0.25f) {
+                registry.send(OnGameStateChange{.nextState = GAME_FADE_IN});
+            }
         } break;
         case NEW_GAME_SETUP: {
             // Spawn the starting chunk
@@ -273,6 +313,36 @@ void GameManagerScript::update(float const deltaTime) {
             registry.send(OnGameStateChange{.nextState = GAME_LAUNCH_FADE_IN});
         } break;
         case GAME_FADE_IN: {
+            // Fade in
+            screenFade =
+                interpolate(easeOutQuint, screenFade, 1.0f, 0.1f, deltaTime);
+            registry.system<BillboardRenderSystem>()->setBlackProportion(
+                screenFade);
+
+            // Manage UI fades
+            for (auto const& entity : menuGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : helpText) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : authorNamesText) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : gameGroup) {
+                interpolateTextTo(entity, 1.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : resultsGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : pauseMenuGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+
+            // Change state
+            if (screenFade > 0.999f) {
+                registry.send(OnGameStateChange{.nextState = GAME});
+            }
         } break;
         case GAME: {
             handleChunkSpawning(deltaTime);
