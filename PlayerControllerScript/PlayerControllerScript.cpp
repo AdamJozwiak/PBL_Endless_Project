@@ -447,6 +447,7 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
     }
     if (lightValue < 0.0f) {
         lightValue = 0.0f;
+        registry.system<PropertySystem>()->activateEntity(entity, false);
     }
 
     Entity(torch).get<Light>().pointLight->setIntensity(intensityValue);
