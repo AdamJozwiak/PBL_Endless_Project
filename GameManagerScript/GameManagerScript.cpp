@@ -21,9 +21,9 @@ namespace fs = std::filesystem;
 
 // ////////////////////////////////////////////////////////////////// Helpers //
 void interpolateTextTo(EntityId entity, float const target,
-                       float const deltaTime) {
+                       float const deltaTime, float const smooth = 0.5f) {
     auto& alpha = Entity(entity).get<UIElement>().alpha;
-    alpha = interpolate(easeOutSine, alpha, target, 0.5f, deltaTime);
+    alpha = interpolate(easeOutSine, alpha, target, smooth, deltaTime);
 }
 
 // //////////////////////////////////////////////////////////////// Variables //
