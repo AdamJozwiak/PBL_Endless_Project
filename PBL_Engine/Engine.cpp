@@ -80,7 +80,7 @@ ENGINE_API int Engine::run() {
             return *exitCode;
         }
 
-        auto const &deltaTime = timer.Mark();
+        auto const &deltaTime = std::clamp(timer.Mark(), 0.0f, 1.0f / 30.0f);
         for (auto &system : releaseSystems) {
             system->update(deltaTime);
         }
