@@ -28,14 +28,16 @@ void UIRenderSystem::update(float deltaTime) {
             auto const& rectTransform = entity.get<RectTransform>();
             auto const& uiElement = entity.get<UIElement>();
 
-            if (uiElement.text) {
-                uiElement.text->RenderText(window->Gfx(), uiElement.content,
-                                           false, rectTransform.position,
+            if (uiElement.alpha > 0.001f) {
+                if (uiElement.text) {
+                    uiElement.text->RenderText(window->Gfx(), uiElement.content,
+                                               false, rectTransform.position,
+                                               uiElement.alpha);
+                }
+                if (uiElement.button) {
+                    uiElement.button->draw(deltaTime, uiElement.content,
                                            uiElement.alpha);
-            }
-            if (uiElement.button) {
-                uiElement.button->draw(deltaTime, uiElement.content,
-                                       uiElement.alpha);
+                }
             }
         }
     }
