@@ -44,6 +44,8 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
     GameState currentState = NEW_GAME_SETUP;
     float screenFade = 0.0f;
 
+    float spawnChance = 0.0f;
+
     bool fadeInHelp = false;
     bool fadeInAuthors = false;
 

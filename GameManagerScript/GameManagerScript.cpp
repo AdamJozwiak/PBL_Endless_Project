@@ -204,6 +204,15 @@ void GameManagerScript::setup() {
 };
 
 void GameManagerScript::update(float const deltaTime) {
+    constexpr int CHUNKS_TO_OSCILLATE_FROM_MIN_TO_MAX = 5;
+    spawnChance =
+        49.5f * std::sin(M_PI_2 * 2.0f *
+                             Entity(playerId).get<Transform>().position.x /
+                             CHUNKS_TO_OSCILLATE_FROM_MIN_TO_MAX /
+                             PART_LENGTH_IN_WORLD_UNITS -
+                         M_PI_2) +
+        51.0f;
+
     switch (currentState) {
         case GAME_LAUNCH_FADE_IN: {
             // Fade from black to the menu
@@ -285,6 +294,8 @@ void GameManagerScript::update(float const deltaTime) {
             }
         } break;
         case NEW_GAME_SETUP: {
+            spawnChance = 0.0f;
+
             // Spawn the starting chunk
             generatedLengthInParts = lengthOfChunk.at("Chunk Start");
 
@@ -307,8 +318,8 @@ void GameManagerScript::update(float const deltaTime) {
             updateWaterfallRefraction();
             updateTrapRefraction();
             spawnTorches();
-            spawnBishops(100);
-            spawnRooks(100, false);
+            spawnBishops(spawnChance);
+            spawnRooks(spawnChance, false);
 
             registry.send(OnGameStateChange{.nextState = GAME_LAUNCH_FADE_IN});
         } break;
@@ -350,6 +361,8 @@ void GameManagerScript::update(float const deltaTime) {
         case DEATH_RESULTS: {
         } break;
         case RESULTS_TO_GAME_FADE_OUT: {
+            spawnChance = 0.0f;
+
         } break;
         case GAME_EXIT_FADE_OUT: {
         } break;
@@ -657,8 +670,8 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
 
         // Spawn the enemies
         spawnTorches();
-        spawnBishops(50);
-        spawnRooks(50, true);
+        spawnBishops(spawnChance);
+        spawnRooks(spawnChance, true);
 
         // Delete the chunks we've already passed
         auto i = presentChunks.begin();
