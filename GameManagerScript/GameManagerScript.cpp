@@ -396,6 +396,48 @@ void GameManagerScript::update(float const deltaTime) {
             handleChunkSpawning(deltaTime);
         } break;
         case DEATH_RESULTS: {
+            // Fade to semi-black
+            screenFade =
+                interpolate(easeOutQuint, screenFade, 0.5f, 0.2f, deltaTime);
+            registry.system<BillboardRenderSystem>()->setBlackProportion(
+                screenFade);
+
+            // Manage UI fades
+            for (auto const& entity : menuGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.01f);
+            }
+            for (auto const& entity : helpText) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.01f);
+            }
+            for (auto const& entity : authorNamesText) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.01f);
+            }
+            for (auto const& entity : gameGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.01f);
+            }
+            for (auto const& entity : resultsGroup) {
+                interpolateTextTo(entity, 1.0f, deltaTime, 0.8f);
+            }
+            for (auto const& entity : pauseMenuGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.01f);
+            }
+
+            resultsTimer += deltaTime;
+            if (resultsTimer >= 1.0f) {
+                bool isAnyKeyPressed = false;
+                for (char key = 'A'; key <= 'Z'; ++key) {
+                    isAnyKeyPressed |= isKeyPressed(key);
+                }
+                for (char key = '0'; key <= '9'; ++key) {
+                    isAnyKeyPressed |= isKeyPressed(key);
+                }
+
+                if (isAnyKeyPressed) {
+                    registry.send(OnGameStateChange{
+                        .nextState = RESULTS_TO_GAME_FADE_OUT});
+                    resultsTimer = 0.0f;
+                }
+            }
         } break;
         case RESULTS_TO_GAME_FADE_OUT: {
             spawnedChunks = 0;
@@ -403,6 +445,45 @@ void GameManagerScript::update(float const deltaTime) {
             goalScore = goalScoreTorches = goalScorePosition = 0;
             spawnChance = 0.0f;
 
+            // Cleanup
+            generatedLengthInParts = lengthOfChunk.at("Chunk Start");
+
+            registry.system<SceneSystem>()->cachePrefab(CHUNKS_DIRECTORY +
+                                                        "\\Chunk Start.prefab");
+
+            // Delete the chunks we've already passed
+            do {
+                auto i = presentChunks.begin();
+                registry.system<GraphSystem>()->destroyEntityWithChildren(
+                    i->entity);
+                presentChunks.erase(i);
+            } while (!presentChunks.empty());
+            registry.system<GraphSystem>()->setup();
+
+            presentChunks.push_back(Chunk{
+                .name = "Chunk Start",
+                .entity = registry.system<SceneSystem>()
+                              ->spawnPrefab(CHUNKS_DIRECTORY + "\\Chunk "
+                                                               "Start.prefab",
+                                            false)
+                              .id,
+                .endPositionInParts = generatedLengthInParts});
+            if (cacheThread) {
+                cacheThread->join();
+            }
+            cacheThread = std::make_unique<std::thread>([this] {
+                Registry::instance().system<SceneSystem>()->cachePrefab(
+                    CHUNKS_DIRECTORY + "\\chunk-tmw-a-1-cc-01.prefab");
+            });
+            nextChunk = "chunk-tmw-a-1-cc-01";
+
+            updateWaterfallRefraction();
+            updateTrapRefraction();
+            spawnTorches();
+            spawnBishops(spawnChance);
+            spawnRooks(spawnChance, false);
+
+            registry.send(OnGameStateChange{.nextState = GAME_FADE_IN});
         } break;
         case GAME_EXIT_FADE_OUT: {
         } break;
@@ -423,6 +504,9 @@ void GameManagerScript::onCollisionEnter(OnCollisionEnter const& event) {
     }
 }
 void GameManagerScript::onGameStateChange(OnGameStateChange const& event) {
+    if (currentState != DEATH_RESULTS && event.nextState == DEATH_RESULTS) {
+        resultsTimer = 0.0f;
+    }
     currentState = event.nextState;
 }
 void GameManagerScript::onButtonClick(OnButtonClick const& event) {

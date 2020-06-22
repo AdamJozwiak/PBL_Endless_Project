@@ -191,8 +191,18 @@ void PlayerControllerScript::update(float const deltaTime) {
                                             10.0f, 0.2f, deltaTime);
         } break;
         case RESULTS_TO_GAME_FADE_OUT: {
+            currentLane = 0;
+            firstThrust = false;
+            lightValue = 0.6f;
+            isGrounded = true;
+            currentForm = humanForm;
+            canChangeForm = true;
+            Entity(torch).get<Light>().pointLight->setIntensity(lightValue);
+            Entity(humanForm).get<Properties>().active = true;
+            Entity(eagleForm).get<Properties>().active = true;
             Entity(eagleForm).get<Animator>().factor = 65.0f;
             Entity(humanForm).get<Animator>().factor = 32.5f;
+            entity.get<Transform>().position = {0.0f, 0.0f, 0.0f};
         } break;
         case GAME_EXIT_FADE_OUT: {
         } break;
@@ -511,13 +521,17 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
             }
             canChangeForm = false;
         } else if (otherTag == "DeathCollider") {
-            die();
+            if (currentState != RESULTS_TO_GAME_FADE_OUT) {
+                die();
+            }
         } else if (otherTag == "Boundary") {
             return;
         } else if (other.id == groundCheck) {
             return;
         } else if (otherTag == "Enemy" || otherTag == "Rook") {
-            die();
+            if (currentState != RESULTS_TO_GAME_FADE_OUT) {
+                die();
+            }
 
             // registry.destroyEntity(other);
             // registry.system<PropertySystem>()->activateEntity(loseText,
