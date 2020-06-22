@@ -49,6 +49,9 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
     bool fadeInHelp = false;
     bool fadeInAuthors = false;
 
+    EntityId menuChunk, menuCamera;
+    DirectX::XMFLOAT3 menuOriginalOffset, menuCameraOriginalOffset;
+
     // UI
     EntityId menuPlayButton, menuHelpButton, menuAuthorsButton, menuExitButton;
     std::vector<EntityId> authorNamesText, helpText;

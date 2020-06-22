@@ -16,6 +16,15 @@
 #include "Window.h"
 #include "easings.hpp"
 
+DirectX::XMFLOAT3 operator+(DirectX::XMFLOAT3 const& a,
+                            DirectX::XMFLOAT3 const& b) {
+    return {a.x + b.x, a.y + b.y, a.z + b.z};
+}
+DirectX::XMFLOAT3 operator-(DirectX::XMFLOAT3 const& a,
+                            DirectX::XMFLOAT3 const& b) {
+    return {a.x - b.x, a.y - b.y, a.z - b.z};
+}
+
 // //////////////////////////////////////////////////////// Namespace aliases //
 namespace fs = std::filesystem;
 
@@ -201,9 +210,25 @@ void GameManagerScript::setup() {
         pauseMenuGroup.push_back(pauseMenuAuthorsButton);
         pauseMenuGroup.push_back(pauseMenuExitButton);
     }
+
+    menuChunk =
+        registry.system<PropertySystem>()->findEntityByName("Menu").at(0).id;
+    menuOriginalOffset = Entity(menuChunk).get<Transform>().position -
+                         Entity(playerId).get<Transform>().position;
+    menuCamera = registry.system<PropertySystem>()
+                     ->findEntityByName("Menu Camera")
+                     .at(0)
+                     .id;
+    menuCameraOriginalOffset = Entity(menuCamera).get<Transform>().position -
+                               Entity(playerId).get<Transform>().position;
 };
 
 void GameManagerScript::update(float const deltaTime) {
+    Entity(menuChunk).get<Transform>().position =
+        Entity(playerId).get<Transform>().position + menuOriginalOffset;
+    Entity(menuCamera).get<Transform>().position =
+        Entity(playerId).get<Transform>().position + menuCameraOriginalOffset;
+
     constexpr int CHUNKS_TO_OSCILLATE_FROM_MIN_TO_MAX = 5;
     spawnChance =
         49.5f * std::sin(M_PI_2 * 2.0f *
