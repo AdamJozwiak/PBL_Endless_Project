@@ -27,6 +27,8 @@ class ENGINE_API PointLight {
     float getAttenuationQ();
     static void initTorchNumbers();
     int getNumber();
+    void setColor(DirectX::XMFLOAT4 const& color);
+    DirectX::XMFLOAT4 getColor();
 
   private:
     static constexpr int MAX_LIGHT_COUNT = 16;

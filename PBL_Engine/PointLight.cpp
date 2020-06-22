@@ -236,3 +236,10 @@ void PointLight::initTorchNumbers() {
 int PointLight::getNumber() { return number; }
 // zrobic oddzielna metode przydzielajaca zasoby i ostatnie swiatlo wywoluje,
 // moze byc static, bind
+
+void PointLight::setColor(DirectX::XMFLOAT4 const& color) {
+    lightParametersConstantBuffer.diffuseColor[number] = color;
+}
+DirectX::XMFLOAT4 PointLight::getColor() {
+    return lightParametersConstantBuffer.diffuseColor[number];
+}
