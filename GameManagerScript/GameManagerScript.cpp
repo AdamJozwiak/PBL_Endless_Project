@@ -282,13 +282,13 @@ void GameManagerScript::update(float const deltaTime) {
                     fadeInAuthors ? 0.2f : (fadeInHelp ? 0.01f : 0.3f));
             }
             for (auto const& entity : gameGroup) {
-                interpolateTextTo(entity, 0.0f, deltaTime);
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.01f);
             }
             for (auto const& entity : resultsGroup) {
-                interpolateTextTo(entity, 0.0f, deltaTime);
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.01f);
             }
             for (auto const& entity : pauseMenuGroup) {
-                interpolateTextTo(entity, 0.0f, deltaTime);
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.01f);
             }
         } break;
         case CHANGE_MENU_TYPE_TO_MAIN: {
@@ -394,6 +394,26 @@ void GameManagerScript::update(float const deltaTime) {
         } break;
         case GAME: {
             handleChunkSpawning(deltaTime);
+
+            // Manage UI fades
+            for (auto const& entity : menuGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : helpText) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : authorNamesText) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : gameGroup) {
+                interpolateTextTo(entity, 1.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : resultsGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
+            for (auto const& entity : pauseMenuGroup) {
+                interpolateTextTo(entity, 0.0f, deltaTime, 0.001f);
+            }
 
             auto e =
                 registry.system<WindowSystem>()->window().keyboard.ReadKey();
