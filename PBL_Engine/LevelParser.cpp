@@ -734,11 +734,6 @@ void LevelParser::finalizeLoading(
                 entity.get<MeshFilter>().model->verticesForCollision);
         }
 
-        // Scripts
-        if (entity.has<Behaviour>()) {
-            entity.get<Behaviour>().script->setup();
-        }
-
         // UI
         if (entity.has<RectTransform>() && entity.has<UIElement>()) {
             auto const &tag = entity.get<Properties>().tag;
@@ -766,6 +761,14 @@ void LevelParser::finalizeLoading(
             transform.euler.x = 0.0f;
             transform.euler.y = 0.0f;
             transform.euler.z = 0.0f;
+        }
+    }
+
+    for (auto const &entityId : recursivePrefabIds) {
+        auto entity = Entity(entityId);
+        // Scripts
+        if (entity.has<Behaviour>()) {
+            entity.get<Behaviour>().script->setup();
         }
     }
 }
