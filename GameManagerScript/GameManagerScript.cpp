@@ -229,6 +229,10 @@ void GameManagerScript::update(float const deltaTime) {
     Entity(menuCamera).get<Transform>().position =
         Entity(playerId).get<Transform>().position + menuCameraOriginalOffset;
 
+    goalScorePosition = 1.0f * Entity(playerId).get<Transform>().position.x;
+    goalScore = goalScorePosition + goalScoreTorches;
+    score = interpolate(easeOutSine, score, goalScore, 0.1f, deltaTime);
+
     constexpr int CHUNKS_TO_OSCILLATE_FROM_MIN_TO_MAX = 5;
     spawnChance =
         49.5f * std::sin(M_PI_2 * 2.0f *
@@ -237,6 +241,11 @@ void GameManagerScript::update(float const deltaTime) {
                              PART_LENGTH_IN_WORLD_UNITS -
                          M_PI_2) +
         51.0f;
+
+    Entity(gameScoreValueText).get<UIElement>().content =
+        std::to_string(int(score));
+    Entity(resultsScoreValueText).get<UIElement>().content =
+        std::to_string(int(score));
 
     switch (currentState) {
         case GAME_LAUNCH_FADE_IN: {
@@ -320,6 +329,8 @@ void GameManagerScript::update(float const deltaTime) {
         } break;
         case NEW_GAME_SETUP: {
             spawnedChunks = 0;
+            score = 0.0f;
+            goalScore = goalScoreTorches = goalScorePosition = 0;
             spawnChance = 0.0f;
 
             // Spawn the starting chunk
@@ -388,6 +399,8 @@ void GameManagerScript::update(float const deltaTime) {
         } break;
         case RESULTS_TO_GAME_FADE_OUT: {
             spawnedChunks = 0;
+            score = 0.0f;
+            goalScore = goalScoreTorches = goalScorePosition = 0;
             spawnChance = 0.0f;
 
         } break;
@@ -400,8 +413,13 @@ void GameManagerScript::update(float const deltaTime) {
 
 // ------------------------------------------------------------- Events -- == //
 void GameManagerScript::onCollisionEnter(OnCollisionEnter const& event) {
-    if (event.a.id == entity.id || event.b.id == entity.id) {
-        auto other = Entity(event.a.id == entity.id ? event.b.id : event.a.id);
+    if (event.a.id == playerId || event.b.id == playerId) {
+        auto other = Entity(event.a.id == playerId ? event.b.id : event.a.id);
+        auto otherTag = other.get<Properties>().tag;
+
+        if (otherTag == "Torch") {
+            goalScoreTorches += 100;
+        }
     }
 }
 void GameManagerScript::onGameStateChange(OnGameStateChange const& event) {

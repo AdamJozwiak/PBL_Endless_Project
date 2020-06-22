@@ -44,6 +44,9 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
     GameState currentState = NEW_GAME_SETUP;
     float screenFade = 0.0f;
 
+    float score = 0.0f;
+    int goalScore = 0, goalScoreTorches = 0, goalScorePosition = 0;
+
     float spawnChance = 0.0f;
 
     bool fadeInHelp = false;
