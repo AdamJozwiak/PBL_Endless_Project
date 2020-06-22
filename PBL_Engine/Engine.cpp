@@ -74,14 +74,14 @@ ENGINE_API int Engine::run() {
         }
 
         if (auto const exitCode = Window::ProcessMessages()) {
-            for (auto &system : updateSystems) {
+            for (auto &system : releaseSystems) {
                 system->release();
             }
             return *exitCode;
         }
 
         auto const &deltaTime = std::clamp(timer.Mark(), 0.0f, 1.0f / 30.0f);
-        for (auto &system : releaseSystems) {
+        for (auto &system : updateSystems) {
             system->update(deltaTime);
         }
     }
