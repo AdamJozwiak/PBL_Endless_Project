@@ -218,13 +218,13 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
         }
     }
 
-        // Ascend
-        if (inputAscend && !inputAscendKey) {
-            inputAscendKey = true;
-        }
-        if (!inputAscend && inputAscendKey) {
-            inputAscendKey = false;
-        }
+    // Ascend
+    if (inputAscend && !inputAscendKey) {
+        inputAscendKey = true;
+    }
+    if (!inputAscend && inputAscendKey) {
+        inputAscendKey = false;
+    }
 
     // Change current lane - down
     if (inputLaneDown && !inputLaneDownKey) {
