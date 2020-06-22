@@ -173,6 +173,16 @@ void PlayerControllerScript::update(float const deltaTime) {
             doGameLogic(deltaTime);
         } break;
         case DEATH_RESULTS: {
+            lightValue =
+                interpolate(easeOutSine, lightValue, -0.075f, 0.2f, deltaTime);
+            aCValue = std::lerp(minC, maxC, lightValue);
+            aQValue = std::lerp(minQ, maxQ, lightValue);
+            intensityValue = std::lerp(maxIntensity, minIntensity, lightValue);
+
+            Entity(torch).get<Light>().pointLight->setIntensity(intensityValue);
+            Entity(torch).get<Light>().pointLight->setAttenuationC(aCValue);
+            Entity(torch).get<Light>().pointLight->setAttenuationQ(aQValue);
+
             auto& eagleAnimationRate = Entity(eagleForm).get<Animator>().factor;
             auto& wolfAnimationRate = Entity(humanForm).get<Animator>().factor;
             eagleAnimationRate = interpolate(easeOutSine, eagleAnimationRate,
