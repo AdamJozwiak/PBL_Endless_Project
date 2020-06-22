@@ -67,6 +67,7 @@ class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
     float const LIGHT_VALUE_BLACK_FADE_START = 0.38f;
     float blackProportion = 1.0f;
     float deathTimer = 0.0f;
+    DirectX::XMFLOAT4 originalTorchColor;
 
     DirectX::XMFLOAT3 originalScaleWolf, originalScaleEagle;
     float originalOffsetWolf, originalOffsetEagle;

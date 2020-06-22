@@ -145,6 +145,8 @@ void PlayerControllerScript::setup() {
     Entity(eagleForm).add<Refractive>({});
     Entity(humanForm).add<Refractive>({});
     Entity(catForm).add<Refractive>({});
+
+    originalTorchColor = Entity(torch).get<Light>().pointLight->getColor();
 };
 
 void PlayerControllerScript::update(float const deltaTime) {
@@ -446,6 +448,10 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
     Entity(torch).get<Light>().pointLight->setIntensity(intensityValue);
     Entity(torch).get<Light>().pointLight->setAttenuationC(aCValue);
     Entity(torch).get<Light>().pointLight->setAttenuationQ(aQValue);
+
+    DirectX::XMFLOAT4 torchColor = originalTorchColor;
+    torchColor.x = std::lerp(torchColor.x + 0.5f, torchColor.x, lightValue);
+    Entity(torch).get<Light>().pointLight->setColor(torchColor);
 
     isGrounded = false;
 };
