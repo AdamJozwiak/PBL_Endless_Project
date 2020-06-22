@@ -15,10 +15,6 @@ ECS_SYSTEM(AnimatorSystem) {
     void setup() override;
     void update(float deltaTime) override;
     void release() override;
-
-  private:
-    // ============================================================== Data == //
-    std::unordered_map<std::string, float> factors;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

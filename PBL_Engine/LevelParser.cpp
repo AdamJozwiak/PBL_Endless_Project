@@ -693,7 +693,7 @@ void LevelParser::finalizeLoading(
                 replacedPath = fs::path(meshFilter.path)
                                    .replace_extension(fs::path("gltf"))
                                    .string();
-                entity.add<Animator>({.animationTime = 0.0f});
+                entity.add<Animator>({.animationTime = 0.0f, .factor = 1.0f});
             }
 
             meshFilter.model = Model::create(
