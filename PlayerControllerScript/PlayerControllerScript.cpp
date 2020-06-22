@@ -367,7 +367,17 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
     moveInput.x = 1.0f;  // Mathf.Clamp(Input.GetAxisRaw("Horizontal")
                          // + 1.0f, 0.5f, 1.5f);
     // moveInput.y = -Input.GetAxisRaw("Horizontal");
-    moveInput.z = currentLane * laneWidth - entity.get<Transform>().position.z;
+    /* moveInput.z = currentLane * laneWidth -
+     * entity.get<Transform>().position.z; */
+    float moveDir = 0.0f;
+    if (inputLaneUp) {
+        moveDir = 1.0f;
+    }
+    if (inputLaneDown) {
+        moveDir = -1.0f;
+    }
+    moveInput.z = interpolate(easeOutQuint, moveInput.z, moveDir * 1.2f, 0.01f,
+                              deltaTime);
 
     // Rotate slightly when changing the lane
     entity.get<Transform>().euler.y = interpolate(
