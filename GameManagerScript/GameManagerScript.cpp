@@ -394,6 +394,13 @@ void GameManagerScript::update(float const deltaTime) {
         } break;
         case GAME: {
             handleChunkSpawning(deltaTime);
+
+            auto e =
+                registry.system<WindowSystem>()->window().keyboard.ReadKey();
+            if (e.IsPress() && e.GetCode() == VK_ESCAPE) {
+                registry.send(OnGameStateChange{.nextState = MENU});
+                registry.system<WindowSystem>()->window().keyboard.FlushKey();
+            }
         } break;
         case DEATH_RESULTS: {
             // Fade to semi-black
@@ -508,6 +515,7 @@ void GameManagerScript::onGameStateChange(OnGameStateChange const& event) {
         resultsTimer = 0.0f;
     }
     currentState = event.nextState;
+    registry.system<WindowSystem>()->window().keyboard.FlushKey();
 }
 void GameManagerScript::onButtonClick(OnButtonClick const& event) {
     auto isButtonClicked = [this, &event](EntityId const button) {

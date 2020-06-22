@@ -82,11 +82,36 @@ void CameraControllerScript::update(float const deltaTime) {
         case GAME_LAUNCH_FADE_IN:
         case MENU: {
             // Get the camera to the starting menu position
+            auto smooth = 0.2f;
             auto& transform = entity.get<Transform>();
+            transform.position.x =
+                interpolate(easeOutSine, transform.position.x,
+                            Entity(menuCameraId).get<Transform>().position.x,
+                            smooth, deltaTime);
+            transform.position.y =
+                interpolate(easeOutSine, transform.position.y,
+                            Entity(menuCameraId).get<Transform>().position.y,
+                            smooth, deltaTime);
             transform.position.z =
                 interpolate(easeOutSine, transform.position.z,
                             Entity(menuCameraId).get<Transform>().position.z,
-                            0.5f, deltaTime);
+                            smooth, deltaTime);
+            transform.rotation.x =
+                interpolate(easeOutSine, transform.rotation.x,
+                            Entity(menuCameraId).get<Transform>().rotation.x,
+                            smooth, deltaTime);
+            transform.rotation.y =
+                interpolate(easeOutSine, transform.rotation.y,
+                            Entity(menuCameraId).get<Transform>().rotation.y,
+                            smooth, deltaTime);
+            transform.rotation.z =
+                interpolate(easeOutSine, transform.rotation.z,
+                            Entity(menuCameraId).get<Transform>().rotation.z,
+                            smooth, deltaTime);
+            transform.rotation.w =
+                interpolate(easeOutSine, transform.rotation.w,
+                            Entity(menuCameraId).get<Transform>().rotation.w,
+                            smooth, deltaTime);
         } break;
         case CHANGE_MENU_TYPE_TO_MAIN: {
         } break;
@@ -123,17 +148,18 @@ void CameraControllerScript::update(float const deltaTime) {
         case MENU_TO_GAME_FADE_OUT:
         case GAME_FADE_IN: {
             auto& transform = entity.get<Transform>();
+            auto const& playerTransform = Entity(playerId).get<Transform>();
             auto easing = &easeOutQuint;
             auto smooth = 0.5f;
-            transform.position.x =
-                interpolate(easing, transform.position.x,
-                            originalTransform.position.x, smooth, deltaTime);
-            transform.position.y =
-                interpolate(easing, transform.position.y,
-                            originalTransform.position.y, smooth, deltaTime);
-            transform.position.z =
-                interpolate(easing, transform.position.z,
-                            originalTransform.position.z, smooth, deltaTime);
+            transform.position.x = interpolate(
+                easing, transform.position.x,
+                playerTransform.position.x + offset.x, smooth, deltaTime);
+            transform.position.y = interpolate(
+                easing, transform.position.y,
+                playerTransform.position.y + offset.y, smooth, deltaTime);
+            transform.position.z = interpolate(
+                easing, transform.position.z,
+                playerTransform.position.z + offset.z, smooth, deltaTime);
             transform.rotation.x =
                 interpolate(easing, transform.rotation.x,
                             originalTransform.rotation.x, smooth, deltaTime);

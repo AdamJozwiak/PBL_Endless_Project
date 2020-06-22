@@ -31,9 +31,9 @@ class Keyboard {
     Keyboard& operator=(const Keyboard&) = delete;
     // Key event
     ENGINE_API bool KeyIsPressed(unsigned char keycode) const noexcept;
-    Event ReadKey() noexcept;
+    ENGINE_API Event ReadKey() noexcept;
     bool KeyIsEmpty() const noexcept;
-    void FlushKey() noexcept;
+    ENGINE_API void FlushKey() noexcept;
     // Char event
     char ReadChar() noexcept;
     bool CharIsEmpty() const noexcept;
