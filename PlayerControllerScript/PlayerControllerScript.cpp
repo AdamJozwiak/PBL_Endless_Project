@@ -146,6 +146,10 @@ void PlayerControllerScript::setup() {
     Entity(humanForm).add<Refractive>({});
     Entity(catForm).add<Refractive>({});
 
+    // Set model animation rates
+    Entity(eagleForm).get<Animator>().factor = 65.0f;
+    Entity(humanForm).get<Animator>().factor = 32.5f;
+
     originalTorchColor = Entity(torch).get<Light>().pointLight->getColor();
 };
 
@@ -169,8 +173,16 @@ void PlayerControllerScript::update(float const deltaTime) {
             doGameLogic(deltaTime);
         } break;
         case DEATH_RESULTS: {
+            auto& eagleAnimationRate = Entity(eagleForm).get<Animator>().factor;
+            auto& wolfAnimationRate = Entity(humanForm).get<Animator>().factor;
+            eagleAnimationRate = interpolate(easeOutSine, eagleAnimationRate,
+                                             10.0f, 0.2f, deltaTime);
+            wolfAnimationRate = interpolate(easeOutSine, wolfAnimationRate,
+                                            10.0f, 0.2f, deltaTime);
         } break;
         case RESULTS_TO_GAME_FADE_OUT: {
+            Entity(eagleForm).get<Animator>().factor = 65.0f;
+            Entity(humanForm).get<Animator>().factor = 32.5f;
         } break;
         case GAME_EXIT_FADE_OUT: {
         } break;
