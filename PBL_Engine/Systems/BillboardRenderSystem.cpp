@@ -49,12 +49,12 @@ void BillboardRenderSystem::update(float deltaTime) {
         flame->Draw(window->Gfx());
     }
     {
-        if (ImGui::Begin("Simulation Speed")) {
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-                        1000.0f / ImGui::GetIO().Framerate,
-                        ImGui::GetIO().Framerate);
-        }
-        ImGui::End();
+        // if (ImGui::Begin("Simulation Speed")) {
+        //     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+        //                 1000.0f / ImGui::GetIO().Framerate,
+        //                 ImGui::GetIO().Framerate);
+        // }
+        // ImGui::End();
     }
 
     bloom->End();
