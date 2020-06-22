@@ -102,6 +102,7 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
     std::map<ChunkName, ChunkLength> lengthOfChunk;
 
     int generatedLengthInParts = 0;
+    int spawnedChunks = 0;
 
     // Chunks
     std::vector<Chunk> presentChunks;

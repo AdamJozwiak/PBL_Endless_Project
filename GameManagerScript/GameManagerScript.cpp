@@ -294,6 +294,7 @@ void GameManagerScript::update(float const deltaTime) {
             }
         } break;
         case NEW_GAME_SETUP: {
+            spawnedChunks = 0;
             spawnChance = 0.0f;
 
             // Spawn the starting chunk
@@ -361,6 +362,7 @@ void GameManagerScript::update(float const deltaTime) {
         case DEATH_RESULTS: {
         } break;
         case RESULTS_TO_GAME_FADE_OUT: {
+            spawnedChunks = 0;
             spawnChance = 0.0f;
 
         } break;
@@ -613,7 +615,6 @@ void GameManagerScript::updateTrapRefraction() {
 }
 
 void GameManagerScript::handleChunkSpawning(float deltaTime) {
-    static int spawnedChunks = 0;
     static float const VERTICAL_DELTA = 0.1f;
     static float const TILE_WIDTH = 2.0f;
     static float const ALPHA = std::asin(VERTICAL_DELTA / TILE_WIDTH);
