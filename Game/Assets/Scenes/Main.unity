@@ -2189,8 +2189,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 573.00006, y: -260}
-  m_SizeDelta: {x: 790, y: 190}
+  m_AnchoredPosition: {x: 490, y: -260}
+  m_SizeDelta: {x: 980, y: 190}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &449441007
 MonoBehaviour:
@@ -2223,7 +2223,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: YOU DIED
+  m_Text: GAME OVER
 --- !u!222 &449441008
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7517,7 +7517,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 90, y: -90}
+  m_AnchoredPosition: {x: 90, y: -58}
   m_SizeDelta: {x: 120, y: 40}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1719254862
@@ -7551,7 +7551,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'SCORE:'
+  m_Text: SCORE
 --- !u!222 &1719254863
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8809,8 +8809,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 210, y: -90}
-  m_SizeDelta: {x: 120, y: 40}
+  m_AnchoredPosition: {x: 90, y: -84.39981}
+  m_SizeDelta: {x: 500, y: 120}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2021222492
 MonoBehaviour:
@@ -8832,7 +8832,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 7a2a11aeb3e688243982de6416d607ba, type: 3}
-    m_FontSize: 30
+    m_FontSize: 78
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
