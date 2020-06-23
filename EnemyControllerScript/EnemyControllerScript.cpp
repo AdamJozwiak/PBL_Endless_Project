@@ -133,6 +133,18 @@ void EnemyControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
         if (otherTag == "Boundary" && timeToBounce >= 0.3f) {
             movingLeft = !movingLeft;
             timeToBounce = 0.0f;
+
+            auto& boxCollider = entity.get<BoxCollider>();
+            boxCollider.separatingVectorSum += event.minSeparatingVector;
+            if (std::abs(event.minSeparatingVector.x) > 0.0f) {
+                boxCollider.numberOfCollisions.x++;
+            }
+            if (std::abs(event.minSeparatingVector.y) > 0.0f) {
+                boxCollider.numberOfCollisions.y++;
+            }
+            if (std::abs(event.minSeparatingVector.z) > 0.0f) {
+                boxCollider.numberOfCollisions.z++;
+            }
         }
     }
 }
