@@ -3,7 +3,7 @@
 // ///////////////////////////////////////////////////////////////// Includes //
 #include <DirectXMath.h>
 
-#include <vector>
+#include <array>
 
 #include "ECS/Component.hpp"
 
