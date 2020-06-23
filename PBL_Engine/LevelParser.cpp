@@ -757,10 +757,12 @@ void LevelParser::finalizeLoading(
 
         // Zero the euler angles but leave them for the coded chunk start
         if (entity.get<Properties>().tag != "ChunkStartEndProperty") {
-            auto &transform = entity.get<Transform>();
-            transform.euler.x = 0.0f;
-            transform.euler.y = 0.0f;
-            transform.euler.z = 0.0f;
+            if (entity.has<Transform>()) {
+                auto &transform = entity.get<Transform>();
+                transform.euler.x = 0.0f;
+                transform.euler.y = 0.0f;
+                transform.euler.z = 0.0f;
+            }
         }
     }
 

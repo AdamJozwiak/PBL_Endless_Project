@@ -45,12 +45,12 @@ class ENGINE_API ComponentArray : public IComponentArray {
         //       "Component must exist before removing!");
 
         size_t lastIndex = size - 1;
-        size_t removedIndex = indicies[entityId];
-        EntityId lastEntityId = entities[lastIndex];
+        size_t removedIndex = indicies.at(entityId);
+        EntityId lastEntityId = entities.at(lastIndex);
         EntityId &removedEntityId = entityId;
 
         // Overwrite the removed element with the last one
-        components[removedIndex] = components[lastIndex];
+        components.at(removedIndex) = components.at(lastIndex);
         --size;
 
         // Update mappings
@@ -64,7 +64,7 @@ class ENGINE_API ComponentArray : public IComponentArray {
         assert(componentExists(entityId) &&
                "Component doesn't exist for given entity!");
 
-        return components[indicies[entityId]];
+        return components.at(indicies.at(entityId));
     }
 
     bool contains(EntityId entityId) { return componentExists(entityId); }
