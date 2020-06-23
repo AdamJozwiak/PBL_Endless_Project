@@ -6,6 +6,7 @@
 #include "ECS/Registry.hpp"
 #include "ECS/System.hpp"
 #include "EngineAPI.hpp"
+#include "Events/OnGameExit.hpp"
 #include "Timer.h"
 #include "Window.h"
 
@@ -16,6 +17,8 @@ class Engine {
     Engine();
     ENGINE_API int run();
 
+    void onGameExit(OnGameExit const &event);
+
   private:
     // ============================================================== Data == //
     Registry &registry;
@@ -23,6 +26,8 @@ class Engine {
         releaseSystems;
 
     Timer timer;
+    bool runGameLoop = true;
+    std::optional<int> exitCode;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

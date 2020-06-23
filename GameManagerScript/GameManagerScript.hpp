@@ -10,6 +10,7 @@
 #include "Events/OnButtonClick.hpp"
 #include "Events/OnButtonHover.hpp"
 #include "Events/OnCollisionEnter.hpp"
+#include "Events/OnGameExit.hpp"
 #include "Events/OnGameStateChange.hpp"
 #include "GameManagerScriptAPI.hpp"
 #include "Script.hpp"

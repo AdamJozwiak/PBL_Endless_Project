@@ -66,18 +66,17 @@ ENGINE_API int Engine::run() {
         system->setup();
     }
 
+    registry.listen<OnGameExit>(MethodListener(Engine::onGameExit));
+
     timer.Mark();
 
-    while (true) {
+    while (runGameLoop) {
         if (registry.refresh()) {
             registry.system<GraphSystem>()->setup();
         }
 
-        if (auto const exitCode = Window::ProcessMessages()) {
-            for (auto &system : releaseSystems) {
-                system->release();
-            }
-            return *exitCode;
+        if ((exitCode = Window::ProcessMessages())) {
+            break;
         }
 
         auto const &deltaTime = std::clamp(timer.Mark(), 0.0f, 1.0f / 30.0f);
@@ -85,6 +84,13 @@ ENGINE_API int Engine::run() {
             system->update(deltaTime);
         }
     }
+
+    for (auto &system : releaseSystems) {
+        system->release();
+    }
+    return *exitCode;
 }
+
+void Engine::onGameExit(OnGameExit const &event) { runGameLoop = false; }
 
 // ////////////////////////////////////////////////////////////////////////// //

@@ -550,7 +550,7 @@ void GameManagerScript::onButtonClick(OnButtonClick const& event) {
                 registry.send(
                     OnGameStateChange{.nextState = MENU_TO_GAME_FADE_OUT});
             } else if (isButtonClicked(menuExitButton)) {
-                // TODO: Add exiting, but properly, maybe through events
+                registry.send(OnGameExit{});
             }
         } break;
         case CHANGE_MENU_TYPE_TO_MAIN: {

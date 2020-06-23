@@ -1184,6 +1184,9 @@
     <ClInclude Include="yaml-cpp\src\token.h">
       <Filter>yaml-cpp\src</Filter>
     </ClInclude>
+    <ClInclude Include="Events\OnGameExit.hpp">
+      <Filter>Pliki nagłówkowe\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXTrace.inl">

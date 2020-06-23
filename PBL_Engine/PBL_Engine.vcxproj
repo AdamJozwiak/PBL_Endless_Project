@@ -200,6 +200,7 @@
     <ClInclude Include="Events\OnButtonClick.hpp" />
     <ClInclude Include="Events\OnButtonHover.hpp" />
     <ClInclude Include="Events\OnCollisionEnter.hpp" />
+    <ClInclude Include="Events\OnGameExit.hpp" />
     <ClInclude Include="Events\OnGameStateChange.hpp" />
     <ClInclude Include="ExceptionHandler.h" />
     <ClInclude Include="FireParticle.h" />
