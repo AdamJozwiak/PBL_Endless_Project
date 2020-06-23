@@ -69,10 +69,9 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
 
     bool (*isKeyPressed)(int const key);
     void spawnTorches();
-    void spawnRooks(int percentage, bool movingSideways = true);
+    void spawnRooks(int percentage, MovementType mt);
     void spawnBishops(int percentage);
-    void spawnEnemy(MovementType mt, EntityId spawnPoint, int percentage,
-                    bool movingSideways = true);
+    void spawnEnemy(MovementType mt, EntityId spawnPoint, int percentage);
     bool shouldHappen(int percentage);
     void findSpawnPoints(MovementType mt);
     void shakeCamera(float deltaTime);

@@ -241,7 +241,6 @@ void GameManagerScript::update(float const deltaTime) {
                              PART_LENGTH_IN_WORLD_UNITS -
                          M_PI_2) +
         51.0f;
-
     Entity(gameScoreValueText).get<UIElement>().content =
         std::to_string(int(score));
     Entity(resultsScoreValueText).get<UIElement>().content =
@@ -356,7 +355,9 @@ void GameManagerScript::update(float const deltaTime) {
             updateTrapRefraction();
             spawnTorches();
             spawnBishops(spawnChance);
-            spawnRooks(spawnChance, false);
+            spawnRooks(spawnChance, Rook);
+            spawnRooks(spawnChance, RookUp);
+            spawnRooks(spawnChance, RookForward);
 
             registry.send(OnGameStateChange{.nextState = GAME_LAUNCH_FADE_IN});
         } break;
@@ -508,7 +509,9 @@ void GameManagerScript::update(float const deltaTime) {
             updateTrapRefraction();
             spawnTorches();
             spawnBishops(spawnChance);
-            spawnRooks(spawnChance, false);
+            spawnRooks(spawnChance, Rook);
+            spawnRooks(spawnChance, RookUp);
+            spawnRooks(spawnChance, RookForward);
 
             registry.send(OnGameStateChange{.nextState = GAME_FADE_IN});
         } break;
@@ -640,10 +643,10 @@ void GameManagerScript::spawnTorches() {
     }
 }
 
-void GameManagerScript::spawnRooks(int percentage, bool movingSideways) {
-    findSpawnPoints(Rook);
+void GameManagerScript::spawnRooks(int percentage, MovementType mt) {
+    findSpawnPoints(mt);
     for (auto it : spawnPoints) {
-        spawnEnemy(Rook, it, percentage, movingSideways);
+        spawnEnemy(mt, it, percentage);
     }
 }
 
@@ -655,13 +658,32 @@ void GameManagerScript::spawnBishops(int percentage) {
 }
 
 void GameManagerScript::spawnEnemy(MovementType mt, EntityId spawnPoint,
-                                   int percentage, bool movingSideways) {
+                                   int percentage) {
     if (shouldHappen(percentage)) {
         std::shared_ptr<Entity> enemy;
+        switch (mt) {
+            case Bishop:
+                enemy = std::make_shared<Entity>(
+                    Registry::instance().system<SceneSystem>()->spawnPrefab(
+                        "Assets\\Unity\\Prefabs\\Enemy.prefab"));
+                break;
+            case Rook:
+                enemy = std::make_shared<Entity>(
+                    Registry::instance().system<SceneSystem>()->spawnPrefab(
+                        "Assets\\Unity\\Prefabs\\EnemyRook.prefab"));
+                break;
+            case RookForward:
+                enemy = std::make_shared<Entity>(
+                    Registry::instance().system<SceneSystem>()->spawnPrefab(
+                        "Assets\\Unity\\Prefabs\\EnemyRookForward.prefab"));
+                break;
+            case RookUp:
+                enemy = std::make_shared<Entity>(
+                    Registry::instance().system<SceneSystem>()->spawnPrefab(
+                        "Assets\\Unity\\Prefabs\\EnemyRookUp.prefab"));
+                break;
+        }
         if (mt == Bishop) {
-            enemy = std::make_shared<Entity>(
-                Registry::instance().system<SceneSystem>()->spawnPrefab(
-                    "Assets\\Unity\\Prefabs\\Enemy.prefab"));
             enemy->add<Flame>({.fireParticle = std::make_shared<FireParticle>(
                                    registry.system<WindowSystem>()->gfx(),
                                    Registry::instance()
@@ -671,10 +693,7 @@ void GameManagerScript::spawnEnemy(MovementType mt, EntityId spawnPoint,
                                        .get<MainCamera>()
                                        .camera.get(),
                                    bishop)});
-        } else if (mt == Rook) {
-            enemy = std::make_shared<Entity>(
-                Registry::instance().system<SceneSystem>()->spawnPrefab(
-                    "Assets\\Unity\\Prefabs\\EnemyRook.prefab"));
+        } else {
             enemy->add<Flame>({.fireParticle = std::make_shared<FireParticle>(
                                    registry.system<WindowSystem>()->gfx(),
                                    Registry::instance()
@@ -690,7 +709,13 @@ void GameManagerScript::spawnEnemy(MovementType mt, EntityId spawnPoint,
         auto const& enemyControllerScript =
             std::static_pointer_cast<EnemyControllerScript>(
                 enemyBehaviour.script);
-        enemyControllerScript->setMovementType(mt, movingSideways);
+        if (mt == RookUp) {
+            enemyControllerScript->setMovementType(mt, false, true);
+        } else {
+            bool movingSideways = true;
+            if (mt == RookForward) movingSideways = false;
+            enemyControllerScript->setMovementType(mt, movingSideways);
+        }
 
         auto& enemyTransform = enemy->get<Transform>();
         auto const& spawnPointTransform = Entity(spawnPoint).get<Transform>();
@@ -730,6 +755,10 @@ std::string GameManagerScript::enumToString(MovementType mt) {
     switch (mt) {
         case Rook:
             return "Rook";
+        case RookUp:
+            return "RookUp";
+        case RookForward:
+            return "RookForward";
         case Bishop:
             return "";
         default:
@@ -827,7 +856,9 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
         // Spawn the enemies
         spawnTorches();
         spawnBishops(spawnChance);
-        spawnRooks(spawnChance, true);
+        spawnRooks(spawnChance, Rook);
+        spawnRooks(spawnChance, RookUp);
+        spawnRooks(spawnChance, RookForward);
 
         // Delete the chunks we've already passed
         auto i = presentChunks.begin();

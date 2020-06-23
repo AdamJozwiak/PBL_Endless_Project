@@ -20,6 +20,10 @@ TagManager:
   - DeathCollider
   - Ground
   - LastLane
+  - RookForward
+  - RookUp
+  - EnemySpawnPointRookForward
+  - EnemySpawnPointRookUp
   layers:
   - Default
   - TransparentFX

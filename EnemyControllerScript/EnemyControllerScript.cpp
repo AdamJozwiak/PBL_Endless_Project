@@ -77,6 +77,8 @@ void EnemyControllerScript::setup() {
     playerId =
         registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
 
+    if (movementType == RookUp) startPos = entity.get<Transform>().position.y;
+
     entity.add<CheckCollisions>({});
 };
 
@@ -163,6 +165,15 @@ void EnemyControllerScript::moveRook(float const deltaTime) {
             easeOutQuad, position.z,
             position.z + ((movingLeft ? (-1.0f) : 1.0f)) * deltaTime * speed,
             0.01f, deltaTime);
+    } else if (!movingSideways && movingUp) {
+        if (position.y - startPos >= maxHeight)
+            moveDown = true;
+        else if (position.y <= startPos)
+            moveDown = false;
+        position.y = interpolate(
+            easeOutQuad, position.y,
+            position.y + ((moveDown ? (-1.0f) : 1.0f)) * deltaTime * speed,
+            0.01f, deltaTime);
     } else {
         position.x = interpolate(
             easeOutQuad, position.x,
@@ -171,11 +182,13 @@ void EnemyControllerScript::moveRook(float const deltaTime) {
     }
 }
 
-void EnemyControllerScript::setMovementType(MovementType mt, bool movingS) {
+void EnemyControllerScript::setMovementType(MovementType mt, bool movingS,
+                                            bool movingU) {
     movementType = mt;
-    if (mt == Rook) {
+    if (mt != Bishop) {
         movingSideways = movingS;
     }
+    if (mt == RookUp) movingUp = movingU;
 }
 
 // //////////////////////////////////////////////////////////////////////////

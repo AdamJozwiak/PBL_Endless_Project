@@ -538,7 +538,8 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
             return;
         } else if (other.id == groundCheck) {
             return;
-        } else if (otherTag == "Enemy" || otherTag == "Rook") {
+        } else if (otherTag == "Enemy" || otherTag == "Rook" ||
+                   otherTag == "RookUp" || otherTag == "RookForward") {
             if (currentState != RESULTS_TO_GAME_FADE_OUT) {
                 die();
             }

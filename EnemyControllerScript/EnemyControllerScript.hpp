@@ -9,7 +9,7 @@
 #include "Events/OnGameStateChange.hpp"
 #include "Script.hpp"
 
-enum MovementType { Rook, Bishop };
+enum MovementType { Rook, RookUp, RookForward, Bishop };
 
 // //////////////////////////////////////////////////////////////////// Class //
 class ENEMYCONTROLLERSCRIPT_API EnemyControllerScript : public Script {
@@ -29,7 +29,7 @@ class ENEMYCONTROLLERSCRIPT_API EnemyControllerScript : public Script {
     // -------------------------------------------------------- Methods -- == //
     void moveBishop(float deltaTime);
     void moveRook(float const deltaTime);
-    void setMovementType(MovementType mt, bool movingS = true);
+    void setMovementType(MovementType mt, bool movingS, bool movingU = false);
 
   private:
     // ============================================================== Data == //
@@ -49,6 +49,12 @@ class ENEMYCONTROLLERSCRIPT_API EnemyControllerScript : public Script {
     bool movingLeft = true;
     // for Rook
     bool movingSideways = true;
+    // for RookUp
+    bool movingUp = false;
+    bool moveDown = false;
+    float startPos = 0.0f;
+    float maxHeight = 5.0f;
+
     EntityId playerId;
     float playerDistance = 10.0f;
     float timeToBounce = 0.0f;
