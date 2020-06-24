@@ -28,6 +28,10 @@ namespace dx = DirectX;
 
 GDIPlusManager gdipm;
 
+bool tripMode = false, previousTripMode = false, tripFour = false,
+     tripTwo = false, tripZero = false;
+float tripTimer = 0.0f;
+
 // /////////////////////////////////////////////////////////////////// System //
 // ============================================================= Behaviour == //
 // ----------------------------------------- System's virtual functions -- == //
@@ -59,9 +63,35 @@ void RenderSystem::setup() {
                                      float(window->Gfx().GetWindowWidth()) /
                                          float(window->Gfx().GetWindowHeight()),
                                      0.3f, 1000.0f));
+    isKeyPressed = [](int const key) {
+        return registry.system<RenderSystem>()->window->keyboard.KeyIsPressed(
+            key);
+    };
 }
 
 void RenderSystem::update(float deltaTime) {
+    // Trip
+    if (tripTimer <= 0.0f) {
+        if (tripMode) {
+            tripFour &= !isKeyPressed('4');
+            tripTwo &= !(!tripFour && isKeyPressed('2'));
+            tripZero &= !(!tripFour && !tripTwo && isKeyPressed('0'));
+            tripMode = !(!tripFour && !tripTwo && !tripZero);
+        } else {
+            tripFour |= isKeyPressed('4');
+            tripTwo |= tripFour && isKeyPressed('2');
+            tripZero |= tripFour && tripTwo && isKeyPressed('0');
+            tripMode = tripFour && tripTwo && tripZero;
+        }
+    } else {
+        tripTimer -= deltaTime;
+    }
+    if (previousTripMode != tripMode) {
+        tripTimer = 0.420f;
+        tripFour = tripTwo = tripZero = tripMode;
+    }
+    previousTripMode = tripMode;
+
     // Update AABB
     for (Entity entity : entities) {
         registry.system<ColliderSystem>()->CalculateAABB(
@@ -129,7 +159,7 @@ void RenderSystem::update(float deltaTime) {
 
         if (frustum.SphereIntersection(center, radius.x)) {
             auto& meshFilter = entity.get<MeshFilter>();
-            if (entity.has<Refractive>()) {
+            if (entity.has<Refractive>() || tripMode) {
                 meshFilter.model->Draw(
                     window->Gfx(),
                     registry.system<GraphSystem>()->transform(entity),

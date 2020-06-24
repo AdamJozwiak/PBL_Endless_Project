@@ -36,6 +36,7 @@ ECS_SYSTEM(RenderSystem) {
     std::shared_ptr<Camera> mainCamera, freeCamera;
     ImguiManager imgui;
     Transform *mainCameraTransform;
+    bool (*isKeyPressed)(int const key);
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
