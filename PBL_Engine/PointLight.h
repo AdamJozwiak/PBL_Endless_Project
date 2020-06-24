@@ -1,4 +1,7 @@
 #pragma once
+#include <array>
+
+#include "Camera.h"
 #include "ConstantBuffers.h"
 #include "EngineAPI.hpp"
 #include "FixedQueue.h"
@@ -15,8 +18,10 @@ class ENGINE_API PointLight {
                      DirectX::XMVECTOR cameraWorldPosition);
     void Draw(Graphics& gfx) const noexcept(!IS_DEBUG);
     static void Bind(Graphics& gfx) noexcept;
+    void AddCameras();
     DirectX::XMFLOAT4 lightPositionWorld() const;
     void setLightPositionWorld(DirectX::XMVECTOR newWorldPos);
+    void setMainLightPosition(DirectX::XMVECTOR pos);
     void setIntensity(float intensity);
     float getIntensity();
     void setAttenuationC(float value);
@@ -29,6 +34,7 @@ class ENGINE_API PointLight {
     int getNumber();
     void setColor(DirectX::XMFLOAT4 const& color);
     DirectX::XMFLOAT4 getColor();
+    std::shared_ptr<Camera> getLightCamera(int iterator);
 
   private:
     static constexpr int MAX_LIGHT_COUNT = 16;
@@ -41,12 +47,14 @@ class ENGINE_API PointLight {
         alignas(16) DirectX::XMFLOAT4 attenuationConstant[MAX_LIGHT_COUNT / 4];
         alignas(16) DirectX::XMFLOAT4 attenuationLinear[MAX_LIGHT_COUNT / 4];
         alignas(16) DirectX::XMFLOAT4 attenuationQuadratic[MAX_LIGHT_COUNT / 4];
+        alignas(16) DirectX::XMFLOAT4 mainLightPosition;
     };
     static LightParametersConstantBuffer lightParametersConstantBuffer;
     float lightIntensity;
     float attenuationConstant;
     float attenuationLinear;
     float attenuationQuadratic;
+    std::array<std::shared_ptr<Camera>, 6> cameras;
 
   private:
     int number;

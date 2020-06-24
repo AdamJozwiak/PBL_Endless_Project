@@ -28,6 +28,18 @@ void PointLight::setLightPositionWorld(DirectX::XMVECTOR newWorldPos) {
         DirectX::XMVectorGetX(newWorldPos), DirectX::XMVectorGetY(newWorldPos),
         DirectX::XMVectorGetZ(newWorldPos), DirectX::XMVectorGetW(newWorldPos)};
     lightParametersConstantBuffer.lightPositionWorld[number] = tmp;
+    if (cameras.at(0) != nullptr) {
+        for (auto& camera : cameras) {
+            camera->setCameraPos(newWorldPos);
+        }
+    }
+}
+
+void PointLight::setMainLightPosition(DirectX::XMVECTOR pos) {
+    DirectX::XMFLOAT4 tmp = {
+        DirectX::XMVectorGetX(pos), DirectX::XMVectorGetY(pos),
+        DirectX::XMVectorGetZ(pos), DirectX::XMVectorGetW(pos)};
+    lightParametersConstantBuffer.mainLightPosition = tmp;
 }
 
 void PointLight::setIntensity(float const intensity) {
@@ -224,6 +236,28 @@ void PointLight::Bind(Graphics& gfx) noexcept {
     cbuf.Bind(gfx);
 }
 
+void PointLight::AddCameras() {
+    auto lightPosition = lightPositionWorld();
+    for (int i = 0; i < 6; i++) {
+        cameras[i] = std::make_shared<Camera>();
+        cameras[i]->setCameraPos(
+            DirectX::XMVectorSet(lightPosition.x, lightPosition.y,
+                                 lightPosition.z, lightPosition.w));
+    }
+    cameras[0]->setCameraRotation(0.0f,
+                                  DirectX::XMConvertToRadians(90.0f));  // X+
+
+    cameras[1]->setCameraRotation(0.0f,
+                                  DirectX::XMConvertToRadians(-90.0f));  // X-
+    cameras[2]->setCameraRotation(DirectX::XMConvertToRadians(-90.0f),
+                                  DirectX::XMConvertToRadians(0.0f));  // Y+
+    cameras[3]->setCameraRotation(DirectX::XMConvertToRadians(90.0f),
+                                  0.0f);        // Y-
+    cameras[4]->setCameraRotation(0.0f, 0.0f);  // Z+
+    cameras[5]->setCameraRotation(0.0f,
+                                  DirectX::XMConvertToRadians(180.0f));  // Z-
+}
+
 void PointLight::initTorchNumbers() {
     for (int i = 0; i < PointLight::MAX_LIGHT_COUNT; i++) {
         torchNumbers.push(i);
@@ -242,4 +276,8 @@ void PointLight::setColor(DirectX::XMFLOAT4 const& color) {
 }
 DirectX::XMFLOAT4 PointLight::getColor() {
     return lightParametersConstantBuffer.diffuseColor[number];
+}
+
+std::shared_ptr<Camera> PointLight::getLightCamera(int iterator) {
+    return cameras[iterator];
 }

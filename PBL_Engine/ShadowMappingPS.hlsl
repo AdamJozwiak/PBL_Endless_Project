@@ -22,8 +22,6 @@ SamplerState textureSampler {
     AddressV = Wrap;
 };
 
-TextureCube shadowMap : register(t10);
-
 // //////////////////////////////////////////////////////////////// Constants //
 static const int NUM_LIGHTS = 16;
 static const float PI = 3.14159265359;
@@ -31,8 +29,8 @@ static const int TEXTURE_ALBEDO = 0, TEXTURE_AMBIENT_OCCLUSION = 1,
                  TEXTURE_METALLIC_SMOOTHNESS = 2, TEXTURE_NORMAL = 3,
                  TEXTURE_HEIGHT = 4;
 static const float BLOOM_THRESHOLD = 0.3f;
-static const int MIN_SAMPLE_COUNT = 1;
-static const int MAX_SAMPLE_COUNT = 8;
+static const int MIN_SAMPLE_COUNT = 4;
+static const int MAX_SAMPLE_COUNT = 32;
 
 // ///////////////////////////////////////////////////////// Constant buffers //
 cbuffer MaterialParameters : register(b9) { float parallaxHeight; };
@@ -47,8 +45,6 @@ cbuffer LightParameters : register(b10) {
     float4 attenuationConstant[NUM_LIGHTS / 4];
     float4 attenuationLinear[NUM_LIGHTS / 4];
     float4 attenuationQuadratic[NUM_LIGHTS / 4];
-
-    float4 mainLightPos;
 };
 
 // /////////////////////////////////////////////////////////// Normal mapping //
@@ -119,7 +115,8 @@ float4 pbr(PixelShaderInput input, float3 normal, float2 texCoord) {
         float3 h = normalize(viewDir + lightDir);
         float factor =
             ((float[NUM_LIGHTS])intensity)[i] *
-            attenuate(length(lightPositionWorld[i].xyz - input.positionWorld), i);
+            attenuate(length(lightPositionWorld[i].xyz - input.positionWorld),
+                      i);
         float3 radiance = diffuseColor[i].xyz * factor;
 
         // Cook-Torrance BRDF
@@ -211,64 +208,9 @@ float2 parallaxOcclusionMapping(PixelShaderInput input, float2 texCoords,
 PixelShaderOutput main(PixelShaderInput input) {
     PixelShaderOutput output;
 
-    // Construct transform matrices between world and tangent space
-    input.normalWorld = normalize(input.normalWorld);
-    input.tangentWorld = normalize(input.tangentWorld -
-                                   dot(input.tangentWorld, input.normalWorld) *
-                                       input.normalWorld);
-    input.bitangentWorld =
-        normalize(cross(input.normalWorld, input.tangentWorld));
-
-    float3x3 tangentToWorld =
-        float3x3(input.tangentWorld, input.bitangentWorld, input.normalWorld);
-    float3x3 worldToTangent = transpose(tangentToWorld);
-
-    // Update texture coordinates with parallax mapping
-    float3 viewDirectionWorld =
-        normalize(viewPositionWorld.xyz - input.positionWorld);
-    float3 viewDirectionTangent =
-        normalize(mul(-viewDirectionWorld.xyz, worldToTangent));
-
-    float2 texCoordParallax = input.texCoord;
-    if (parallaxHeight > 0.005f) {
-        texCoordParallax = parallaxOcclusionMapping(
-            input, input.texCoord, viewDirectionTangent, viewDirectionWorld);
-    }
-
-    // Update normal with normal mapping
-    float3 normal =
-        calculateMappedNormal(input, texCoordParallax,
-                              float3x3(input.tangentWorld,
-                                       -input.bitangentWorld,
-                                       input.normalWorld));
-
-    // Calculate lighting
-    output.color =
-        clamp(pointLight(input, normal, texCoordParallax),
-              float4(0.0f, 0.0f, 0.0f, 0.0f), float4(1.0f, 1.0f, 1.0f, 1.0f));
     // Calculate final pixel color
-    float4 pixelColor = float4(textures[TEXTURE_AMBIENT_OCCLUSION]
-                                       .Sample(textureSampler, texCoordParallax)
-                                       .rgb *
-                                   output.color.rgb,
-                               1.0f);
-
-    float3 cubeMapDir = input.positionWorld - mainLightPos;
-    float closestDepth = shadowMap.Sample(textureSampler, cubeMapDir).r;
-    // it is currently in linear range between [0,1]. Re-transform back to
-    // original value
-    closestDepth *= 100;
-    // now get current linear depth as the length between the fragment and light
-    // position
-    float currentDepth = length(cubeMapDir);
-    // now test for shadows
-    float bias = 0.5;
-    float shadow = currentDepth - bias > closestDepth ? 0.0 : 1.0;
-
-    output.color = pixelColor * shadow;
-    //output.color = currentDepth;
-    output.bloom =
-        saturate((output.color - BLOOM_THRESHOLD) / (1 - BLOOM_THRESHOLD));
+    output.color = 1 - input.position.z / input.position.w;
+    output.bloom = 0;
 
     return output;
 }

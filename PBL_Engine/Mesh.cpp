@@ -73,23 +73,31 @@ Mesh::Mesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs,
 
 void Mesh::Draw(
     Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform, PassType passType,
+    const std::vector<std::shared_ptr<Bindable>>& shadowShaders,
     const std::vector<std::shared_ptr<Bindable>>& refShaders,
     const std::vector<std::shared_ptr<Bindable>>& normalShaders,
+    const std::vector<std::shared_ptr<Bindable>>& animatedShadowShaders,
     const std::vector<std::shared_ptr<Bindable>>& animatedRefShaders,
     const std::vector<std::shared_ptr<Bindable>>& animatedNormalShaders) const
     noexcept(!IS_DEBUG) {
     DirectX::XMStoreFloat4x4(&transform, accumulatedTransform);
-    for (auto& s : animatedRefShaders) {
-        s->SetStatus(false);
-    }
     for (auto& n : animatedNormalShaders) {
         n->SetStatus(false);
     }
-    for (auto& s : refShaders) {
+    for (auto& r : animatedRefShaders) {
+        r->SetStatus(false);
+    }
+    for (auto& s : animatedShadowShaders) {
         s->SetStatus(false);
     }
     for (auto& n : normalShaders) {
         n->SetStatus(false);
+    }
+    for (auto& r : refShaders) {
+        r->SetStatus(false);
+    }
+    for (auto& s : shadowShaders) {
+        s->SetStatus(false);
     }
 
     if (!Bones.empty()) {
@@ -100,7 +108,12 @@ void Mesh::Draw(
                 }
                 break;
             case PassType::refractive:
-                for (auto& s : animatedRefShaders) {
+                for (auto& r : animatedRefShaders) {
+                    r->SetStatus(true);
+                }
+                break;
+            case PassType::shadowPass:
+                for (auto& s : animatedShadowShaders) {
                     s->SetStatus(true);
                 }
                 break;
@@ -114,7 +127,12 @@ void Mesh::Draw(
                 }
                 break;
             case PassType::refractive:
-                for (auto& s : refShaders) {
+                for (auto& r : refShaders) {
+                    r->SetStatus(true);
+                }
+                break;
+            case PassType::shadowPass:
+                for (auto& s : shadowShaders) {
                     s->SetStatus(true);
                 }
                 break;
@@ -170,8 +188,10 @@ Node::Node(const std::string& name, std::vector<Mesh*> meshPtrs,
 
 void Node::Draw(
     Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform, PassType passType,
+    const std::vector<std::shared_ptr<Bindable>>& shadowShaders,
     const std::vector<std::shared_ptr<Bindable>>& refShaders,
     const std::vector<std::shared_ptr<Bindable>>& normalShaders,
+    const std::vector<std::shared_ptr<Bindable>>& animatedShadowShaders,
     const std::vector<std::shared_ptr<Bindable>>& animatedRefShaders,
     const std::vector<std::shared_ptr<Bindable>>& animatedNormalShaders) const
     noexcept(!IS_DEBUG) {
@@ -179,12 +199,14 @@ void Node::Draw(
                        dx::XMLoadFloat4x4(&baseTransform) *
                        accumulatedTransform;
     for (const auto pm : meshPtrs) {
-        pm->Draw(gfx, built, passType, refShaders, normalShaders,
-                 animatedRefShaders, animatedNormalShaders);
+        pm->Draw(gfx, built, passType, shadowShaders, refShaders, normalShaders,
+                 animatedShadowShaders, animatedRefShaders,
+                 animatedNormalShaders);
     }
     for (const auto& pc : childPtrs) {
-        pc->Draw(gfx, built, passType, refShaders, normalShaders,
-                 animatedRefShaders, animatedNormalShaders);
+        pc->Draw(gfx, built, passType, shadowShaders, refShaders, normalShaders,
+                 animatedShadowShaders, animatedRefShaders,
+                 animatedNormalShaders);
     }
 }
 
@@ -447,38 +469,57 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
         parallaxHeight = renderer->material.parallaxHeight;
     }
 
+    animPbrVert = std::make_shared<VertexShader>(gfx, L"AnimatedPBRVS.cso");
+
     animRefVert =
         std::make_shared<VertexShader>(gfx, L"AnimatedRefractiveVS.cso");
 
-    animPbrVert = std::make_shared<VertexShader>(gfx, L"AnimatedPBRVS.cso");
+    animShadowVert = std::make_shared<VertexShader>(gfx, L"AnimatedShadowMappingVS.cso");
 
-    refVert = std::make_shared<VertexShader>(gfx, L"RefractiveVS.cso");
 
     pbrVert = std::make_shared<VertexShader>(gfx, L"PBRVS.cso");
 
-    refGeo = std::make_shared<GeometryShader>(gfx, L"RefractiveGS.cso");
+    refVert = std::make_shared<VertexShader>(gfx, L"RefractiveVS.cso");
+
+    shadowVert = std::make_shared<VertexShader>(gfx, L"ShadowMappingVS.cso");
+
 
     pbrGeo = std::make_shared<GeometryShader>(gfx, L"PBRGS.cso");
 
-    refPixel = std::make_shared<PixelShader>(gfx, L"RefractivePS.cso");
+    refGeo = std::make_shared<GeometryShader>(gfx, L"RefractiveGS.cso");
+
+    shadowGeo = std::make_shared<GeometryShader>(gfx, L"ShadowMappingGS.cso");
+
 
     pbrPixel = std::make_shared<PixelShader>(gfx, L"PBRPS.cso");
 
-    refShaders.push_back(refVert);
-    refShaders.push_back(refGeo);
-    refShaders.push_back(refPixel);
+    refPixel = std::make_shared<PixelShader>(gfx, L"RefractivePS.cso");
+
+    shadowPixel = std::make_shared<PixelShader>(gfx, L"ShadowMappingPS.cso");
 
     normalShaders.push_back(pbrVert);
     normalShaders.push_back(pbrGeo);
     normalShaders.push_back(pbrPixel);
 
-    refShadersAnimated.push_back(animRefVert);
-    refShadersAnimated.push_back(refGeo);
-    refShadersAnimated.push_back(refPixel);
+    refShaders.push_back(refVert);
+    refShaders.push_back(refGeo);
+    refShaders.push_back(refPixel);
+
+    shadowShaders.push_back(shadowVert);
+    shadowShaders.push_back(shadowGeo);
+    shadowShaders.push_back(shadowPixel);
 
     normalShadersAnimated.push_back(animPbrVert);
     normalShadersAnimated.push_back(pbrGeo);
     normalShadersAnimated.push_back(pbrPixel);
+
+    refShadersAnimated.push_back(animRefVert);
+    refShadersAnimated.push_back(refGeo);
+    refShadersAnimated.push_back(refPixel);
+
+    shadowShadersAnimated.push_back(animShadowVert);
+    shadowShadersAnimated.push_back(shadowGeo);
+    shadowShadersAnimated.push_back(shadowPixel);
 
     for (size_t i = 0; i < pScene->mNumMeshes; i++) {
         auto pMesh = ParseMesh(gfx, *pScene->mMeshes[i], verticesForCollision);
@@ -491,8 +532,9 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
 
 void Model::Draw(Graphics& gfx, DirectX::XMMATRIX transform,
                  PassType passType) const noexcept(!IS_DEBUG) {
-    pRoot->Draw(gfx, transform, passType, refShaders, normalShaders,
-                refShadersAnimated, normalShadersAnimated);
+    pRoot->Draw(gfx, transform, passType, shadowShaders, refShaders,
+                normalShaders, shadowShadersAnimated, refShadersAnimated,
+                normalShadersAnimated);
 }
 
 void Model::ShowWindow(const char* windowName) noexcept {
@@ -586,17 +628,25 @@ std::shared_ptr<Mesh> Model::ParseMesh(
 
     bindablePtrs.push_back(refVert);
 
-    bindablePtrs.push_back(refGeo);
+    bindablePtrs.push_back(shadowVert);
 
     bindablePtrs.push_back(pbrGeo);
 
-    bindablePtrs.push_back(refPixel);
+    bindablePtrs.push_back(refGeo);
+
+    bindablePtrs.push_back(shadowGeo);
 
     bindablePtrs.push_back(pbrPixel);
 
-    bindablePtrs.push_back(animRefVert);
+    bindablePtrs.push_back(refPixel);
+
+    bindablePtrs.push_back(shadowPixel);
 
     bindablePtrs.push_back(animPbrVert);
+
+    bindablePtrs.push_back(animRefVert);
+
+    bindablePtrs.push_back(animShadowVert);
 
     struct PSMaterialConstant {
         DirectX::XMFLOAT3 color = {0.6f, 0.6f, 0.8f};

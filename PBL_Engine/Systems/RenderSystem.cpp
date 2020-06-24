@@ -58,15 +58,31 @@ void RenderSystem::setup() {
     bloom = std::make_shared<PostProcessing>(window->Gfx(), L"Bloom", 2);
     colorCorrection =
         std::make_shared<PostProcessing>(window->Gfx(), L"ColorCorrection", 1);
-    window->Gfx().SetProjection(
+    shadowPass = std::make_shared<PostProcessing>(window->Gfx(),
+                                                  L"ShadowMapping", 6, true);
+    normalFOV =
         dx::XMMatrixPerspectiveFovLH(dx::XMConvertToRadians(60.0f),
                                      float(window->Gfx().GetWindowWidth()) /
                                          float(window->Gfx().GetWindowHeight()),
-                                     0.3f, 1000.0f));
+                                     0.3f, 1000.0f);
+    shadowFOV =
+        dx::XMMatrixPerspectiveFovLH(dx::XMConvertToRadians(90.0f),
+                                     1.0f,
+                                     0.00001f, 100.0f);
+
+    window->Gfx().SetProjection(normalFOV);
+
     isKeyPressed = [](int const key) {
         return registry.system<RenderSystem>()->window->keyboard.KeyIsPressed(
             key);
     };
+    playersTorch = Entity(registry.system<PropertySystem>()
+                              ->findEntityByName("Player Torch")
+                              .at(0)
+                              .id)
+                       .get<Light>()
+                       .pointLight;
+    playersTorch->AddCameras();
 }
 
 void RenderSystem::update(float deltaTime) {
@@ -99,37 +115,85 @@ void RenderSystem::update(float deltaTime) {
             registry.system<GraphSystem>()->transform(entity));
     }
 
+    // ----------------------------- SHADOW PASS --------------------------- //
+
+     window->Gfx().SetViewport(256, 256);
+     window->Gfx().SetProjection(shadowFOV);
+     window->Gfx().BeginFrame(0.0f, 0.0f, 0.0f);
+
+     for (int i = 0; i < 6; i++) {
+        shadowPass->ShadowBegin(i);
+        window->Gfx().SetCamera(
+            playersTorch->getLightCamera(i)->GetCameraMatrix());
+        DirectX::XMFLOAT4X4 viewProj;
+        DirectX::XMStoreFloat4x4(
+            &viewProj, playersTorch->getLightCamera(i)->GetCameraMatrix() *
+                           window->Gfx().GetProjection());
+
+        auto frustum = CFrustum(viewProj);
+
+        // Render all renderable models
+        for (auto const& entity : entities) {
+            auto div = DirectX::XMVectorSubtract(entity.get<AABB>().vertexMax,
+                                                 entity.get<AABB>().vertexMin);
+            auto avg = DirectX::XMVectorScale(div, 0.5f);
+
+            DirectX::XMFLOAT3 center;
+            DirectX::XMStoreFloat3(
+                &center,
+                DirectX::XMVectorAdd(avg, entity.get<AABB>().vertexMin));
+            DirectX::XMFLOAT3 radius;
+            DirectX::XMStoreFloat3(&radius, DirectX::XMVector3Length(avg));
+
+            if (frustum.SphereIntersection(center, radius.x)) {
+                auto& meshFilter = entity.get<MeshFilter>();
+                if (!entity.has<Refractive>()) {
+                    meshFilter.model->Draw(
+                        window->Gfx(),
+                        registry.system<GraphSystem>()->transform(entity),
+                        PassType::shadowPass);
+                }
+            }
+        }
+    }
+     shadowPass->End();
+     shadowPass->shadowMap->Bind(window->Gfx());
+
+    //// Process mouse movements for free camera
+    // while (auto const delta = window->mouse.ReadRawDelta()) {
+    //    if (window->mouse.RightIsPressed()) {
+    //        freeCamera->yaw += delta->x * 0.25f * deltaTime;
+    //        freeCamera->pitch += delta->y * 0.25f * deltaTime;
+    //    }
+    //}
+    //// Process input for free camera movement
+    // if (window->mouse.RightIsPressed()) {
+    //    static float speed = 0.0f;
+    //    float const targetSpeed = 5.0f * deltaTime;
+
+    //    speed = std::lerp(speed, targetSpeed, 0.1f);  // Accelerate
+    //    speed = std::lerp(0.0f, speed, 0.9f);         // Slow down
+
+    //    if (window->keyboard.KeyIsPressed('A')) {
+    //        freeCamera->moveLeftRight -= speed;
+    //    }
+    //    if (window->keyboard.KeyIsPressed('D')) {
+    //        freeCamera->moveLeftRight += speed;
+    //    }
+    //    if (window->keyboard.KeyIsPressed('W')) {
+    //        freeCamera->moveBackForward += speed;
+    //    }
+    //    if (window->keyboard.KeyIsPressed('S')) {
+    //        freeCamera->moveBackForward -= speed;
+    //    }
+    //}
+
+    // ----------------------------- NORMAL PASS --------------------------- //
+
+    window->Gfx().SetDefaultViewport();
+    window->Gfx().SetProjection(normalFOV);
     window->Gfx().BeginFrame(0.0f, 0.0f, 0.0f);
     bloom->Begin();
-
-    // Process mouse movements for free camera
-    while (auto const delta = window->mouse.ReadRawDelta()) {
-        if (window->mouse.RightIsPressed()) {
-            freeCamera->yaw += delta->x * 0.25f * deltaTime;
-            freeCamera->pitch += delta->y * 0.25f * deltaTime;
-        }
-    }
-    // Process input for free camera movement
-    if (window->mouse.RightIsPressed()) {
-        static float speed = 0.0f;
-        float const targetSpeed = 5.0f * deltaTime;
-
-        speed = std::lerp(speed, targetSpeed, 0.1f);  // Accelerate
-        speed = std::lerp(0.0f, speed, 0.9f);         // Slow down
-
-        if (window->keyboard.KeyIsPressed('A')) {
-            freeCamera->moveLeftRight -= speed;
-        }
-        if (window->keyboard.KeyIsPressed('D')) {
-            freeCamera->moveLeftRight += speed;
-        }
-        if (window->keyboard.KeyIsPressed('W')) {
-            freeCamera->moveBackForward += speed;
-        }
-        if (window->keyboard.KeyIsPressed('S')) {
-            freeCamera->moveBackForward -= speed;
-        }
-    }
 
     // Set camera
     registry.system<SoundSystem>()->setListener(
@@ -142,6 +206,11 @@ void RenderSystem::update(float deltaTime) {
     DirectX::XMStoreFloat4x4(&viewProjection,
                              mainCamera->GetMatrix(*mainCameraTransform) *
                                  window->Gfx().GetProjection());
+    /*window->Gfx().SetCamera(playersTorch->getLightCamera(5)->GetCameraMatrix());
+    DirectX::XMFLOAT4X4 viewProjection;
+    DirectX::XMStoreFloat4x4(
+        &viewProjection, playersTorch->getLightCamera(5)->GetCameraMatrix() *
+                       window->Gfx().GetProjection());*/
 
     auto frustum = CFrustum(viewProjection);
 

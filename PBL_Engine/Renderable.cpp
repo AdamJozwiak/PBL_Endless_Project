@@ -20,6 +20,11 @@ void Renderable::Draw(Graphics& gfx, PassType passType) const
                     b->Bind(gfx);
                 }
                 break;
+            case PassType::shadowPass:
+                if (b->GetStatus()) {
+                    b->Bind(gfx);
+                }
+                break;
         }
     }
     for (auto& b : GetStaticBinds()) {
@@ -30,6 +35,11 @@ void Renderable::Draw(Graphics& gfx, PassType passType) const
                 }
                 break;
             case PassType::refractive:
+                if (b->GetStatus()) {
+                    b->Bind(gfx);
+                }
+                break;
+            case PassType::shadowPass:
                 if (b->GetStatus()) {
                     b->Bind(gfx);
                 }

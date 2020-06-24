@@ -85,6 +85,12 @@ Graphics::Graphics(HWND hWnd, int width, int height)
 
     SetDefaultRenderTarget(width, height);
 
+    SetDefaultViewport();
+
+    ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
+}
+
+void Graphics::SetViewport(int width, int height) {
     // configure viewport
     D3D11_VIEWPORT vp;
     vp.Width = (float)width;
@@ -94,8 +100,18 @@ Graphics::Graphics(HWND hWnd, int width, int height)
     vp.TopLeftX = 0.0f;
     vp.TopLeftY = 0.0f;
     pContext->RSSetViewports(1u, &vp);
+}
 
-    ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
+void Graphics::SetDefaultViewport() {
+    // configure viewport
+    D3D11_VIEWPORT vp;
+    vp.Width = (float)windowWidth;
+    vp.Height = (float)windowHeight;
+    vp.MinDepth = 0.0f;
+    vp.MaxDepth = 1.0f;
+    vp.TopLeftX = 0.0f;
+    vp.TopLeftY = 0.0f;
+    pContext->RSSetViewports(1u, &vp);
 }
 
 void Graphics::SetDefaultRenderTarget(int width, int height) {

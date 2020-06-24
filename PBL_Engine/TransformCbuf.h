@@ -1,6 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 
+#include "Camera.h"
 #include "ConstantBuffers.h"
 #include "Renderable.h"
 
@@ -10,6 +11,7 @@ class TransformCbuf : public Bindable {
         DirectX::XMMATRIX model;
         DirectX::XMMATRIX modelInverseTranspose;
         DirectX::XMMATRIX viewProj;
+        DirectX::XMMATRIX lightPos;
     };
 
   public:
