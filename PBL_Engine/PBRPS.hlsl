@@ -234,9 +234,9 @@ PixelShaderOutput main(PixelShaderInput input) {
     // Update normal with normal mapping
     float3 normal =
         calculateMappedNormal(input, texCoordParallax,
-                              float3x3(normalize(input.tangentWorld),
-                                       -normalize(input.bitangentWorld),
-                                       normalize(input.normalWorld)));
+                              float3x3(input.tangentWorld,
+                                       -input.bitangentWorld,
+                                       input.normalWorld));
 
     // Calculate lighting
     output.color =
