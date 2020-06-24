@@ -29,8 +29,8 @@ static const int TEXTURE_ALBEDO = 0, TEXTURE_AMBIENT_OCCLUSION = 1,
                  TEXTURE_METALLIC_SMOOTHNESS = 2, TEXTURE_NORMAL = 3,
                  TEXTURE_HEIGHT = 4;
 static const float BLOOM_THRESHOLD = 0.3f;
-static const int MIN_SAMPLE_COUNT = 4;
-static const int MAX_SAMPLE_COUNT = 32;
+static const int MIN_SAMPLE_COUNT = 1;
+static const int MAX_SAMPLE_COUNT = 8;
 
 // ///////////////////////////////////////////////////////// Constant buffers //
 cbuffer MaterialParameters : register(b9) { float parallaxHeight; };
