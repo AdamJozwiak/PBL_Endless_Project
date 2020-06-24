@@ -62,6 +62,26 @@ Engine::Engine()
                      registry.system<PhysicsSystem>()} {}
 
 ENGINE_API int Engine::run() {
+    ECS_REGISTER_COMPONENT(AABB);
+    ECS_REGISTER_COMPONENT(Animator);
+    ECS_REGISTER_COMPONENT(Behaviour);
+    ECS_REGISTER_COMPONENT(BoxCollider);
+    ECS_REGISTER_COMPONENT(Flame);
+    ECS_REGISTER_COMPONENT(Light);
+    ECS_REGISTER_COMPONENT(MainCamera);
+    ECS_REGISTER_COMPONENT(MeshFilter);
+    ECS_REGISTER_COMPONENT(Properties);
+    ECS_REGISTER_COMPONENT(RectTransform);
+    ECS_REGISTER_COMPONENT(Renderer);
+    ECS_REGISTER_COMPONENT(Rigidbody);
+    ECS_REGISTER_COMPONENT(Skybox);
+    ECS_REGISTER_COMPONENT(SphereCollider);
+    ECS_REGISTER_COMPONENT(Active);
+    ECS_REGISTER_COMPONENT(Refractive);
+    ECS_REGISTER_COMPONENT(CheckCollisions);
+    ECS_REGISTER_COMPONENT(Transform);
+    ECS_REGISTER_COMPONENT(UIElement);
+
     for (auto &system : setupSystems) {
         system->setup();
     }

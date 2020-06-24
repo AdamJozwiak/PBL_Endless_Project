@@ -161,6 +161,7 @@
     <ClInclude Include="Components\AABB.hpp" />
     <ClInclude Include="Components\Behaviour.hpp" />
     <ClInclude Include="Components\Flame.hpp" />
+    <ClInclude Include="Components\ForwardDeclarations.hpp" />
     <ClInclude Include="Components\Light.hpp" />
     <ClInclude Include="Components\MainCamera.hpp" />
     <ClInclude Include="Components\Components.hpp" />

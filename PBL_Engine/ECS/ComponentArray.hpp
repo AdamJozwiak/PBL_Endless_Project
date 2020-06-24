@@ -20,74 +20,79 @@ class ENGINE_API IComponentArray {
 template <typename Component>
 class ENGINE_API ComponentArray : public IComponentArray {
   public:
-    // ========================================================= Behaviour == //
-    void insert(EntityId entityId, Component const &component) {
-        assert(!componentExists(entityId) &&
-               "Component can't be added to same entity more than once!");
+    ComponentArray() {
+        size = 0;
+        indicies.fill(EMPTY_ENTITY);
+        entities.fill(EMPTY_ENTITY);
+    }
 
-        size_t insertedIndex = size;
-        EntityId &insertedEntityId = entityId;
+    // ========================================================= Behaviour == //
+    void insert(EntityId const entityId, Component const &component) {
+        if (componentExists(entityId)) {
+            get(entityId) = component;
+            return;
+        }
+
+        if (size > MAX_ENTITIES) {
+            return;
+        }
+
+        auto const insertedIndex = size;
+        auto const insertedEntityId = entityId;
 
         // Insert new element at the end of the array
-        components[insertedIndex] = component;
+        components.at(insertedIndex) = component;
         ++size;
 
         // Update mappings
-        indicies[entityId] = insertedIndex;
-        entities[insertedIndex] = entityId;
+        indicies.at(entityId) = insertedIndex;
+        entities.at(insertedIndex) = entityId;
     }
 
-    void remove(EntityId entityId) {
+    void remove(EntityId const entityId) {
         if (!componentExists(entityId)) {
             return;
         }
-        // assert(componentExists(entityId) &&
-        //       "Component must exist before removing!");
 
-        size_t lastIndex = size - 1;
-        size_t removedIndex = indicies.at(entityId);
-        EntityId lastEntityId = entities.at(lastIndex);
-        EntityId &removedEntityId = entityId;
+        auto const lastIndex = size - 1u;
+        auto const removedIndex = indicies.at(entityId);
+        auto const lastEntityId = entities.at(lastIndex);
+        auto const removedEntityId = entityId;
 
         // Overwrite the removed element with the last one
         components.at(removedIndex) = components.at(lastIndex);
         --size;
 
         // Update mappings
-        indicies[lastEntityId] = removedIndex;
-        entities[removedIndex] = lastEntityId;
-        indicies.erase(removedEntityId);
-        entities.erase(lastIndex);
+        indicies.at(lastEntityId) = removedIndex;
+        entities.at(removedIndex) = lastEntityId;
+        indicies.at(removedEntityId) = EMPTY_ENTITY;
+        entities.at(lastIndex) = EMPTY_ENTITY;
     }
 
-    Component &get(EntityId entityId) {
+    Component &get(EntityId const entityId) {
         assert(componentExists(entityId) &&
                "Component doesn't exist for given entity!");
 
         return components.at(indicies.at(entityId));
     }
 
-    bool contains(EntityId entityId) { return componentExists(entityId); }
+    bool contains(EntityId const entityId) { return componentExists(entityId); }
 
-    void destroyEntity(EntityId entityId) override {
-        // assert(componentExists(entityId) &&
-        //       "Component doesn't exist for given entity!");
-
-        remove(entityId);
-    }
+    void destroyEntity(EntityId const entityId) override { remove(entityId); }
 
   private:
     // ========================================================= Behaviour == //
     bool componentExists(EntityId const &entityId) {
-        return indicies.contains(entityId);
+        return indicies.at(entityId) != EMPTY_ENTITY;
     }
 
     // ============================================================== Data == //
     std::array<Component, MAX_ENTITIES> components{};
-    size_t size{};
+    size_t size{0};
 
-    std::unordered_map<EntityId, size_t> indicies{};
-    std::unordered_map<size_t, EntityId> entities{};
+    std::array<size_t, MAX_ENTITIES> indicies{};
+    std::array<EntityId, MAX_ENTITIES> entities{};
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

@@ -2,15 +2,29 @@
 
 // ///////////////////////////////////////////////////////////////// Includes //
 #include <any>
+#include <array>
 #include <cassert>
 #include <memory>
 #include <typeindex>
 #include <typeinfo>
 #include <unordered_map>
 
+#include "Component.hpp"
 #include "ComponentArray.hpp"
 #include "EngineAPI.hpp"
 #include "Utilities.hpp"
+
+// /////////////////////////////////////////////////////////////////// Macros //
+#define ASSERT_COMPONENT_ID_SET()               \
+    assert(isComponentIdSet<ComponentType>() && \
+           "Component type identifier must be set before use!")
+#define ASSERT_COMPONENT_TYPE_REGISTERED()               \
+    assert(isComponentTypeRegistered<ComponentType>() && \
+           "Component type must be registered before use!")
+#define ASSERT_COMPONENT_TYPE_NOT_REGISTERED()         \
+    assert(                                            \
+        !isComponentTypeRegistered<ComponentType>() && \
+        "Component type must be registered only once with unique identifier!")
 
 // //////////////////////////////////////////////////////////////////// Class //
 class ENGINE_API ComponentManager {
@@ -27,22 +41,23 @@ class ENGINE_API ComponentManager {
     // --------------------------------------------------- Registration -- == //
     template <typename ComponentType>
     void registerComponentType() {
-        std::type_index typeIndex{typeid(ComponentType)};
-        assert(!isComponentTypeRegistered(typeIndex) &&
-               "Component type must be registered only once!");
+        ASSERT_COMPONENT_ID_SET();
+        ASSERT_COMPONENT_TYPE_NOT_REGISTERED();
 
-        componentIds.insert({typeIndex, componentIds.size()});
-        componentArrays.insert(
-            {typeIndex, std::make_shared<ComponentArray<ComponentType>>()});
+        if (isComponentTypeRegistered<ComponentType>()) {
+            throw;
+        }
+
+        componentArrays.at(id<ComponentType>()) =
+            std::make_shared<ComponentArray<ComponentType>>();
     }
 
     template <typename ComponentType>
     ComponentId id() {
-        std::type_index typeIndex{typeid(ComponentType)};
-        assert(isComponentTypeRegistered(typeIndex) &&
-               "Component type must be registered before use!");
+        ASSERT_COMPONENT_ID_SET();
+        ASSERT_COMPONENT_TYPE_REGISTERED();
 
-        return componentIds[typeIndex];
+        return ComponentRegistrant::id<ComponentType>();
     }
 
     // --------------------------------------------- Main functionality -- == //
@@ -76,22 +91,29 @@ class ENGINE_API ComponentManager {
     ~ComponentManager() = default;
 
     // --------------------------------------------------- Registration -- == //
-    bool isComponentTypeRegistered(std::type_index const& typeIndex);
+    template <typename ComponentType>
+    bool isComponentIdSet() {
+        return id<ComponentType>() != EMPTY_COMPONENT;
+    }
+
+    template <typename ComponentType>
+    bool isComponentTypeRegistered() {
+        return componentArrays.at(id<ComponentType>()) != nullptr;
+    }
 
     // -------------------------------------------------------- Helpers -- == //
     template <typename ComponentType>
     std::shared_ptr<ComponentArray<ComponentType>> components() {
-        std::type_index typeIndex{typeid(ComponentType)};
-        assert(isComponentTypeRegistered(typeIndex) &&
-               "Component type must be registered before use!");
+        ASSERT_COMPONENT_ID_SET();
+        ASSERT_COMPONENT_TYPE_REGISTERED();
 
         return std::static_pointer_cast<ComponentArray<ComponentType>>(
-            componentArrays[typeIndex]);
+            componentArrays.at(id<ComponentType>()));
     }
 
     // ============================================================== Data == //
-    std::unordered_map<std::type_index, ComponentId> componentIds{};
-    std::unordered_map<std::type_index, std::shared_ptr<IComponentArray>>
+    size_t numberOfRegisteredComponents{0};
+    std::array<std::shared_ptr<IComponentArray>, MAX_COMPONENTS>
         componentArrays{};
 };
 

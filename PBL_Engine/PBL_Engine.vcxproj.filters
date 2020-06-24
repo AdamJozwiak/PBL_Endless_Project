@@ -1187,6 +1187,9 @@
     <ClInclude Include="Events\OnGameExit.hpp">
       <Filter>Pliki nagłówkowe\Events</Filter>
     </ClInclude>
+    <ClInclude Include="Components\ForwardDeclarations.hpp">
+      <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXTrace.inl">

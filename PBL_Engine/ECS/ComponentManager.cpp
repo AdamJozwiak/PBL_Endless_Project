@@ -10,16 +10,12 @@ ComponentManager& ComponentManager::instance() {
 }
 
 // ------------------------------------------------------------ Helpers -- == //
-void ComponentManager::destroyEntity(EntityId entityId) {
-    for (auto const& [typeIndex, components] : componentArrays) {
-        components->destroyEntity(entityId);
+void ComponentManager::destroyEntity(EntityId const entityId) {
+    for (auto const& components : componentArrays) {
+        if (components) {
+            components->destroyEntity(entityId);
+        }
     }
-}
-
-// ------------------------------------------------------------ Helpers -- == //
-bool ComponentManager::isComponentTypeRegistered(
-    std::type_index const& typeIndex) {
-    return componentIds.find(typeIndex) != componentIds.end();
 }
 
 // ////////////////////////////////////////////////////////////////////////// //
