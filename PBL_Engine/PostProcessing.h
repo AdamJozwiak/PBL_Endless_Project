@@ -16,13 +16,14 @@
 class PostProcessing : public Bindable, public RenderableBase<PostProcessing> {
   public:
     PostProcessing(Graphics& gfx, std::wstring shaderName,
-                   size_t numberOfTargets);
+                   size_t numberOfTargets, bool shadowPass = false);
     ~PostProcessing() = default;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> OutputTexture() const;
     std::vector<Microsoft::WRL::ComPtr<ID3D11RenderTargetView>>
     RenderTargetView() const;
     Microsoft::WRL::ComPtr<ID3D11DepthStencilView> DepthStencilView() const;
     void Begin();
+    void ShadowBegin(int iterator);
     void End();
     void Bind(Graphics& gfx) noexcept override;
     void SetBlackProportion(float black);

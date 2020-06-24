@@ -30,13 +30,16 @@ class Mesh : public RenderableBase<Mesh> {
     Mesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs,
          Model& parent, float* animationTime,
          std::vector<Mesh::VertexBoneData> Bones = {});
-    void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform,
-              PassType passType,
-              const std::vector<std::shared_ptr<Bindable>>& refShaders,
-              const std::vector<std::shared_ptr<Bindable>>& normalShaders,
-              const std::vector<std::shared_ptr<Bindable>>& animatedRefShaders,
-              const std::vector<std::shared_ptr<Bindable>>&
-                  animatedNormalShaders) const noexcept(!IS_DEBUG);
+    void Draw(
+        Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform,
+        PassType passType,
+        const std::vector<std::shared_ptr<Bindable>>& shadowShaders,
+        const std::vector<std::shared_ptr<Bindable>>& refShaders,
+        const std::vector<std::shared_ptr<Bindable>>& normalShaders,
+        const std::vector<std::shared_ptr<Bindable>>& animatedShadowShaders,
+        const std::vector<std::shared_ptr<Bindable>>& animatedRefShaders,
+        const std::vector<std::shared_ptr<Bindable>>& animatedNormalShaders)
+        const noexcept(!IS_DEBUG);
     DirectX::XMMATRIX GetTransformXM() const noexcept override;
     static void LoadBones(UINT meshIndex, aiMesh* pMesh,
                           std::vector<Mesh::VertexBoneData>& Bones,
@@ -56,13 +59,16 @@ class Node {
   public:
     Node(const std::string& name, std::vector<Mesh*> meshPtrs,
          const DirectX::XMMATRIX& transform) noexcept(!IS_DEBUG);
-    void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform,
-              PassType passType,
-              const std::vector<std::shared_ptr<Bindable>>& refShaders,
-              const std::vector<std::shared_ptr<Bindable>>& normalShaders,
-              const std::vector<std::shared_ptr<Bindable>>& animatedRefShaders,
-              const std::vector<std::shared_ptr<Bindable>>&
-                  animatedNormalShaders) const noexcept(!IS_DEBUG);
+    void Draw(
+        Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform,
+        PassType passType,
+        const std::vector<std::shared_ptr<Bindable>>& shadowShaders,
+        const std::vector<std::shared_ptr<Bindable>>& refShaders,
+        const std::vector<std::shared_ptr<Bindable>>& normalShaders,
+        const std::vector<std::shared_ptr<Bindable>>& animatedShadowShaders,
+        const std::vector<std::shared_ptr<Bindable>>& animatedRefShaders,
+        const std::vector<std::shared_ptr<Bindable>>& animatedNormalShaders)
+        const noexcept(!IS_DEBUG);
     void SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept;
 
   private:
@@ -139,12 +145,14 @@ class Model {
     std::unique_ptr<class ModelWindow> pWindow;
     std::unique_ptr<Assimp::Importer> importer;
 
-    std::shared_ptr<VertexShader> refVert, pbrVert, animRefVert, animPbrVert;
-    std::shared_ptr<GeometryShader> refGeo, pbrGeo;
-    std::shared_ptr<PixelShader> refPixel, pbrPixel;
+    std::shared_ptr<VertexShader> shadowVert, refVert, pbrVert, animShadowVert,
+        animRefVert, animPbrVert;
+    std::shared_ptr<GeometryShader> shadowGeo, refGeo, pbrGeo;
+    std::shared_ptr<PixelShader> shadowPixel, refPixel, pbrPixel;
 
-    std::vector<std::shared_ptr<Bindable>> refShaders, normalShaders,
-        refShadersAnimated, normalShadersAnimated;
+    std::vector<std::shared_ptr<Bindable>> shadowShaders, refShaders,
+        normalShaders, shadowShadersAnimated, refShadersAnimated,
+        normalShadersAnimated;
 };
 
 class ModelException : public ExceptionHandler {

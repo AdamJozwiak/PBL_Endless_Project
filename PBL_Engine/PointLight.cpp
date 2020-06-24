@@ -9,9 +9,25 @@ PointLight::LightParametersConstantBuffer
 
 FixedQueue<int, PointLight::MAX_LIGHT_COUNT> PointLight::torchNumbers;
 
-PointLight::PointLight(Graphics& gfx, float radius) : mesh(gfx, radius) {
+PointLight::PointLight(Graphics& gfx, float radius, bool castsShadows)
+    : mesh(gfx, radius) {
     number = PointLight::torchNumbers.pop();
     Reset();
+    if (castsShadows) {
+        auto lightPosition = lightPositionWorld();
+        for (int i = 0; i < 6; i++) {
+            cameras[i] = std::make_shared<Camera>();
+            cameras[i]->setCameraPos(
+                DirectX::XMVectorSet(lightPosition.x, lightPosition.y,
+                                     lightPosition.z, lightPosition.w));
+        }
+        cameras[0]->setCameraRotation(0.0f, 0.0f);
+        cameras[1]->setCameraRotation(90.0f, 0.0f);
+        cameras[2]->setCameraRotation(-90.0f, 0.0f);
+        cameras[3]->setCameraRotation(0.0f, 90.0f);
+        cameras[4]->setCameraRotation(0.0f, 180.0f);
+        cameras[5]->setCameraRotation(0.0f, -90.0f);
+    }
 }
 
 PointLight::~PointLight() {
@@ -28,6 +44,9 @@ void PointLight::setLightPositionWorld(DirectX::XMVECTOR newWorldPos) {
         DirectX::XMVectorGetX(newWorldPos), DirectX::XMVectorGetY(newWorldPos),
         DirectX::XMVectorGetZ(newWorldPos), DirectX::XMVectorGetW(newWorldPos)};
     lightParametersConstantBuffer.lightPositionWorld[number] = tmp;
+    for (auto& camera : cameras) {
+        camera->setCameraPos(newWorldPos);
+    }
 }
 
 void PointLight::setIntensity(float const intensity) {
@@ -242,4 +261,8 @@ void PointLight::setColor(DirectX::XMFLOAT4 const& color) {
 }
 DirectX::XMFLOAT4 PointLight::getColor() {
     return lightParametersConstantBuffer.diffuseColor[number];
+}
+
+std::shared_ptr<Camera> PointLight::getLightCamera(int iterator) {
+    return cameras[iterator];
 }

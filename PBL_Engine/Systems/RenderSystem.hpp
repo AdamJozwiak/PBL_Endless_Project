@@ -29,11 +29,13 @@ ECS_SYSTEM(RenderSystem) {
 
     // ============================================================== Data == //
     Window *window;
-    std::shared_ptr<PostProcessing> bloom, colorCorrection;
+    std::shared_ptr<PostProcessing> bloom, colorCorrection, shadowPass;
 
   private:
     // ============================================================== Data == //
     std::shared_ptr<Camera> mainCamera, freeCamera;
+    std::shared_ptr<PointLight> playersTorch;
+    DirectX::XMMATRIX normalFOV, shadowFOV;
     ImguiManager imgui;
     Transform *mainCameraTransform;
     bool (*isKeyPressed)(int const key);

@@ -115,6 +115,9 @@
     <Filter Include="yaml-cpp\include">
       <UniqueIdentifier>{bb2c7111-1a75-4709-9d64-9da81f34a2b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\ShadowMapping">
+      <UniqueIdentifier>{557aef9f-ccc0-41fa-b0c2-e90550c8fba7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -1324,6 +1327,18 @@
     </FxCompile>
     <FxCompile Include="EnemyPS.hlsl">
       <Filter>Shader\Billboarding</Filter>
+    </FxCompile>
+    <FxCompile Include="ShadowMappingVS.hlsl">
+      <Filter>Shader\ShadowMapping</Filter>
+    </FxCompile>
+    <FxCompile Include="ShadowMappingGS.hlsl">
+      <Filter>Shader\ShadowMapping</Filter>
+    </FxCompile>
+    <FxCompile Include="ShadowMappingPS.hlsl">
+      <Filter>Shader\ShadowMapping</Filter>
+    </FxCompile>
+    <FxCompile Include="AnimatedShadowMappingVS.hlsl">
+      <Filter>Shader\ShadowMapping</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

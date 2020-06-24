@@ -6,17 +6,18 @@ class Camera {
   public:
     DirectX::XMMATRIX GetFreeMatrix() noexcept;
     DirectX::XMMATRIX GetMatrix(Transform const &transform) noexcept;
+    DirectX::XMMATRIX GetCameraMatrix() noexcept;
     void SpawnControlWindow() noexcept;
     void Reset() noexcept;
     DirectX::XMVECTOR GetCameraPos() const noexcept;
     void setCameraPos(DirectX::XMFLOAT3 const &newPosition);
+    void setCameraPos(DirectX::XMVECTOR const &newPosition);
     DirectX::XMFLOAT3 pos() const noexcept;
     DirectX::XMFLOAT3 at() const noexcept;
+    void setCameraRotation(float pitch, float yaw);
 
   public:
-    float r = 20.0f;  // distance from the origin
-    float theta = 0.0f;
-    float phi = 0.0f;  // rotating camera around the origin
+    float r = 0.0f;  // distance from the origin
     float pitch = 0.0f;
     float yaw = 0.0f;
     float roll = 0.0f;

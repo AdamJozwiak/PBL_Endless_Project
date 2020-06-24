@@ -1,4 +1,5 @@
 #pragma once
+#include "Camera.h"
 #include "ConstantBuffers.h"
 #include "EngineAPI.hpp"
 #include "FixedQueue.h"
@@ -7,7 +8,7 @@
 
 class ENGINE_API PointLight {
   public:
-    PointLight(Graphics& gfx, float radius = 0.5f);
+    PointLight(Graphics& gfx, float radius = 0.5f, bool castsShadows = false);
     ~PointLight();
     void SpawnControlWindow() noexcept;
     void Reset() noexcept;
@@ -29,6 +30,7 @@ class ENGINE_API PointLight {
     int getNumber();
     void setColor(DirectX::XMFLOAT4 const& color);
     DirectX::XMFLOAT4 getColor();
+    std::shared_ptr<Camera> getLightCamera(int iterator);
 
   private:
     static constexpr int MAX_LIGHT_COUNT = 16;
@@ -47,6 +49,7 @@ class ENGINE_API PointLight {
     float attenuationConstant;
     float attenuationLinear;
     float attenuationQuadratic;
+    std::vector<std::shared_ptr<Camera>> cameras;
 
   private:
     int number;
