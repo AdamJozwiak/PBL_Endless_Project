@@ -49,10 +49,6 @@ void GraphSystem::setup() {
     entityToPreviousTransform.clear();
     entityToPreviousActivity.clear();
 
-    update(0.0f);
-}
-
-void GraphSystem::update(float const deltaTime) {
     // Create map entries for all entities (only when needed)
     for (Entity entity : entities) {
         if (!entityToGraphNode.contains(entity.id)) {
@@ -77,9 +73,9 @@ void GraphSystem::update(float const deltaTime) {
     // Construct the parent-child relationships between the graph nodes
     for (auto& [entityId, graphNode] : entityToGraphNode) {
         auto const& entity = Entity(entityId);
-        if (!entities.contains(entity)) {
-            continue;
-        }
+        //if (!entities.contains(entity)) {
+        //    continue;
+        //}
 
         auto const& transform = entity.get<Transform>();
 
@@ -103,13 +99,18 @@ void GraphSystem::update(float const deltaTime) {
         }
     }
 
+
+    update(0.0f);
+}
+
+void GraphSystem::update(float const deltaTime) {
     // Check for transformations that need to be recalculated
     for (auto const& [entityId, previousTransform] :
          entityToPreviousTransform) {
         auto const& entity = Entity(entityId);
-        if (!entities.contains(entity)) {
-            continue;
-        }
+        //if (!entities.contains(entity)) {
+        //    continue;
+        //}
 
         auto const& currentTransform = entity.get<Transform>();
 
@@ -122,9 +123,9 @@ void GraphSystem::update(float const deltaTime) {
     // Check for activities that need to be recalculated
     for (auto const& [entityId, previousActivity] : entityToPreviousActivity) {
         auto const& entity = Entity(entityId);
-        if (!entities.contains(entity)) {
-            continue;
-        }
+        //if (!entities.contains(entity)) {
+        //    continue;
+        //}
 
         auto const& currentActivity = entity.get<Properties>().active;
 
