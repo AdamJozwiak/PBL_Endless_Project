@@ -84,6 +84,62 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName,
             AddBind(std::make_unique<Texture>(gfx, pOutputTexture,
                                               gfx.GetWindowWidth(),
                                               gfx.GetWindowHeight(), a++));
+
+            AddBind(std::make_unique<Texture>(
+                gfx, std::ref(Surface::FromFile("Assets/Graphics/map.png")),
+                20));
+
+            struct Vertex {
+                dx::XMFLOAT3 pos;
+                dx::XMFLOAT2 tex;
+            };
+
+            std::vector<Vertex> screenVertices = {
+                {dx::XMFLOAT3(-1.0f, -1.0f, 0.0f), dx::XMFLOAT2(0.0f, 1.0f)},
+                {dx::XMFLOAT3(-1.0f, 1.0f, 0.0f), dx::XMFLOAT2(0.0f, 0.0f)},
+                {dx::XMFLOAT3(1.0f, 1.0f, 0.0f), dx::XMFLOAT2(1.0f, 0.0f)},
+                {dx::XMFLOAT3(1.0f, -1.0f, 0.0f), dx::XMFLOAT2(1.0f, 1.0f)}};
+
+            std::vector<unsigned short> indices;
+
+            indices.push_back(0);
+            indices.push_back(1);
+            indices.push_back(2);
+            indices.push_back(0);
+            indices.push_back(2);
+            indices.push_back(3);
+
+            AddBind(std::make_unique<VertexBuffer>(pGfx, screenVertices));
+
+            auto pvs =
+                std::make_unique<VertexShader>(pGfx, shaderName + L"VS.cso");
+            auto pvsbc = pvs->GetBytecode();
+            AddBind(std::move(pvs));
+
+            AddBind(
+                std::make_unique<GeometryShader>(pGfx, shaderName + L"GS.cso"));
+
+            AddBind(
+                std::make_unique<PixelShader>(pGfx, shaderName + L"PS.cso"));
+
+            AddIndexBuffer(std::make_unique<IndexBuffer>(pGfx, indices));
+
+            const std::vector<D3D11_INPUT_ELEMENT_DESC> ied = {
+                {"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+                 D3D11_INPUT_PER_VERTEX_DATA, 0},
+                {"TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12,
+                 D3D11_INPUT_PER_VERTEX_DATA, 0},
+            };
+            AddBind(std::make_unique<InputLayout>(pGfx, ied, pvsbc));
+
+            AddBind(std::make_unique<Topology>(
+                pGfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+
+            AddBind(std::make_unique<Sampler>(pGfx));
+
+            pCbuf = std::make_shared<PostProcessCbuf>(gfx, *this, 1.0f, 10u);
+
+            AddBind(pCbuf);
         }
     } else {
         static const int CubeMapSize = 256;
@@ -156,59 +212,9 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName,
         AddBind(std::make_unique<Texture>(gfx, pOutputTexture,
                                           gfx.GetWindowWidth(),
                                           gfx.GetWindowHeight(), a++));
-    }
 
-    AddBind(std::make_unique<Texture>(
-        gfx, std::ref(Surface::FromFile("Assets/Graphics/map.png")), 20));
-
-    struct Vertex {
-        dx::XMFLOAT3 pos;
-        dx::XMFLOAT2 tex;
-    };
-
-    std::vector<Vertex> screenVertices = {
-        {dx::XMFLOAT3(-1.0f, -1.0f, 0.0f), dx::XMFLOAT2(0.0f, 1.0f)},
-        {dx::XMFLOAT3(-1.0f, 1.0f, 0.0f), dx::XMFLOAT2(0.0f, 0.0f)},
-        {dx::XMFLOAT3(1.0f, 1.0f, 0.0f), dx::XMFLOAT2(1.0f, 0.0f)},
-        {dx::XMFLOAT3(1.0f, -1.0f, 0.0f), dx::XMFLOAT2(1.0f, 1.0f)}};
-
-    std::vector<unsigned short> indices;
-
-    indices.push_back(0);
-    indices.push_back(1);
-    indices.push_back(2);
-    indices.push_back(0);
-    indices.push_back(2);
-    indices.push_back(3);
-
-    AddBind(std::make_unique<VertexBuffer>(pGfx, screenVertices));
-
-    AddBind(std::make_unique<Sampler>(pGfx));
-
-    auto pvs = std::make_unique<VertexShader>(pGfx, shaderName + L"VS.cso");
-    auto pvsbc = pvs->GetBytecode();
-    AddBind(std::move(pvs));
-
-    AddBind(std::make_unique<GeometryShader>(pGfx, shaderName + L"GS.cso"));
-
-    AddBind(std::make_unique<PixelShader>(pGfx, shaderName + L"PS.cso"));
-
-    AddIndexBuffer(std::make_unique<IndexBuffer>(pGfx, indices));
-
-    const std::vector<D3D11_INPUT_ELEMENT_DESC> ied = {
-        {"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
-         D3D11_INPUT_PER_VERTEX_DATA, 0},
-        {"TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12,
-         D3D11_INPUT_PER_VERTEX_DATA, 0},
-    };
-    AddBind(std::make_unique<InputLayout>(pGfx, ied, pvsbc));
-
-    AddBind(std::make_unique<Topology>(pGfx,
-                                       D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-
-    pCbuf = std::make_shared<PostProcessCbuf>(gfx, *this, 1.0f, 10u);
-
-    AddBind(pCbuf);
+        AddBind(std::make_unique<Sampler>(pGfx, true));
+    } 
 }
 
 std::vector<WRL::ComPtr<ID3D11RenderTargetView>>
