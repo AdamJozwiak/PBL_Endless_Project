@@ -47,6 +47,8 @@ void LightSystem::update(float deltaTime) {
                 baseLightIntensity +
                 baseLightIntensity *
                     oscillator(timer + pointLight->getNumber()));
+        } else {
+            pointLight->setMainLightPosition(vec);
         }
     }
 };

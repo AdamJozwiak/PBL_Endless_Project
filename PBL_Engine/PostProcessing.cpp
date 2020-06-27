@@ -209,12 +209,12 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName,
         GFX_THROW_INFO(GetDevice(gfx)->CreateDepthStencilView(
             depthTex, &dsvDesc, pDSV.GetAddressOf()));
 
-        AddBind(std::make_unique<Texture>(gfx, pOutputTexture,
-                                          gfx.GetWindowWidth(),
-                                          gfx.GetWindowHeight(), a++));
+        shadowMap =
+            std::make_shared<Texture>(gfx, pOutputTexture, gfx.GetWindowWidth(),
+                                      gfx.GetWindowHeight(), 10);
 
         AddBind(std::make_unique<Sampler>(pGfx, true));
-    } 
+    }
 }
 
 std::vector<WRL::ComPtr<ID3D11RenderTargetView>>

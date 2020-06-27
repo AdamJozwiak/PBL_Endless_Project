@@ -73,12 +73,12 @@ dx::XMMATRIX Camera::GetMatrix(Transform const &transform) noexcept {
 }
 
 DirectX::XMMATRIX Camera::GetCameraMatrix() noexcept {
-    // Set constants
-    constexpr float maxPitchAngleValue = 90.0f;
+    //// Set constants
+    //constexpr float maxPitchAngleValue = 90.0f;
 
-    // Clip pitch angle values
-    pitch = std::clamp(pitch, dx::XMConvertToRadians(-maxPitchAngleValue),
-                       dx::XMConvertToRadians(maxPitchAngleValue));
+    //// Clip pitch angle values
+    //pitch = std::clamp(pitch, dx::XMConvertToRadians(-maxPitchAngleValue),
+    //                   dx::XMConvertToRadians(maxPitchAngleValue));
 
     // Create rotation matrix
     rotation = dx::XMMatrixRotationRollPitchYaw(pitch, yaw, 0);

@@ -208,50 +208,9 @@ float2 parallaxOcclusionMapping(PixelShaderInput input, float2 texCoords,
 PixelShaderOutput main(PixelShaderInput input) {
     PixelShaderOutput output;
 
-    // Construct transform matrices between world and tangent space
-    input.normalWorld = normalize(input.normalWorld);
-    input.tangentWorld = normalize(input.tangentWorld -
-                                   dot(input.tangentWorld, input.normalWorld) *
-                                       input.normalWorld);
-    input.bitangentWorld =
-        normalize(cross(input.normalWorld, input.tangentWorld));
-
-    float3x3 tangentToWorld =
-        float3x3(input.tangentWorld, input.bitangentWorld, input.normalWorld);
-    float3x3 worldToTangent = transpose(tangentToWorld);
-
-    // Update texture coordinates with parallax mapping
-    float3 viewDirectionWorld =
-        normalize(viewPositionWorld.xyz - input.positionWorld);
-    float3 viewDirectionTangent =
-        normalize(mul(-viewDirectionWorld.xyz, worldToTangent));
-
-    float2 texCoordParallax = input.texCoord;
-    if (parallaxHeight > 0.005f) {
-        texCoordParallax = parallaxOcclusionMapping(
-            input, input.texCoord, viewDirectionTangent, viewDirectionWorld);
-    }
-
-    // Update normal with normal mapping
-    float3 normal =
-        calculateMappedNormal(input, texCoordParallax,
-                              float3x3(normalize(input.tangentWorld),
-                                       -normalize(input.bitangentWorld),
-                                       normalize(input.normalWorld)));
-
-    // Calculate lighting
-    output.color =
-        clamp(pointLight(input, normal, texCoordParallax),
-              float4(0.0f, 0.0f, 0.0f, 0.0f), float4(1.0f, 1.0f, 1.0f, 1.0f));
     // Calculate final pixel color
-    float4 pixelColor = float4(textures[TEXTURE_AMBIENT_OCCLUSION]
-                                       .Sample(textureSampler, texCoordParallax)
-                                       .rgb *
-                                   output.color.rgb,
-                               1.0f);
-    output.color = pixelColor;
-    output.bloom =
-        saturate((output.color - BLOOM_THRESHOLD) / (1 - BLOOM_THRESHOLD));
+    output.color = 1 - input.position.z / input.position.w;
+    output.bloom = 0;
 
     return output;
 }

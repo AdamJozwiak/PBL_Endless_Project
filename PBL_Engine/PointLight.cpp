@@ -9,25 +9,9 @@ PointLight::LightParametersConstantBuffer
 
 FixedQueue<int, PointLight::MAX_LIGHT_COUNT> PointLight::torchNumbers;
 
-PointLight::PointLight(Graphics& gfx, float radius, bool castsShadows)
-    : mesh(gfx, radius) {
+PointLight::PointLight(Graphics& gfx, float radius) : mesh(gfx, radius) {
     number = PointLight::torchNumbers.pop();
     Reset();
-    if (castsShadows) {
-        auto lightPosition = lightPositionWorld();
-        for (int i = 0; i < 6; i++) {
-            cameras[i] = std::make_shared<Camera>();
-            cameras[i]->setCameraPos(
-                DirectX::XMVectorSet(lightPosition.x, lightPosition.y,
-                                     lightPosition.z, lightPosition.w));
-        }
-        cameras[0]->setCameraRotation(0.0f, 0.0f);
-        cameras[1]->setCameraRotation(90.0f, 0.0f);
-        cameras[2]->setCameraRotation(-90.0f, 0.0f);
-        cameras[3]->setCameraRotation(0.0f, 90.0f);
-        cameras[4]->setCameraRotation(0.0f, 180.0f);
-        cameras[5]->setCameraRotation(0.0f, -90.0f);
-    }
 }
 
 PointLight::~PointLight() {
@@ -44,11 +28,18 @@ void PointLight::setLightPositionWorld(DirectX::XMVECTOR newWorldPos) {
         DirectX::XMVectorGetX(newWorldPos), DirectX::XMVectorGetY(newWorldPos),
         DirectX::XMVectorGetZ(newWorldPos), DirectX::XMVectorGetW(newWorldPos)};
     lightParametersConstantBuffer.lightPositionWorld[number] = tmp;
-    if (!cameras.empty()) {
+    if (cameras.at(0) != nullptr) {
         for (auto& camera : cameras) {
             camera->setCameraPos(newWorldPos);
         }
     }
+}
+
+void PointLight::setMainLightPosition(DirectX::XMVECTOR pos) {
+    DirectX::XMFLOAT4 tmp = {
+        DirectX::XMVectorGetX(pos), DirectX::XMVectorGetY(pos),
+        DirectX::XMVectorGetZ(pos), DirectX::XMVectorGetW(pos)};
+    lightParametersConstantBuffer.mainLightPosition = tmp;
 }
 
 void PointLight::setIntensity(float const intensity) {
@@ -243,6 +234,28 @@ void PointLight::Bind(Graphics& gfx) noexcept {
     static PixelConstantBuffer<LightParametersConstantBuffer> cbuf(gfx, 10);
     cbuf.Update(gfx, lightParametersConstantBuffer);
     cbuf.Bind(gfx);
+}
+
+void PointLight::AddCameras() {
+    auto lightPosition = lightPositionWorld();
+    for (int i = 0; i < 6; i++) {
+        cameras[i] = std::make_shared<Camera>();
+        cameras[i]->setCameraPos(
+            DirectX::XMVectorSet(lightPosition.x, lightPosition.y,
+                                 lightPosition.z, lightPosition.w));
+    }
+    cameras[0]->setCameraRotation(0.0f,
+                                  DirectX::XMConvertToRadians(90.0f));  // X+
+
+    cameras[1]->setCameraRotation(0.0f,
+                                  DirectX::XMConvertToRadians(-90.0f));  // X-
+    cameras[2]->setCameraRotation(DirectX::XMConvertToRadians(-90.0f),
+                                  DirectX::XMConvertToRadians(0.0f));  // Y+
+    cameras[3]->setCameraRotation(DirectX::XMConvertToRadians(90.0f),
+                                  0.0f);        // Y-
+    cameras[4]->setCameraRotation(0.0f, 0.0f);  // Z+
+    cameras[5]->setCameraRotation(0.0f,
+                                  DirectX::XMConvertToRadians(180.0f));  // Z-
 }
 
 void PointLight::initTorchNumbers() {

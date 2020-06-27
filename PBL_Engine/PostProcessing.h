@@ -28,6 +28,7 @@ class PostProcessing : public Bindable, public RenderableBase<PostProcessing> {
     void Bind(Graphics& gfx) noexcept override;
     void SetBlackProportion(float black);
     float GetBlackProportion();
+    std::shared_ptr<Texture> shadowMap;
 
   private:
     Graphics& pGfx;

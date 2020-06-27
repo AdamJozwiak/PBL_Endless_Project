@@ -22,6 +22,8 @@ SamplerState textureSampler {
     AddressV = Wrap;
 };
 
+TextureCube shadowMap : register(t10);
+
 // //////////////////////////////////////////////////////////////// Constants //
 static const int NUM_LIGHTS = 16;
 static const float PI = 3.14159265359;
@@ -45,6 +47,8 @@ cbuffer LightParameters : register(b10) {
     float4 attenuationConstant[NUM_LIGHTS / 4];
     float4 attenuationLinear[NUM_LIGHTS / 4];
     float4 attenuationQuadratic[NUM_LIGHTS / 4];
+
+    float4 mainLightPos;
 };
 
 // /////////////////////////////////////////////////////////// Normal mapping //
@@ -248,7 +252,21 @@ PixelShaderOutput main(PixelShaderInput input) {
                                        .rgb *
                                    output.color.rgb,
                                1.0f);
-    output.color = pixelColor;
+
+    float3 cubeMapDir = input.positionWorld - mainLightPos;
+    float closestDepth = shadowMap.Sample(textureSampler, cubeMapDir).r;
+    // it is currently in linear range between [0,1]. Re-transform back to
+    // original value
+    closestDepth *= 100;
+    // now get current linear depth as the length between the fragment and light
+    // position
+    float currentDepth = length(cubeMapDir);
+    // now test for shadows
+    float bias = 0.5;
+    float shadow = currentDepth - bias > closestDepth ? 0.0 : 1.0;
+
+    output.color = pixelColor * shadow;
+    //output.color = currentDepth;
     output.bloom =
         saturate((output.color - BLOOM_THRESHOLD) / (1 - BLOOM_THRESHOLD));
 
