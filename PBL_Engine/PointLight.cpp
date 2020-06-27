@@ -44,8 +44,10 @@ void PointLight::setLightPositionWorld(DirectX::XMVECTOR newWorldPos) {
         DirectX::XMVectorGetX(newWorldPos), DirectX::XMVectorGetY(newWorldPos),
         DirectX::XMVectorGetZ(newWorldPos), DirectX::XMVectorGetW(newWorldPos)};
     lightParametersConstantBuffer.lightPositionWorld[number] = tmp;
-    for (auto& camera : cameras) {
-        camera->setCameraPos(newWorldPos);
+    if (!cameras.empty()) {
+        for (auto& camera : cameras) {
+            camera->setCameraPos(newWorldPos);
+        }
     }
 }
 

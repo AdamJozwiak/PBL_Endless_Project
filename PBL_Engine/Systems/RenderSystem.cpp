@@ -115,43 +115,46 @@ void RenderSystem::update(float deltaTime) {
             registry.system<GraphSystem>()->transform(entity));
     }
 
-    window->Gfx().SetViewport(256, 256);
-    window->Gfx().SetProjection(shadowFOV);
-    window->Gfx().BeginFrame(0.0f, 0.0f, 0.0f);
+    // ----------------------------- SHADOW PASS --------------------------- //
 
-    for (int i = 0; i < 6; i++) {
-        shadowPass->ShadowBegin(i);
-        window->Gfx().SetCamera(
-            playersTorch->getLightCamera(i)->GetCameraMatrix());
-        DirectX::XMFLOAT4X4 viewProj;
-        DirectX::XMStoreFloat4x4(
-            &viewProj, playersTorch->getLightCamera(i)->GetCameraMatrix() *
-                           window->Gfx().GetProjection());
+    // window->Gfx().SetViewport(256, 256);
+    // window->Gfx().SetProjection(shadowFOV);
+    // window->Gfx().BeginFrame(0.0f, 0.0f, 0.0f);
 
-        auto frustum = CFrustum(viewProj);
+    // for (int i = 0; i < 6; i++) {
+    //    shadowPass->ShadowBegin(i);
+    //    window->Gfx().SetCamera(
+    //        playersTorch->getLightCamera(i)->GetCameraMatrix());
+    //    DirectX::XMFLOAT4X4 viewProj;
+    //    DirectX::XMStoreFloat4x4(
+    //        &viewProj, playersTorch->getLightCamera(i)->GetCameraMatrix() *
+    //                       window->Gfx().GetProjection());
 
-        // Render all renderable models
-        for (auto const& entity : entities) {
-            auto div = DirectX::XMVectorSubtract(entity.get<AABB>().vertexMax,
-                                                 entity.get<AABB>().vertexMin);
-            auto avg = DirectX::XMVectorScale(div, 0.5f);
+    //    auto frustum = CFrustum(viewProj);
 
-            DirectX::XMFLOAT3 center;
-            DirectX::XMStoreFloat3(
-                &center,
-                DirectX::XMVectorAdd(avg, entity.get<AABB>().vertexMin));
-            DirectX::XMFLOAT3 radius;
-            DirectX::XMStoreFloat3(&radius, DirectX::XMVector3Length(avg));
+    //    // Render all renderable models
+    //    for (auto const& entity : entities) {
+    //        auto div = DirectX::XMVectorSubtract(entity.get<AABB>().vertexMax,
+    //                                             entity.get<AABB>().vertexMin);
+    //        auto avg = DirectX::XMVectorScale(div, 0.5f);
 
-            if (frustum.SphereIntersection(center, radius.x)) {
-                auto& meshFilter = entity.get<MeshFilter>();
-                meshFilter.model->Draw(
-                    window->Gfx(),
-                    registry.system<GraphSystem>()->transform(entity),
-                    PassType::shadowPass);
-            }
-        }
-    }
+    //        DirectX::XMFLOAT3 center;
+    //        DirectX::XMStoreFloat3(
+    //            &center,
+    //            DirectX::XMVectorAdd(avg, entity.get<AABB>().vertexMin));
+    //        DirectX::XMFLOAT3 radius;
+    //        DirectX::XMStoreFloat3(&radius, DirectX::XMVector3Length(avg));
+
+    //        if (frustum.SphereIntersection(center, radius.x)) {
+    //            auto& meshFilter = entity.get<MeshFilter>();
+    //            meshFilter.model->Draw(
+    //                window->Gfx(),
+    //                registry.system<GraphSystem>()->transform(entity),
+    //                PassType::shadowPass);
+    //        }
+    //    }
+    //}
+    // shadowPass->End();
 
     //// Process mouse movements for free camera
     // while (auto const delta = window->mouse.ReadRawDelta()) {
@@ -181,6 +184,8 @@ void RenderSystem::update(float deltaTime) {
     //        freeCamera->moveBackForward -= speed;
     //    }
     //}
+
+    // ----------------------------- NORMAL PASS --------------------------- //
 
     window->Gfx().SetDefaultViewport();
     window->Gfx().SetProjection(normalFOV);
