@@ -2,14 +2,21 @@
 
 #include "GraphicsThrowMacros.h"
 
-Sampler::Sampler(Graphics& gfx) {
+Sampler::Sampler(Graphics& gfx, bool shadowPass) {
     INFOMAN(gfx);
 
     D3D11_SAMPLER_DESC samplerDesc = {};
-    samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+
+    if (!shadowPass) {
+        samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+        samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+        samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    } else {
+        samplerDesc.BorderColor[0] = 1.0f;
+        samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+        samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+    }
 
     GFX_THROW_INFO(GetDevice(gfx)->CreateSamplerState(&samplerDesc, &pSampler));
 }

@@ -3,7 +3,7 @@
 
 class Sampler : public Bindable {
   public:
-    Sampler(Graphics& gfx);
+    Sampler(Graphics& gfx, bool shadowPass = false);
     void Bind(Graphics& gfx) noexcept override;
 
   protected:
