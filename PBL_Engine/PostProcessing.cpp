@@ -142,7 +142,7 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName,
             AddBind(pCbuf);
         }
     } else {
-        static const int CubeMapSize = 256;
+        static const int CubeMapSize = 512;
 
         // ------------------- CubeMap Texture ----------------------- //
         D3D11_TEXTURE2D_DESC texDesc = {};
@@ -152,7 +152,7 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName,
         texDesc.ArraySize = 6;
         texDesc.SampleDesc.Count = 1;
         texDesc.SampleDesc.Quality = 0;
-        texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        texDesc.Format = DXGI_FORMAT_R32_FLOAT;
         texDesc.Usage = D3D11_USAGE_DEFAULT;
         texDesc.BindFlags =
             D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
@@ -211,9 +211,7 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName,
 
         shadowMap =
             std::make_shared<Texture>(gfx, pOutputTexture, gfx.GetWindowWidth(),
-                                      gfx.GetWindowHeight(), 10);
-
-        AddBind(std::make_unique<Sampler>(pGfx, true));
+                                      gfx.GetWindowHeight(), 11);
     }
 }
 

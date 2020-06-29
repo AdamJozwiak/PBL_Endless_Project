@@ -65,10 +65,8 @@ void RenderSystem::setup() {
                                      float(window->Gfx().GetWindowWidth()) /
                                          float(window->Gfx().GetWindowHeight()),
                                      0.3f, 1000.0f);
-    shadowFOV =
-        dx::XMMatrixPerspectiveFovLH(dx::XMConvertToRadians(90.0f),
-                                     1.0f,
-                                     0.00001f, 100.0f);
+    shadowFOV = dx::XMMatrixPerspectiveFovLH(dx::XMConvertToRadians(90.0f),
+                                             1.0f, 0.1f, 50.0f);
 
     window->Gfx().SetProjection(normalFOV);
 
@@ -117,18 +115,23 @@ void RenderSystem::update(float deltaTime) {
 
     // ----------------------------- SHADOW PASS --------------------------- //
 
-     window->Gfx().SetViewport(256, 256);
-     window->Gfx().SetProjection(shadowFOV);
-     window->Gfx().BeginFrame(0.0f, 0.0f, 0.0f);
+    window->Gfx().SetViewport(512, 512);
+    window->Gfx().SetProjection(shadowFOV);
+    window->Gfx().BeginFrame(0.0f, 0.0f, 0.0f);
 
-     for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 6; i++) {
         shadowPass->ShadowBegin(i);
+        auto const& torchTransform = registry.system<GraphSystem>()->transform(
+            registry.system<PropertySystem>()
+                ->findEntityByName("Player Torch")
+                .at(0));
         window->Gfx().SetCamera(
-            playersTorch->getLightCamera(i)->GetCameraMatrix());
+            playersTorch->getLightCamera(i)->GetCameraMatrix(torchTransform));
         DirectX::XMFLOAT4X4 viewProj;
         DirectX::XMStoreFloat4x4(
-            &viewProj, playersTorch->getLightCamera(i)->GetCameraMatrix() *
-                           window->Gfx().GetProjection());
+            &viewProj,
+            playersTorch->getLightCamera(i)->GetCameraMatrix(torchTransform) *
+                window->Gfx().GetProjection());
 
         auto frustum = CFrustum(viewProj);
 
@@ -156,8 +159,8 @@ void RenderSystem::update(float deltaTime) {
             }
         }
     }
-     shadowPass->End();
-     shadowPass->shadowMap->Bind(window->Gfx());
+    shadowPass->End();
+    shadowPass->shadowMap->Bind(window->Gfx());
 
     //// Process mouse movements for free camera
     // while (auto const delta = window->mouse.ReadRawDelta()) {
@@ -206,11 +209,18 @@ void RenderSystem::update(float deltaTime) {
     DirectX::XMStoreFloat4x4(&viewProjection,
                              mainCamera->GetMatrix(*mainCameraTransform) *
                                  window->Gfx().GetProjection());
-    /*window->Gfx().SetCamera(playersTorch->getLightCamera(5)->GetCameraMatrix());
-    DirectX::XMFLOAT4X4 viewProjection;
-    DirectX::XMStoreFloat4x4(
-        &viewProjection, playersTorch->getLightCamera(5)->GetCameraMatrix() *
-                       window->Gfx().GetProjection());*/
+    /* auto const& torchTransform = registry.system<GraphSystem>()->transform(
+     */
+    /*     registry.system<PropertySystem>() */
+    /*         ->findEntityByName("Player Torch") */
+    /*         .at(0)); */
+    /* window->Gfx().SetCamera( */
+    /*     playersTorch->getLightCamera(4)->GetCameraMatrix(torchTransform)); */
+    /* DirectX::XMFLOAT4X4 viewProjection; */
+    /* DirectX::XMStoreFloat4x4( */
+    /*     &viewProjection, */
+    /*     playersTorch->getLightCamera(4)->GetCameraMatrix(torchTransform) * */
+    /*         window->Gfx().GetProjection()); */
 
     auto frustum = CFrustum(viewProjection);
 

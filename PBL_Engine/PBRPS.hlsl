@@ -20,9 +20,10 @@ SamplerState textureSampler {
     Filter = MIN_MAG_MIP_LINEAR;
     AddressU = Wrap;
     AddressV = Wrap;
+    AddressW = Wrap;
 };
 
-TextureCube shadowMap : register(t10);
+TextureCube shadowMap : register(t11);
 
 // //////////////////////////////////////////////////////////////// Constants //
 static const int NUM_LIGHTS = 16;
@@ -33,6 +34,21 @@ static const int TEXTURE_ALBEDO = 0, TEXTURE_AMBIENT_OCCLUSION = 1,
 static const float BLOOM_THRESHOLD = 0.3f;
 static const int MIN_SAMPLE_COUNT = 1;
 static const int MAX_SAMPLE_COUNT = 8;
+
+static const float SHADOW_BIAS = 0.05f;
+static const float SHADOW_PCR_SAMPLES = 20;
+static const float3 SAMPLE_OFFSET_DIRECTIONS[SHADOW_PCR_SAMPLES] = {
+    float3(1.0f, 1.0f, 1.0f),    float3(1.0f, -1.0f, 1.0f),
+    float3(-1.0f, -1.0f, 1.0f),  float3(-1.0f, 1.0f, 1.0f),
+    float3(1.0f, 1.0f, -1.0f),   float3(1.0f, -1.0f, -1.0f),
+    float3(-1.0f, -1.0f, -1.0f), float3(-1.0f, 1.0f, -1.0f),
+    float3(1.0f, 1.0f, 0.0f),    float3(1.0f, -1.0f, 0.0f),
+    float3(-1.0f, -1.0f, 0.0f),  float3(-1.0f, 1.0f, 0.0f),
+    float3(1.0f, 0.0f, 1.0f),    float3(-1.0f, 0.0f, 1.0f),
+    float3(1.0f, 0.0f, -1.0f),   float3(-1.0f, 0.0f, -1.0f),
+    float3(0.0f, 1.0f, 1.0f),    float3(0.0f, -1.0f, 1.0f),
+    float3(0.0f, -1.0f, -1.0f),  float3(0.0f, 1.0f, -1.0f)};
+static const float FAR_PLANE = 50.0f;
 
 // ///////////////////////////////////////////////////////// Constant buffers //
 cbuffer MaterialParameters : register(b9) { float parallaxHeight; };
@@ -114,12 +130,36 @@ float4 pbr(PixelShaderInput input, float3 normal, float2 texCoord) {
 
     // Radiance
     for (int i = 0; i < NUM_LIGHTS; ++i) {
+        // Shadow
+        float shadow = 1.0f;
+        if (i == 0) {
+            const float3 shadowDepthDir = input.positionWorld - mainLightPos;
+
+            const float currentDepth = length(shadowDepthDir);
+
+            const float viewDistance =
+                length(viewPositionWorld - input.positionWorld);
+            const float diskRadius =
+                (1.0f + (viewDistance / FAR_PLANE)) / 20.0f;
+
+            for (int i = 0; i < SHADOW_PCR_SAMPLES; ++i) {
+                const float closestDepth = shadowMap.Sample(
+                    textureSampler,
+                    normalize(shadowDepthDir +
+                              SAMPLE_OFFSET_DIRECTIONS[i] * diskRadius));
+                shadow +=
+                    currentDepth - SHADOW_BIAS > closestDepth ? 0.2f : 1.0f;
+            }
+            shadow /= float(SHADOW_PCR_SAMPLES);
+        }
+
         float3 lightDir =
             normalize(lightPositionWorld[i].xyz - input.positionWorld);
         float3 h = normalize(viewDir + lightDir);
         float factor =
             ((float[NUM_LIGHTS])intensity)[i] *
-            attenuate(length(lightPositionWorld[i].xyz - input.positionWorld), i);
+            attenuate(length(lightPositionWorld[i].xyz - input.positionWorld),
+                      i);
         float3 radiance = diffuseColor[i].xyz * factor;
 
         // Cook-Torrance BRDF
@@ -137,7 +177,8 @@ float4 pbr(PixelShaderInput input, float3 normal, float2 texCoord) {
                                 0.001f);
         finalColor += float4((kD * albedo / PI + specular) * radiance *
                                  max(dot(normal, lightDir), 0.0f),
-                             1.0f);
+                             1.0f) *
+                      shadow;
     }
     return finalColor;
 }
@@ -253,20 +294,7 @@ PixelShaderOutput main(PixelShaderInput input) {
                                    output.color.rgb,
                                1.0f);
 
-    float3 cubeMapDir = input.positionWorld - mainLightPos;
-    float closestDepth = shadowMap.Sample(textureSampler, cubeMapDir).r;
-    // it is currently in linear range between [0,1]. Re-transform back to
-    // original value
-    closestDepth *= 100;
-    // now get current linear depth as the length between the fragment and light
-    // position
-    float currentDepth = length(cubeMapDir);
-    // now test for shadows
-    float bias = 0.5;
-    float shadow = currentDepth - bias > closestDepth ? 0.0 : 1.0;
-
-    output.color = pixelColor * shadow;
-    //output.color = currentDepth;
+    output.color = pixelColor;
     output.bloom =
         saturate((output.color - BLOOM_THRESHOLD) / (1 - BLOOM_THRESHOLD));
 

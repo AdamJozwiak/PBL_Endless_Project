@@ -72,13 +72,12 @@ dx::XMMATRIX Camera::GetMatrix(Transform const &transform) noexcept {
                                 dx::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
 }
 
-DirectX::XMMATRIX Camera::GetCameraMatrix() noexcept {
-    //// Set constants
-    //constexpr float maxPitchAngleValue = 90.0f;
-
-    //// Clip pitch angle values
-    //pitch = std::clamp(pitch, dx::XMConvertToRadians(-maxPitchAngleValue),
-    //                   dx::XMConvertToRadians(maxPitchAngleValue));
+DirectX::XMMATRIX Camera::GetCameraMatrix(
+    DirectX::XMMATRIX const &transform) noexcept {
+    // Set position
+    DirectX::XMVECTOR pos = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+    pos = XMVector3TransformCoord(pos, transform);
+    setCameraPos(pos);
 
     // Create rotation matrix
     rotation = dx::XMMatrixRotationRollPitchYaw(pitch, yaw, 0);
@@ -86,6 +85,8 @@ DirectX::XMMATRIX Camera::GetCameraMatrix() noexcept {
     // Compute required directions
     right = dx::XMVector3TransformCoord(defaultRight, rotation);
     forward = dx::XMVector3TransformCoord(defaultForward, rotation);
+    DirectX::XMVECTOR up = dx::XMVector3TransformCoord(
+        dx::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f), rotation);
 
     // Compute target point
     dx::XMVECTOR target = dx::XMVectorAdd(
@@ -93,26 +94,8 @@ DirectX::XMMATRIX Camera::GetCameraMatrix() noexcept {
                       XMVector3TransformCoord(defaultForward, rotation)));
 
     // Return camera's view matrix
-    return dx::XMMatrixLookAtLH(position, target,
-                                dx::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
+    return dx::XMMatrixLookAtLH(position, target, up);
 }
-
-//void Camera::SpawnControlWindow() noexcept {
-//    if (ImGui::Begin("Camera")) {
-//        ImGui::Text("Position");
-//        ImGui::SliderFloat("R", &r, 0.2f, 80.0f, "%.1f");
-//        ImGui::SliderAngle("Theta", &theta, -180.0f, 180.0f);
-//        ImGui::SliderAngle("Phi", &phi, -89.0f, 89.0f);
-//        ImGui::Text("Orientation");
-//        ImGui::SliderAngle("Roll", &roll, -180.0f, 180.0f);
-//        ImGui::SliderAngle("Pitch", &pitch, -180.0f, 180.0f);
-//        ImGui::SliderAngle("Yaw", &yaw, -180.0f, 180.0f);
-//        if (ImGui::Button("Reset")) {
-//            Reset();
-//        }
-//    }
-//    ImGui::End();
-//}
 
 void Camera::Reset() noexcept {
     r = 0.0f;
