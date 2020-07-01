@@ -1622,6 +1622,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8889224054729392701, guid: feda3d590b1aaa24f80051f60eacdfd2,
+        type: 3}
+      propertyPath: m_TagString
+      value: LastLane
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: feda3d590b1aaa24f80051f60eacdfd2, type: 3}
 --- !u!1001 &8272497756792213189
