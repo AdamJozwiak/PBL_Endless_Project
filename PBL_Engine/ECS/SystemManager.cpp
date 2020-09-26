@@ -26,7 +26,7 @@ void SystemManager::destroyEntity(EntityId entityId) {
 void SystemManager::changeEntitySignature(EntityId entityId,
                                           Signature const& entitySignature) {
     for (auto const& [typeIndex, system] : systems) {
-        auto const& systemSignature = signatures[typeIndex];
+        auto const& systemSignature = signatures.at(typeIndex);
         // assert(systemSignature.any() &&
         //       "Each system must have a non-empty signature!");
 

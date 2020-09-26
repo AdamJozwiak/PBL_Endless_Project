@@ -32,7 +32,7 @@ class ENGINE_API EventManager {
     template <typename EventType>
     void send(EventType const& event) {
         for (auto const& listener :
-             listeners[std::type_index(typeid(EventType))]) {
+             listeners.at(std::type_index(typeid(EventType)))) {
             std::any_cast<std::function<void(EventType const&)>>(listener)(
                 event);
         }

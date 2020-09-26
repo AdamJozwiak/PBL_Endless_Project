@@ -31,8 +31,8 @@ void EntityManager::destroy(EntityId entityId) {
     assert((entityId >= 0 && entityId < MAX_ENTITIES) &&
            "Entity identifier must be in range [0, MAX_ENTITIES)!");
 
-    signatures[entityId].components.reset();
-    signatures[entityId].sceneId = EMPTY_SCENE;
+    signatures.at(entityId).components.reset();
+    signatures.at(entityId).sceneId = EMPTY_SCENE;
     availableIdentifiers.push(entityId);
 }
 
@@ -41,21 +41,21 @@ void EntityManager::setSignature(EntityId entityId,
     assert((entityId >= 0 && entityId < MAX_ENTITIES) &&
            "Entity identifier must be in range [0, MAX_ENTITIES)!");
 
-    signatures[entityId] = signature;
+    signatures.at(entityId) = signature;
 }
 
 Signature EntityManager::getSignature(EntityId entityId) {
     assert((entityId >= 0 && entityId < MAX_ENTITIES) &&
            "Entity identifier must be in range [0, MAX_ENTITIES)!");
 
-    return signatures[entityId];
+    return signatures.at(entityId);
 }
 
 // ---------------------------------------------------------- Singleton -- == //
 EntityManager::EntityManager() {
     for (EntityId id = 0; id < MAX_ENTITIES; ++id) {
         availableIdentifiers.push(id);
-        signatures[id].sceneId = EMPTY_SCENE;
+        signatures.at(id).sceneId = EMPTY_SCENE;
     }
 }
 

@@ -36,7 +36,7 @@ class ENGINE_API SystemManager {
         systems.insert({typeIndex, std::make_shared<SystemType>()});
         signatures.insert({typeIndex, Signature{}});
 
-        systems[typeIndex]->filters();
+        systems.at(typeIndex)->filters();
     }
 
     template <typename SystemType>
@@ -45,7 +45,7 @@ class ENGINE_API SystemManager {
         assert(isSystemTypeRegistered(typeIndex) &&
                "System type must be registered before use!");
 
-        return std::static_pointer_cast<SystemType>(systems[typeIndex]);
+        return std::static_pointer_cast<SystemType>(systems.at(typeIndex));
     }
 
     template <typename SystemType, typename ComponentType>
@@ -54,7 +54,7 @@ class ENGINE_API SystemManager {
         assert(isSystemTypeRegistered(typeIndex) &&
                "System type must be registered before use!");
 
-        signatures[typeIndex].components.set(
+        signatures.at(typeIndex).components.set(
             ComponentManager::instance().id<ComponentType>(), active);
     }
 
