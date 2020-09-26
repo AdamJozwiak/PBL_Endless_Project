@@ -4,6 +4,7 @@
 #include <any>
 #include <functional>
 #include <list>
+#include <mutex>
 #include <typeindex>
 #include <unordered_map>
 
@@ -26,11 +27,15 @@ class ENGINE_API EventManager {
     // --------------------------------------------- Main functionality -- == //
     template <typename EventType>
     void listen(std::function<void(EventType const&)> const& listener) {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         listeners[std::type_index(typeid(EventType))].push_back(listener);
     }
 
     template <typename EventType>
     void send(EventType const& event) {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         for (auto const& listener :
              listeners.at(std::type_index(typeid(EventType)))) {
             std::any_cast<std::function<void(EventType const&)>>(listener)(
@@ -45,6 +50,8 @@ class ENGINE_API EventManager {
     ~EventManager() = default;
 
     // ============================================================== Data == //
+    std::recursive_mutex mutex;
+
     std::unordered_map<std::type_index, std::list<std::any>> listeners;
 };
 

@@ -13,6 +13,8 @@ EntityManager& EntityManager::instance() {
 
 // ------------------------------------------------- Main functionality -- == //
 EntityId EntityManager::create(SceneId const sceneId) {
+    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
     assert((sceneId >= 0 && sceneId < MAX_SCENES) &&
            "Entity identifier must be in range [0, MAX_SCENES)!");
     assert(availableIdentifiers.size() > 0 && "Cannot create more entities!");
@@ -28,6 +30,8 @@ EntityId EntityManager::create(SceneId const sceneId) {
 }
 
 void EntityManager::destroy(EntityId entityId) {
+    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
     assert((entityId >= 0 && entityId < MAX_ENTITIES) &&
            "Entity identifier must be in range [0, MAX_ENTITIES)!");
 
@@ -38,6 +42,8 @@ void EntityManager::destroy(EntityId entityId) {
 
 void EntityManager::setSignature(EntityId entityId,
                                  Signature const& signature) {
+    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
     assert((entityId >= 0 && entityId < MAX_ENTITIES) &&
            "Entity identifier must be in range [0, MAX_ENTITIES)!");
 
@@ -45,6 +51,8 @@ void EntityManager::setSignature(EntityId entityId,
 }
 
 Signature EntityManager::getSignature(EntityId entityId) {
+    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
     assert((entityId >= 0 && entityId < MAX_ENTITIES) &&
            "Entity identifier must be in range [0, MAX_ENTITIES)!");
 

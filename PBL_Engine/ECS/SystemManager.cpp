@@ -15,6 +15,8 @@ SystemManager& SystemManager::instance() {
 }
 
 void SystemManager::destroyEntity(EntityId entityId) {
+    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
     for (auto const& [typeIndex, system] : systems) {
         if (auto entity = Entity{entityId};
             system->entities.find(entity) != system->entities.end()) {
@@ -25,6 +27,8 @@ void SystemManager::destroyEntity(EntityId entityId) {
 
 void SystemManager::changeEntitySignature(EntityId entityId,
                                           Signature const& entitySignature) {
+    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
     for (auto const& [typeIndex, system] : systems) {
         auto const& systemSignature = signatures.at(typeIndex);
         // assert(systemSignature.any() &&

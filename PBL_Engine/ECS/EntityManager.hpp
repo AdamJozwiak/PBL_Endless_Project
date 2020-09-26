@@ -2,6 +2,7 @@
 
 // ///////////////////////////////////////////////////////////////// Includes //
 #include <array>
+#include <mutex>
 #include <queue>
 
 #include "EngineAPI.hpp"
@@ -33,6 +34,8 @@ class ENGINE_API EntityManager {
     ~EntityManager() = default;
 
     // ============================================================== Data == //
+    std::recursive_mutex mutex;
+
     std::queue<EntityId> availableIdentifiers{};
     std::array<Signature, MAX_ENTITIES> signatures{};
 };

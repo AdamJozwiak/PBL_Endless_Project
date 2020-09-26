@@ -2,6 +2,7 @@
 
 // ///////////////////////////////////////////////////////////////// Includes //
 #include <memory>
+#include <mutex>
 #include <set>
 #include <vector>
 
@@ -40,50 +41,68 @@ class ENGINE_API Registry {
     // ------------------------------------------------------ Component -- == //
     template <typename ComponentType>
     void addComponent(EntityId entityId, ComponentType const& component) {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         componentManager.add<ComponentType>(entityId, component);
         updateEntitySignature<ComponentType>(entityId, true);
     }
 
     template <typename ComponentType>
     void removeComponent(EntityId entityId) {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         componentManager.remove<ComponentType>(entityId);
         updateEntitySignature<ComponentType>(entityId, false);
     }
 
     template <typename ComponentType>
     ComponentType& component(EntityId entityId) {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         return componentManager.get<ComponentType>(entityId);
     }
 
     template <typename ComponentType>
     ComponentId componentId() {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         return componentManager.id<ComponentType>();
     }
 
     template <typename ComponentType>
     bool hasComponent(EntityId entityId) {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         return componentManager.has<ComponentType>(entityId);
     }
 
     // --------------------------------------------------------- System -- == //
     template <typename SystemType>
     std::shared_ptr<SystemType> system() {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         return systemManager.get<SystemType>();
     }
 
     template <typename SystemType, typename ComponentType>
     void filter(bool const active = true) {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         systemManager.filter<SystemType, ComponentType>(active);
     }
 
     // ---------------------------------------------------------- Event -- == //
     template <typename EventType>
     void listen(std::function<void(EventType const&)> const& listener) {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         eventManager.listen(listener);
     }
 
     template <typename EventType>
     void send(EventType const& event) {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         eventManager.send(event);
     }
 
@@ -96,6 +115,8 @@ class ENGINE_API Registry {
     // -------------------------------------------------------- Helpers -- == //
     template <typename Component>
     void updateEntitySignature(EntityId entityId, bool active) {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         auto signature = entityManager.getSignature(entityId);
         signature.components.set(componentManager.id<Component>(), active);
         entityManager.setSignature(entityId, signature);
@@ -104,6 +125,8 @@ class ENGINE_API Registry {
     }
 
     // ============================================================== Data == //
+    std::recursive_mutex mutex;
+
     std::set<Entity> cachedEntities;
 
     // ------------------------------------------------------- Managers -- == //

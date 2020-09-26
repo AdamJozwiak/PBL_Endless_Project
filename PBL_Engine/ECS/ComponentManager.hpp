@@ -5,6 +5,7 @@
 #include <array>
 #include <cassert>
 #include <memory>
+#include <mutex>
 #include <typeindex>
 #include <typeinfo>
 #include <unordered_map>
@@ -41,6 +42,8 @@ class ENGINE_API ComponentManager {
     // --------------------------------------------------- Registration -- == //
     template <typename ComponentType>
     void registerComponentType() {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         ASSERT_COMPONENT_ID_SET();
         ASSERT_COMPONENT_TYPE_NOT_REGISTERED();
 
@@ -54,6 +57,8 @@ class ENGINE_API ComponentManager {
 
     template <typename ComponentType>
     ComponentId id() {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         ASSERT_COMPONENT_ID_SET();
         ASSERT_COMPONENT_TYPE_REGISTERED();
 
@@ -63,21 +68,29 @@ class ENGINE_API ComponentManager {
     // --------------------------------------------- Main functionality -- == //
     template <typename ComponentType>
     void add(EntityId entityId, ComponentType const& component) {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         components<ComponentType>()->insert(entityId, component);
     }
 
     template <typename ComponentType>
     void remove(EntityId entityId) {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         components<ComponentType>()->remove(entityId);
     }
 
     template <typename ComponentType>
     ComponentType& get(EntityId entityId) {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         return components<ComponentType>()->get(entityId);
     }
 
     template <typename ComponentType>
     bool has(EntityId entityId) {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         return components<ComponentType>()->contains(entityId);
     }
 
@@ -93,17 +106,23 @@ class ENGINE_API ComponentManager {
     // --------------------------------------------------- Registration -- == //
     template <typename ComponentType>
     bool isComponentIdSet() {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         return id<ComponentType>() != EMPTY_COMPONENT;
     }
 
     template <typename ComponentType>
     bool isComponentTypeRegistered() {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         return componentArrays.at(id<ComponentType>()) != nullptr;
     }
 
     // -------------------------------------------------------- Helpers -- == //
     template <typename ComponentType>
     std::shared_ptr<ComponentArray<ComponentType>> components() {
+        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
         ASSERT_COMPONENT_ID_SET();
         ASSERT_COMPONENT_TYPE_REGISTERED();
 
@@ -112,6 +131,8 @@ class ENGINE_API ComponentManager {
     }
 
     // ============================================================== Data == //
+    std::recursive_mutex mutex;
+
     size_t numberOfRegisteredComponents{0};
     std::array<std::shared_ptr<IComponentArray>, MAX_COMPONENTS>
         componentArrays{};

@@ -13,6 +13,8 @@ Registry& Registry::instance() {
 
 // -------------------------------------------- Delayed entity deletion -- == //
 bool Registry::refresh() {
+    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
     bool removed = false;
     for (auto const& entity : entitiesToRemove) {
         entityManager.destroy(entity.id);
@@ -26,6 +28,8 @@ bool Registry::refresh() {
 
 // -------------------------------------------------------------- Cache -- == //
 void Registry::moveCacheToMainScene() {
+    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
     for (auto const& entity : cachedEntities) {
         auto signature = entityManager.getSignature(entity.id);
         signature.sceneId = DEFAULT_SCENE;
@@ -37,6 +41,8 @@ void Registry::moveCacheToMainScene() {
 
 // ------------------------------------------------------------- Entity -- == //
 Entity Registry::createEntity(SceneId const sceneId) {
+    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
     auto const& entity = entityManager.create(sceneId);
     if (sceneId == CACHE_SCENE) {
         cachedEntities.insert(entity);
@@ -45,6 +51,8 @@ Entity Registry::createEntity(SceneId const sceneId) {
 }
 
 void Registry::destroyEntity(Entity const& entity) {
+    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
     if (cachedEntities.contains(entity)) {
         cachedEntities.erase(entity);
     }

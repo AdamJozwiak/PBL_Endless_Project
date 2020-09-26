@@ -11,6 +11,8 @@ ComponentManager& ComponentManager::instance() {
 
 // ------------------------------------------------------------ Helpers -- == //
 void ComponentManager::destroyEntity(EntityId const entityId) {
+    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
     for (auto const& components : componentArrays) {
         if (components) {
             components->destroyEntity(entityId);
