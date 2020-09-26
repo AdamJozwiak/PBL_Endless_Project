@@ -2,6 +2,7 @@
 
 // ///////////////////////////////////////////////////////////////// Includes //
 #include <memory>
+#include <set>
 #include <vector>
 
 #include "ComponentManager.hpp"
@@ -29,8 +30,11 @@ class ENGINE_API Registry {
     // ---------------------------------------- Delayed entity deletion -- == //
     bool refresh();
 
+    // ---------------------------------------------------------- Cache -- == //
+    void moveCacheToMainScene();
+
     // --------------------------------------------------------- Entity -- == //
-    Entity createEntity();
+    Entity createEntity(SceneId sceneId = DEFAULT_SCENE);
     void destroyEntity(Entity const& entity);
 
     // ------------------------------------------------------ Component -- == //
@@ -93,13 +97,15 @@ class ENGINE_API Registry {
     template <typename Component>
     void updateEntitySignature(EntityId entityId, bool active) {
         auto signature = entityManager.getSignature(entityId);
-        signature.set(componentManager.id<Component>(), active);
+        signature.components.set(componentManager.id<Component>(), active);
         entityManager.setSignature(entityId, signature);
 
         systemManager.changeEntitySignature(entityId, signature);
     }
 
     // ============================================================== Data == //
+    std::set<Entity> cachedEntities;
+
     // ------------------------------------------------------- Managers -- == //
     ComponentManager& componentManager;
     EntityManager& entityManager;

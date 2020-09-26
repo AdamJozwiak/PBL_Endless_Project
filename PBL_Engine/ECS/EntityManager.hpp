@@ -20,7 +20,7 @@ class ENGINE_API EntityManager {
     EntityManager& operator=(EntityManager&&) = delete;
 
     // --------------------------------------------- Main functionality -- == //
-    EntityId create();
+    EntityId create(SceneId sceneId = DEFAULT_SCENE);
     void destroy(EntityId entityId);
 
     void setSignature(EntityId entityId, Signature const& signature);

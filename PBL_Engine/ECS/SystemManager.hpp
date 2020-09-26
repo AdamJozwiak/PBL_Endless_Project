@@ -54,7 +54,7 @@ class ENGINE_API SystemManager {
         assert(isSystemTypeRegistered(typeIndex) &&
                "System type must be registered before use!");
 
-        signatures[typeIndex].set(
+        signatures[typeIndex].components.set(
             ComponentManager::instance().id<ComponentType>(), active);
     }
 

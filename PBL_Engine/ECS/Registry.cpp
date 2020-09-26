@@ -24,10 +24,30 @@ bool Registry::refresh() {
     return removed;
 }
 
+// -------------------------------------------------------------- Cache -- == //
+void Registry::moveCacheToMainScene() {
+    for (auto const& entity : cachedEntities) {
+        auto signature = entityManager.getSignature(entity.id);
+        signature.sceneId = DEFAULT_SCENE;
+        entityManager.setSignature(entity.id, signature);
+
+        systemManager.changeEntitySignature(entity.id, signature);
+    }
+}
+
 // ------------------------------------------------------------- Entity -- == //
-Entity Registry::createEntity() { return entityManager.create(); }
+Entity Registry::createEntity(SceneId const sceneId) {
+    auto const& entity = entityManager.create(sceneId);
+    if (sceneId == CACHE_SCENE) {
+        cachedEntities.insert(entity);
+    }
+    return entity;
+}
 
 void Registry::destroyEntity(Entity const& entity) {
+    if (cachedEntities.contains(entity)) {
+        cachedEntities.erase(entity);
+    }
     entitiesToRemove.push_back(entity);
 }
 
