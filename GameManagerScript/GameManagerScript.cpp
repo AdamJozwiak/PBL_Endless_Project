@@ -497,9 +497,11 @@ void GameManagerScript::update(float const deltaTime) {
                                             false)
                               .id,
                 .endPositionInParts = generatedLengthInParts});
+
             if (cacheThread) {
                 cacheThread->join();
             }
+
             cacheThread = std::make_unique<std::thread>([this] {
                 Registry::instance().system<SceneSystem>()->cachePrefab(
                     CHUNKS_DIRECTORY + "\\chunk-tmw-a-1-cc-01.prefab");
