@@ -705,6 +705,9 @@ void GameManagerScript::spawnEnemy(MovementType mt, EntityId spawnPoint,
 }
 
 bool GameManagerScript::shouldHappen(int percentage) {
+    if (percentage == 0) {
+        return false;
+    }
     std::random_device rnd;
     std::mt19937 rng(rnd());
     std::uniform_int_distribution<int> uni(1, 100 / percentage);
