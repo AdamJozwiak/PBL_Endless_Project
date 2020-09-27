@@ -33,6 +33,7 @@ class ENGINE_API Registry {
 
     // ---------------------------------------------------------- Cache -- == //
     void moveCacheToMainScene();
+    void clearCache();
 
     // --------------------------------------------------------- Entity -- == //
     Entity createEntity(SceneId sceneId = DEFAULT_SCENE);

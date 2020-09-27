@@ -39,6 +39,14 @@ void Registry::moveCacheToMainScene() {
     }
 }
 
+void Registry::clearCache() {
+    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+
+    for (auto const& entity : cachedEntities) {
+        destroyEntity(entity);
+    }
+}
+
 // ------------------------------------------------------------- Entity -- == //
 Entity Registry::createEntity(SceneId const sceneId) {
     std::lock_guard<std::recursive_mutex> lockGuard{mutex};
