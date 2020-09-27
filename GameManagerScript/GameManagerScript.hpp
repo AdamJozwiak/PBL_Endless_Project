@@ -117,6 +117,8 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
     std::vector<Chunk> presentChunks;
     ChunkName nextChunk;
 
+    EntityId chunkId;
+
     // Constants
     static inline constexpr float SPAWN_PADDING_IN_WORLD_UNITS = 60.0f;
     static inline constexpr float PART_LENGTH_IN_WORLD_UNITS = 20.0f;

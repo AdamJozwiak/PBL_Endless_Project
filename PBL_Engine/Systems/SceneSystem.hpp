@@ -17,8 +17,7 @@ ECS_SYSTEM(SceneSystem) {
     void release() override;
 
     // ----------------------------------------------- Public interface -- == //
-    void cachePrefab(std::string const &path);
-    Entity spawnPrefab(std::string const &path, bool cache = true);
+    Entity spawnPrefab(std::string const &path, bool cache = false);
 
   private:
     // ============================================================== Data == //

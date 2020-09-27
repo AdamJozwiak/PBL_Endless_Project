@@ -8,8 +8,7 @@ class LevelParser {
     ~LevelParser();
     void loadScene(std::string const &scenePath);
 
-    Entity loadPrefab(std::string const &filename);
-    static void cachePrefab(std::string const &filename, bool clear = false);
+    Entity loadPrefab(std::string const &filename, bool cache = false);
     void finalizeLoading(std::set<EntityId> const &recursivePrefabIds);
 
     void initialize();

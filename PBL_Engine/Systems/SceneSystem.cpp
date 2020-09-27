@@ -19,15 +19,8 @@ void SceneSystem::update(float deltaTime){};
 void SceneSystem::release() {}
 
 // --------------------------------------------------- Public interface -- == //
-void SceneSystem::cachePrefab(std::string const& path) {
-    levelParser.cachePrefab(path, true);
-}
-
 Entity SceneSystem::spawnPrefab(std::string const& path, bool cache) {
-    if (cache) {
-        cachePrefab(path);
-    }
-    return levelParser.loadPrefab(path);
+    return levelParser.loadPrefab(path, cache);
 }
 
 // ////////////////////////////////////////////////////////////////////////// //

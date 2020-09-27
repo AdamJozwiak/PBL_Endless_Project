@@ -336,8 +336,6 @@ void GameManagerScript::update(float const deltaTime) {
             // Spawn the starting chunk
             generatedLengthInParts = lengthOfChunk.at("Chunk Start");
 
-            registry.system<SceneSystem>()->cachePrefab(CHUNKS_DIRECTORY +
-                                                        "\\Chunk Start.prefab");
             presentChunks.push_back(Chunk{
                 .name = "Chunk Start",
                 .entity = registry.system<SceneSystem>()
@@ -347,8 +345,12 @@ void GameManagerScript::update(float const deltaTime) {
                               .id,
                 .endPositionInParts = generatedLengthInParts});
             cacheThread = std::make_unique<std::thread>([this] {
-                Registry::instance().system<SceneSystem>()->cachePrefab(
-                    CHUNKS_DIRECTORY + "\\chunk-tmw-a-1-cc-01.prefab");
+                chunkId = Registry::instance()
+                              .system<SceneSystem>()
+                              ->spawnPrefab(CHUNKS_DIRECTORY +
+                                                "\\chunk-tmw-a-1-cc-01.prefab",
+                                            true)
+                              .id;
             });
             nextChunk = "chunk-tmw-a-1-cc-01";
 
@@ -477,9 +479,6 @@ void GameManagerScript::update(float const deltaTime) {
             // Cleanup
             generatedLengthInParts = lengthOfChunk.at("Chunk Start");
 
-            registry.system<SceneSystem>()->cachePrefab(CHUNKS_DIRECTORY +
-                                                        "\\Chunk Start.prefab");
-
             // Delete the chunks we've already passed
             do {
                 auto i = presentChunks.begin();
@@ -500,11 +499,16 @@ void GameManagerScript::update(float const deltaTime) {
 
             if (cacheThread) {
                 cacheThread->join();
+                registry.clearCache();
             }
 
             cacheThread = std::make_unique<std::thread>([this] {
-                Registry::instance().system<SceneSystem>()->cachePrefab(
-                    CHUNKS_DIRECTORY + "\\chunk-tmw-a-1-cc-01.prefab");
+                chunkId = Registry::instance()
+                              .system<SceneSystem>()
+                              ->spawnPrefab(CHUNKS_DIRECTORY +
+                                                "\\chunk-tmw-a-1-cc-01.prefab",
+                                            true)
+                              .id;
             });
             nextChunk = "chunk-tmw-a-1-cc-01";
 
@@ -805,8 +809,8 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
         // Spawn the new chunk
         chunkSpawnTime = Timer();
 
-        auto chunk = Registry::instance().system<SceneSystem>()->spawnPrefab(
-            CHUNKS_DIRECTORY + "\\" + nextChunk + ".prefab", false);
+        registry.moveCacheToMainScene();
+        auto chunk = Entity{chunkId};
         presentChunks.push_back(
             Chunk{.name = nextChunk,
                   .entity = chunk.id,
@@ -865,8 +869,11 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
         } while (nextChunk == "Chunk Start");
 
         cacheThread = std::make_unique<std::thread>([this] {
-            registry.system<SceneSystem>()->cachePrefab(
-                CHUNKS_DIRECTORY + "\\" + nextChunk + ".prefab");
+            chunkId =
+                registry.system<SceneSystem>()
+                    ->spawnPrefab(
+                        CHUNKS_DIRECTORY + "\\" + nextChunk + ".prefab", true)
+                    .id;
         });
 
         // Update the spawned objects if needed

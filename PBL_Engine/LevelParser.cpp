@@ -41,35 +41,8 @@ LevelParser::LevelParser() {}
 
 LevelParser::~LevelParser() {}
 
-void LevelParser::cachePrefab(std::string const &filename, bool clear) {
-    std::vector<YAML::Node> assetNodes = YAML::LoadAllFromFile(filename);
-
-    for (auto const &node : assetNodes) {
-        yamlLoop(i, node) {
-            if (!i->second["id"]) {
-                continue;
-            }
-            prefabFileIds[pathToGuid[filename]].insert(
-                i->second["id"].as<FileId>());
-        }
-    }
-
-    // Don't keep the nodes in memory for longer than necessary
-    if (clear) {
-        nodes.clear();
-    }
-
-    // Map all possible nodes with corresponding identifiers
-    for (auto const &node : assetNodes) {
-        yamlLoop(i, node) {
-            nodes[pathToGuid[filename]].insert(
-                {i->second["id"].as<FileId>(), node});
-        }
-    }
-}
-
 std::unordered_map<FileId, EntityId> spawnPrefab(
-    FileGuid guid, std::set<FileId> const &fileIds,
+    FileGuid guid, std::set<FileId> const &fileIds, bool cache,
     std::set<EntityId> *recursivePrefabIds = nullptr) {
     // Go through all game objects in scene/prefab file and create entities
     std::unordered_map<FileId, EntityId> entityIds;
@@ -77,7 +50,8 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
         auto node{nodes.at(guid)[fileId]};
 
         if (auto const &nodeGameObject = node["GameObject"]; nodeGameObject) {
-            auto entity{registry.createEntity()};
+            auto entity{
+                registry.createEntity(cache ? CACHE_SCENE : DEFAULT_SCENE)};
             entityIds.insert({fileId, entity.id});
 
             assert(nodeGameObject["m_Name"] && nodeGameObject["m_TagString"] &&
@@ -515,9 +489,9 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
             FileGuid prefabGuid =
                 nodePrefabInstance["m_SourcePrefab"]["guid"].as<FileGuid>();
 
-            LevelParser::cachePrefab(guidPaths.at(prefabGuid));
-            auto prefabEntityIds = spawnPrefab(
-                prefabGuid, prefabFileIds.at(prefabGuid), recursivePrefabIds);
+            auto prefabEntityIds =
+                spawnPrefab(prefabGuid, prefabFileIds.at(prefabGuid), cache,
+                            recursivePrefabIds);
 
             FileId transformParentId =
                 nodePrefabInstance["m_Modification"]["m_TransformParent"]
@@ -632,22 +606,56 @@ void LevelParser::loadScene(std::string const &scenePath) {
         }
     }
 
+    // Don't keep the nodes in memory for longer than necessary
+    nodes.clear();
+
+    // Map all possible nodes with corresponding identifiers
+    for (auto const &node : sceneNodes) {
+        yamlLoop(i, node) {
+            nodes[pathToGuid[scenePath]].insert(
+                {i->second["id"].as<FileId>(), node});
+        }
+    }
+
     // Spawn the scene and prefabs
     std::set<EntityId> recursivePrefabIds;
-    cachePrefab(scenePath);
-    spawnPrefab(pathToGuid.at(scenePath), sceneFileIds, &recursivePrefabIds);
+    spawnPrefab(pathToGuid.at(scenePath), sceneFileIds, false,
+                &recursivePrefabIds);
     finalizeLoading(recursivePrefabIds);
 }
 
-Entity LevelParser::loadPrefab(std::string const &filename) {
+Entity LevelParser::loadPrefab(std::string const &filename, bool cache) {
     assert(pathToGuid.contains(filename) &&
            "There's no prefab with that name!");
+
+    std::vector<YAML::Node> assetNodes = YAML::LoadAllFromFile(filename);
+
+    for (auto const &node : assetNodes) {
+        yamlLoop(i, node) {
+            if (!i->second["id"]) {
+                continue;
+            }
+            prefabFileIds[pathToGuid[filename]].insert(
+                i->second["id"].as<FileId>());
+        }
+    }
+
+    // Don't keep the nodes in memory for longer than necessary
+    nodes.clear();
+
+    // Map all possible nodes with corresponding identifiers
+    for (auto const &node : assetNodes) {
+        yamlLoop(i, node) {
+            nodes[pathToGuid[filename]].insert(
+                {i->second["id"].as<FileId>(), node});
+        }
+    }
 
     // Spawn the prefab
     std::set<EntityId> recursivePrefabIds;
     auto const &prefabGuid = pathToGuid.at(filename);
     auto prefabEntityIds = spawnPrefab(prefabGuid, prefabFileIds.at(prefabGuid),
-                                       &recursivePrefabIds);
+                                       cache, &recursivePrefabIds);
 
     finalizeLoading(recursivePrefabIds);
 
