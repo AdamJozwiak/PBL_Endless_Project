@@ -2,6 +2,7 @@
 #include "Surface.h"
 
 #include <algorithm>
+#include <mutex>
 namespace Gdiplus {
 using std::max;
 using std::min;
@@ -14,6 +15,7 @@ using std::min;
 
 #pragma comment(lib, "gdiplus.lib")
 
+std::mutex mutex;
 std::map<std::string, Surface> existingSurfaces;
 
 Surface::Surface(unsigned int width, unsigned int height) noexcept
@@ -106,6 +108,7 @@ SurfaceReference Surface::FromFile(const std::string& name) {
         bitmap.UnlockBits(&bitmapData);
     }
 
+    std::lock_guard<std::mutex> lockGuard(mutex);
     existingSurfaces.insert({name, Surface(width, height, std::move(pBuffer))});
     existingSurfaces.at(name).filename = name;
     return std::ref(existingSurfaces.at(name));
