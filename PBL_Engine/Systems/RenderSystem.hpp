@@ -16,6 +16,9 @@
 
 // ///////////////////////////////////////////////////// Forward declarations //
 class Window;
+class GraphSystem;
+class PropertySystem;
+class ColliderSystem;
 
 // /////////////////////////////////////////////////////////////////// System //
 ECS_SYSTEM(RenderSystem) {
@@ -35,10 +38,16 @@ ECS_SYSTEM(RenderSystem) {
     // ============================================================== Data == //
     std::shared_ptr<Camera> mainCamera, freeCamera;
     std::shared_ptr<PointLight> playersTorch;
+    EntityId playerTorchId;
     DirectX::XMMATRIX normalFOV, shadowFOV;
     ImguiManager imgui;
     Transform *mainCameraTransform;
     bool (*isKeyPressed)(int const key);
+    std::array<AABB, MAX_ENTITIES> aabbs;
+
+    std::shared_ptr<GraphSystem> graphSystem;
+    std::shared_ptr<PropertySystem> propertySystem;
+    std::shared_ptr<ColliderSystem> colliderSystem;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

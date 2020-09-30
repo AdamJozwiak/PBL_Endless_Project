@@ -44,16 +44,17 @@ void RenderSystem::filters() {
 }
 
 void RenderSystem::setup() {
+    graphSystem = registry.system<GraphSystem>();
+    propertySystem = registry.system<PropertySystem>();
+    colliderSystem = registry.system<ColliderSystem>();
+
     window = &registry.system<WindowSystem>()->window();
-    mainCamera = registry.system<PropertySystem>()
-                     ->findEntityByTag("MainCamera")
+    mainCamera = propertySystem->findEntityByTag("MainCamera")
                      .at(0)
                      .get<MainCamera>()
                      .camera;
-    mainCameraTransform = &registry.system<PropertySystem>()
-                               ->findEntityByTag("MainCamera")
-                               .at(0)
-                               .get<Transform>();
+    mainCameraTransform =
+        &propertySystem->findEntityByTag("MainCamera").at(0).get<Transform>();
     freeCamera = std::make_shared<Camera>();
     bloom = std::make_shared<PostProcessing>(window->Gfx(), L"Bloom", 2);
     colorCorrection =
@@ -74,12 +75,10 @@ void RenderSystem::setup() {
         return registry.system<RenderSystem>()->window->keyboard.KeyIsPressed(
             key);
     };
-    playersTorch = Entity(registry.system<PropertySystem>()
-                              ->findEntityByName("Player Torch")
-                              .at(0)
-                              .id)
-                       .get<Light>()
-                       .pointLight;
+
+    playerTorchId = propertySystem->findEntityByName("Player Torch").at(0).id;
+
+    playersTorch = Entity(playerTorchId).get<Light>().pointLight;
     playersTorch->AddCameras();
 }
 
@@ -106,11 +105,14 @@ void RenderSystem::update(float deltaTime) {
     }
     previousTripMode = tripMode;
 
+    for (auto const& entity : entities) {
+        aabbs.at(entity.id) = entity.get<AABB>();
+    }
+
     // Update AABB
     for (Entity entity : entities) {
-        registry.system<ColliderSystem>()->CalculateAABB(
-            entity.get<AABB>(),
-            registry.system<GraphSystem>()->transform(entity));
+        colliderSystem->CalculateAABB(aabbs.at(entity.id),
+                                      graphSystem->transform(entity));
     }
 
     // ----------------------------- SHADOW PASS --------------------------- //
@@ -121,10 +123,7 @@ void RenderSystem::update(float deltaTime) {
 
     for (int i = 0; i < 6; i++) {
         shadowPass->ShadowBegin(i);
-        auto const& torchTransform = registry.system<GraphSystem>()->transform(
-            registry.system<PropertySystem>()
-                ->findEntityByName("Player Torch")
-                .at(0));
+        auto const& torchTransform = graphSystem->transform(playerTorchId);
         window->Gfx().SetCamera(
             playersTorch->getLightCamera(i)->GetCameraMatrix(torchTransform));
         DirectX::XMFLOAT4X4 viewProj;
@@ -137,24 +136,24 @@ void RenderSystem::update(float deltaTime) {
 
         // Render all renderable models
         for (auto const& entity : entities) {
-            auto div = DirectX::XMVectorSubtract(entity.get<AABB>().vertexMax,
-                                                 entity.get<AABB>().vertexMin);
-            auto avg = DirectX::XMVectorScale(div, 0.5f);
+            auto const& aabb = aabbs.at(entity.id);
+
+            auto const& div =
+                DirectX::XMVectorSubtract(aabb.vertexMax, aabb.vertexMin);
+            auto const& avg = DirectX::XMVectorScale(div, 0.5f);
 
             DirectX::XMFLOAT3 center;
-            DirectX::XMStoreFloat3(
-                &center,
-                DirectX::XMVectorAdd(avg, entity.get<AABB>().vertexMin));
+            DirectX::XMStoreFloat3(&center,
+                                   DirectX::XMVectorAdd(avg, aabb.vertexMin));
             DirectX::XMFLOAT3 radius;
             DirectX::XMStoreFloat3(&radius, DirectX::XMVector3Length(avg));
 
             if (frustum.SphereIntersection(center, radius.x)) {
                 auto& meshFilter = entity.get<MeshFilter>();
                 if (!entity.has<Refractive>()) {
-                    meshFilter.model->Draw(
-                        window->Gfx(),
-                        registry.system<GraphSystem>()->transform(entity),
-                        PassType::shadowPass);
+                    meshFilter.model->Draw(window->Gfx(),
+                                           graphSystem->transform(entity),
+                                           PassType::shadowPass);
                 }
             }
         }
@@ -209,10 +208,9 @@ void RenderSystem::update(float deltaTime) {
     DirectX::XMStoreFloat4x4(&viewProjection,
                              mainCamera->GetMatrix(*mainCameraTransform) *
                                  window->Gfx().GetProjection());
-    /* auto const& torchTransform = registry.system<GraphSystem>()->transform(
+    /* auto const& torchTransform = graphSystem->transform(
      */
-    /*     registry.system<PropertySystem>() */
-    /*         ->findEntityByName("Player Torch") */
+    /*     propertySystem->findEntityByName("Player Torch") */
     /*         .at(0)); */
     /* window->Gfx().SetCamera( */
     /*     playersTorch->getLightCamera(4)->GetCameraMatrix(torchTransform)); */
@@ -226,27 +224,27 @@ void RenderSystem::update(float deltaTime) {
 
     // Render all renderable models
     for (auto const& entity : entities) {
-        auto div = DirectX::XMVectorSubtract(entity.get<AABB>().vertexMax,
-                                             entity.get<AABB>().vertexMin);
-        auto avg = DirectX::XMVectorScale(div, 0.5f);
+        auto const& aabb = aabbs.at(entity.id);
+
+        auto const& div =
+            DirectX::XMVectorSubtract(aabb.vertexMax, aabb.vertexMin);
+        auto const& avg = DirectX::XMVectorScale(div, 0.5f);
 
         DirectX::XMFLOAT3 center;
-        DirectX::XMStoreFloat3(
-            &center, DirectX::XMVectorAdd(avg, entity.get<AABB>().vertexMin));
+        DirectX::XMStoreFloat3(&center,
+                               DirectX::XMVectorAdd(avg, aabb.vertexMin));
         DirectX::XMFLOAT3 radius;
         DirectX::XMStoreFloat3(&radius, DirectX::XMVector3Length(avg));
 
         if (frustum.SphereIntersection(center, radius.x)) {
             auto& meshFilter = entity.get<MeshFilter>();
             if (entity.has<Refractive>() || tripMode) {
-                meshFilter.model->Draw(
-                    window->Gfx(),
-                    registry.system<GraphSystem>()->transform(entity),
-                    PassType::refractive);
+                meshFilter.model->Draw(window->Gfx(),
+                                       graphSystem->transform(entity),
+                                       PassType::refractive);
             } else {
-                meshFilter.model->Draw(
-                    window->Gfx(),
-                    registry.system<GraphSystem>()->transform(entity));
+                meshFilter.model->Draw(window->Gfx(),
+                                       graphSystem->transform(entity));
             }
         }
     }
