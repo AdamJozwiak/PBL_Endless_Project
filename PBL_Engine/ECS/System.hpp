@@ -10,14 +10,7 @@
 
 // /////////////////////////////////////////////////////////////// Registrant //
 template <typename SystemType>
-class ENGINE_API SystemRegistrant {
-    // This will be called only once when instantiating the template
-    static inline struct Registrant {
-        Registrant() {
-            SystemManager::instance().registerSystemType<SystemType>();
-        }
-    } registrant;
-};
+class ENGINE_API SystemRegistrant {};
 
 // ////////////////////////////////////////////////////////////////// Wrapper //
 template <typename SystemType>
@@ -51,5 +44,7 @@ struct ENGINE_API System {
     struct ENGINE_API T : public System,           \
                           public SystemWrapper<T>, \
                           public SystemRegistrant<T>
+
+#define ECS_REGISTER_SYSTEM(T) SystemManager::instance().registerSystemType<T>()
 
 // ////////////////////////////////////////////////////////////////////////// //

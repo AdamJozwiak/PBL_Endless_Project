@@ -14,54 +14,7 @@ extern "C" ENGINE_API void create(std::shared_ptr<Engine> &engine) {
 
 // //////////////////////////////////////////////////////////////////// Class //
 // ============================================================= Behaviour == //
-Engine::Engine()
-    : registry(Registry::instance()),
-      setupSystems{registry.system<WindowSystem>(),
-                   registry.system<SceneSystem>(),
-                   registry.system<GraphSystem>(),
-                   registry.system<AnimatorSystem>(),
-                   registry.system<LightSystem>(),
-                   registry.system<RenderSystem>(),
-                   registry.system<BillboardRenderSystem>(),
-                   registry.system<UIRenderSystem>(),
-                   registry.system<BehaviourSystem>(),
-                   registry.system<CheckCollisionsSystem>(),
-                   registry.system<ColliderSystem>(),
-                   registry.system<SoundSystem>(),
-                   registry.system<PropertySystem>(),
-                   registry.system<PhysicsSystem>()},
-      updateSystems{
-          registry.system<WindowSystem>(),
-          registry.system<SceneSystem>(),
-          registry.system<SoundSystem>(),
-          registry.system<BehaviourSystem>(),
-          registry.system<PhysicsSystem>(),
-          registry.system<GraphSystem>(),
-          registry.system<CheckCollisionsSystem>(),
-          registry.system<ColliderSystem>(),
-          registry.system<PropertySystem>(),
-          registry.system<AnimatorSystem>(),
-          registry.system<LightSystem>(),
-          registry.system<RenderSystem>(),
-          registry.system<BillboardRenderSystem>(),
-          registry.system<UIRenderSystem>(),
-      },
-      releaseSystems{registry.system<WindowSystem>(),
-                     registry.system<GraphSystem>(),
-                     registry.system<AnimatorSystem>(),
-                     registry.system<LightSystem>(),
-                     registry.system<RenderSystem>(),
-                     registry.system<BillboardRenderSystem>(),
-                     registry.system<UIRenderSystem>(),
-                     registry.system<SceneSystem>(),
-                     registry.system<BehaviourSystem>(),
-                     registry.system<CheckCollisionsSystem>(),
-                     registry.system<ColliderSystem>(),
-                     registry.system<SoundSystem>(),
-                     registry.system<PropertySystem>(),
-                     registry.system<PhysicsSystem>()} {}
-
-ENGINE_API int Engine::run() {
+Engine::Engine() : registry(Registry::instance()) {
     ECS_REGISTER_COMPONENT(AABB);
     ECS_REGISTER_COMPONENT(Animator);
     ECS_REGISTER_COMPONENT(Behaviour);
@@ -82,6 +35,68 @@ ENGINE_API int Engine::run() {
     ECS_REGISTER_COMPONENT(Transform);
     ECS_REGISTER_COMPONENT(UIElement);
 
+    ECS_REGISTER_SYSTEM(AnimatorSystem);
+    ECS_REGISTER_SYSTEM(BehaviourSystem);
+    ECS_REGISTER_SYSTEM(BillboardRenderSystem);
+    ECS_REGISTER_SYSTEM(CheckCollisionsSystem);
+    ECS_REGISTER_SYSTEM(ColliderSystem);
+    ECS_REGISTER_SYSTEM(GraphSystem);
+    ECS_REGISTER_SYSTEM(LightSystem);
+    ECS_REGISTER_SYSTEM(PhysicsSystem);
+    ECS_REGISTER_SYSTEM(PropertySystem);
+    ECS_REGISTER_SYSTEM(RenderSystem);
+    ECS_REGISTER_SYSTEM(SceneSystem);
+    ECS_REGISTER_SYSTEM(SoundSystem);
+    ECS_REGISTER_SYSTEM(UIRenderSystem);
+    ECS_REGISTER_SYSTEM(WindowSystem);
+
+    setupSystems = {registry.system<WindowSystem>(),
+                    registry.system<SceneSystem>(),
+                    registry.system<GraphSystem>(),
+                    registry.system<AnimatorSystem>(),
+                    registry.system<LightSystem>(),
+                    registry.system<RenderSystem>(),
+                    registry.system<BillboardRenderSystem>(),
+                    registry.system<UIRenderSystem>(),
+                    registry.system<BehaviourSystem>(),
+                    registry.system<CheckCollisionsSystem>(),
+                    registry.system<ColliderSystem>(),
+                    registry.system<SoundSystem>(),
+                    registry.system<PropertySystem>(),
+                    registry.system<PhysicsSystem>()};
+    updateSystems = {
+        registry.system<WindowSystem>(),
+        registry.system<SceneSystem>(),
+        registry.system<SoundSystem>(),
+        registry.system<BehaviourSystem>(),
+        registry.system<PhysicsSystem>(),
+        registry.system<GraphSystem>(),
+        registry.system<CheckCollisionsSystem>(),
+        registry.system<ColliderSystem>(),
+        registry.system<PropertySystem>(),
+        registry.system<AnimatorSystem>(),
+        registry.system<LightSystem>(),
+        registry.system<RenderSystem>(),
+        registry.system<BillboardRenderSystem>(),
+        registry.system<UIRenderSystem>(),
+    };
+    releaseSystems = {registry.system<WindowSystem>(),
+                      registry.system<GraphSystem>(),
+                      registry.system<AnimatorSystem>(),
+                      registry.system<LightSystem>(),
+                      registry.system<RenderSystem>(),
+                      registry.system<BillboardRenderSystem>(),
+                      registry.system<UIRenderSystem>(),
+                      registry.system<SceneSystem>(),
+                      registry.system<BehaviourSystem>(),
+                      registry.system<CheckCollisionsSystem>(),
+                      registry.system<ColliderSystem>(),
+                      registry.system<SoundSystem>(),
+                      registry.system<PropertySystem>(),
+                      registry.system<PhysicsSystem>()};
+}
+
+ENGINE_API int Engine::run() {
     for (auto &system : setupSystems) {
         system->setup();
     }
