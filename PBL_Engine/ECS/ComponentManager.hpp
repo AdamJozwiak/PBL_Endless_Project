@@ -60,7 +60,6 @@ class ENGINE_API ComponentManager {
         std::lock_guard<std::recursive_mutex> lockGuard{mutex};
 
         ASSERT_COMPONENT_ID_SET();
-        ASSERT_COMPONENT_TYPE_REGISTERED();
 
         return ComponentRegistrant::id<ComponentType>();
     }
