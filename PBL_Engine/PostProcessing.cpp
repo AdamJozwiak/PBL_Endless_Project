@@ -19,6 +19,16 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName,
     namespace dx = DirectX;
     HRESULT hr;
     int a = 0;
+
+    std::vector<unsigned short> indices;
+
+    indices.push_back(0);
+    indices.push_back(1);
+    indices.push_back(2);
+    indices.push_back(0);
+    indices.push_back(2);
+    indices.push_back(3);
+
     if (!shadowPass) {
         // Output Texture
         for (size_t i = 0; i < pRenderTargets.size(); i++) {
@@ -100,15 +110,6 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName,
                 {dx::XMFLOAT3(1.0f, 1.0f, 0.0f), dx::XMFLOAT2(1.0f, 0.0f)},
                 {dx::XMFLOAT3(1.0f, -1.0f, 0.0f), dx::XMFLOAT2(1.0f, 1.0f)}};
 
-            std::vector<unsigned short> indices;
-
-            indices.push_back(0);
-            indices.push_back(1);
-            indices.push_back(2);
-            indices.push_back(0);
-            indices.push_back(2);
-            indices.push_back(3);
-
             AddBind(std::make_unique<VertexBuffer>(pGfx, screenVertices));
 
             auto pvs =
@@ -121,8 +122,6 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName,
 
             AddBind(
                 std::make_unique<PixelShader>(pGfx, shaderName + L"PS.cso"));
-
-            AddIndexBuffer(std::make_unique<IndexBuffer>(pGfx, indices));
 
             const std::vector<D3D11_INPUT_ELEMENT_DESC> ied = {
                 {"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
@@ -141,6 +140,9 @@ PostProcessing::PostProcessing(Graphics& gfx, std::wstring shaderName,
 
             AddBind(pCbuf);
         }
+
+        AddIndexBuffer(std::make_unique<IndexBuffer>(pGfx, indices));
+
     } else {
         static const int CubeMapSize = 512;
 
