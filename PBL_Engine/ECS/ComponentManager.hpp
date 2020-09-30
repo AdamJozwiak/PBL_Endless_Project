@@ -57,8 +57,6 @@ class ENGINE_API ComponentManager {
 
     template <typename ComponentType>
     ComponentId id() {
-        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
-
         ASSERT_COMPONENT_ID_SET();
 
         return ComponentRegistrant::id<ComponentType>();
@@ -105,8 +103,6 @@ class ENGINE_API ComponentManager {
     // --------------------------------------------------- Registration -- == //
     template <typename ComponentType>
     bool isComponentIdSet() {
-        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
-
         return id<ComponentType>() != EMPTY_COMPONENT;
     }
 
