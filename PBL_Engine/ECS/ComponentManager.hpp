@@ -103,14 +103,15 @@ class ENGINE_API ComponentManager {
     // --------------------------------------------------- Registration -- == //
     template <typename ComponentType>
     bool isComponentIdSet() {
-        return id<ComponentType>() != EMPTY_COMPONENT;
+        return ComponentRegistrant::id<ComponentType>() != EMPTY_COMPONENT;
     }
 
     template <typename ComponentType>
     bool isComponentTypeRegistered() {
         std::lock_guard<std::recursive_mutex> lockGuard{mutex};
 
-        return componentArrays.at(id<ComponentType>()) != nullptr;
+        return componentArrays.at(ComponentRegistrant::id<ComponentType>()) !=
+               nullptr;
     }
 
     // -------------------------------------------------------- Helpers -- == //
