@@ -62,7 +62,7 @@ class ENGINE_API Registry {
     }
 
     template <typename ComponentType>
-    ComponentId componentId() {
+    constexpr ComponentId componentId() {
         return componentManager.id<ComponentType>();
     }
 

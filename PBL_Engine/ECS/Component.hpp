@@ -8,7 +8,7 @@
 // /////////////////////////////////////////////////////////////// Registrant //
 struct ENGINE_API ComponentRegistrant {
     template <typename ComponentType>
-    static ComponentId id() {
+    static constexpr ComponentId id() {
         return EMPTY_COMPONENT;
     }
 };
@@ -16,10 +16,10 @@ struct ENGINE_API ComponentRegistrant {
 // /////////////////////////////////////////////////////////////////// Macros //
 #define ECS_COMPONENT(T) struct ENGINE_API T
 
-#define ECS_SET_COMPONENT_ID(T, N)                    \
-    template <>                                       \
-    inline ComponentId ComponentRegistrant::id<T>() { \
-        return (N);                                   \
+#define ECS_SET_COMPONENT_ID(T, N)                              \
+    template <>                                                 \
+    inline constexpr ComponentId ComponentRegistrant::id<T>() { \
+        return (N);                                             \
     }
 
 #define ECS_REGISTER_COMPONENT(T) \
