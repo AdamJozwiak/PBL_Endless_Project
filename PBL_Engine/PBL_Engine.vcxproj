@@ -228,6 +228,7 @@
     <ClInclude Include="IndexedTriangleList.h" />
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="IsDebug.hpp" />
+    <ClInclude Include="json\single_include\nlohmann\json.hpp" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="LevelParser.h" />
@@ -831,22 +832,22 @@
     <LibraryPath>C:\Users\Maciej Pracucik\Desktop\Repo\PBL_Endless_Project\PBL_Engine\assimp\lib;C:\Users\Maciej Pracucik\Desktop\Repo\PBL_Endless_Project\PBL_Engine\assimp\include\assimp\Compiler;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(ProjectDir)imgui;$(ProjectDir)soloud\include;$(ProjectDir)yaml-cpp\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(ProjectDir)imgui;$(ProjectDir)soloud\include;$(ProjectDir)yaml-cpp\include;$(ProjectDir)json\single_include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)assimp\include\assimp\Compiler;$(ProjectDir)assimp\lib;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(ProjectDir)imgui;$(ProjectDir)soloud\include;$(ProjectDir)yaml-cpp\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(ProjectDir)imgui;$(ProjectDir)soloud\include;$(ProjectDir)yaml-cpp\include;$(ProjectDir)json\single_include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)assimp\include\assimp\Compiler;$(ProjectDir)assimp\lib;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(ProjectDir)imgui;$(ProjectDir)soloud\include;$(ProjectDir)yaml-cpp\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(ProjectDir)imgui;$(ProjectDir)soloud\include;$(ProjectDir)yaml-cpp\include;$(ProjectDir)json\single_include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)assimp\include\assimp\Compiler;$(ProjectDir)assimp\lib;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(ProjectDir)imgui;$(ProjectDir)soloud\include;$(ProjectDir)yaml-cpp\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)assimp\include;$(ProjectDir)imgui;$(ProjectDir)soloud\include;$(ProjectDir)yaml-cpp\include;$(ProjectDir)json\single_include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)assimp\include\assimp\Compiler;$(ProjectDir)assimp\lib;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>

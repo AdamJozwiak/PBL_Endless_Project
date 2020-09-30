@@ -4,3 +4,6 @@
 [submodule "PBL_Engine/yaml-cpp"]
 	path = PBL_Engine/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp
+[submodule "PBL_Engine/json"]
+	path = PBL_Engine/json
+	url = https://github.com/nlohmann/json

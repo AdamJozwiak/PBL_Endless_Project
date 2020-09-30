@@ -118,6 +118,9 @@
     <Filter Include="Shader\ShadowMapping">
       <UniqueIdentifier>{557aef9f-ccc0-41fa-b0c2-e90550c8fba7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="json">
+      <UniqueIdentifier>{228ef59f-ab95-40da-b7d3-e3cf45ac5f9d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -1192,6 +1195,9 @@
     </ClInclude>
     <ClInclude Include="Components\ForwardDeclarations.hpp">
       <Filter>Pliki nagłówkowe\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="json\single_include\nlohmann\json.hpp">
+      <Filter>json</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
