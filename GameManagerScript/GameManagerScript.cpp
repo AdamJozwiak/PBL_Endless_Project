@@ -5,6 +5,7 @@
 #include "GameManagerScript.hpp"
 
 #include <filesystem>
+#include <future>
 #include <random>
 #include <thread>
 
@@ -35,8 +36,16 @@ void interpolateTextTo(EntityId entity, float const target,
     alpha = interpolate(easeOutSine, alpha, target, smooth, deltaTime);
 }
 
+EntityId cache(std::string const& prefabPath) {
+    return Registry::instance()
+        .system<SceneSystem>()
+        ->spawnPrefab(prefabPath, true)
+        .id;
+};
+
 // //////////////////////////////////////////////////////////////// Variables //
-std::unique_ptr<std::thread> cacheThread;
+std::future<EntityId> cacheFuture;
+std::thread cacheThread;
 
 // ///////////////////////////////////////////////////////// Factory function //
 extern "C" GAMEMANAGERSCRIPT_API void create(std::shared_ptr<Script>& script,
@@ -344,15 +353,13 @@ void GameManagerScript::update(float const deltaTime) {
                                             false)
                               .id,
                 .endPositionInParts = generatedLengthInParts});
-            cacheThread = std::make_unique<std::thread>([this] {
-                chunkId = Registry::instance()
-                              .system<SceneSystem>()
-                              ->spawnPrefab(CHUNKS_DIRECTORY +
-                                                "\\chunk-tmw-a-1-cc-01.prefab",
-                                            true)
-                              .id;
-            });
+
             nextChunk = "chunk-tmw-a-1-cc-01";
+            auto cachePackagedTask = std::packaged_task<EntityId()>([this]() {
+                return cache(CHUNKS_DIRECTORY + "\\" + nextChunk + ".prefab");
+            });
+            cacheFuture = cachePackagedTask.get_future();
+            cacheThread = std::thread(std::move(cachePackagedTask));
 
             updateWaterfallRefraction();
             updateTrapRefraction();
@@ -497,20 +504,15 @@ void GameManagerScript::update(float const deltaTime) {
                               .id,
                 .endPositionInParts = generatedLengthInParts});
 
-            if (cacheThread) {
-                cacheThread->join();
-                registry.clearCache();
-            }
+            cacheThread.join();
+            registry.clearCache();
 
-            cacheThread = std::make_unique<std::thread>([this] {
-                chunkId = Registry::instance()
-                              .system<SceneSystem>()
-                              ->spawnPrefab(CHUNKS_DIRECTORY +
-                                                "\\chunk-tmw-a-1-cc-01.prefab",
-                                            true)
-                              .id;
-            });
             nextChunk = "chunk-tmw-a-1-cc-01";
+            auto cachePackagedTask = std::packaged_task<EntityId()>([this]() {
+                return cache(CHUNKS_DIRECTORY + "\\" + nextChunk + ".prefab");
+            });
+            cacheFuture = cachePackagedTask.get_future();
+            cacheThread = std::thread(std::move(cachePackagedTask));
 
             updateWaterfallRefraction();
             updateTrapRefraction();
@@ -797,11 +799,13 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
         playerPositionInWorldUnits >=
         generatedLengthInWorldUnits - SPAWN_PADDING_IN_WORLD_UNITS;
 
-    if (hasPlayerPassedSpawningPoint) {
+    if (hasPlayerPassedSpawningPoint &&
+        cacheFuture.wait_for(std::chrono::seconds(0)) ==
+            std::future_status::ready) {
         ++spawnedChunks;
 
         // Potentially wait for this chunk caching to finish
-        cacheThread->join();
+        cacheThread.join();
 
         // Update the length of all spawned chunks so far
         generatedLengthInParts += lengthOfChunk.at(nextChunk);
@@ -810,7 +814,7 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
         chunkSpawnTime = Timer();
 
         registry.moveCacheToMainScene();
-        auto chunk = Entity{chunkId};
+        auto chunk = Entity{cacheFuture.get()};
         presentChunks.push_back(
             Chunk{.name = nextChunk,
                   .entity = chunk.id,
@@ -868,13 +872,11 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
             nextChunk = potentialChunks.at(distribution(generator));
         } while (nextChunk == "Chunk Start");
 
-        cacheThread = std::make_unique<std::thread>([this] {
-            chunkId =
-                registry.system<SceneSystem>()
-                    ->spawnPrefab(
-                        CHUNKS_DIRECTORY + "\\" + nextChunk + ".prefab", true)
-                    .id;
+        auto cachePackagedTask = std::packaged_task<EntityId()>([this]() {
+            return cache(CHUNKS_DIRECTORY + "\\" + nextChunk + ".prefab");
         });
+        cacheFuture = cachePackagedTask.get_future();
+        cacheThread = std::thread(std::move(cachePackagedTask));
 
         // Update the spawned objects if needed
         updateWaterfallRefraction();
