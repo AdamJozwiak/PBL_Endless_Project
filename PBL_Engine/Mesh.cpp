@@ -476,8 +476,8 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
     animRefVert =
         std::make_shared<VertexShader>(gfx, L"AnimatedRefractiveVS.cso");
 
-    animShadowVert = std::make_shared<VertexShader>(gfx, L"AnimatedShadowMappingVS.cso");
-
+    animShadowVert =
+        std::make_shared<VertexShader>(gfx, L"AnimatedShadowMappingVS.cso");
 
     pbrVert = std::make_shared<VertexShader>(gfx, L"PBRVS.cso");
 
@@ -485,13 +485,11 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
 
     shadowVert = std::make_shared<VertexShader>(gfx, L"ShadowMappingVS.cso");
 
-
     pbrGeo = std::make_shared<GeometryShader>(gfx, L"PBRGS.cso");
 
     refGeo = std::make_shared<GeometryShader>(gfx, L"RefractiveGS.cso");
 
     shadowGeo = std::make_shared<GeometryShader>(gfx, L"ShadowMappingGS.cso");
-
 
     pbrPixel = std::make_shared<PixelShader>(gfx, L"PBRPS.cso");
 

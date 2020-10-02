@@ -3,7 +3,6 @@
 
 #include <DirectXMath.h>
 
-#include <Systems/PropertySystem.hpp>
 #include <algorithm>
 #include <cmath>
 #include <memory>
@@ -21,6 +20,7 @@
 #include "ColliderSystem.hpp"
 #include "ECS/ECS.hpp"
 #include "GraphSystem.hpp"
+#include "PropertySystem.hpp"
 #include "SoundSystem.hpp"
 #include "WindowSystem.hpp"
 
