@@ -42,11 +42,19 @@ for filename in filenames:
                 end="\r",
             )
 
-            # Remove "stripped" keyword
-            if input_lines[i].find("---") != -1:
-                stripped_location = input_lines[i].find("stripped")
-                if stripped_location != -1:
-                    input_lines[i] = input_lines[i][:stripped_location].strip() + "\n"
+            # Change YAML version
+            if input_lines[i].startswith("%YAML"):
+                input_lines[i] = "%YAML 1.2\n"
+
+            # Omit the tag line
+            if input_lines[i].startswith("%TAG"):
+                continue
+
+            # Remove tag and "stripped" keyword
+            if input_lines[i].startswith("--- !u!"):
+                input_lines[i] = (
+                    input_lines[i].split(" ")[0] + " " + input_lines[i].split(" ")[2]
+                ).strip() + "\n"
 
             # Write corrected line
             output_file.write(input_lines[i])
