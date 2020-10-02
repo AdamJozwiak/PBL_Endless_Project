@@ -1,5 +1,3 @@
-#define _HAS_ITERATOR_DEBUGGING 0
-
 #include "LevelParser.h"
 
 #include <yaml-cpp/include/yaml-cpp/yaml.h>
@@ -7,7 +5,9 @@
 #include <Script.hpp>
 #include <cassert>
 #include <filesystem>
+#include <fstream>
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <set>
 #include <unordered_map>
 #include <vector>
@@ -20,13 +20,14 @@
 
 namespace fs = std::filesystem;
 
-using FileId = std::string;
+using FileId = int;
 using FileGuid = std::string;
 using Path = std::string;
 using FileExtension = std::string;
 
-std::unordered_map<FileGuid, std::unordered_map<FileId, YAML::Node>> nodes;
-std::unordered_map<FileGuid, YAML::Node> materialNodes, metaNodes;
+std::unordered_map<FileGuid, std::unordered_map<FileId, nlohmann::json>> nodes;
+std::unordered_map<FileGuid, YAML::Node> metaNodes;
+std::unordered_map<FileGuid, nlohmann::json> materialNodes;
 std::unordered_map<Path, FileGuid> pathToGuid;
 std::unordered_map<FileGuid, Path> guidPaths;
 std::unordered_map<FileGuid, std::set<FileId>> prefabFileIds;
@@ -49,20 +50,23 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
     for (auto const &fileId : fileIds) {
         auto node{nodes.at(guid)[fileId]};
 
-        if (auto const &nodeGameObject = node["GameObject"]; nodeGameObject) {
+        if (node.contains("GameObject")) {
+            auto const &nodeGameObject = node.at("GameObject");
+
             auto entity{
                 registry.createEntity(cache ? CACHE_SCENE : DEFAULT_SCENE)};
             entityIds.insert({fileId, entity.id});
 
-            assert(nodeGameObject["m_Name"] && nodeGameObject["m_TagString"] &&
-                   nodeGameObject["m_IsActive"] &&
+            assert(nodeGameObject.contains("m_Name") &&
+                   nodeGameObject.contains("m_TagString") &&
+                   nodeGameObject.contains("m_IsActive") &&
                    "Every property inside GameObject component must be valid!");
 
             entity.add<Properties>(
-                {.name = nodeGameObject["m_Name"].as<std::string>(),
-                 .tag = nodeGameObject["m_TagString"].as<std::string>(),
+                {.name = nodeGameObject.at("m_Name").get<std::string>(),
+                 .tag = nodeGameObject.at("m_TagString").get<std::string>(),
                  .active = static_cast<bool>(
-                     nodeGameObject["m_IsActive"].as<int>())});
+                     nodeGameObject.at("m_IsActive").get<int>())});
         }
     }
 
@@ -71,133 +75,163 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
     for (auto const &fileId : fileIds) {
         auto const &node = nodes.at(guid)[fileId];
 
-        if (auto const &nodeTransform = node["Transform"]; nodeTransform) {
-            assert(nodeTransform["m_PrefabInstance"] &&
+        if (node.contains("Transform")) {
+            auto const &nodeTransform = node.at("Transform");
+
+            assert(nodeTransform.contains("m_PrefabInstance") &&
+                   nodeTransform.at("m_PrefabInstance").contains("fileID") &&
                    "Every property inside Transform component must be valid!");
 
             bool skipThisTransform = false;
             {
-                auto &helper = nodeTransform["m_PrefabInstance"];
-                yamlLoop(i, helper) {
-                    auto prefabFileId = i->second.Scalar();
-                    skipThisTransform = prefabFileId != "0";
-                }
+                auto &helper = nodeTransform.at("m_PrefabInstance");
+
+                auto prefabFileId = helper.at("fileID").get<int>();
+                skipThisTransform = prefabFileId != 0;
             }
             if (skipThisTransform) {
                 continue;
             }
 
-            assert(nodeTransform["m_GameObject"] &&
-                   nodeTransform["m_LocalRotation"] &&
-                   nodeTransform["m_LocalPosition"] &&
-                   nodeTransform["m_LocalScale"] &&
-                   nodeTransform["m_RootOrder"] &&
-                   nodeTransform["m_LocalEulerAnglesHint"] &&
+            assert(nodeTransform.contains("m_GameObject") &&
+                   nodeTransform.at("m_GameObject").contains("fileID") &&
+                   nodeTransform.contains("m_LocalRotation") &&
+                   nodeTransform.at("m_LocalRotation").contains("x") &&
+                   nodeTransform.at("m_LocalRotation").contains("y") &&
+                   nodeTransform.at("m_LocalRotation").contains("z") &&
+                   nodeTransform.at("m_LocalRotation").contains("w") &&
+                   nodeTransform.contains("m_LocalPosition") &&
+                   nodeTransform.at("m_LocalPosition").contains("x") &&
+                   nodeTransform.at("m_LocalPosition").contains("y") &&
+                   nodeTransform.at("m_LocalPosition").contains("z") &&
+                   nodeTransform.contains("m_LocalScale") &&
+                   nodeTransform.at("m_LocalScale").contains("x") &&
+                   nodeTransform.at("m_LocalScale").contains("y") &&
+                   nodeTransform.at("m_LocalScale").contains("z") &&
+                   nodeTransform.contains("m_RootOrder") &&
+                   nodeTransform.contains("m_LocalEulerAnglesHint") &&
+                   nodeTransform.at("m_LocalEulerAnglesHint").contains("x") &&
+                   nodeTransform.at("m_LocalEulerAnglesHint").contains("y") &&
+                   nodeTransform.at("m_LocalEulerAnglesHint").contains("z") &&
                    "Every property inside Transform component must be valid!");
 
             {
-                auto &helper = nodeTransform["m_GameObject"];
-                auto gameObjectFileId = helper["fileID"].Scalar();
-                Entity(entityIds[gameObjectFileId]).add<Transform>({});
-                entityIds.insert({fileId, entityIds[gameObjectFileId]});
-                entityIdsWithTransform.insert(
-                    {fileId, entityIds[gameObjectFileId]});
+                auto &helper = nodeTransform.at("m_GameObject");
+                auto const &gameObjectFileId = helper.at("fileID");
+
+                auto entity = Entity(entityIds.at(gameObjectFileId));
+                entity.add<Transform>({});
+
+                entityIds.insert({fileId, entity.id});
+                entityIdsWithTransform.insert({fileId, entity.id});
             }
 
-            auto &transform = Entity(entityIds[fileId]).get<Transform>();
+            auto &transform = Entity(entityIds.at(fileId)).get<Transform>();
 
             {
-                auto &helper = nodeTransform["m_LocalRotation"];
-                transform.rotation.x = helper["x"].as<float>();
-                transform.rotation.y = helper["y"].as<float>();
-                transform.rotation.z = helper["z"].as<float>();
-                transform.rotation.w = helper["w"].as<float>();
-            }
-
-            {
-                auto &helper = nodeTransform["m_LocalPosition"];
-                transform.position.x = helper["x"].as<float>();
-                transform.position.y = helper["y"].as<float>();
-                transform.position.z = helper["z"].as<float>();
+                auto &helper = nodeTransform.at("m_LocalRotation");
+                transform.rotation.x = helper.at("x").get<float>();
+                transform.rotation.y = helper.at("y").get<float>();
+                transform.rotation.z = helper.at("z").get<float>();
+                transform.rotation.w = helper.at("w").get<float>();
             }
 
             {
-                auto &helper = nodeTransform["m_LocalScale"];
-                transform.scale.x = helper["x"].as<float>();
-                transform.scale.y = helper["y"].as<float>();
-                transform.scale.z = helper["z"].as<float>();
+                auto &helper = nodeTransform.at("m_LocalPosition");
+                transform.position.x = helper.at("x").get<float>();
+                transform.position.y = helper.at("y").get<float>();
+                transform.position.z = helper.at("z").get<float>();
             }
 
             {
-                auto &helper = nodeTransform["m_RootOrder"];
-                transform.root_Order = helper.as<int>();
+                auto &helper = nodeTransform.at("m_LocalScale");
+                transform.scale.x = helper.at("x").get<float>();
+                transform.scale.y = helper.at("y").get<float>();
+                transform.scale.z = helper.at("z").get<float>();
             }
 
             {
-                auto &helper = nodeTransform["m_LocalEulerAnglesHint"];
-                transform.euler.x = helper["x"].as<float>();
-                transform.euler.y = helper["y"].as<float>();
-                transform.euler.z = helper["z"].as<float>();
+                auto &helper = nodeTransform.at("m_RootOrder");
+                transform.root_Order = helper.get<int>();
             }
-        } else if (auto const &nodeRectTransform = node["RectTransform"];
-                   nodeRectTransform) {
+
+            {
+                auto &helper = nodeTransform.at("m_LocalEulerAnglesHint");
+                transform.euler.x = helper.at("x").get<float>();
+                transform.euler.y = helper.at("y").get<float>();
+                transform.euler.z = helper.at("z").get<float>();
+            }
+        } else if (node.contains("RectTransform")) {
+            auto const &nodeRectTransform = node.at("RectTransform");
+
             assert(
-                nodeRectTransform["m_GameObject"] &&
-                nodeRectTransform["m_AnchoredPosition"] &&
-                nodeRectTransform["m_SizeDelta"] &&
+                nodeRectTransform.contains("m_GameObject") &&
+                nodeRectTransform.at("m_GameObject").contains("fileID") &&
+                nodeRectTransform.contains("m_AnchoredPosition") &&
+                nodeRectTransform.at("m_AnchoredPosition").contains("x") &&
+                nodeRectTransform.at("m_AnchoredPosition").contains("y") &&
+                nodeRectTransform.contains("m_SizeDelta") &&
+                nodeRectTransform.at("m_SizeDelta").contains("x") &&
+                nodeRectTransform.at("m_SizeDelta").contains("y") &&
                 "Every property inside RectTransform component must be valid!");
 
             {
-                auto &helper = nodeRectTransform["m_GameObject"];
-                auto gameObjectFileId = helper["fileID"].Scalar();
-                Entity(entityIds[gameObjectFileId]).add<RectTransform>({});
-                entityIds.insert({fileId, entityIds[gameObjectFileId]});
+                auto &helper = nodeRectTransform.at("m_GameObject");
+                auto const &gameObjectFileId = helper.at("fileID");
+
+                auto entity = Entity(entityIds.at(gameObjectFileId));
+                entity.add<RectTransform>({});
+
+                entityIds.insert({fileId, entity.id});
             }
 
             auto &rectTransform =
-                Entity(entityIds[fileId]).get<RectTransform>();
+                Entity(entityIds.at(fileId)).get<RectTransform>();
 
             {
-                auto &helper = nodeRectTransform["m_AnchoredPosition"];
-                rectTransform.position.x = helper["x"].as<float>();
-                rectTransform.position.y = -helper["y"].as<float>();
+                auto &helper = nodeRectTransform.at("m_AnchoredPosition");
+                rectTransform.position.x = helper.at("x").get<float>();
+                rectTransform.position.y = -helper.at("y").get<float>();
             }
 
             {
-                auto &helper = nodeRectTransform["m_SizeDelta"];
-                rectTransform.size.x = helper["x"].as<float>();
-                rectTransform.size.y = helper["y"].as<float>();
+                auto &helper = nodeRectTransform.at("m_SizeDelta");
+                rectTransform.size.x = helper.at("x").get<float>();
+                rectTransform.size.y = helper.at("y").get<float>();
             }
-        } else if (auto const &nodeMonoBehaviour = node["MonoBehaviour"];
-                   nodeMonoBehaviour) {
+        } else if (node.contains("MonoBehaviour")) {
+            auto const &nodeMonoBehaviour = node.at("MonoBehaviour");
+
             assert(
-                nodeMonoBehaviour["m_GameObject"] &&
-                nodeMonoBehaviour["m_Script"] &&
+                nodeMonoBehaviour.contains("m_GameObject") &&
+                nodeMonoBehaviour.at("m_GameObject").contains("fileID") &&
+                nodeMonoBehaviour.contains("m_Script") &&
+                nodeMonoBehaviour.at("m_Script").contains("guid") &&
                 "Every property inside MonoBehaviour component must be valid!");
 
             {
-                auto &helper = nodeMonoBehaviour["m_GameObject"];
-                yamlLoop(i, helper) {
-                    auto gameObjectFileId = i->second.Scalar();
-                    if (nodeMonoBehaviour["m_Text"]) {
-                        Entity(entityIds[gameObjectFileId])
-                            .add<UIElement>({.alpha = 1.0f});
-                    } else if (guidPaths.contains(
-                                   nodeMonoBehaviour["m_Script"]["guid"]
-                                       .as<std::string>())) {
-                        Entity(entityIds[gameObjectFileId]).add<Behaviour>({});
-                    }
-                    entityIds.insert({fileId, entityIds[gameObjectFileId]});
+                auto &helper = nodeMonoBehaviour.at("m_GameObject");
+                auto const &gameObjectFileId = helper.at("fileID");
+
+                auto entity = Entity(entityIds.at(gameObjectFileId));
+
+                if (nodeMonoBehaviour.contains("m_Text")) {
+                    entity.add<UIElement>({.alpha = 1.0f});
+                } else if (guidPaths.contains(nodeMonoBehaviour.at("m_Script")
+                                                  .at("guid")
+                                                  .get<std::string>())) {
+                    entity.add<Behaviour>({});
                 }
+                entityIds.insert({fileId, entityIds.at(gameObjectFileId)});
             }
 
-            if (Entity(entityIds[fileId]).has<Behaviour>()) {
+            if (Entity(entityIds.at(fileId)).has<Behaviour>()) {
                 auto &behaviour = Entity(entityIds[fileId]).get<Behaviour>();
 
                 {
                     auto &helper = nodeMonoBehaviour["m_Script"];
                     behaviour = registry.system<BehaviourSystem>()->behaviour(
-                        fs::path(guidPaths[helper["guid"].as<std::string>()])
+                        fs::path(guidPaths[helper["guid"].get<std::string>()])
                             .stem()
                             .string(),
                         Entity(entityIds[fileId]));
@@ -207,160 +241,176 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
 
                 {
                     auto &helper = nodeMonoBehaviour["m_Text"];
-                    uiElement.content = helper.as<std::string>();
+                    if (helper.is_string()) {
+                        uiElement.content = helper.get<std::string>();
+                    }
+                    if (helper.is_number()) {
+                        uiElement.content = std::to_string(helper.get<int>());
+                    }
                 }
                 {
                     auto &helper = nodeMonoBehaviour["m_FontData"];
-                    uiElement.fontSize = helper["m_FontSize"].as<int>();
+                    uiElement.fontSize = helper["m_FontSize"].get<int>();
                 }
             }
-        } else if (auto const &nodeMeshRenderer = node["MeshRenderer"];
-                   nodeMeshRenderer) {
+        } else if (node.contains("MeshRenderer")) {
+            auto const &nodeMeshRenderer = node.at("MeshRenderer");
+
             assert(
-                nodeMeshRenderer["m_GameObject"] &&
-                nodeMeshRenderer["m_Materials"] &&
+                nodeMeshRenderer.contains("m_GameObject") &&
+                nodeMeshRenderer.at("m_GameObject").contains("fileID") &&
+                nodeMeshRenderer.contains("m_Materials") &&
                 "Every property inside MeshRenderer component must be valid!");
 
             {
-                auto &helper = nodeMeshRenderer["m_GameObject"];
-                yamlLoop(i, helper) {
-                    auto gameObjectFileId = i->second.Scalar();
-                    Entity(entityIds[gameObjectFileId]).add<Renderer>({});
-                    Entity(entityIds[gameObjectFileId]).add<AABB>({});
-                    entityIds.insert({fileId, entityIds[gameObjectFileId]});
-                }
+                auto &helper = nodeMeshRenderer.at("m_GameObject");
+                auto const &gameObjectFileId = helper.at("fileID");
+
+                auto entity = Entity(entityIds[gameObjectFileId]);
+
+                entity.add<Renderer>({});
+                entity.add<AABB>({});
+
+                entityIds.insert({fileId, entity.id});
             }
 
             auto &renderer = Entity(entityIds[fileId]).get<Renderer>();
 
             {
                 auto &helper = nodeMeshRenderer["m_Materials"];
-                yamlLoop(i, helper[0]) {
-                    auto const key = i->first.as<std::string>();
-                    auto const value = i->second.as<std::string>();
+                auto const value = helper.at(0).at("guid").get<std::string>();
 
-                    if (key == "guid") {
-                        if (materialNodes.find(value) == materialNodes.end()) {
-                            continue;
-                        }
-                        auto const &materialNode =
-                            materialNodes[value]["Material"]
-                                         ["m_SavedProperties"]["m_TexEnvs"];
-                        auto const &propertiesNode =
-                            materialNodes[value]["Material"]
-                                         ["m_SavedProperties"]["m_Floats"];
-                        yamlLoop(i, materialNode) {
-                            if ((*i)["_MainTex"]) {
-                                renderer.material.albedoPath =
-                                    guidPaths[(*i)["_MainTex"]["m_Texture"]
-                                                  ["guid"]
-                                                      .as<std::string>()];
-                            }
-                            if ((*i)["_OcclusionMap"]) {
-                                renderer.material.ambientOcclusionPath =
-                                    guidPaths[(*i)["_OcclusionMap"]["m_Texture"]
-                                                  ["guid"]
-                                                      .as<std::string>()];
-                            }
-                            if ((*i)["_MetallicGlossMap"]) {
-                                renderer.material.metallicSmoothnessPath =
-                                    guidPaths[(*i)["_MetallicGlossMap"]
-                                                  ["m_Texture"]["guid"]
-                                                      .as<std::string>()];
-                            }
-                            if ((*i)["_BumpMap"]) {
-                                renderer.material.normalPath =
-                                    guidPaths[(*i)["_BumpMap"]["m_Texture"]
-                                                  ["guid"]
-                                                      .as<std::string>()];
-                            }
-                            if ((*i)["_ParallaxMap"]) {
-                                renderer.material.heightPath =
-                                    guidPaths[(*i)["_ParallaxMap"]["m_Texture"]
-                                                  ["guid"]
-                                                      .as<std::string>()];
-                            }
-                        }
-                        yamlLoop(i, propertiesNode) {
-                            if ((*i)["_Parallax"]) {
-                                renderer.material.parallaxHeight =
-                                    (*i)["_Parallax"].as<float>();
-                            }
-                        }
+                if (materialNodes.find(value) == materialNodes.end()) {
+                    continue;
+                }
+                auto const &materialNode = materialNodes.at(value)
+                                               .at("Material")
+                                               .at("m_SavedProperties")
+                                               .at("m_TexEnvs");
+                auto const &propertiesNode = materialNodes.at(value)
+                                                 .at("Material")
+                                                 .at("m_SavedProperties")
+                                                 .at("m_Floats");
+                for (auto const &i : materialNode) {
+                    if (i.contains("_MainTex")) {
+                        renderer.material.albedoPath =
+                            guidPaths[i.at("_MainTex")
+                                          .at("m_Texture")
+                                          .at("guid")
+                                          .get<std::string>()];
+                    }
+                    if (i.contains("_OcclusionMap")) {
+                        renderer.material.ambientOcclusionPath =
+                            guidPaths[i.at("_OcclusionMap")
+                                          .at("m_Texture")
+                                          .at("guid")
+                                          .get<std::string>()];
+                    }
+                    if (i.contains("_MetallicGlossMap")) {
+                        renderer.material.metallicSmoothnessPath =
+                            guidPaths[i.at("_MetallicGlossMap")
+                                          .at("m_Texture")
+                                          .at("guid")
+                                          .get<std::string>()];
+                    }
+                    if (i.contains("_BumpMap")) {
+                        renderer.material.normalPath =
+                            guidPaths[i.at("_BumpMap")
+                                          .at("m_Texture")
+                                          .at("guid")
+                                          .get<std::string>()];
+                    }
+                    if (i.contains("_ParallaxMap")) {
+                        renderer.material.heightPath =
+                            guidPaths[i.at("_ParallaxMap")
+                                          .at("m_Texture")
+                                          .at("guid")
+                                          .get<std::string>()];
+                    }
+                }
+                for (auto const &i : propertiesNode) {
+                    if (i.contains("_Parallax")) {
+                        renderer.material.parallaxHeight =
+                            i.at("_Parallax").get<float>();
                     }
                 }
             }
-        } else if (auto const &nodeMeshFilter = node["MeshFilter"];
-                   nodeMeshFilter) {
-            assert(nodeMeshFilter["m_GameObject"] && nodeMeshFilter["m_Mesh"] &&
+        } else if (node.contains("MeshFilter")) {
+            auto const &nodeMeshFilter = node["MeshFilter"];
+
+            assert(nodeMeshFilter.contains("m_GameObject") &&
+                   nodeMeshFilter.at("m_GameObject").contains("fileID") &&
+                   nodeMeshFilter.contains("m_Mesh") &&
+                   nodeMeshFilter.at("m_Mesh").contains("guid") &&
                    "Every property inside MeshFilter component must be valid!");
 
             {
                 auto &helper = nodeMeshFilter["m_GameObject"];
-                yamlLoop(i, helper) {
-                    auto gameObjectFileId = i->second.Scalar();
-                    Entity(entityIds[gameObjectFileId]).add<MeshFilter>({});
-                    entityIds.insert({fileId, entityIds[gameObjectFileId]});
-                }
+                auto const &gameObjectFileId = helper.at("fileID");
+                Entity(entityIds[gameObjectFileId]).add<MeshFilter>({});
+                entityIds.insert({fileId, entityIds[gameObjectFileId]});
             }
 
             auto &meshFilter = Entity(entityIds[fileId]).get<MeshFilter>();
 
             {
                 auto &helper = nodeMeshFilter["m_Mesh"];
-                yamlLoop(it, helper) {
-                    auto const key = it->first.as<std::string>();
-                    auto const value = it->second.as<std::string>();
+                auto const value = helper.at("guid");
 
-                    if (key == "guid") {
-                        meshFilter.path = guidPaths[value];
-                    }
-                }
+                meshFilter.path = guidPaths[value];
             }
-        } else if (auto const &nodeBoxCollider = node["BoxCollider"];
-                   nodeBoxCollider) {
+        } else if (node.contains("BoxCollider")) {
+            auto const &nodeBoxCollider = node["BoxCollider"];
+
             assert(
-                nodeBoxCollider["m_Size"] && nodeBoxCollider["m_Center"] &&
+                nodeBoxCollider.contains("m_Size") &&
+                nodeBoxCollider.at("m_Size").contains("x") &&
+                nodeBoxCollider.at("m_Size").contains("y") &&
+                nodeBoxCollider.at("m_Size").contains("z") &&
+                nodeBoxCollider.contains("m_Center") &&
+                nodeBoxCollider.at("m_Center").contains("x") &&
+                nodeBoxCollider.at("m_Center").contains("y") &&
+                nodeBoxCollider.at("m_Center").contains("z") &&
                 "Every property inside BoxCollider component must be valid!");
 
             {
                 auto &helper = nodeBoxCollider["m_GameObject"];
-                yamlLoop(i, helper) {
-                    auto gameObjectFileId = i->second.Scalar();
-                    Entity(entityIds[gameObjectFileId]).add<BoxCollider>({});
-                    entityIds.insert({fileId, entityIds[gameObjectFileId]});
-                }
+                auto const &gameObjectFileId = helper.at("fileID");
+                Entity(entityIds[gameObjectFileId]).add<BoxCollider>({});
+                entityIds.insert({fileId, entityIds[gameObjectFileId]});
             }
 
             auto &boxCollider = Entity(entityIds[fileId]).get<BoxCollider>();
 
             {
                 auto &helper = nodeBoxCollider["m_Size"];
-                boxCollider.size.x = helper["x"].as<float>();
-                boxCollider.size.y = helper["y"].as<float>();
-                boxCollider.size.z = helper["z"].as<float>();
+                boxCollider.size.x = helper["x"].get<float>();
+                boxCollider.size.y = helper["y"].get<float>();
+                boxCollider.size.z = helper["z"].get<float>();
             }
 
             {
                 auto &helper = nodeBoxCollider["m_Center"];
-                boxCollider.center.x = helper["x"].as<float>();
-                boxCollider.center.y = helper["y"].as<float>();
-                boxCollider.center.z = helper["z"].as<float>();
+                boxCollider.center.x = helper["x"].get<float>();
+                boxCollider.center.y = helper["y"].get<float>();
+                boxCollider.center.z = helper["z"].get<float>();
             }
-        } else if (auto const &nodeSphereCollider = node["SphereCollider"];
-                   nodeSphereCollider) {
-            assert(nodeSphereCollider["m_Radius"] &&
-                   nodeSphereCollider["m_Center"] &&
+        } else if (node.contains("SphereCollider")) {
+            auto const &nodeSphereCollider = node["SphereCollider"];
+
+            assert(nodeSphereCollider.contains("m_Radius") &&
+                   nodeSphereCollider.contains("m_Center") &&
+                   nodeSphereCollider.at("m_Center").contains("x") &&
+                   nodeSphereCollider.at("m_Center").contains("y") &&
+                   nodeSphereCollider.at("m_Center").contains("z") &&
                    "Every property inside SphereCollider component must be "
                    "valid!");
 
             {
                 auto &helper = nodeSphereCollider["m_GameObject"];
-                yamlLoop(i, helper) {
-                    auto gameObjectFileId = i->second.Scalar();
-                    Entity(entityIds[gameObjectFileId]).add<SphereCollider>({});
-                    entityIds.insert({fileId, entityIds[gameObjectFileId]});
-                }
+                auto const &gameObjectFileId = helper.at("fileID");
+                Entity(entityIds[gameObjectFileId]).add<SphereCollider>({});
+                entityIds.insert({fileId, entityIds[gameObjectFileId]});
             }
 
             auto &sphereCollider =
@@ -368,50 +418,50 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
 
             {
                 auto &helper = nodeSphereCollider["m_Radius"];
-                sphereCollider.radius = helper.as<float>();
+                sphereCollider.radius = helper.get<float>();
             }
 
             {
                 auto &helper = nodeSphereCollider["m_Center"];
-                sphereCollider.center.x = helper["x"].as<float>();
-                sphereCollider.center.y = helper["y"].as<float>();
-                sphereCollider.center.z = helper["z"].as<float>();
+                sphereCollider.center.x = helper["x"].get<float>();
+                sphereCollider.center.y = helper["y"].get<float>();
+                sphereCollider.center.z = helper["z"].get<float>();
             }
-        } else if (auto const &nodeRigidbody = node["Rigidbody"];
-                   nodeRigidbody) {
-            assert(nodeRigidbody["m_Mass"] &&
+        } else if (node.contains("Rigidbody")) {
+            auto const &nodeRigidbody = node["Rigidbody"];
+
+            assert(nodeRigidbody.contains("m_Mass") &&
                    "Every property inside Rigidbody component must be "
                    "valid!");
 
             {
                 auto &helper = nodeRigidbody["m_GameObject"];
-                yamlLoop(i, helper) {
-                    auto gameObjectFileId = i->second.Scalar();
-                    Entity(entityIds[gameObjectFileId]).add<Rigidbody>({});
-                    entityIds.insert({fileId, entityIds[gameObjectFileId]});
-                }
+                auto const &gameObjectFileId = helper.at("fileID");
+                Entity(entityIds[gameObjectFileId]).add<Rigidbody>({});
+                entityIds.insert({fileId, entityIds[gameObjectFileId]});
             }
 
             auto &rigidbody = Entity(entityIds[fileId]).get<Rigidbody>();
 
             {
                 auto &helper = nodeRigidbody["m_Mass"];
-                rigidbody.mass = helper.as<float>();
+                rigidbody.mass = helper.get<float>();
             }
-        } else if (auto const &nodeSkybox = node["Skybox"]; nodeSkybox) {
+        } else if (node.contains("Skybox")) {
+            auto const &nodeSkybox = node["Skybox"];
+
             assert(
-                nodeSkybox["m_GameObject"] && nodeSkybox["m_CustomSkybox"] &&
+                nodeSkybox.contains("m_GameObject") &&
+                nodeSkybox.contains("m_CustomSkybox") &&
                 "Every property inside MeshRenderer component must be valid!");
 
             {
                 auto &helper = nodeSkybox["m_GameObject"];
-                yamlLoop(i, helper) {
-                    auto gameObjectFileId = i->second.Scalar();
-                    Entity(entityIds[gameObjectFileId]).add<Skybox>({});
-                    // cachedSkyboxes.insert({entityIds[gameObjectFileId],
-                    // {}});
-                    entityIds.insert({fileId, entityIds[gameObjectFileId]});
-                }
+                auto const &gameObjectFileId = helper.at("fileID");
+                Entity(entityIds[gameObjectFileId]).add<Skybox>({});
+                // cachedSkyboxes.insert({entityIds[gameObjectFileId],
+                // {}});
+                entityIds.insert({fileId, entityIds[gameObjectFileId]});
             }
 
             auto &skybox = Entity(entityIds[fileId]).get<Skybox>();
@@ -419,55 +469,56 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
 
             {
                 auto &helper = nodeSkybox["m_CustomSkybox"];
-                yamlLoop(i, helper) {
-                    auto const key = i->first.as<std::string>();
-                    auto const value = i->second.as<std::string>();
+                auto const value = helper.at("guid");
 
-                    if (key == "guid") {
-                        if (materialNodes.find(value) == materialNodes.end()) {
-                            continue;
-                        }
-                        auto const &materialNode =
-                            materialNodes[value]["Material"]
-                                         ["m_SavedProperties"]["m_TexEnvs"];
-                        yamlLoop(i, materialNode) {
-                            if ((*i)["_BackTex"]) {
-                                skybox.material.backPath =
-                                    guidPaths[(*i)["_BackTex"]["m_Texture"]
-                                                  ["guid"]
-                                                      .as<std::string>()];
-                            }
-                            if ((*i)["_DownTex"]) {
-                                skybox.material.bottomPath =
-                                    guidPaths[(*i)["_DownTex"]["m_Texture"]
-                                                  ["guid"]
-                                                      .as<std::string>()];
-                            }
-                            if ((*i)["_FrontTex"]) {
-                                skybox.material.frontPath =
-                                    guidPaths[(*i)["_FrontTex"]["m_Texture"]
-                                                  ["guid"]
-                                                      .as<std::string>()];
-                            }
-                            if ((*i)["_LeftTex"]) {
-                                skybox.material.leftPath =
-                                    guidPaths[(*i)["_LeftTex"]["m_Texture"]
-                                                  ["guid"]
-                                                      .as<std::string>()];
-                            }
-                            if ((*i)["_RightTex"]) {
-                                skybox.material.rightPath =
-                                    guidPaths[(*i)["_RightTex"]["m_Texture"]
-                                                  ["guid"]
-                                                      .as<std::string>()];
-                            }
-                            if ((*i)["_UpTex"]) {
-                                skybox.material.topPath =
-                                    guidPaths[(*i)["_UpTex"]["m_Texture"]
-                                                  ["guid"]
-                                                      .as<std::string>()];
-                            }
-                        }
+                if (materialNodes.find(value) == materialNodes.end()) {
+                    continue;
+                }
+                auto const &materialNode =
+                    materialNodes[value]["Material"]["m_SavedProperties"]
+                                 ["m_TexEnvs"];
+                for (auto const &i : materialNode) {
+                    if (i.contains("_BackTex")) {
+                        skybox.material.backPath =
+                            guidPaths[i.at("_BackTex")
+                                          .at("m_Texture")
+                                          .at("guid")
+                                          .get<std::string>()];
+                    }
+                    if (i.contains("_DownTex")) {
+                        skybox.material.bottomPath =
+                            guidPaths[i.at("_DownTex")
+                                          .at("m_Texture")
+                                          .at("guid")
+                                          .get<std::string>()];
+                    }
+                    if (i.contains("_FrontTex")) {
+                        skybox.material.frontPath =
+                            guidPaths[i.at("_FrontTex")
+                                          .at("m_Texture")
+                                          .at("guid")
+                                          .get<std::string>()];
+                    }
+                    if (i.contains("_LeftTex")) {
+                        skybox.material.leftPath =
+                            guidPaths[i.at("_LeftTex")
+                                          .at("m_Texture")
+                                          .at("guid")
+                                          .get<std::string>()];
+                    }
+                    if (i.contains("_RightTex")) {
+                        skybox.material.rightPath =
+                            guidPaths[i.at("_RightTex")
+                                          .at("m_Texture")
+                                          .at("guid")
+                                          .get<std::string>()];
+                    }
+                    if (i.contains("_UpTex")) {
+                        skybox.material.topPath =
+                            guidPaths[i.at("_UpTex")
+                                          .at("m_Texture")
+                                          .at("guid")
+                                          .get<std::string>()];
                     }
                 }
             }
@@ -478,16 +529,18 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
     for (auto const &fileId : fileIds) {
         auto const &node = nodes.at(guid)[fileId];
 
-        if (auto const &nodePrefabInstance = node["PrefabInstance"];
-            nodePrefabInstance) {
-            assert(nodePrefabInstance["m_SourcePrefab"] &&
-                   nodePrefabInstance["m_Modification"] &&
-                   nodePrefabInstance["m_Modification"]["m_Modifications"] &&
+        if (node.contains("PrefabInstance")) {
+            auto const &nodePrefabInstance = node["PrefabInstance"];
+
+            assert(nodePrefabInstance.contains("m_SourcePrefab") &&
+                   nodePrefabInstance.contains("m_Modification") &&
+                   nodePrefabInstance.at("m_Modification")
+                       .contains("m_Modifications") &&
                    "Every property inside PrefabInstance component must be "
                    "valid!");
 
             FileGuid prefabGuid =
-                nodePrefabInstance["m_SourcePrefab"]["guid"].as<FileGuid>();
+                nodePrefabInstance["m_SourcePrefab"]["guid"].get<FileGuid>();
 
             auto prefabEntityIds =
                 spawnPrefab(prefabGuid, prefabFileIds.at(prefabGuid), cache,
@@ -496,62 +549,81 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
             FileId transformParentId =
                 nodePrefabInstance["m_Modification"]["m_TransformParent"]
                                   ["fileID"]
-                                      .as<FileId>();
+                                      .get<FileId>();
             FileId targetTransformId =
                 nodePrefabInstance["m_Modification"]["m_Modifications"][0]
                                   ["target"]["fileID"]
-                                      .as<FileId>();
+                                      .get<FileId>();
 
-            if (transformParentId != "0") {
+            if (transformParentId != 0) {
                 Entity(prefabEntityIds[targetTransformId])
                     .get<Transform>()
                     .parent =
                     std::make_optional<EntityId>(entityIds[transformParentId]);
             }
 
-            yamlLoop(i,
-                     nodePrefabInstance["m_Modification"]["m_Modifications"]) {
-                auto targetFileId = (*i)["target"]["fileID"].as<FileId>();
-                auto property = (*i)["propertyPath"].as<std::string>();
+            for (auto const &i : nodePrefabInstance.at("m_Modification")
+                                     .at("m_Modifications")) {
+                auto targetFileId = i.at("target").at("fileID").get<FileId>();
+                auto property = i.at("propertyPath").get<std::string>();
 
                 auto &transform =
                     Entity(prefabEntityIds.at(targetFileId)).get<Transform>();
                 auto &properties =
                     Entity(prefabEntityIds.at(targetFileId)).get<Properties>();
 
-                if (property == "m_RootOrder") {
-                    transform.root_Order = (*i)["value"].as<int>();
-                } else if (property == "m_LocalEulerAnglesHint.x") {
-                    transform.euler.x = (*i)["value"].as<float>();
-                } else if (property == "m_LocalEulerAnglesHint.y") {
-                    transform.euler.y = (*i)["value"].as<float>();
-                } else if (property == "m_LocalEulerAnglesHint.z") {
-                    transform.euler.z = (*i)["value"].as<float>();
-                } else if (property == "m_LocalRotation.w") {
-                    transform.rotation.w = (*i)["value"].as<float>();
-                } else if (property == "m_LocalRotation.x") {
-                    transform.rotation.x = (*i)["value"].as<float>();
-                } else if (property == "m_LocalRotation.y") {
-                    transform.rotation.y = (*i)["value"].as<float>();
-                } else if (property == "m_LocalRotation.z") {
-                    transform.rotation.z = (*i)["value"].as<float>();
-                } else if (property == "m_LocalScale.x") {
-                    transform.scale.x = (*i)["value"].as<float>();
-                } else if (property == "m_LocalScale.y") {
-                    transform.scale.y = (*i)["value"].as<float>();
-                } else if (property == "m_LocalScale.z") {
-                    transform.scale.z = (*i)["value"].as<float>();
-                } else if (property == "m_LocalPosition.x") {
-                    transform.position.x = (*i)["value"].as<float>();
-                } else if (property == "m_LocalPosition.y") {
-                    transform.position.y = (*i)["value"].as<float>();
-                } else if (property == "m_LocalPosition.z") {
-                    transform.position.z = (*i)["value"].as<float>();
-                } else if (property == "m_Name") {
-                    properties.name = (*i)["value"].as<std::string>();
-                } else if (property == "m_IsActive") {
+                std::map<std::string, std::function<void()>> actions;
+                actions["m_RootOrder"] = [&]() {
+                    transform.root_Order = i.at("value").get<int>();
+                };
+                actions["m_LocalEulerAnglesHint.x"] = [&]() {
+                    transform.euler.x = i.at("value").get<float>();
+                };
+                actions["m_LocalEulerAnglesHint.y"] = [&]() {
+                    transform.euler.y = i.at("value").get<float>();
+                };
+                actions["m_LocalEulerAnglesHint.z"] = [&]() {
+                    transform.euler.z = i.at("value").get<float>();
+                };
+                actions["m_LocalRotation.w"] = [&]() {
+                    transform.rotation.w = i.at("value").get<float>();
+                };
+                actions["m_LocalRotation.x"] = [&]() {
+                    transform.rotation.x = i.at("value").get<float>();
+                };
+                actions["m_LocalRotation.y"] = [&]() {
+                    transform.rotation.y = i.at("value").get<float>();
+                };
+                actions["m_LocalRotation.z"] = [&]() {
+                    transform.rotation.z = i.at("value").get<float>();
+                };
+                actions["m_LocalScale.x"] = [&]() {
+                    transform.scale.x = i.at("value").get<float>();
+                };
+                actions["m_LocalScale.y"] = [&]() {
+                    transform.scale.y = i.at("value").get<float>();
+                };
+                actions["m_LocalScale.z"] = [&]() {
+                    transform.scale.z = i.at("value").get<float>();
+                };
+                actions["m_LocalPosition.x"] = [&]() {
+                    transform.position.x = i.at("value").get<float>();
+                };
+                actions["m_LocalPosition.y"] = [&]() {
+                    transform.position.y = i.at("value").get<float>();
+                };
+                actions["m_LocalPosition.z"] = [&]() {
+                    transform.position.z = i.at("value").get<float>();
+                };
+                actions["m_Name"] = [&]() {
+                    properties.name = i.at("value").get<std::string>();
+                };
+                actions["m_IsActive"] = [&]() {
                     properties.active =
-                        static_cast<bool>((*i)["value"].as<int>());
+                        static_cast<bool>(i.at("value").get<int>());
+                };
+                if (actions.contains(property)) {
+                    actions.at(property)();
                 }
             }
         }
@@ -561,16 +633,16 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
     // TODO: Consider also adding child references, somehow
     for (auto const &[fileId, entityId] : entityIdsWithTransform) {
         auto const &node{nodes.at(guid).at(fileId)};
-        assert(node["Transform"] &&
+        assert(node.contains("Transform") &&
                "This loop must operate on valid Transform components!");
-        assert(node["Transform"]["m_Father"] &&
-               node["Transform"]["m_Father"]["fileID"] &&
+        assert(node.at("Transform").contains("m_Father") &&
+               node.at("Transform").at("m_Father").contains("fileID") &&
                "Transform components in game files must contain parent "
                "reference!");
 
         auto const &parentFileId =
-            node["Transform"]["m_Father"]["fileID"].as<FileId>();
-        if (parentFileId == "0") {
+            node["Transform"]["m_Father"]["fileID"].get<FileId>();
+        if (parentFileId == 0) {
             continue;
         }
         if (!entityIdsWithTransform.contains(parentFileId)) {
@@ -590,7 +662,8 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
 }
 
 void LevelParser::loadScene(std::string const &scenePath) {
-    auto const &sceneNodes = YAML::LoadAllFromFile(scenePath);
+    nlohmann::json sceneNodes;
+    std::ifstream(scenePath) >> sceneNodes;
 
     // Assume that the GUID for the scene file is the same as the path
     // guidPaths.insert({scenePath, scenePath});
@@ -598,11 +671,11 @@ void LevelParser::loadScene(std::string const &scenePath) {
     // Make a set of all identifiers in scene file
     std::set<FileId> sceneFileIds;
     for (auto const &node : sceneNodes) {
-        yamlLoop(i, node) {
-            if (!i->second["id"]) {
+        for (auto const &[key, value] : node.items()) {
+            if (!value.contains("id")) {
                 continue;
             }
-            sceneFileIds.insert(i->second["id"].as<FileId>());
+            sceneFileIds.insert(value.at("id").get<FileId>());
         }
     }
 
@@ -611,9 +684,9 @@ void LevelParser::loadScene(std::string const &scenePath) {
 
     // Map all possible nodes with corresponding identifiers
     for (auto const &node : sceneNodes) {
-        yamlLoop(i, node) {
+        for (auto const &[key, value] : node.items()) {
             nodes[pathToGuid[scenePath]].insert(
-                {i->second["id"].as<FileId>(), node});
+                {value.at("id").get<FileId>(), node});
         }
     }
 
@@ -628,15 +701,16 @@ Entity LevelParser::loadPrefab(std::string const &filename, bool cache) {
     assert(pathToGuid.contains(filename) &&
            "There's no prefab with that name!");
 
-    std::vector<YAML::Node> assetNodes = YAML::LoadAllFromFile(filename);
+    nlohmann::json assetNodes;
+    std::ifstream(filename) >> assetNodes;
 
     for (auto const &node : assetNodes) {
-        yamlLoop(i, node) {
-            if (!i->second["id"]) {
+        for (auto const &[key, value] : node.items()) {
+            if (!value.contains("id")) {
                 continue;
             }
             prefabFileIds[pathToGuid[filename]].insert(
-                i->second["id"].as<FileId>());
+                value.at("id").get<FileId>());
         }
     }
 
@@ -645,9 +719,9 @@ Entity LevelParser::loadPrefab(std::string const &filename, bool cache) {
 
     // Map all possible nodes with corresponding identifiers
     for (auto const &node : assetNodes) {
-        yamlLoop(i, node) {
+        for (auto const &[key, value] : node.items()) {
             nodes[pathToGuid[filename]].insert(
-                {i->second["id"].as<FileId>(), node});
+                {value.at("id").get<FileId>(), node});
         }
     }
 
@@ -808,49 +882,59 @@ void LevelParser::initialize() {
             if (extension == ".prefab") {
                 continue;
             }
-            std::vector<YAML::Node> assetNodes = YAML::LoadAllFromFile(path);
-            for (auto const &node : assetNodes) {
-                if (extension == ".meta") {
-                    auto const pathWithoutExtension{
-                        fs::path(path).parent_path().string() + "\\" +
-                        fs::path(path).stem().string()};
-                    guidPaths.insert(
-                        {node["guid"].as<FileGuid>(), pathWithoutExtension});
-                    pathToGuid.insert(
-                        {pathWithoutExtension, node["guid"].as<FileGuid>()});
+            if (extension == ".mat") {
+                nlohmann::json assetNodes;
+                std::ifstream(path) >> assetNodes;
+                for (auto const &node : assetNodes) {
+                    if (extension == ".mat") {
+                        // Check for duplicates
+                        assert(materialNodes.find(pathToGuid[path]) ==
+                                   materialNodes.end() &&
+                               "Duplicate file identifiers!");
 
-                    // Check for duplicates
-                    assert(metaNodes.find(pathToGuid[pathWithoutExtension]) ==
-                               metaNodes.end() &&
-                           "Duplicate file identifiers!");
-
-                    if (!pathToGuid[pathWithoutExtension].empty()) {
-                        metaNodes.insert(
-                            {pathToGuid[pathWithoutExtension], node});
+                        materialNodes.insert({pathToGuid[path], node});
                     }
-                } else if (extension == ".prefab") {
-                    yamlLoop(i, node) {
-                        if (!i->second["id"]) {
-                            continue;
-                        }
+                }
+            } else {
+                std::vector<YAML::Node> assetNodes =
+                    YAML::LoadAllFromFile(path);
+                for (auto const &node : assetNodes) {
+                    if (extension == ".meta") {
+                        auto const pathWithoutExtension{
+                            fs::path(path).parent_path().string() + "\\" +
+                            fs::path(path).stem().string()};
+                        guidPaths.insert({node["guid"].as<FileGuid>(),
+                                          pathWithoutExtension});
+                        pathToGuid.insert({pathWithoutExtension,
+                                           node["guid"].as<FileGuid>()});
 
                         // Check for duplicates
-                        /* assert(!nodes[pathToGuid[path]].contains( */
-                        /*            i->second["id"].as<FileId>()) && */
-                        /*        "Duplicate file identifiers!"); */
+                        assert(
+                            metaNodes.find(pathToGuid[pathWithoutExtension]) ==
+                                metaNodes.end() &&
+                            "Duplicate file identifiers!");
 
-                        /* nodes[pathToGuid[path]].insert( */
-                        /*     {i->second["id"].as<FileId>(), node}); */
-                        prefabFileIds[pathToGuid[path]].insert(
-                            i->second["id"].as<FileId>());
+                        if (!pathToGuid[pathWithoutExtension].empty()) {
+                            metaNodes.insert(
+                                {pathToGuid[pathWithoutExtension], node});
+                        }
+                    } else if (extension == ".prefab") {
+                        yamlLoop(i, node) {
+                            if (!i->second["id"]) {
+                                continue;
+                            }
+
+                            // Check for duplicates
+                            /* assert(!nodes[pathToGuid[path]].contains( */
+                            /*            i->second["id"].get<FileId>()) && */
+                            /*        "Duplicate file identifiers!"); */
+
+                            /* nodes[pathToGuid[path]].insert( */
+                            /*     {i->second["id"].get<FileId>(), node}); */
+                            prefabFileIds[pathToGuid[path]].insert(
+                                i->second["id"].as<FileId>());
+                        }
                     }
-                } else if (extension == ".mat") {
-                    // Check for duplicates
-                    assert(materialNodes.find(pathToGuid[path]) ==
-                               materialNodes.end() &&
-                           "Duplicate file identifiers!");
-
-                    materialNodes.insert({pathToGuid[path], node});
                 }
             }
         }

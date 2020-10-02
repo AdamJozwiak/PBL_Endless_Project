@@ -1,6 +1,8 @@
 # Imports
 import sys
 import pathlib
+import ruamel.yaml
+import json
 
 # Read program arguments
 arguments = None
@@ -72,6 +74,13 @@ for filename in filenames:
             output_file.write(
                 "  id: " + input_lines[i - 1][input_lines[i - 1].find("&") + 1 :]
             )
+
+    # Convert YAML to JSON
+    yaml = ruamel.yaml.YAML(typ="safe")
+    with open(filename, "r") as input_file:
+        data = list(yaml.load_all(input_file))
+    with open(filename, "w") as output_file:
+        json.dump(data, output_file, separators=(",", ":"))
 
     # Print new line
     print()
