@@ -120,7 +120,7 @@ class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
     EntityId chunkId;
 
     // Constants
-    static inline constexpr float SPAWN_PADDING_IN_WORLD_UNITS = 60.0f;
+    static inline constexpr float SPAWN_PADDING_IN_WORLD_UNITS = 180.0f;
     static inline constexpr float PART_LENGTH_IN_WORLD_UNITS = 20.0f;
     static inline std::string const CHUNKS_DIRECTORY =
         "Assets\\Unity\\Prefabs\\Chunks Completely Unpacked";
