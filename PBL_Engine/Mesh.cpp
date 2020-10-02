@@ -1,9 +1,11 @@
 #include "Mesh.h"
 
 #include <Sampler.h>
+#include <assimp/anim.h>
 #include <assimp/postprocess.h>
 
 #include <array>
+#include <cmath>
 #include <sstream>
 #include <string_view>
 #include <thread>
@@ -693,24 +695,31 @@ void Model::ReadNodeHierarchy(float animationTime, aiNode* pNode,
     DirectX::XMMATRIX anim = DirectX::XMMatrixIdentity();
 
     if (pNodeAnim) {
-        aiVector3D scale;
-        CalcInterpolatedScaling(scale, animationTime, pNodeAnim);
-        DirectX::XMMATRIX scalingM =
-            DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+        // Interpolate keyframes
+        auto const &scale = interpolateKeyframes<aiVector3D>(
+                       animationTime, pAnim->mDuration,
+                       pNodeAnim->mNumScalingKeys, pNodeAnim->mScalingKeys),
+                   &position = interpolateKeyframes<aiVector3D>(
+                       animationTime, pAnim->mDuration,
+                       pNodeAnim->mNumPositionKeys, pNodeAnim->mPositionKeys);
+        auto const& rotation =
+            interpolateKeyframes<aiQuaternion>(animationTime, pAnim->mDuration,
+                                               pNodeAnim->mNumRotationKeys,
+                                               pNodeAnim->mRotationKeys)
+                .Normalize();
 
-        aiQuaternion rotation;
-        CalcInterpolatedRotation(rotation, animationTime, pNodeAnim);
-        DirectX::XMMATRIX rotationM =
-            DirectX::XMMatrixRotationQuaternion(DirectX::XMVectorSet(
-                rotation.x, rotation.y, rotation.z, rotation.w));
+        // Create transformation matrices
+        auto const &scalingTransformation =
+                       dx::XMMatrixScaling(scale.x, scale.y, scale.z),
+                   &translationTransformation = dx::XMMatrixTranslation(
+                       position.x, position.y, position.z),
+                   &rotationTransformation =
+                       dx::XMMatrixRotationQuaternion(dx::XMVectorSet(
+                           rotation.x, rotation.y, rotation.z, rotation.w));
 
-        aiVector3D position;
-        CalcInterpolatedPos(position, animationTime, pNodeAnim);
-        DirectX::XMMATRIX translationM =
-            DirectX::XMMatrixTranslation(position.x, position.y, position.z);
-
-        nodeTransformation = scalingM * rotationM * translationM;
-        nodeTransformation = DirectX::XMMatrixTranspose(nodeTransformation);
+        nodeTransformation = dx::XMMatrixTranspose(scalingTransformation *
+                                                   rotationTransformation *
+                                                   translationTransformation);
     }
     DirectX::XMMATRIX globalTransformation =
         parentTransform * nodeTransformation;
@@ -742,20 +751,27 @@ void Model::ReadNodeHierarchyForBlend(float animationTime, float animationTime2,
     DirectX::XMMATRIX anim = DirectX::XMMatrixIdentity();
 
     if (currentNodeAnim && nextNodeAnim) {
-        aiVector3D currentScale;
-        CalcInterpolatedScaling(currentScale, animationTime, currentNodeAnim);
-        aiVector3D nextScale;
-        CalcInterpolatedScaling(nextScale, animationTime2, nextNodeAnim);
+        auto const& currentScale = interpolateKeyframes<aiVector3D>(
+            animationTime, currentAnim->mDuration,
+            currentNodeAnim->mNumScalingKeys, currentNodeAnim->mScalingKeys);
+        auto const& nextScale = interpolateKeyframes<aiVector3D>(
+            animationTime, nextAnim->mDuration, nextNodeAnim->mNumScalingKeys,
+            nextNodeAnim->mScalingKeys);
         aiVector3D scaling =
             currentScale * (1.0f - factor) + nextScale * factor;
         DirectX::XMMATRIX scalingM =
             DirectX::XMMatrixScaling(scaling.x, scaling.y, scaling.z);
 
-        aiQuaternion currentRotation;
-        CalcInterpolatedRotation(currentRotation, animationTime,
-                                 currentNodeAnim);
-        aiQuaternion nextRotation;
-        CalcInterpolatedRotation(nextRotation, animationTime2, nextNodeAnim);
+        auto const& currentRotation = interpolateKeyframes<aiQuaternion>(
+                                          animationTime, currentAnim->mDuration,
+                                          currentNodeAnim->mNumRotationKeys,
+                                          currentNodeAnim->mRotationKeys)
+                                          .Normalize();
+        auto const& nextRotation = interpolateKeyframes<aiQuaternion>(
+                                       animationTime, currentAnim->mDuration,
+                                       currentNodeAnim->mNumRotationKeys,
+                                       currentNodeAnim->mRotationKeys)
+                                       .Normalize();
         aiQuaternion rotationQ;
         aiQuaternion::Interpolate(rotationQ, currentRotation, nextRotation,
                                   factor);
@@ -764,10 +780,12 @@ void Model::ReadNodeHierarchyForBlend(float animationTime, float animationTime2,
             DirectX::XMMatrixRotationQuaternion(DirectX::XMVectorSet(
                 rotationQ.x, rotationQ.y, rotationQ.z, rotationQ.w));
 
-        aiVector3D currentPosition;
-        CalcInterpolatedPos(currentPosition, animationTime, currentNodeAnim);
-        aiVector3D nextPosition;
-        CalcInterpolatedPos(nextPosition, animationTime, nextNodeAnim);
+        auto const& currentPosition = interpolateKeyframes<aiVector3D>(
+            animationTime, currentAnim->mDuration,
+            currentNodeAnim->mNumPositionKeys, currentNodeAnim->mPositionKeys);
+        auto const& nextPosition = interpolateKeyframes<aiVector3D>(
+            animationTime, currentAnim->mDuration,
+            currentNodeAnim->mNumPositionKeys, currentNodeAnim->mPositionKeys);
         aiVector3D position =
             currentPosition * (1.0f - factor) + nextPosition * factor;
         DirectX::XMMATRIX translationM =
@@ -855,128 +873,55 @@ aiNodeAnim* Model::FindNodeAnim(aiAnimation* pAnim,
     return NULL;
 }
 
-UINT Model::FindPosIndex(float animationTime, aiNodeAnim* pNodeAnim) {
-    for (UINT i = 0; i < pNodeAnim->mNumPositionKeys - 1; i++) {
-        if (animationTime < (float)pNodeAnim->mPositionKeys[i + 1].mTime) {
-            return i;
+template <typename T, typename U>
+T Model::interpolateKeyframes(float animationTime, float const duration,
+                              int const numKeys, U* const keys) {
+    assert(numKeys > 0);
+
+    if (numKeys == 1) {
+        return keys->mValue;
+    }
+
+    unsigned int const& startIndex = [animationTime, numKeys, keys] {
+        for (int i = 0; i < numKeys - 1; ++i) {
+            if (animationTime > (float)keys[i].mTime &&
+                animationTime < (float)keys[i + 1].mTime) {
+                return i;
+            }
         }
-    }
-    assert(0);
-    return 0;
-}
+        return numKeys - 1;
+    }();
+    unsigned int const& endIndex = (startIndex + 1) % numKeys;
 
-UINT Model::FindRotation(float animationTime, aiNodeAnim* pNodeAnim) {
-    assert(pNodeAnim->mNumRotationKeys > 0);
+    assert(startIndex < numKeys && endIndex < numKeys);
 
-    for (UINT i = 0; i < pNodeAnim->mNumRotationKeys - 1; i++) {
-        if (animationTime < (float)pNodeAnim->mRotationKeys[i + 1].mTime) {
-            return i;
-        }
+    if (startIndex > endIndex) {
+        animationTime += duration;
     }
 
-    assert(0);
+    auto const &startKey = keys[startIndex], &endKey = keys[endIndex];
 
-    return 0;
-}
+    float const& startTime = startKey.mTime;
+    float const& endTime = endKey.mTime + (startIndex > endIndex) * duration;
 
-UINT Model::FindScaling(float animationTime, aiNodeAnim* pNodeAnim) {
-    assert(pNodeAnim->mNumScalingKeys > 0);
+    assert((animationTime >= startTime && animationTime <= endTime) ||
+           animationTime <= startTime || animationTime >= endTime);
 
-    for (UINT i = 0; i < pNodeAnim->mNumScalingKeys - 1; i++) {
-        if (animationTime < (float)pNodeAnim->mScalingKeys[i + 1].mTime) {
-            return i;
-        }
-    }
+    auto const& startValue = startKey.mValue;
+    auto const& endValue = endKey.mValue;
 
-    assert(0);
-
-    return 0;
-}
-
-void Model::CalcInterpolatedPos(aiVector3D& Out, float animationTime,
-                                aiNodeAnim* pNodeAnim) {
-    if (pNodeAnim->mNumPositionKeys == 0) {
-        Out.x = 0.0f;
-        Out.y = 0.0f;
-        Out.z = 0.0f;
-        return;
-    }
-    if (pNodeAnim->mNumPositionKeys == 1) {
-        Out = pNodeAnim->mPositionKeys[0].mValue;
-        return;
-    }
-    if (animationTime <= pNodeAnim->mPositionKeys[0].mTime) {
-        Out = pNodeAnim->mPositionKeys[0].mValue;
-        return;
-    }
-    if (animationTime >=
-        pNodeAnim->mPositionKeys[pNodeAnim->mNumPositionKeys - 1].mTime) {
-        Out = pNodeAnim->mPositionKeys[pNodeAnim->mNumPositionKeys - 1].mValue;
-        return;
-    }
-
-    UINT posIndex = FindPosIndex(animationTime, pNodeAnim);
-    UINT nextPosIndex = (posIndex + 1);
-    assert(nextPosIndex < pNodeAnim->mNumPositionKeys);
-    float deltaTime = (float)(pNodeAnim->mPositionKeys[nextPosIndex].mTime -
-                              pNodeAnim->mPositionKeys[posIndex].mTime);
-    float factor =
-        (animationTime - (float)pNodeAnim->mPositionKeys[posIndex].mTime) /
-        deltaTime;
+    float const& factor = (animationTime - startTime) / (endTime - startTime);
     assert(factor >= 0.0f && factor <= 1.0f);
-    const aiVector3D& start = pNodeAnim->mPositionKeys[posIndex].mValue;
-    const aiVector3D& end = pNodeAnim->mPositionKeys[nextPosIndex].mValue;
-    aiVector3D delta = end - start;
-    Out = start + factor * delta;
+
+    T interpolatedValue;
+    Assimp::Interpolator<T>()(interpolatedValue, startValue, endValue, factor);
+    return interpolatedValue;
 }
 
-void Model::CalcInterpolatedRotation(aiQuaternion& Out, float animationTime,
-                                     aiNodeAnim* pNodeAnim) {
-    // we need at least two values to interpolate...
-    if (pNodeAnim->mNumRotationKeys == 1) {
-        Out = pNodeAnim->mRotationKeys[0].mValue;
-        return;
-    }
-
-    UINT RotationIndex = FindRotation(animationTime, pNodeAnim);
-    UINT NextRotationIndex = (RotationIndex + 1);
-    assert(NextRotationIndex < pNodeAnim->mNumRotationKeys);
-    float DeltaTime =
-        (float)(pNodeAnim->mRotationKeys[NextRotationIndex].mTime -
-                pNodeAnim->mRotationKeys[RotationIndex].mTime);
-    float Factor =
-        (animationTime - (float)pNodeAnim->mRotationKeys[RotationIndex].mTime) /
-        DeltaTime;
-    assert(Factor >= 0.0f && Factor <= 1.0f);
-    const aiQuaternion& StartRotationQ =
-        pNodeAnim->mRotationKeys[RotationIndex].mValue;
-    const aiQuaternion& EndRotationQ =
-        pNodeAnim->mRotationKeys[NextRotationIndex].mValue;
-    aiQuaternion::Interpolate(Out, StartRotationQ, EndRotationQ, Factor);
-    Out = Out.Normalize();
-}
-
-void Model::CalcInterpolatedScaling(aiVector3D& Out, float animationTime,
-                                    aiNodeAnim* pNodeAnim) {
-    if (pNodeAnim->mNumScalingKeys == 1) {
-        Out = pNodeAnim->mScalingKeys[0].mValue;
-        return;
-    }
-
-    UINT ScalingIndex = FindScaling(animationTime, pNodeAnim);
-    UINT NextScalingIndex = (ScalingIndex + 1);
-    assert(NextScalingIndex < pNodeAnim->mNumScalingKeys);
-    float DeltaTime = (float)(pNodeAnim->mScalingKeys[NextScalingIndex].mTime -
-                              pNodeAnim->mScalingKeys[ScalingIndex].mTime);
-    float Factor =
-        (animationTime - (float)pNodeAnim->mScalingKeys[ScalingIndex].mTime) /
-        DeltaTime;
-    assert(Factor >= 0.0f && Factor <= 1.0f);
-    const aiVector3D& Start = pNodeAnim->mScalingKeys[ScalingIndex].mValue;
-    const aiVector3D& End = pNodeAnim->mScalingKeys[NextScalingIndex].mValue;
-    aiVector3D Delta = End - Start;
-    Out = Start + Factor * Delta;
-}
+template aiVector3D Model::interpolateKeyframes<aiVector3D, aiVectorKey>(
+    float, float, int, aiVectorKey*);
+template aiQuaternion Model::interpolateKeyframes<aiQuaternion, aiQuatKey>(
+    float, float, int, aiQuatKey*);
 
 DirectX::XMMATRIX Model::aiMatrixToXMMATRIX(aiMatrix4x4 aiM) {
     return DirectX::XMMATRIX(&aiM.a1);

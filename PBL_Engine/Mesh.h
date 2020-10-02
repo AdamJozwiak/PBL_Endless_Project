@@ -122,15 +122,11 @@ class Model {
                                    float factor);
     aiNodeAnim* FindNodeAnim(aiAnimation* pAnim,
                              std::string_view const& nodeName);
-    UINT FindPosIndex(float animationTime, aiNodeAnim* pNodeAnim);
-    UINT FindRotation(float animationTime, aiNodeAnim* pNodeAnim);
-    UINT FindScaling(float animationTime, aiNodeAnim* pNodeAnim);
-    void CalcInterpolatedPos(aiVector3D& Out, float animationTime,
-                             aiNodeAnim* pNodeAnim);
-    void CalcInterpolatedRotation(aiQuaternion& Out, float animationTime,
-                                  aiNodeAnim* pNodeAnim);
-    void CalcInterpolatedScaling(aiVector3D& Out, float animationTime,
-                                 aiNodeAnim* pNodeAnim);
+
+    template <typename T, typename U>
+    T interpolateKeyframes(float animationTime, float duration, int numKeys,
+                           U* keys);
+
     DirectX::XMMATRIX aiMatrixToXMMATRIX(aiMatrix4x4 aiM);
     std::vector<std::pair<std::string, Bone>> getBonesMap();
 
