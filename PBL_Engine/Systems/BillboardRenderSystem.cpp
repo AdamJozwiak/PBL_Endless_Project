@@ -64,7 +64,7 @@ void BillboardRenderSystem::update(float deltaTime) {
     colorCorrection->End();
 
     {
-        window->Gfx().BeginFrame(0.07f, 0.0f, 0.12f, false);
+        window->Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
         colorCorrection->Draw(window->Gfx());
     }
 }

@@ -120,12 +120,6 @@ void Graphics::SetDefaultRenderTarget(int width, int height) {
 }
 
 void Graphics::EndFrame() {
-    // imgui frame end
-    if (imguiEnabled) {
-        ImGui::Render();
-        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-    }
-
     HRESULT hr;
 #ifndef NDEBUG
     infoManager.Set();
@@ -140,15 +134,22 @@ void Graphics::EndFrame() {
     }
 }
 
-void Graphics::BeginFrame(float red, float green, float blue,
-                          bool imguiRender) noexcept {
-    // imgui begin frame
-    if (imguiEnabled && imguiRender) {
+void Graphics::beginImguiFrame() {
+    if (imguiEnabled) {
         ImGui_ImplDX11_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
     }
+}
 
+void Graphics::endImguiFrame() {
+    if (imguiEnabled) {
+        ImGui::Render();
+        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+    }
+}
+
+void Graphics::BeginFrame(float red, float green, float blue) noexcept {
     const float color[] = {red, green, blue, 1.0f};
     pContext->ClearRenderTargetView(pTarget.Get(), color);
     pContext->ClearDepthStencilView(pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);

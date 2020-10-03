@@ -194,6 +194,7 @@ void RenderSystem::update(float deltaTime) {
 
     window->Gfx().SetDefaultViewport();
     window->Gfx().SetProjection(normalFOV);
+    window->Gfx().beginImguiFrame();
     window->Gfx().BeginFrame(0.0f, 0.0f, 0.0f);
     bloom->Begin();
 

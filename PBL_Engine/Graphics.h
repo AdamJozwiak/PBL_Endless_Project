@@ -66,8 +66,9 @@ class Graphics {
     void SetDefaultViewport();
     void SetDefaultRenderTarget(int width, int height);
     void EndFrame();
-    void BeginFrame(float red, float green, float blue,
-                    bool imguiRender = true) noexcept;
+    void BeginFrame(float red, float green, float blue) noexcept;
+    void beginImguiFrame();
+    void endImguiFrame();
     void DrawIndexed(UINT count) noexcept(!IS_DEBUG);
     void SetProjection(DirectX::FXMMATRIX proj) noexcept;
     DirectX::XMMATRIX GetProjection() const noexcept;

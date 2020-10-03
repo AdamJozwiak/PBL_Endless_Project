@@ -43,6 +43,7 @@ void UIRenderSystem::update(float deltaTime) {
     }
     Text::endDrawing();
 
+    window->Gfx().endImguiFrame();
     window->Gfx().EndFrame();
 }
 
