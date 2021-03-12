@@ -1,10 +1,10 @@
 #pragma once
 
 // ////////////////////////////////////////////////////////////////// DLL API //
-#ifdef TESTSCRIPT2_EXPORTS
-#define TESTSCRIPT2_API __declspec(dllexport)
+#ifdef SCRIPTS_EXPORTS
+#define SCRIPTS_API __declspec(dllexport)
 #else
-#define TESTSCRIPT2_API __declspec(dllimport)
+#define SCRIPTS_API __declspec(dllimport)
 #endif
 
 // ////////////////////////////////////////////////////////////////////////// //

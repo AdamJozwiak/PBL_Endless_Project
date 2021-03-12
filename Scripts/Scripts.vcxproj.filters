@@ -15,18 +15,48 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameManagerScript.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptsAPI.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraControllerScript.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyControllerScript.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerControllerScript.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="TestScript.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestScriptAPI.hpp">
+    <ClInclude Include="TestScript2.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameManagerScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CameraControllerScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyControllerScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerControllerScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="TestScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScript2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -7,10 +7,10 @@
 #include "Events/OnButtonClick.hpp"
 #include "Events/OnCollisionEnter.hpp"
 #include "Script.hpp"
-#include "TestScriptAPI.hpp"
+#include "ScriptsAPI.hpp"
 
 // //////////////////////////////////////////////////////////////////// Class //
-class TESTSCRIPT_API TestScript : public Script {
+class SCRIPTS_API TestScript : public Script {
   public:
     // ========================================================= Behaviour == //
     TestScript(Entity const &entity);

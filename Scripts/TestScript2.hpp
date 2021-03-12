@@ -5,13 +5,13 @@
 
 #include "ECS/Entity.hpp"
 #include "Script.hpp"
-#include "TestScript2API.hpp"
+#include "ScriptsAPI.hpp"
 
 // ///////////////////////////////////////////////////// Forward declarations //
 class TestScript;
 
 // //////////////////////////////////////////////////////////////////// Class //
-class TESTSCRIPT2_API TestScript2 : public Script {
+class SCRIPTS_API TestScript2 : public Script {
   public:
     // ========================================================= Behaviour == //
     TestScript2(Entity const &entity);

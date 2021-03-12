@@ -9,11 +9,11 @@
 #include "ECS/Entity.hpp"
 #include "Events/OnCollisionEnter.hpp"
 #include "Events/OnGameStateChange.hpp"
-#include "PlayerControllerScriptAPI.hpp"
 #include "Script.hpp"
+#include "ScriptsAPI.hpp"
 
 // //////////////////////////////////////////////////////////////////// Class //
-class PLAYERCONTROLLERSCRIPT_API PlayerControllerScript : public Script {
+class SCRIPTS_API PlayerControllerScript : public Script {
   public:
     // ========================================================= Behaviour == //
     PlayerControllerScript(Entity const &entity);

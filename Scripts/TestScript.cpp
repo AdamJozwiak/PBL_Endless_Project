@@ -7,6 +7,7 @@
 #include "ECS/ECS.hpp"
 #include "Systems/Systems.hpp"
 #include "Window.h"
+#include "script-factory.hpp"
 
 int counter = 0;
 constexpr int NUMBER_OF_MONKEYS = 10;
@@ -41,10 +42,7 @@ void spawnMonkey(Entity entity) {
 }
 
 // ///////////////////////////////////////////////////////// Factory function //
-extern "C" TESTSCRIPT_API void create(std::shared_ptr<Script>& script,
-                                      Entity entity) {
-    script = std::make_shared<TestScript>(entity);
-}
+SCRIPT_FACTORY(TestScript)
 
 // //////////////////////////////////////////////////////////////////// Class //
 // ============================================================= Behaviour == //

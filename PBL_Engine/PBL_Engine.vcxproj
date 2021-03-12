@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\TestScript\dllmain.cpp" />
     <ClCompile Include="Bindable.cpp" />
     <ClCompile Include="Blender.cpp" />
     <ClCompile Include="BonesCbuf.cpp" />
@@ -230,6 +229,7 @@
     <ClInclude Include="IsDebug.hpp" />
     <ClInclude Include="json\single_include\nlohmann\json.hpp" />
     <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="math-operators.hpp" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="LevelParser.h" />
     <ClInclude Include="Mouse.h" />

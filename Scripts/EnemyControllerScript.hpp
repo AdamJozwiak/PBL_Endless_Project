@@ -1,22 +1,21 @@
 #pragma once
 
 // ///////////////////////////////////////////////////////////////// Includes //
-#include <DirectXMath.h>
-
-#include <Components/Transform.hpp>
 #include <memory>
 
-#include "CameraControllerScriptAPI.hpp"
 #include "ECS/Entity.hpp"
 #include "Events/OnCollisionEnter.hpp"
 #include "Events/OnGameStateChange.hpp"
 #include "Script.hpp"
+#include "ScriptsAPI.hpp"
+
+enum MovementType { Rook, Bishop };
 
 // //////////////////////////////////////////////////////////////////// Class //
-class CAMERACONTROLLERSCRIPT_API CameraControllerScript : public Script {
+class SCRIPTS_API EnemyControllerScript : public Script {
   public:
     // ========================================================= Behaviour == //
-    CameraControllerScript(Entity const &entity);
+    EnemyControllerScript(Entity const &entity);
 
     // ------------------------------------- System's virtual functions -- == //
     void setup() override;
@@ -25,31 +24,35 @@ class CAMERACONTROLLERSCRIPT_API CameraControllerScript : public Script {
     // --------------------------------------------------------- Events -- == //
     void onCollisionEnter(OnCollisionEnter const &event);
     void onGameStateChange(OnGameStateChange const &event);
+    // void onTriggerEnter(OnTriggerEnter const &event);
 
     // -------------------------------------------------------- Methods -- == //
-    void setPosition();  //? May not be useful?
-    void shake(float deltaTime);
+    void moveBishop(float deltaTime);
+    void moveRook(float const deltaTime);
+    void setMovementType(MovementType mt, bool movingS = true);
 
   private:
     // ============================================================== Data == //
-    GameState currentState = GAME_LAUNCH_FADE_IN;
+    GameState currentState = GAME;
 
     bool (*isKeyPressed)(int const key);
 
+    EntityId loseText;
+
+    /* IEnumerator waitToResetLvl() { */
+    /*     yield return new WaitForSeconds(1.5f); */
+    /*     SceneManager.LoadScene(0); */
+    /* } */
+    MovementType movementType = Bishop;
+    float speed = 30.0f;
+    float angle = 0.45f;
+    bool movingLeft = true;
+    // for Rook
+    bool movingSideways = true;
     EntityId playerId;
-    EntityId menuCameraId;
-    Transform originalTransform;
-    Transform middleTransform;
-    float smoothing = 0.2f;
-    DirectX::XMFLOAT3 shakeOffset;
-    DirectX::XMFLOAT3 offset = {0.0f, 0.0f, 0.0f};
-    DirectX::XMFLOAT3 lastPosition = {0.0f, 0.0f, 0.0f};
-    // Entity cameraTarget;
-    // float rotateSpeed = 0.0f;
-    // float rotate;
-    // float offsetDistance = 0.0f;
-    // float offsetHeight = 0.0f;
-    // bool following = true;
+    float playerDistance = 10.0f;
+    float timeToBounce = 0.0f;
+    float rookTimer = 0.0f;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

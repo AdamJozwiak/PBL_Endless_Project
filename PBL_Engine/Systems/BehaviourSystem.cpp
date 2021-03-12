@@ -29,13 +29,13 @@ void BehaviourSystem::release() {}
 
 Behaviour BehaviourSystem::behaviour(std::string const &name,
                                      Entity const &entity) {
-    HINSTANCE dll = LoadLibrary((name + ".dll").c_str());
+    static HINSTANCE dll = LoadLibrary("Scripts.dll");
     assert(dll && "Behaviour's .dll script must be loaded correctly!");
 
     using ScriptCreationPtr =
         void(__cdecl *)(std::shared_ptr<Script> &, Entity);
-    ScriptCreationPtr create =
-        reinterpret_cast<ScriptCreationPtr>(GetProcAddress(dll, "create"));
+    ScriptCreationPtr create = reinterpret_cast<ScriptCreationPtr>(
+        GetProcAddress(dll, std::string("create" + name).c_str()));
     assert(create &&
            "Behaviour's .dll script creation function must be defined "
            "correctly!");

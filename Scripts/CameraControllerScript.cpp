@@ -9,18 +9,11 @@
 #include "Systems/Systems.hpp"
 #include "Window.h"
 #include "easings.hpp"
-
-// //////////////////////////////////////////////////////////////// Utilities //
-DirectX::XMFLOAT3 operator-(DirectX::XMFLOAT3 const& a,
-                            DirectX::XMFLOAT3 const& b) {
-    return {a.x - b.x, a.y - b.y, a.z - b.z};
-}
+#include "math-operators.hpp"
+#include "script-factory.hpp"
 
 // ///////////////////////////////////////////////////////// Factory function //
-extern "C" CAMERACONTROLLERSCRIPT_API void create(
-    std::shared_ptr<Script>& script, Entity entity) {
-    script = std::make_shared<CameraControllerScript>(entity);
-}
+SCRIPT_FACTORY(CameraControllerScript)
 
 // //////////////////////////////////////////////////////////////////// Class //
 // ============================================================= Behaviour == //

@@ -9,53 +9,11 @@
 #include "Systems/Systems.hpp"
 #include "Window.h"
 #include "easings.hpp"
-
-// //////////////////////////////////////////////////////////////// Utilities //
-DirectX::XMFLOAT3 operator+(DirectX::XMFLOAT3 const& a,
-                            DirectX::XMFLOAT3 const& b) {
-    return {a.x + b.x, a.y + b.y, a.z + b.z};
-}
-
-DirectX::XMFLOAT3& operator+=(DirectX::XMFLOAT3& a,
-                              DirectX::XMFLOAT3 const& b) {
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    return a;
-}
-
-DirectX::XMFLOAT3 operator-(DirectX::XMFLOAT3 const& a,
-                            DirectX::XMFLOAT3 const& b) {
-    return {a.x - b.x, a.y - b.y, a.z - b.z};
-}
-
-DirectX::XMFLOAT3 operator*(DirectX::XMFLOAT3 const& a, float const b) {
-    return {a.x * b, a.y * b, a.z * b};
-}
-
-DirectX::XMFLOAT3& operator*=(DirectX::XMFLOAT3& a, float const b) {
-    a.x *= b;
-    a.y *= b;
-    a.z *= b;
-    return a;
-}
-
-DirectX::XMFLOAT3 operator/(DirectX::XMFLOAT3 const& a, float const b) {
-    return {a.x / b, a.y / b, a.z / b};
-}
-
-DirectX::XMFLOAT3& operator/=(DirectX::XMFLOAT3& a, float const b) {
-    a.x /= b;
-    a.y /= b;
-    a.z /= b;
-    return a;
-}
+#include "math-operators.hpp"
+#include "script-factory.hpp"
 
 // ///////////////////////////////////////////////////////// Factory function //
-extern "C" ENEMYCONTROLLERSCRIPT_API void create(
-    std::shared_ptr<Script>& script, Entity entity) {
-    script = std::make_shared<EnemyControllerScript>(entity);
-}
+SCRIPT_FACTORY(EnemyControllerScript)
 
 // //////////////////////////////////////////////////////////////////// Class //
 // ============================================================= Behaviour == //

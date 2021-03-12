@@ -5,12 +5,10 @@
 #include "ECS/ECS.hpp"
 #include "Systems/Systems.hpp"
 #include "TestScript.hpp"
+#include "script-factory.hpp"
 
 // ///////////////////////////////////////////////////////// Factory function //
-extern "C" TESTSCRIPT2_API void create(std::shared_ptr<Script>& script,
-                                       Entity entity) {
-    script = std::make_shared<TestScript2>(entity);
-}
+SCRIPT_FACTORY(TestScript2)
 
 // //////////////////////////////////////////////////////////////////// Class //
 // ============================================================= Behaviour == //

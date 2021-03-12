@@ -237,9 +237,6 @@
     <ClCompile Include="Systems\BehaviourSystem.cpp">
       <Filter>Pliki źródłowe\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="..\TestScript\dllmain.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
     <ClCompile Include="PointLight.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
@@ -1198,6 +1195,9 @@
     </ClInclude>
     <ClInclude Include="json\single_include\nlohmann\json.hpp">
       <Filter>json</Filter>
+    </ClInclude>
+    <ClInclude Include="math-operators.hpp">
+      <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

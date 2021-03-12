@@ -12,14 +12,14 @@
 #include "Events/OnCollisionEnter.hpp"
 #include "Events/OnGameExit.hpp"
 #include "Events/OnGameStateChange.hpp"
-#include "GameManagerScriptAPI.hpp"
 #include "Script.hpp"
+#include "ScriptsAPI.hpp"
 #include "Timer.h"
 
 class EnemyControllerScript;
 
 // //////////////////////////////////////////////////////////////////// Class //
-class GAMEMANAGERSCRIPT_API GameManagerScript : public Script {
+class SCRIPTS_API GameManagerScript : public Script {
   public:
     // ========================================================= Behaviour == //
     GameManagerScript(Entity const &entity);

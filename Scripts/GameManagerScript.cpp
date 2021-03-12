@@ -16,15 +16,8 @@
 #include "Timer.h"
 #include "Window.h"
 #include "easings.hpp"
-
-DirectX::XMFLOAT3 operator+(DirectX::XMFLOAT3 const& a,
-                            DirectX::XMFLOAT3 const& b) {
-    return {a.x + b.x, a.y + b.y, a.z + b.z};
-}
-DirectX::XMFLOAT3 operator-(DirectX::XMFLOAT3 const& a,
-                            DirectX::XMFLOAT3 const& b) {
-    return {a.x - b.x, a.y - b.y, a.z - b.z};
-}
+#include "math-operators.hpp"
+#include "script-factory.hpp"
 
 // //////////////////////////////////////////////////////// Namespace aliases //
 namespace fs = std::filesystem;
@@ -48,10 +41,7 @@ std::future<EntityId> cacheFuture;
 std::thread cacheThread;
 
 // ///////////////////////////////////////////////////////// Factory function //
-extern "C" GAMEMANAGERSCRIPT_API void create(std::shared_ptr<Script>& script,
-                                             Entity entity) {
-    script = std::make_shared<GameManagerScript>(entity);
-}
+SCRIPT_FACTORY(GameManagerScript)
 
 // //////////////////////////////////////////////////////////////////// Class //
 // ============================================================= Behaviour == //
