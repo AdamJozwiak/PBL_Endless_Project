@@ -65,6 +65,12 @@ void GameManagerScript::setup() {
             key);
     };
 
+    // Register sounds
+    registry.system<SoundSystem>()->registerMultisampleEffect(
+        "ui-button-click", "Assets\\Audio\\gui", ".wav");
+    registry.system<SoundSystem>()->registerMultisampleEffect(
+        "ui-button-hover", "Assets\\Audio\\Airlock", ".wav");
+
     // Load chunk names
     for (auto const& entry :
          fs::recursive_directory_iterator(CHUNKS_DIRECTORY)) {
@@ -544,7 +550,7 @@ void GameManagerScript::onButtonClick(OnButtonClick const& event) {
         return Entity(button).get<UIElement>().button.get() == event.button;
     };
 
-    registry.system<SoundSystem>()->play("Assets\\Audio\\gui\\01.wav");
+    registry.system<SoundSystem>()->playRandomSample("ui-button-click");
 
     switch (currentState) {
         case GAME_LAUNCH_FADE_IN: {
@@ -587,9 +593,8 @@ void GameManagerScript::onButtonHover(OnButtonHover const& event) {
         return event.on;
     };
 
-    registry.system<SoundSystem>()->play(
-        "Assets\\Audio\\Airlock\\airlock-door-click-01.wav",
-        0.025f * (event.on ? 1.0f : 0.5f));
+    registry.system<SoundSystem>()->playRandomSample(
+        "ui-button-hover", 0.025f * (event.on ? 1.0f : 0.5f));
 
     switch (currentState) {
         case GAME_LAUNCH_FADE_IN: {

@@ -17,10 +17,16 @@ ECS_SYSTEM(SoundSystem) {
 
     // ------------------------------------------------ SoLoud wrappers -- == //
     void play(std::string const &sound, float const volume = -1.0f);
+    void playRandomSample(std::string const &name, float const volume = -1.0f);
     void play3d(std::string const &sound, DirectX::XMFLOAT3 position,
                 float const volume = -1.0f);
     void setListener(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 at,
                      DirectX::XMFLOAT3 up);
+
+    // ----------------------------------------------- Multiple samples -- == //
+    void registerMultisampleEffect(std::string const &name,
+                                   std::string const &path,
+                                   std::string const &extension);
 };
 
 // ////////////////////////////////////////////////////////////////////////// //
