@@ -56,17 +56,11 @@ void Button::draw(float const deltaTime, std::string const& text, float a,
             hovered = true;
             Registry::instance().send(
                 OnButtonHover{.button = this, .on = true});
-
-            Registry::instance().system<SoundSystem>()->play(
-                "Assets\\Audio\\Airlock\\airlock-door-click-01.wav", 0.025f);
         }
 
         if (mouse && !clicked) {
             clicked = true;
             Registry::instance().send(OnButtonClick{.button = this});
-
-            Registry::instance().system<SoundSystem>()->play(
-                "Assets\\Audio\\gui\\01.wav");
         } else if (!mouse && clicked) {
             clicked = false;
         }
@@ -79,9 +73,6 @@ void Button::draw(float const deltaTime, std::string const& text, float a,
             hovered = false;
             Registry::instance().send(
                 OnButtonHover{.button = this, .on = false});
-
-            Registry::instance().system<SoundSystem>()->play(
-                "Assets\\Audio\\Airlock\\airlock-door-click-01.wav", 0.0125f);
         }
     }
 

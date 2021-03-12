@@ -544,6 +544,8 @@ void GameManagerScript::onButtonClick(OnButtonClick const& event) {
         return Entity(button).get<UIElement>().button.get() == event.button;
     };
 
+    registry.system<SoundSystem>()->play("Assets\\Audio\\gui\\01.wav");
+
     switch (currentState) {
         case GAME_LAUNCH_FADE_IN: {
         } break;
@@ -584,6 +586,10 @@ void GameManagerScript::onButtonHover(OnButtonHover const& event) {
     auto isMouseOnButton = [this, &event](EntityId const button) {
         return event.on;
     };
+
+    registry.system<SoundSystem>()->play(
+        "Assets\\Audio\\Airlock\\airlock-door-click-01.wav",
+        0.025f * (event.on ? 1.0f : 0.5f));
 
     switch (currentState) {
         case GAME_LAUNCH_FADE_IN: {
