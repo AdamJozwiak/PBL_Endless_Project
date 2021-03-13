@@ -22,8 +22,7 @@ std::shared_ptr<Engine> loadEngineFromDll(std::wstring path) {
 // ///////////////////////////////////////////////////////////////////// Main //
 int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     try {
-        auto engine = loadEngineFromDll(L"PBL_Engine.dll");
-        return engine->run();
+        return loadEngineFromDll(L"PBL_Engine.dll")->run();
 
     } catch (ExceptionHandler const& exception) {
         MessageBoxA(nullptr, exception.what(), exception.GetType(),

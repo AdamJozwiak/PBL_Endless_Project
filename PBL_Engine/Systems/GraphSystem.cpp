@@ -33,17 +33,71 @@ bool operator!=(Transform const& a, Transform const& b) { return !(a == b); }
 // ----------------------------------------- System's virtual functions -- == //
 void GraphSystem::filters() { filter<Properties>().filter<Transform>(); }
 
-void GraphSystem::setup() {
-    // Set default values for the root node
-    root.parent = nullptr;
-    root.children.clear();
-    root.entity = std::nullopt;
-    root.transform = nullptr;
-    root.activity = nullptr;
-    root.cumulativeTransform = dx::XMMatrixIdentity();
-    root.cumulativeActivity = true;
-    root.recalculateTransforms = true;
-    root.recalculateActivity = true;
+void GraphSystem::setup() { rebuildGraph(); }
+
+void GraphSystem::update(float const deltaTime) { updateGraph(); };
+
+void GraphSystem::release() {}
+
+DirectX::XMMATRIX GraphSystem::transform(Entity const& entity) {
+    return entityToGraphNode.at(entity.id).cumulativeTransform;
+}
+
+void GraphSystem::destroyEntityWithChildren(Entity const& entity) {
+    // Destroy the entity
+    registry.destroyEntity(entity);
+
+    // Destroy the entity's children if they exist
+    if (!entityToGraphNode.contains(entity.id)) {
+        return;
+    }
+    auto const& children = entityToGraphNode.at(entity.id).children;
+    if (!children.empty()) {
+        for (auto const& childEntityId : children) {
+            destroyEntityWithChildren(childEntityId);
+        }
+    }
+}
+
+DirectX::XMMATRIX GraphSystem::matrix(Transform const& transform) {
+    // Convert rotation quaternion into axis-angle representation
+    dx::XMVECTOR quaternion =
+        dx::XMVectorSet(transform.rotation.x, transform.rotation.y,
+                        transform.rotation.z, transform.rotation.w);
+
+    dx::XMVECTOR axis;
+    float angle;
+    dx::XMQuaternionToAxisAngle(&axis, &angle, quaternion);
+
+    // Combine transformations
+    dx::XMMATRIX result = dx::XMMatrixIdentity();
+
+    // Scaling
+    result *= dx::XMMatrixScaling(transform.scale.x, transform.scale.y,
+                                  transform.scale.z);
+    // Rotation (Unity)
+    if (angle) {
+        result *= dx::XMMatrixRotationAxis(axis, angle);
+    }
+
+    // Rotation (game)
+    result *= dx::XMMatrixRotationRollPitchYaw(
+        transform.euler.x, transform.euler.y, transform.euler.z);
+
+    // Translation
+    result *= dx::XMMatrixTranslation(
+        transform.position.x, transform.position.y, transform.position.z);
+
+    return result;
+}
+
+void GraphSystem::rebuildGraph() {
+    resetGraph();
+    updateGraph();
+}
+
+void GraphSystem::resetGraph() {
+    resetRootNode();
 
     entityToGraphNode.clear();
     entityToPreviousTransform.clear();
@@ -73,7 +127,7 @@ void GraphSystem::setup() {
     // Construct the parent-child relationships between the graph nodes
     for (auto& [entityId, graphNode] : entityToGraphNode) {
         auto const& entity = Entity(entityId);
-        //if (!entities.contains(entity)) {
+        // if (!entities.contains(entity)) {
         //    continue;
         //}
 
@@ -98,12 +152,21 @@ void GraphSystem::setup() {
             }
         }
     }
-
-
-    update(0.0f);
 }
 
-void GraphSystem::update(float const deltaTime) {
+void GraphSystem::resetRootNode() {
+    root.parent = nullptr;
+    root.children.clear();
+    root.entity = std::nullopt;
+    root.transform = nullptr;
+    root.activity = nullptr;
+    root.cumulativeTransform = dx::XMMatrixIdentity();
+    root.cumulativeActivity = true;
+    root.recalculateTransforms = true;
+    root.recalculateActivity = true;
+}
+
+void GraphSystem::updateGraph() {
     // Check for transformations that need to be recalculated
     for (auto const& [entityId, previousTransform] :
          entityToPreviousTransform) {
@@ -177,60 +240,6 @@ void GraphSystem::update(float const deltaTime) {
         node.recalculateTransforms = false;
         node.recalculateActivity = false;
     }
-};
-
-void GraphSystem::release() {}
-
-DirectX::XMMATRIX GraphSystem::transform(Entity const& entity) {
-    return entityToGraphNode.at(entity.id).cumulativeTransform;
-}
-
-void GraphSystem::destroyEntityWithChildren(Entity const& entity) {
-    // Destroy the entity
-    registry.destroyEntity(entity);
-
-    // Destroy the entity's children if they exist
-    if (!entityToGraphNode.contains(entity.id)) {
-        return;
-    }
-    auto const& children = entityToGraphNode.at(entity.id).children;
-    if (!children.empty()) {
-        for (auto const& childEntityId : children) {
-            destroyEntityWithChildren(childEntityId);
-        }
-    }
-}
-
-DirectX::XMMATRIX GraphSystem::matrix(Transform const& transform) {
-    // Convert rotation quaternion into axis-angle representation
-    dx::XMVECTOR quaternion =
-        dx::XMVectorSet(transform.rotation.x, transform.rotation.y,
-                        transform.rotation.z, transform.rotation.w);
-
-    dx::XMVECTOR axis;
-    float angle;
-    dx::XMQuaternionToAxisAngle(&axis, &angle, quaternion);
-
-    // Combine transformations
-    dx::XMMATRIX result = dx::XMMatrixIdentity();
-
-    // Scaling
-    result *= dx::XMMatrixScaling(transform.scale.x, transform.scale.y,
-                                  transform.scale.z);
-    // Rotation (Unity)
-    if (angle) {
-        result *= dx::XMMatrixRotationAxis(axis, angle);
-    }
-
-    // Rotation (game)
-    result *= dx::XMMatrixRotationRollPitchYaw(
-        transform.euler.x, transform.euler.y, transform.euler.z);
-
-    // Translation
-    result *= dx::XMMatrixTranslation(
-        transform.position.x, transform.position.y, transform.position.z);
-
-    return result;
 }
 
 // ////////////////////////////////////////////////////////////////////////// //

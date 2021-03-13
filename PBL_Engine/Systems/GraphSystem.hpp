@@ -20,12 +20,19 @@ ECS_SYSTEM(GraphSystem) {
     void release() override;
 
     // ----------------------------------------------- Public interface -- == //
+    void rebuildGraph();
+
     DirectX::XMMATRIX transform(Entity const &entity);
     void destroyEntityWithChildren(Entity const &entity);
 
   private:
     // ========================================================= Behaviour == //
     DirectX::XMMATRIX matrix(Transform const &transform);
+
+    void resetGraph();
+    void resetRootNode();
+
+    void updateGraph();
 
     // ============================================================== Data == //
     struct GraphNode {

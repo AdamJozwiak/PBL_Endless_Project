@@ -107,7 +107,7 @@ ENGINE_API int Engine::run() {
 
     while (runGameLoop) {
         if (registry.refresh()) {
-            registry.system<GraphSystem>()->setup();
+            registry.system<GraphSystem>()->rebuildGraph();
         }
 
         if ((exitCode = Window::ProcessMessages())) {
