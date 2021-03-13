@@ -108,7 +108,7 @@ void GraphSystem::update(float const deltaTime) {
     for (auto const& [entityId, previousTransform] :
          entityToPreviousTransform) {
         auto const& entity = Entity(entityId);
-        //if (!entities.contains(entity)) {
+        // if (!entities.contains(entity)) {
         //    continue;
         //}
 
@@ -123,7 +123,7 @@ void GraphSystem::update(float const deltaTime) {
     // Check for activities that need to be recalculated
     for (auto const& [entityId, previousActivity] : entityToPreviousActivity) {
         auto const& entity = Entity(entityId);
-        //if (!entities.contains(entity)) {
+        // if (!entities.contains(entity)) {
         //    continue;
         //}
 
@@ -191,7 +191,7 @@ void GraphSystem::destroyEntityWithChildren(Entity const& entity) {
 
     // Destroy the entity's children if they exist
     if (!entityToGraphNode.contains(entity.id)) {
-        return; 
+        return;
     }
     auto const& children = entityToGraphNode.at(entity.id).children;
     if (!children.empty()) {
