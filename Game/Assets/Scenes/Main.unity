@@ -36548,6 +36548,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5850286561389533222}
   - component: {fileID: 1725443636691836258}
+  - component: {fileID: 8148863324237654997}
   m_Layer: 0
   m_Name: Menu Torch
   m_TagString: Torch
@@ -36555,6 +36556,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8148863324237654997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8148863324237654996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d56d8d1b7a8eb749b45270ad520c394, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8180805255733315190
 GameObject:
   m_ObjectHideFlags: 0

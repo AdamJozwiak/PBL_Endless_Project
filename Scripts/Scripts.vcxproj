@@ -185,6 +185,7 @@
   <ItemGroup>
     <ClInclude Include="CameraControllerScript.hpp" />
     <ClInclude Include="EnemyControllerScript.hpp" />
+    <ClInclude Include="FlameScript.hpp" />
     <ClInclude Include="PlayerControllerScript.hpp" />
     <ClInclude Include="ScriptsAPI.hpp" />
     <ClInclude Include="GameManagerScript.hpp" />
@@ -196,6 +197,7 @@
     <ClCompile Include="CameraControllerScript.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="EnemyControllerScript.cpp" />
+    <ClCompile Include="FlameScript.cpp" />
     <ClCompile Include="GameManagerScript.cpp" />
     <ClCompile Include="PlayerControllerScript.cpp" />
     <ClCompile Include="SoundManagerScript.cpp" />
