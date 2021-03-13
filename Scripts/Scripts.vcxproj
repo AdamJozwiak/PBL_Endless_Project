@@ -188,6 +188,7 @@
     <ClInclude Include="PlayerControllerScript.hpp" />
     <ClInclude Include="ScriptsAPI.hpp" />
     <ClInclude Include="GameManagerScript.hpp" />
+    <ClInclude Include="SoundManagerScript.hpp" />
     <ClInclude Include="TestScript.hpp" />
     <ClInclude Include="TestScript2.hpp" />
   </ItemGroup>
@@ -197,6 +198,7 @@
     <ClCompile Include="EnemyControllerScript.cpp" />
     <ClCompile Include="GameManagerScript.cpp" />
     <ClCompile Include="PlayerControllerScript.cpp" />
+    <ClCompile Include="SoundManagerScript.cpp" />
     <ClCompile Include="TestScript.cpp" />
     <ClCompile Include="TestScript2.cpp" />
   </ItemGroup>
