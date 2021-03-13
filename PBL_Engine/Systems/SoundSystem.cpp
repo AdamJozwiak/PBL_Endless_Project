@@ -78,15 +78,17 @@ void SoundSystem::release() {
 }
 
 // ---------------------------------------------------- SoLoud wrappers -- == //
-void SoundSystem::play(std::string const &sound, float const volume) {
-    audioEngine.play(audioSources.at(sound), volume);
+SoundSystem::AudioHandle SoundSystem::play(std::string const &sound,
+                                           float const volume) {
+    return audioEngine.play(audioSources.at(sound), volume);
 }
 
-void SoundSystem::playRandomSample(std::string const &name,
-                                   float const volume) {
+SoundSystem::AudioHandle SoundSystem::playRandomSample(std::string const &name,
+                                                       float const volume) {
     auto &effect = multisampleEffects.at(name);
 
-    play(effect.samplePaths.at(effect.nextSample), volume);
+    auto const audioHandle =
+        play(effect.samplePaths.at(effect.nextSample), volume);
 
     // Choose a next sample (not the same as the previous one, though)
     static std::random_device rng;
@@ -97,14 +99,17 @@ void SoundSystem::playRandomSample(std::string const &name,
     auto const previousSample = effect.nextSample;
     while ((effect.nextSample = distribution(engine)) == previousSample) {
     }
+
+    return audioHandle;
 }
 
-void SoundSystem::play3d(std::string const &sound, DirectX::XMFLOAT3 position,
-                         float const volume) {
+SoundSystem::AudioHandle SoundSystem::play3d(std::string const &sound,
+                                             DirectX::XMFLOAT3 position,
+                                             float const volume) {
     audioSources.at(sound).set3dAttenuation(
         SoLoud::AudioSource::INVERSE_DISTANCE, 0.1f);
-    audioEngine.play3d(audioSources.at(sound), position.x, position.y,
-                       position.z, 0.0f, 0.0f, 0.0f, volume);
+    return audioEngine.play3d(audioSources.at(sound), position.x, position.y,
+                              position.z, 0.0f, 0.0f, 0.0f, volume);
 }
 
 void SoundSystem::setListener(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 at,

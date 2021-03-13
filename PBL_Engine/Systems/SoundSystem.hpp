@@ -7,6 +7,9 @@
 
 // /////////////////////////////////////////////////////////////////// System //
 ECS_SYSTEM(SoundSystem) {
+    // --------------------------------------------------------- Usings -- == //
+    using AudioHandle = int;
+
   public:
     // ========================================================= Behaviour == //
     // ------------------------------------- System's virtual functions -- == //
@@ -16,9 +19,10 @@ ECS_SYSTEM(SoundSystem) {
     void release() override;
 
     // ------------------------------------------------ SoLoud wrappers -- == //
-    void play(std::string const &sound, float const volume = -1.0f);
-    void playRandomSample(std::string const &name, float const volume = -1.0f);
-    void play3d(std::string const &sound, DirectX::XMFLOAT3 position,
+    AudioHandle play(std::string const &sound, float const volume = -1.0f);
+    AudioHandle playRandomSample(std::string const &name,
+                                 float const volume = -1.0f);
+    AudioHandle play3d(std::string const &sound, DirectX::XMFLOAT3 position,
                 float const volume = -1.0f);
     void setListener(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 at,
                      DirectX::XMFLOAT3 up);
