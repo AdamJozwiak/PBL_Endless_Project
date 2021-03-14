@@ -10,6 +10,8 @@
 #include "EngineAPI.hpp"
 #include "EntityManager.hpp"
 #include "EventManager.hpp"
+#include "Events/OnComponent.hpp"
+#include "Events/OnEntity.hpp"
 #include "SystemManager.hpp"
 #include "Utilities.hpp"
 
@@ -46,6 +48,7 @@ class ENGINE_API Registry {
 
         componentManager.add<ComponentType>(entityId, component);
         updateEntitySignature<ComponentType>(entityId, true);
+        send(OnComponentAdd<ComponentType>{entityId});
     }
 
     template <typename ComponentType>
@@ -54,10 +57,12 @@ class ENGINE_API Registry {
 
         componentManager.remove<ComponentType>(entityId);
         updateEntitySignature<ComponentType>(entityId, false);
+        send(OnComponentRemove<ComponentType>{entityId});
     }
 
     template <typename ComponentType>
     ComponentType& component(EntityId entityId) {
+        send(OnComponentUpdate<ComponentType>{entityId});
         return componentManager.get<ComponentType>(entityId);
     }
 

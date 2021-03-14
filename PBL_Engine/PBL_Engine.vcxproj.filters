@@ -1199,6 +1199,12 @@
     <ClInclude Include="math-operators.hpp">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="Events\OnComponent.hpp">
+      <Filter>Pliki nagłówkowe\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\OnEntity.hpp">
+      <Filter>Pliki nagłówkowe\Events</Filter>
+    </ClInclude>
     <ClInclude Include="assert.hpp">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>

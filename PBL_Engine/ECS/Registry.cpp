@@ -17,6 +17,7 @@ bool Registry::refresh() {
 
     bool removed = false;
     for (auto const& entity : entitiesToRemove) {
+        send(OnEntityDestroy{entity.id});
         entityManager.destroy(entity.id);
         componentManager.destroyEntity(entity.id);
         systemManager.destroyEntity(entity.id);
@@ -36,6 +37,8 @@ void Registry::moveCacheToMainScene() {
         entityManager.setSignature(entity.id, signature);
 
         systemManager.changeEntitySignature(entity.id, signature);
+
+        send(OnEntityCreate{entity.id});
     }
 }
 
@@ -54,7 +57,10 @@ Entity Registry::createEntity(SceneId const sceneId) {
     auto const& entity = entityManager.create(sceneId);
     if (sceneId == CACHE_SCENE) {
         cachedEntities.insert(entity);
+    } else {
+        send(OnEntityCreate{entity});
     }
+
     return entity;
 }
 
