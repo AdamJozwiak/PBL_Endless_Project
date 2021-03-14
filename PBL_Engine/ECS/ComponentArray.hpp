@@ -28,6 +28,8 @@ class ENGINE_API ComponentArray : public IComponentArray {
 
     // ========================================================= Behaviour == //
     void insert(EntityId const entityId, Component const &component) {
+        assert(entityExists(entityId) && "Entity doesn't exist!");
+
         if (componentExists(entityId)) {
             get(entityId) = component;
             return;
@@ -50,6 +52,8 @@ class ENGINE_API ComponentArray : public IComponentArray {
     }
 
     void remove(EntityId const entityId) {
+        assert(entityExists(entityId) && "Entity doesn't exist!");
+
         if (!componentExists(entityId)) {
             return;
         }
@@ -71,6 +75,7 @@ class ENGINE_API ComponentArray : public IComponentArray {
     }
 
     Component &get(EntityId const entityId) {
+        assert(entityExists(entityId) && "Entity doesn't exist!");
         assert(componentExists(entityId) &&
                "Component doesn't exist for given entity!");
 
@@ -84,7 +89,12 @@ class ENGINE_API ComponentArray : public IComponentArray {
   private:
     // ========================================================= Behaviour == //
     bool componentExists(EntityId const &entityId) {
+        assert(entityExists(entityId) && "Entity doesn't exist!");
         return indicies.at(entityId) != EMPTY_ENTITY;
+    }
+
+    constexpr bool entityExists(EntityId const &entityId) {
+        return entityId != EMPTY_ENTITY;
     }
 
     // ============================================================== Data == //
