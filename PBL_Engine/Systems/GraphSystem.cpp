@@ -8,6 +8,7 @@
 
 #include "Components/Components.hpp"
 #include "ECS/ECS.hpp"
+#include "assert.hpp"
 
 // /////////////////////////////////////////////////////////////// Namespaces //
 namespace dx = DirectX;
@@ -33,9 +34,15 @@ bool operator!=(Transform const& a, Transform const& b) { return !(a == b); }
 // ----------------------------------------- System's virtual functions -- == //
 void GraphSystem::filters() { filter<Properties>().filter<Transform>(); }
 
-void GraphSystem::setup() { rebuildGraph(); }
+void GraphSystem::setup() {
+    setupEventListeners();
+    rebuildGraph();
+}
 
-void GraphSystem::update(float const deltaTime) { updateGraph(); };
+void GraphSystem::update(float const deltaTime) {
+    refreshGraph();
+    updateGraph();
+};
 
 void GraphSystem::release() {}
 
@@ -100,57 +107,62 @@ void GraphSystem::resetGraph() {
     resetRootNode();
 
     entityToGraphNode.clear();
-    entityToPreviousTransform.clear();
-    entityToPreviousActivity.clear();
 
-    // Create map entries for all entities (only when needed)
-    for (Entity entity : entities) {
-        if (!entityToGraphNode.contains(entity.id)) {
-            entityToGraphNode.insert(
-                {entity.id,
-                 {.parent = nullptr,
-                  .children = {},
-                  .entity = std::make_optional<Entity>(entity.id),
-                  .transform = &entity.get<Transform>(),
-                  .activity = &entity.get<Properties>().active,
-                  .cumulativeTransform = dx::XMMatrixIdentity(),
-                  .cumulativeActivity = entity.get<Properties>().active,
-                  .recalculateTransforms = true,
-                  .recalculateActivity = true}});
-            entityToPreviousTransform.insert(
-                {entity.id, entity.get<Transform>()});
-            entityToPreviousActivity.insert(
-                {entity.id, entity.get<Properties>().active});
+    for (auto const& entity : entities) {
+        createNode(entity);
+    }
+
+    for (auto& [entityId, graphNode] : entityToGraphNode) {
+        reconstructParentChildRelationship(entityId);
+    }
+}
+
+void GraphSystem::refreshGraph() {
+    // Create nodes for new entities
+    for (auto const& entity : createdEntities) {
+        if (entities.contains(entity)) {
+            if (entityToGraphNode.contains(entity)) {
+                destroyNode(entity);
+            }
+            createNode(entity);
         }
     }
 
-    // Construct the parent-child relationships between the graph nodes
-    for (auto& [entityId, graphNode] : entityToGraphNode) {
-        auto const& entity = Entity(entityId);
-        // if (!entities.contains(entity)) {
-        //    continue;
-        //}
+    // Reconstruct the parent-child relationships for new entities
+    if (!createdEntities.empty()) {
+        createdEntities.clear();
+        reconstructAllRelationships();
+    }
 
-        auto const& transform = entity.get<Transform>();
-
-        if (transform.parent) {
-            auto const& parentId = *transform.parent;
-            auto const& parent = Entity(parentId);
-
-            if (!graphNode.parent) {
-                graphNode.parent = &entityToGraphNode.at(parentId);
-            }
-            if (!graphNode.parent->children.contains(entityId)) {
-                graphNode.parent->children.insert(entityId);
-            }
-        } else {
-            if (!graphNode.parent) {
-                graphNode.parent = &root;
-            }
-            if (!root.children.contains(entityId)) {
-                root.children.insert(entityId);
+    assert("Entity must have a graph node!" && [&]() {
+        for (auto const& entity : entities) {
+            if (!entityToGraphNode.contains(entity.id)) {
+                return false;
             }
         }
+        return true;
+    }());
+    assert("Graph node is not valid - entity!" && [&]() {
+        for (auto& [entityId, graphNode] : entityToGraphNode) {
+            if (entityId != graphNode.entity->id) {
+                return false;
+            }
+        }
+        return true;
+    }());
+}
+
+void GraphSystem::reconstructAllRelationships() {
+    root.parent = nullptr;
+    root.children.clear();
+
+    for (auto& [entityId, graphNode] : entityToGraphNode) {
+        graphNode.parent = nullptr;
+        graphNode.children.clear();
+    }
+
+    for (auto& [entityId, graphNode] : entityToGraphNode) {
+        reconstructParentChildRelationship(entityId);
     }
 }
 
@@ -158,46 +170,74 @@ void GraphSystem::resetRootNode() {
     root.parent = nullptr;
     root.children.clear();
     root.entity = std::nullopt;
-    root.transform = nullptr;
-    root.activity = nullptr;
     root.cumulativeTransform = dx::XMMatrixIdentity();
     root.cumulativeActivity = true;
     root.recalculateTransforms = true;
     root.recalculateActivity = true;
 }
 
+void GraphSystem::createNode(Entity const& entity) {
+    assert(entities.contains(entity.id) &&
+           "Entity must be compliant with the filters of the graph system!");
+    assert(!entityToGraphNode.contains(entity.id) &&
+           "Entity must not have a graph node!");
+
+    entityToGraphNode.insert(
+        {entity.id,
+         {.parent = nullptr,
+          .children = {},
+          .entity = std::make_optional<Entity>(entity.id),
+          .cumulativeTransform = dx::XMMatrixIdentity(),
+          .cumulativeActivity = entity.get<Properties>().active,
+          .recalculateTransforms = true,
+          .recalculateActivity = true}});
+}
+
+void GraphSystem::destroyNode(Entity const& entity) {
+    assert(entities.contains(entity.id) &&
+           "Entity must be compliant with the filters of the graph system!");
+    assert(entityToGraphNode.contains(entity.id) &&
+           "Entity must have a graph node!");
+
+    auto const& entityId = entity.id;
+    auto const& node = entityToGraphNode.at(entityId);
+
+    // Parent loses a child
+    if (node.parent) {
+        node.parent->children.erase(entityId);
+    }
+
+    // Children get a new parent
+    for (auto const& childEntityId : node.children) {
+        auto& childNode = entityToGraphNode.at(childEntityId);
+        childNode.parent = node.parent;
+        childNode.recalculateTransforms = true;
+        childNode.recalculateActivity = true;
+    }
+
+    // Node itself is destroyed
+    entityToGraphNode.erase(entityId);
+}
+
+void GraphSystem::reconstructParentChildRelationship(Entity const& entity) {
+    assert(entity.has<Transform>() &&
+           "Entity must have a Transform component!");
+    assert(entityToGraphNode.contains(entity.id) &&
+           "Entity must have a graph node!");
+
+    auto const& transform = entity.get<Transform>();
+    auto& graphNode = entityToGraphNode.at(entity.id);
+    auto& parentNode =
+        transform.parent ? entityToGraphNode.at(*transform.parent) : root;
+
+    graphNode.parent = &parentNode;
+    graphNode.parent->children.insert(entity.id);
+
+    graphNode.recalculateTransforms = true;
+    graphNode.recalculateActivity = true;
+}
+
 void GraphSystem::updateGraph() {
-    // Check for transformations that need to be recalculated
-    for (auto const& [entityId, previousTransform] :
-         entityToPreviousTransform) {
-        auto const& entity = Entity(entityId);
-        // if (!entities.contains(entity)) {
-        //    continue;
-        //}
-
-        auto const& currentTransform = entity.get<Transform>();
-
-        if (currentTransform != previousTransform) {
-            entityToGraphNode.at(entityId).recalculateTransforms = true;
-            entityToPreviousTransform.at(entityId) = currentTransform;
-        }
-    }
-
-    // Check for activities that need to be recalculated
-    for (auto const& [entityId, previousActivity] : entityToPreviousActivity) {
-        auto const& entity = Entity(entityId);
-        // if (!entities.contains(entity)) {
-        //    continue;
-        //}
-
-        auto const& currentActivity = entity.get<Properties>().active;
-
-        if (currentActivity != previousActivity) {
-            entityToGraphNode.at(entityId).recalculateActivity = true;
-            entityToPreviousActivity.at(entityId) = currentActivity;
-        }
-    }
-
     // Update transformations and activities
     std::queue<std::reference_wrapper<GraphNode>> nodes;
     for (auto const& childEntityId : root.children) {
@@ -210,12 +250,14 @@ void GraphSystem::updateGraph() {
 
         if (node.recalculateTransforms) {
             node.cumulativeTransform = dx::XMMatrixIdentity();
-            node.cumulativeTransform *= matrix(*node.transform);
+            node.cumulativeTransform *=
+                matrix(std::as_const(node.entity)->get<Transform>());
             node.cumulativeTransform *= node.parent->cumulativeTransform;
         }
         if (node.recalculateActivity) {
             if (node.parent->cumulativeActivity) {
-                node.cumulativeActivity = *node.activity;
+                node.cumulativeActivity =
+                    std::as_const(node.entity)->get<Properties>().active;
             } else {
                 node.cumulativeActivity = false;
             }
@@ -239,6 +281,48 @@ void GraphSystem::updateGraph() {
 
         node.recalculateTransforms = false;
         node.recalculateActivity = false;
+    }
+}
+
+void GraphSystem::setupEventListeners() {
+    registry.listen<OnComponentUpdate<Transform>>(
+        MethodListener(GraphSystem::onTransformUpdate));
+    registry.listen<OnComponentUpdate<Properties>>(
+        MethodListener(GraphSystem::onPropertiesUpdate));
+
+    registry.listen<OnEntityCreate>(
+        MethodListener(GraphSystem::onEntityCreate));
+    registry.listen<OnEntityDestroy>(
+        MethodListener(GraphSystem::onEntityDestroy));
+}
+
+void GraphSystem::onTransformUpdate(OnComponent<Transform> const& event) {
+    auto const& entity = Entity(event.entityId);
+
+    if (!entityToGraphNode.contains(entity.id)) {
+        return;
+    }
+
+    entityToGraphNode.at(entity.id).recalculateTransforms = true;
+}
+
+void GraphSystem::onPropertiesUpdate(OnComponent<Properties> const& event) {
+    auto const& entity = Entity(event.entityId);
+
+    if (!entityToGraphNode.contains(entity.id)) {
+        return;
+    }
+
+    entityToGraphNode.at(entity.id).recalculateActivity = true;
+}
+
+void GraphSystem::onEntityCreate(OnEntity const& event) {
+    createdEntities.push_back(event.entityId);
+}
+
+void GraphSystem::onEntityDestroy(OnEntity const& event) {
+    if (entities.contains(event.entityId)) {
+        destroyNode(event.entityId);
     }
 }
 

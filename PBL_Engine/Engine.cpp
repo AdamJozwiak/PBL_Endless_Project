@@ -106,9 +106,7 @@ ENGINE_API int Engine::run() {
     timer.Mark();
 
     while (runGameLoop) {
-        if (registry.refresh()) {
-            registry.system<GraphSystem>()->rebuildGraph();
-        }
+        registry.refresh();
 
         if ((exitCode = Window::ProcessMessages())) {
             break;

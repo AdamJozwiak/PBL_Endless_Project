@@ -4,6 +4,8 @@
 #include <DirectXMath.h>
 
 #include <Components/Transform.hpp>
+#include <Events/OnComponent.hpp>
+#include <Events/OnEntity.hpp>
 #include <memory>
 #include <unordered_map>
 
@@ -21,6 +23,7 @@ ECS_SYSTEM(GraphSystem) {
 
     // ----------------------------------------------- Public interface -- == //
     void rebuildGraph();
+    void refreshGraph();
 
     DirectX::XMMATRIX transform(Entity const &entity);
     void destroyEntityWithChildren(Entity const &entity);
@@ -31,8 +34,18 @@ ECS_SYSTEM(GraphSystem) {
 
     void resetGraph();
     void resetRootNode();
+    void createNode(Entity const &entity);
+    void destroyNode(Entity const &entity);
+    void reconstructParentChildRelationship(Entity const &entity);
+    void reconstructAllRelationships();
 
     void updateGraph();
+
+    void setupEventListeners();
+    void onTransformUpdate(OnComponent<Transform> const &event);
+    void onPropertiesUpdate(OnComponent<Properties> const &event);
+    void onEntityCreate(OnEntity const &event);
+    void onEntityDestroy(OnEntity const &event);
 
     // ============================================================== Data == //
     struct GraphNode {
@@ -40,8 +53,6 @@ ECS_SYSTEM(GraphSystem) {
         std::set<EntityId> children;
 
         std::optional<Entity> entity;
-        Transform *transform;
-        bool *activity;
         DirectX::XMMATRIX cumulativeTransform;
         bool cumulativeActivity;
         bool recalculateTransforms, recalculateActivity;
@@ -49,6 +60,7 @@ ECS_SYSTEM(GraphSystem) {
     std::unordered_map<EntityId, GraphNode> entityToGraphNode;
     std::unordered_map<EntityId, Transform> entityToPreviousTransform;
     std::unordered_map<EntityId, bool> entityToPreviousActivity;
+    std::list<EntityId> createdEntities;
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

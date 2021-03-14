@@ -489,7 +489,6 @@ void GameManagerScript::update(float const deltaTime) {
                     i->entity);
                 presentChunks.erase(i);
             } while (!presentChunks.empty());
-            registry.system<GraphSystem>()->rebuildGraph();
 
             presentChunks.push_back(Chunk{
                 .name = "Chunk Start",
@@ -854,7 +853,6 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
                 playerPositionInWorldUnits - SPAWN_PADDING_IN_WORLD_UNITS) {
                 registry.system<GraphSystem>()->destroyEntityWithChildren(
                     chunk.entity);
-                registry.system<GraphSystem>()->rebuildGraph();
                 presentChunks.erase(i);
                 break;
             }
