@@ -21,21 +21,7 @@ std::shared_ptr<Engine> loadEngineFromDll(std::wstring path) {
 
 // ///////////////////////////////////////////////////////////////////// Main //
 int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-    try {
-        return loadEngineFromDll(L"PBL_Engine.dll")->run();
-
-    } catch (ExceptionHandler const& exception) {
-        MessageBoxA(nullptr, exception.what(), exception.GetType(),
-                    MB_OK | MB_ICONEXCLAMATION);
-    } catch (std::exception const& exception) {
-        MessageBoxA(nullptr, exception.what(), "Standard Exception",
-                    MB_OK | MB_ICONEXCLAMATION);
-    } catch (...) {
-        MessageBoxA(nullptr, "No details available", "Unknown Exception",
-                    MB_OK | MB_ICONEXCLAMATION);
-    }
-
-    return -1;
+    return loadEngineFromDll(L"PBL_Engine.dll")->run();
 }
 
 // ////////////////////////////////////////////////////////////////////////// //
