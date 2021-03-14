@@ -62,6 +62,11 @@ class ENGINE_API Registry {
     }
 
     template <typename ComponentType>
+    ComponentType const& component(EntityId entityId) const {
+        return componentManager.get<ComponentType>(entityId);
+    }
+
+    template <typename ComponentType>
     constexpr ComponentId componentId() {
         return componentManager.id<ComponentType>();
     }

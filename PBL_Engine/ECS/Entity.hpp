@@ -33,7 +33,7 @@ class ENGINE_API Entity {
 
     template <typename ComponentType>
     ComponentType const& get() const {
-        return registry.component<ComponentType>(id);
+        return std::as_const(registry).component<ComponentType>(id);
     }
 
     template <typename ComponentType>
