@@ -298,6 +298,13 @@ PixelShaderOutput main(PixelShaderInput input) {
     output.bloom =
         saturate((output.color - BLOOM_THRESHOLD) / (1 - BLOOM_THRESHOLD));
 
+    float fog =
+        1.0f /
+        (pow(0.01f * distance(input.positionWorld, viewPositionWorld), 2) +
+         1.0f);
+
+    output.color = lerp(output.color + 0.05f, output.color, fog);
+
     return output;
 }
 
