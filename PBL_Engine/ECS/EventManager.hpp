@@ -36,6 +36,11 @@ class ENGINE_API EventManager {
     void send(EventType const& event) {
         std::lock_guard<std::recursive_mutex> lockGuard{mutex};
 
+        if (listeners.empty() ||
+            !listeners.contains(std::type_index(typeid(EventType)))) {
+            return;
+        }
+
         for (auto const& listener :
              listeners.at(std::type_index(typeid(EventType)))) {
             std::any_cast<std::function<void(EventType const&)>>(listener)(
