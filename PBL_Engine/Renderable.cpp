@@ -1,6 +1,6 @@
 #include "Renderable.h"
 
-#include <cassert>
+#include "assert.hpp"
 
 #include "Blender.h"
 #include "GraphicsThrowMacros.h"

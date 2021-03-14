@@ -3,7 +3,6 @@
 // ///////////////////////////////////////////////////////////////// Includes //
 #include <any>
 #include <array>
-#include <cassert>
 #include <memory>
 #include <mutex>
 #include <typeindex>
@@ -14,6 +13,7 @@
 #include "ComponentArray.hpp"
 #include "EngineAPI.hpp"
 #include "Utilities.hpp"
+#include "assert.hpp"
 
 // /////////////////////////////////////////////////////////////////// Macros //
 #define ASSERT_COMPONENT_ID_SET()               \

@@ -2,11 +2,11 @@
 
 // ///////////////////////////////////////////////////////////////// Includes //
 #include <array>
-#include <cassert>
 #include <unordered_map>
 
 #include "EngineAPI.hpp"
 #include "Utilities.hpp"
+#include "assert.hpp"
 
 // //////////////////////////////////////////////////////////////// Interface //
 class ENGINE_API IComponentArray {

@@ -1,10 +1,9 @@
 // ///////////////////////////////////////////////////////////////// Includes //
 #include "SystemManager.hpp"
 
-#include <cassert>
-
 #include "Entity.hpp"
 #include "System.hpp"
+#include "assert.hpp"
 
 // //////////////////////////////////////////////////////////////////// Class //
 // ============================================================= Behaviour == //

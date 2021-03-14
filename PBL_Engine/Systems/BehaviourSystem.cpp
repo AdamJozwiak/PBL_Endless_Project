@@ -3,9 +3,8 @@
 
 #include <Windows.h>
 
-#include <cassert>
-
 #include "Script.hpp"
+#include "assert.hpp"
 
 // ECS
 #include "Components/Components.hpp"

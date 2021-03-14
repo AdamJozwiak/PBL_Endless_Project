@@ -1,7 +1,6 @@
 #pragma once
 
 // ///////////////////////////////////////////////////////////////// Includes //
-#include <cassert>
 #include <memory>
 #include <mutex>
 #include <typeindex>
@@ -11,6 +10,7 @@
 #include "ComponentManager.hpp"
 #include "EngineAPI.hpp"
 #include "Utilities.hpp"
+#include "assert.hpp"
 
 // ///////////////////////////////////////////////////// Forward declarations //
 struct ENGINE_API System;

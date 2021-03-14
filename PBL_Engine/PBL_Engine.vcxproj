@@ -149,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animator.h" />
+    <ClInclude Include="assert.hpp" />
     <ClInclude Include="Billboard.h" />
     <ClInclude Include="Bindable.h" />
     <ClInclude Include="BindableBase.h" />

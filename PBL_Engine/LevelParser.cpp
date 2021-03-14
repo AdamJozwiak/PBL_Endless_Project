@@ -3,7 +3,6 @@
 #include <yaml-cpp/include/yaml-cpp/yaml.h>
 
 #include <Script.hpp>
-#include <cassert>
 #include <filesystem>
 #include <fstream>
 #include <memory>
@@ -17,6 +16,7 @@
 #include "Mesh.h"
 #include "Systems/Systems.hpp"
 #include "Window.h"
+#include "assert.hpp"
 
 namespace fs = std::filesystem;
 
