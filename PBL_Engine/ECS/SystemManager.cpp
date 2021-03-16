@@ -33,12 +33,13 @@ void SystemManager::changeEntitySignature(EntityId entityId,
         // assert(systemSignature.any() &&
         //       "Each system must have a non-empty signature!");
 
-        if ((entitySignature.components & systemSignature.components) ==
+        if (auto entity = Entity{entityId};
+            (entitySignature.components & systemSignature.components) ==
                 systemSignature.components &&
             entitySignature.sceneId == DEFAULT_SCENE) {
-            system->entities.insert(Entity(entityId));
+            system->entities.insert(entity);
         } else {
-            system->entities.erase(Entity(entityId));
+            system->entities.erase(entity);
         }
     }
 }
