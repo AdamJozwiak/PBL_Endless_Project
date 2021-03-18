@@ -55,7 +55,7 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
 
             auto entity{
                 registry.createEntity(cache ? CACHE_SCENE : DEFAULT_SCENE)};
-            entityIds.insert({fileId, entity.id});
+            entityIds.insert({fileId, entity});
 
             assert(nodeGameObject.contains("m_Name") &&
                    nodeGameObject.contains("m_TagString") &&
@@ -122,8 +122,8 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                 auto entity = Entity(entityIds.at(gameObjectFileId));
                 entity.add<Transform>({});
 
-                entityIds.insert({fileId, entity.id});
-                entityIdsWithTransform.insert({fileId, entity.id});
+                entityIds.insert({fileId, entity});
+                entityIdsWithTransform.insert({fileId, entity});
             }
 
             auto &transform = Entity(entityIds.at(fileId)).get<Transform>();
@@ -182,7 +182,7 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                 auto entity = Entity(entityIds.at(gameObjectFileId));
                 entity.add<RectTransform>({});
 
-                entityIds.insert({fileId, entity.id});
+                entityIds.insert({fileId, entity});
             }
 
             auto &rectTransform =
@@ -271,7 +271,7 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                 entity.add<Renderer>({});
                 entity.add<AABB>({});
 
-                entityIds.insert({fileId, entity.id});
+                entityIds.insert({fileId, entity});
             }
 
             auto &renderer = Entity(entityIds[fileId]).get<Renderer>();

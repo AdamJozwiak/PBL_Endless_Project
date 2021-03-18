@@ -425,7 +425,7 @@ void ColliderSystem::update(float deltaTime) {
     std::set<std::pair<Entity, Entity>> checks;
     for (auto iEntity : entities) {
         for (auto jEntity : checkCollisionsSystem->entities) {
-            if (iEntity.id == jEntity.id) {
+            if (iEntity == jEntity) {
                 break;
             }
 

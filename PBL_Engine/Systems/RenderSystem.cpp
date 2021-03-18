@@ -76,7 +76,7 @@ void RenderSystem::setup() {
             key);
     };
 
-    playerTorchId = propertySystem->findEntityByName("Player Torch").at(0).id;
+    playerTorchId = propertySystem->findEntityByName("Player Torch").at(0);
 
     playersTorch = Entity(playerTorchId).get<Light>().pointLight;
     playersTorch->AddCameras();
@@ -106,12 +106,12 @@ void RenderSystem::update(float deltaTime) {
     previousTripMode = tripMode;
 
     for (auto const& entity : entities) {
-        aabbs.at(entity.id) = entity.get<AABB>();
+        aabbs.at(entity) = entity.get<AABB>();
     }
 
     // Update AABB
     for (Entity entity : entities) {
-        colliderSystem->CalculateAABB(aabbs.at(entity.id),
+        colliderSystem->CalculateAABB(aabbs.at(entity),
                                       graphSystem->transform(entity));
     }
 
@@ -136,7 +136,7 @@ void RenderSystem::update(float deltaTime) {
 
         // Render all renderable models
         for (auto const& entity : entities) {
-            auto const& aabb = aabbs.at(entity.id);
+            auto const& aabb = aabbs.at(entity);
 
             auto const& div =
                 DirectX::XMVectorSubtract(aabb.vertexMax, aabb.vertexMin);
@@ -225,7 +225,7 @@ void RenderSystem::update(float deltaTime) {
 
     // Render all renderable models
     for (auto const& entity : entities) {
-        auto const& aabb = aabbs.at(entity.id);
+        auto const& aabb = aabbs.at(entity);
 
         auto const& div =
             DirectX::XMVectorSubtract(aabb.vertexMax, aabb.vertexMin);

@@ -35,12 +35,11 @@ void CameraControllerScript::setup() {
     };
 
     playerId =
-        registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
+        registry.system<PropertySystem>()->findEntityByTag("Player").at(0);
     menuCameraId = registry.system<PropertySystem>()
                        ->findEntityByName("Menu Camera")
-                       .at(0)
-                       .id;
-    // registry.system<PropertySystem>()->findEntityByTag("Player").at(0).id;
+                       .at(0);
+    // registry.system<PropertySystem>()->findEntityByTag("Player").at(0);
     offset = entity.get<Transform>().position -
              Entity(playerId).get<Transform>().position;
     originalTransform = entity.get<Transform>();
@@ -198,8 +197,8 @@ void CameraControllerScript::update(float const deltaTime) {
 
 // ------------------------------------------------------------- Events -- == //
 void CameraControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
-    if (event.a.id == entity.id || event.b.id == entity.id) {
-        auto other = Entity(event.a.id == entity.id ? event.b.id : event.a.id);
+    if (event.a == entity || event.b == entity) {
+        auto other = event.a == entity ? event.b : event.a;
     }
 }
 void CameraControllerScript::onGameStateChange(OnGameStateChange const& event) {
