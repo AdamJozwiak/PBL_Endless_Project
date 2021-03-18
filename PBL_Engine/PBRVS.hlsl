@@ -33,6 +33,26 @@ cbuffer Transform : register(b0) {
 
 cbuffer Animation : register(b1) { matrix boneTransforms[MAX_BONES]; };
 
+// TODO: Just a test for this cool displacement effect, needs solid rework and
+// adjustments but has some potential for the dream/memory-like stuff :)
+// This is just a temporary copy of the structure found in the pixel shader, we
+// need to find a simpler and more direct way to get access to some variables
+// for the displacement effect here
+static const int NUM_LIGHTS = 16;
+cbuffer LightParameters : register(b11) {
+    float4 lightPositionWorld[NUM_LIGHTS];
+    float4 viewPositionWorld;
+
+    float4 diffuseColor[NUM_LIGHTS];
+
+    float4 intensity[NUM_LIGHTS / 4];
+    float4 attenuationConstant[NUM_LIGHTS / 4];
+    float4 attenuationLinear[NUM_LIGHTS / 4];
+    float4 attenuationQuadratic[NUM_LIGHTS / 4];
+
+    float4 mainLightPos;
+};
+
 // ///////////////////////////////////////////////////////////////////// Main //
 VertexShaderOutput main(VertexShaderInput input) {
     VertexShaderOutput output;
@@ -58,6 +78,16 @@ VertexShaderOutput main(VertexShaderInput input) {
     output.bitangentWorld = mul(input.bitangentModel, (float3x3)world);
     output.position = mul(positionModel, mul(world, viewProj));
     output.texCoord = input.texCoord;
+
+    // TODO: Just a test for this cool displacement effect, needs solid rework
+    // and adjustments but has some potential for the dream/memory-like stuff
+    // :)
+    if (mainLightPos.x - 10 > output.positionWorld.x) {
+        output.position.y /= (1 + 0.02 * distance(mainLightPos.x - 10, output.positionWorld.x));
+    }
+    if (mainLightPos.x + 30 < output.positionWorld.x) {
+        output.position.y *= (1 + 0.1 * distance(mainLightPos.x + 30, output.positionWorld.x));
+    }
 
     return output;
 }

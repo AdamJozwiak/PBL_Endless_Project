@@ -305,6 +305,18 @@ PixelShaderOutput main(PixelShaderInput input) {
 
     output.color = lerp(output.color + 0.05f, output.color, fog);
 
+    // TODO: Just a test for this cool displacement effect, needs solid rework
+    // and adjustments but has some potential for the dream/memory-like stuff
+    // :)
+    if (mainLightPos.x - 5 > input.positionWorld.x) {
+        output.color /= (1 + 0.1 * distance(mainLightPos.x - 5, input.positionWorld.x));
+        output.bloom += 0.05 * (0 + 0.1 * distance(mainLightPos.x - 5, input.positionWorld.x));
+    }
+    if (mainLightPos.x + 30 < input.positionWorld.x) {
+        output.color *= (1 + 0.1 * distance(mainLightPos.x + 30, input.positionWorld.x));
+        output.bloom += 0.05 * (0 + 0.1 * distance(mainLightPos.x + 30, input.positionWorld.x));
+    }
+
     return output;
 }
 

@@ -234,6 +234,12 @@ void PointLight::Bind(Graphics& gfx) noexcept {
     static PixelConstantBuffer<LightParametersConstantBuffer> cbuf(gfx, 10);
     cbuf.Update(gfx, lightParametersConstantBuffer);
     cbuf.Bind(gfx);
+
+    // TODO: A dumb way to pass the light parameters to the vertex shader, fix
+    // this somehow
+    static VertexConstantBuffer<LightParametersConstantBuffer> c(gfx, 11);
+    c.Update(gfx, lightParametersConstantBuffer);
+    c.Bind(gfx);
 }
 
 void PointLight::AddCameras() {
