@@ -54,33 +54,40 @@ class ENGINE_API Registry {
     }
 
     // ------------------------------------------------------ Component -- == //
-    template <typename ComponentType, bool threadSafe = true>
+    template <typename ComponentType>
     void addComponent(EntityId entityId, ComponentType const& component) {
-        RECURSIVE_LOCK_GUARD(recursiveMutex, threadSafe);
-
-        componentManager.add<ComponentType>(entityId, component);
-        updateEntitySignature<ComponentType>(entityId, true);
+        if (threadSafety) {
+            return addComponent_<ComponentType, true>(entityId, component);
+        } else {
+            return addComponent_<ComponentType, false>(entityId, component);
+        }
     }
 
-    template <typename ComponentType, bool threadSafe = true>
+    template <typename ComponentType>
     void removeComponent(EntityId entityId) {
-        RECURSIVE_LOCK_GUARD(recursiveMutex, threadSafe);
-
-        componentManager.remove<ComponentType>(entityId);
-        updateEntitySignature<ComponentType>(entityId, false);
+        if (threadSafety) {
+            removeComponent_<ComponentType, true>(entityId);
+        } else {
+            removeComponent_<ComponentType, false>(entityId);
+        }
     }
 
-    template <typename ComponentType, bool threadSafe = true>
+    template <typename ComponentType>
     ComponentType& component(EntityId entityId) {
-        RECURSIVE_LOCK_GUARD(recursiveMutex, threadSafe);
-
-        send(OnComponentUpdate<ComponentType>{entityId});
-        return componentManager.get<ComponentType, threadSafe>(entityId);
+        if (threadSafety) {
+            return component_<ComponentType, true>(entityId);
+        } else {
+            return component_<ComponentType, false>(entityId);
+        }
     }
 
-    template <typename ComponentType, bool threadSafe = true>
+    template <typename ComponentType>
     ComponentType const& component(EntityId entityId) const {
-        return componentManager.get<ComponentType, threadSafe>(entityId);
+        if (threadSafety) {
+            return componentManager.get<ComponentType, true>(entityId);
+        } else {
+            return componentManager.get<ComponentType, false>(entityId);
+        }
     }
 
     template <typename ComponentType>
@@ -88,9 +95,13 @@ class ENGINE_API Registry {
         return componentManager.id<ComponentType>();
     }
 
-    template <typename ComponentType, bool threadSafe = true>
+    template <typename ComponentType>
     bool hasComponent(EntityId entityId) {
-        return componentManager.has<ComponentType, threadSafe>(entityId);
+        if (threadSafety) {
+            return componentManager.has<ComponentType, true>(entityId);
+        } else {
+            return componentManager.has<ComponentType, false>(entityId);
+        }
     }
 
     // --------------------------------------------------------- System -- == //
@@ -129,6 +140,30 @@ class ENGINE_API Registry {
         entityManager.setSignature(entityId, signature);
 
         systemManager.changeEntitySignature(entityId, signature);
+    }
+
+    template <typename ComponentType, bool threadSafe = true>
+    void addComponent_(EntityId entityId, ComponentType const& component) {
+        RECURSIVE_LOCK_GUARD(recursiveMutex, threadSafe);
+
+        componentManager.add<ComponentType, threadSafe>(entityId, component);
+        updateEntitySignature<ComponentType>(entityId, true);
+    }
+
+    template <typename ComponentType, bool threadSafe = true>
+    void removeComponent_(EntityId entityId) {
+        RECURSIVE_LOCK_GUARD(recursiveMutex, threadSafe);
+
+        componentManager.remove<ComponentType, threadSafe>(entityId);
+        updateEntitySignature<ComponentType>(entityId, false);
+    }
+
+    template <typename ComponentType, bool threadSafe = true>
+    ComponentType& component_(EntityId entityId) {
+        RECURSIVE_LOCK_GUARD(recursiveMutex, threadSafe);
+
+        send(OnComponentUpdate<ComponentType>{entityId});
+        return componentManager.get<ComponentType, threadSafe>(entityId);
     }
 
     // ============================================================== Data == //
