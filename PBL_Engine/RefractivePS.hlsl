@@ -88,6 +88,7 @@ float2 parallaxOcclusionMapping(PixelShaderInput input, float2 texCoords,
     float currentHeight = 0.0f;
     float prevHeight = 0.0f;
 
+    [unroll(MAX_SAMPLE_COUNT + 1)]
     while (sampleIndex < sampleCount + 1) {
         currentHeight = textures[TEXTURE_HEIGHT]
                             .SampleGrad(textureSampler,

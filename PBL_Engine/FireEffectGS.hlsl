@@ -46,6 +46,7 @@ struct VSOut {
     texCoord[3] = float2(1, 0);
 
     VSOut outputVert;
+    [unroll]
     for (int i = 0; i < 4; i++) {
         outputVert.pos = mul(float4(vert[i], 1.0f), modelViewProj);
         outputVert.worldPos = mul(float4(vert[i], 1.0f), model);

@@ -129,6 +129,7 @@ float4 pbr(PixelShaderInput input, float3 normal, float2 texCoord) {
     float4 finalColor = {0.0f, 0.0f, 0.0f, 0.0f};
 
     // Radiance
+    [unroll]
     for (int i = 0; i < NUM_LIGHTS; ++i) {
         // Shadow
         float shadow = 1.0f;
@@ -142,6 +143,7 @@ float4 pbr(PixelShaderInput input, float3 normal, float2 texCoord) {
             const float diskRadius =
                 (1.0f + (viewDistance / FAR_PLANE)) / 20.0f;
 
+            [unroll]
             for (int i = 0; i < SHADOW_PCR_SAMPLES; ++i) {
                 const float closestDepth = shadowMap.Sample(
                     textureSampler,
@@ -217,6 +219,7 @@ float2 parallaxOcclusionMapping(PixelShaderInput input, float2 texCoords,
     float currentHeight = 0.0f;
     float prevHeight = 0.0f;
 
+    [unroll(MAX_SAMPLE_COUNT + 1)]
     while (sampleIndex < sampleCount + 1) {
         currentHeight = textures[TEXTURE_HEIGHT]
                             .SampleGrad(textureSampler,
