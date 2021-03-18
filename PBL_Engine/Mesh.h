@@ -120,8 +120,7 @@ class Model {
                                    aiNode* currentNode,
                                    const DirectX::XMMATRIX& parentTransform,
                                    float factor);
-    aiNodeAnim* FindNodeAnim(aiAnimation* pAnim,
-                             std::string_view const& nodeName);
+    aiNodeAnim* FindNodeAnim(aiAnimation* pAnim, std::string const& nodeName);
 
     template <typename T, typename U>
     T interpolateKeyframes(float animationTime, float duration, int numKeys,

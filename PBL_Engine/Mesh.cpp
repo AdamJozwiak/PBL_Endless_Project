@@ -6,6 +6,7 @@
 
 #include <array>
 #include <cmath>
+#include <map>
 #include <sstream>
 #include <string_view>
 #include <thread>
@@ -860,11 +861,19 @@ void Model::BlendBoneTransform(float time,
         transforms.emplace_back(tmp);
     }
 }
+
+std::map<aiAnimation*, std::map<std::string, aiNodeAnim*>> nodeAnimations;
 aiNodeAnim* Model::FindNodeAnim(aiAnimation* pAnim,
-                                std::string_view const& nodeName) {
+                                std::string const& nodeName) {
+    if (nodeAnimations.contains(pAnim) &&
+        nodeAnimations.at(pAnim).contains(nodeName)) {
+        return nodeAnimations.at(pAnim).at(nodeName);
+    }
     for (UINT i = 0; i < pAnim->mNumChannels; i++) {
         aiNodeAnim* pNodeAnim = pAnim->mChannels[i];
-        if (std::string_view(pNodeAnim->mNodeName.data) == nodeName) {
+        if (std::string(pNodeAnim->mNodeName.data) == nodeName) {
+            nodeAnimations.insert({pAnim, {}});
+            nodeAnimations.at(pAnim).insert({nodeName, pNodeAnim});
             return pNodeAnim;
         }
     }
