@@ -9,6 +9,7 @@ class ENGINE_API Entity {
   public:
     // ========================================================= Behaviour == //
     Entity(EntityId entityId = EMPTY_ENTITY) : id(entityId) {}
+    operator EntityId() const { return id; }
 
     friend bool operator<(Entity const& a, Entity const& b) {
         return a.id < b.id;
