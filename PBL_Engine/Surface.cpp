@@ -75,8 +75,11 @@ const Surface::Color* Surface::GetBufferPtrConst() const noexcept {
 }
 
 SurfaceReference Surface::FromFile(const std::string& name) {
-    if (existingSurfaces.contains(name)) {
-        return existingSurfaces.at(name);
+    {  // Lock scope: existingSurfaces
+        std::scoped_lock<std::mutex> lock{mutex};
+        if (existingSurfaces.contains(name)) {
+            return existingSurfaces.at(name);
+        }
     }
 
     unsigned int width = 0;
@@ -108,10 +111,14 @@ SurfaceReference Surface::FromFile(const std::string& name) {
         bitmap.UnlockBits(&bitmapData);
     }
 
-    std::lock_guard<std::mutex> lockGuard(mutex);
-    existingSurfaces.insert({name, Surface(width, height, std::move(pBuffer))});
-    existingSurfaces.at(name).filename = name;
-    return std::ref(existingSurfaces.at(name));
+    {  // Lock scope: existingSurfaces
+        std::scoped_lock<std::mutex> lock{mutex};
+        existingSurfaces.insert(
+            {name, Surface(width, height, std::move(pBuffer))});
+        existingSurfaces.at(name).filename = name;
+
+        return std::ref(existingSurfaces.at(name));
+    }
 }
 
 void Surface::Save(const std::string& filename) const {
