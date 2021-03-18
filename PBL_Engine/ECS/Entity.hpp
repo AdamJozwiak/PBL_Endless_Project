@@ -14,6 +14,26 @@ class ENGINE_API Entity {
         return a.id < b.id;
     }
 
+    friend bool operator<=(Entity const& a, Entity const& b) {
+        return a.id <= b.id;
+    }
+
+    friend bool operator>(Entity const& a, Entity const& b) {
+        return a.id > b.id;
+    }
+
+    friend bool operator>=(Entity const& a, Entity const& b) {
+        return a.id >= b.id;
+    }
+
+    friend bool operator==(Entity const& a, Entity const& b) {
+        return a.id == b.id;
+    }
+
+    friend bool operator!=(Entity const& a, Entity const& b) {
+        return a.id != b.id;
+    }
+
     template <typename ComponentType>
     Entity& add(ComponentType const& component) {
         registry.addComponent(id, component);
