@@ -6,11 +6,13 @@
 // ///////////////////////////////////////////////////////////////// Includes //
 #include <cmath>
 
+#include "math-operators.hpp"
+
 // ////////////////////////////////////////////////////////////////// Easings //
-inline float interpolate(float (*easing)(float const), float const a,
-                         float const b, float const alpha,
-                         float const deltaTime) {
-    return std::lerp(a, b, easing(1.0f - std::pow(alpha, deltaTime)));
+template <typename T>
+inline T interpolate(float (*easing)(float const), T const &a, T const &b,
+                     float const alpha, float const deltaTime) {
+    return lerp(a, b, easing(1.0f - std::pow(alpha, deltaTime)));
 }
 
 // ------------------------------------------------------------------ Sine -- //

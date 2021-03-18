@@ -236,7 +236,7 @@ void GameManagerScript::update(float const deltaTime) {
 
     goalScorePosition = 1.0f * Entity(playerId).get<Transform>().position.x;
     goalScore = goalScorePosition + goalScoreTorches;
-    score = interpolate(easeOutSine, score, goalScore, 0.1f, deltaTime);
+    score = interpolate<float>(easeOutSine, score, goalScore, 0.1f, deltaTime);
 
     constexpr int CHUNKS_TO_OSCILLATE_FROM_MIN_TO_MAX = 5;
     spawnChance =
