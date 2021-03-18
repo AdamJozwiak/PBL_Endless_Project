@@ -30,10 +30,13 @@ void interpolateTextTo(EntityId entity, float const target,
 }
 
 EntityId cache(std::string const& prefabPath) {
-    return Registry::instance()
+    Registry::instance().setThreadSafety(true);
+    auto const& result = Registry::instance()
         .system<SceneSystem>()
         ->spawnPrefab(prefabPath, true)
         .id;
+    Registry::instance().setThreadSafety(false);
+    return result;
 };
 
 // //////////////////////////////////////////////////////////////// Variables //
