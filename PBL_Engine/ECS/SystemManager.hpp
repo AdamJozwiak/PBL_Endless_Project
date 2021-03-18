@@ -30,7 +30,7 @@ class ENGINE_API SystemManager {
     // --------------------------------------------------- Registration -- == //
     template <typename SystemType>
     void registerSystemType() {
-        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+        RECURSIVE_LOCK_GUARD(systemManagerRecursiveMutex, true);
 
         std::type_index typeIndex{typeid(SystemType)};
         assert(!isSystemTypeRegistered(typeIndex) &&
@@ -44,7 +44,7 @@ class ENGINE_API SystemManager {
 
     template <typename SystemType>
     std::shared_ptr<SystemType> get() {
-        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+        RECURSIVE_LOCK_GUARD(systemManagerRecursiveMutex, true);
 
         std::type_index typeIndex{typeid(SystemType)};
         assert(isSystemTypeRegistered(typeIndex) &&
@@ -55,7 +55,7 @@ class ENGINE_API SystemManager {
 
     template <typename SystemType, typename ComponentType>
     void filter(bool const active = true) {
-        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+        RECURSIVE_LOCK_GUARD(systemManagerRecursiveMutex, true);
 
         std::type_index typeIndex{typeid(SystemType)};
         assert(isSystemTypeRegistered(typeIndex) &&
@@ -75,13 +75,11 @@ class ENGINE_API SystemManager {
     ~SystemManager() = default;
 
     bool isSystemTypeRegistered(std::type_index const& typeIndex) {
-        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
-
         return systems.find(typeIndex) != systems.end();
     }
 
     // ============================================================== Data == //
-    std::recursive_mutex mutex;
+    std::recursive_mutex systemManagerRecursiveMutex;
 
     std::unordered_map<std::type_index, std::shared_ptr<System>> systems{};
     std::unordered_map<std::type_index, Signature> signatures{};

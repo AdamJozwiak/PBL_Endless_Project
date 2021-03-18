@@ -35,6 +35,9 @@ struct ENGINE_API System {
     virtual void update(float deltaTime) = 0;
     virtual void release() = 0;
 
+    virtual void onEntityInsert(Entity const& entity, SceneId const& sceneId) {}
+    virtual void onEntityErase(Entity const& entity, SceneId const& sceneId) {}
+
     // ============================================================== Data == //
     std::set<Entity> entities;
 };

@@ -2,6 +2,7 @@
 
 // ///////////////////////////////////////////////////////////////// Includes //
 #include <array>
+#include <mutex>
 #include <unordered_map>
 
 #include "EngineAPI.hpp"
@@ -14,6 +15,10 @@ class ENGINE_API IComponentArray {
     // ========================================================= Behaviour == //
     virtual ~IComponentArray() = default;
     virtual void destroyEntity(EntityId entityId) = 0;
+
+  protected:
+    // ============================================================== Data == //
+    std::mutex componentArrayMutex;
 };
 
 // //////////////////////////////////////////////////////////////////// Class //
@@ -27,11 +32,14 @@ class ENGINE_API ComponentArray : public IComponentArray {
     }
 
     // ========================================================= Behaviour == //
+    template <bool threadSafe = true>
     void insert(EntityId const entityId, Component const &component) {
+        LOCK_GUARD(componentArrayMutex, threadSafe);
+
         assert(entityExists(entityId) && "Entity doesn't exist!");
 
         if (componentExists(entityId)) {
-            get(entityId) = component;
+            components.at(indicies.at(entityId)) = component;
             return;
         }
 
@@ -51,7 +59,10 @@ class ENGINE_API ComponentArray : public IComponentArray {
         entities.at(insertedIndex) = entityId;
     }
 
+    template <bool threadSafe = true>
     void remove(EntityId const entityId) {
+        LOCK_GUARD(componentArrayMutex, threadSafe);
+
         assert(entityExists(entityId) && "Entity doesn't exist!");
 
         if (!componentExists(entityId)) {
@@ -74,7 +85,10 @@ class ENGINE_API ComponentArray : public IComponentArray {
         entities.at(lastIndex) = EMPTY_ENTITY;
     }
 
+    template <bool threadSafe = true>
     Component &get(EntityId const entityId) {
+        LOCK_GUARD(componentArrayMutex, threadSafe);
+
         assert(entityExists(entityId) && "Entity doesn't exist!");
         assert(componentExists(entityId) &&
                "Component doesn't exist for given entity!");
@@ -82,7 +96,12 @@ class ENGINE_API ComponentArray : public IComponentArray {
         return components.at(indicies.at(entityId));
     }
 
-    bool contains(EntityId const entityId) { return componentExists(entityId); }
+    template <bool threadSafe = true>
+    bool contains(EntityId const entityId) {
+        LOCK_GUARD(componentArrayMutex, threadSafe);
+
+        return componentExists(entityId);
+    }
 
     void destroyEntity(EntityId const entityId) override { remove(entityId); }
 

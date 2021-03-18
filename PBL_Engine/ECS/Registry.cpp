@@ -13,11 +13,10 @@ Registry& Registry::instance() {
 
 // -------------------------------------------- Delayed entity deletion -- == //
 bool Registry::refresh() {
-    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+    LOCK_GUARD(registryMutex, true);
 
     bool removed = false;
     for (auto const& entity : entitiesToRemove) {
-        send(OnEntityDestroy{entity.id});
         entityManager.destroy(entity.id);
         componentManager.destroyEntity(entity.id);
         systemManager.destroyEntity(entity.id);
@@ -27,9 +26,16 @@ bool Registry::refresh() {
     return removed;
 }
 
+// ------------------------------------------------------ Thread safety -- == //
+void Registry::setThreadSafety(bool const status) {
+    LOCK_GUARD(registryMutex, true);
+
+    threadSafety = status;
+}
+
 // -------------------------------------------------------------- Cache -- == //
 void Registry::moveCacheToMainScene() {
-    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+    LOCK_GUARD(registryMutex, true);
 
     for (auto const& entity : cachedEntities) {
         auto signature = entityManager.getSignature(entity.id);
@@ -37,40 +43,26 @@ void Registry::moveCacheToMainScene() {
         entityManager.setSignature(entity.id, signature);
 
         systemManager.changeEntitySignature(entity.id, signature);
-
-        send(OnEntityCreate{entity.id});
     }
 }
 
 void Registry::clearCache() {
-    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+    LOCK_GUARD(registryMutex, true);
 
     for (auto const& entity : cachedEntities) {
-        destroyEntity(entity);
+        destroyEntity<false>(entity);
     }
 }
 
 // ------------------------------------------------------------- Entity -- == //
 Entity Registry::createEntity(SceneId const sceneId) {
-    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+    LOCK_GUARD(registryMutex, true);
 
     auto const& entity = entityManager.create(sceneId);
     if (sceneId == CACHE_SCENE) {
         cachedEntities.insert(entity);
-    } else {
-        send(OnEntityCreate{entity});
     }
-
     return entity;
-}
-
-void Registry::destroyEntity(Entity const& entity) {
-    std::lock_guard<std::recursive_mutex> lockGuard{mutex};
-
-    if (cachedEntities.contains(entity)) {
-        cachedEntities.erase(entity);
-    }
-    entitiesToRemove.push_back(entity);
 }
 
 // ---------------------------------------------------------- Singleton -- == //
@@ -78,6 +70,7 @@ Registry::Registry()
     : componentManager(ComponentManager::instance()),
       entityManager(EntityManager::instance()),
       eventManager(EventManager::instance()),
-      systemManager(SystemManager::instance()) {}
+      systemManager(SystemManager::instance()),
+      threadSafety(false) {}
 
 // ////////////////////////////////////////////////////////////////////////// //

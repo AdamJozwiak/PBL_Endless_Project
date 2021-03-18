@@ -33,42 +33,54 @@ class ENGINE_API Registry {
     // ---------------------------------------- Delayed entity deletion -- == //
     bool refresh();
 
+    // -------------------------------------------------- Thread safety -- == //
+    void setThreadSafety(bool const threadSafety);
+
     // ---------------------------------------------------------- Cache -- == //
     void moveCacheToMainScene();
     void clearCache();
 
     // --------------------------------------------------------- Entity -- == //
     Entity createEntity(SceneId sceneId = DEFAULT_SCENE);
-    void destroyEntity(Entity const& entity);
+
+    template <bool threadSafe = true>
+    void destroyEntity(Entity const& entity) {
+        LOCK_GUARD(registryMutex, threadSafe);
+
+        if (cachedEntities.contains(entity)) {
+            cachedEntities.erase(entity);
+        }
+        entitiesToRemove.push_back(entity);
+    }
 
     // ------------------------------------------------------ Component -- == //
-    template <typename ComponentType>
+    template <typename ComponentType, bool threadSafe = true>
     void addComponent(EntityId entityId, ComponentType const& component) {
-        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+        RECURSIVE_LOCK_GUARD(recursiveMutex, threadSafe);
 
         componentManager.add<ComponentType>(entityId, component);
         updateEntitySignature<ComponentType>(entityId, true);
-        send(OnComponentAdd<ComponentType>{entityId});
     }
 
-    template <typename ComponentType>
+    template <typename ComponentType, bool threadSafe = true>
     void removeComponent(EntityId entityId) {
-        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+        RECURSIVE_LOCK_GUARD(recursiveMutex, threadSafe);
 
         componentManager.remove<ComponentType>(entityId);
         updateEntitySignature<ComponentType>(entityId, false);
-        send(OnComponentRemove<ComponentType>{entityId});
     }
 
-    template <typename ComponentType>
+    template <typename ComponentType, bool threadSafe = true>
     ComponentType& component(EntityId entityId) {
+        RECURSIVE_LOCK_GUARD(recursiveMutex, threadSafe);
+
         send(OnComponentUpdate<ComponentType>{entityId});
-        return componentManager.get<ComponentType>(entityId);
+        return componentManager.get<ComponentType, threadSafe>(entityId);
     }
 
-    template <typename ComponentType>
+    template <typename ComponentType, bool threadSafe = true>
     ComponentType const& component(EntityId entityId) const {
-        return componentManager.get<ComponentType>(entityId);
+        return componentManager.get<ComponentType, threadSafe>(entityId);
     }
 
     template <typename ComponentType>
@@ -76,9 +88,9 @@ class ENGINE_API Registry {
         return componentManager.id<ComponentType>();
     }
 
-    template <typename ComponentType>
+    template <typename ComponentType, bool threadSafe = true>
     bool hasComponent(EntityId entityId) {
-        return componentManager.has<ComponentType>(entityId);
+        return componentManager.has<ComponentType, threadSafe>(entityId);
     }
 
     // --------------------------------------------------------- System -- == //
@@ -112,8 +124,6 @@ class ENGINE_API Registry {
     // -------------------------------------------------------- Helpers -- == //
     template <typename Component>
     void updateEntitySignature(EntityId entityId, bool active) {
-        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
-
         auto signature = entityManager.getSignature(entityId);
         signature.components.set(componentManager.id<Component>(), active);
         entityManager.setSignature(entityId, signature);
@@ -122,7 +132,9 @@ class ENGINE_API Registry {
     }
 
     // ============================================================== Data == //
-    std::recursive_mutex mutex;
+    std::mutex registryMutex;
+    std::recursive_mutex recursiveMutex;
+    bool threadSafety;
 
     std::set<Entity> cachedEntities;
 

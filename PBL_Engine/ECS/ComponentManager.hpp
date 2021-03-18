@@ -40,16 +40,13 @@ class ENGINE_API ComponentManager {
     ComponentManager& operator=(ComponentManager&&) = delete;
 
     // --------------------------------------------------- Registration -- == //
-    template <typename ComponentType>
+    template <typename ComponentType, bool threadSafe = true>
     void registerComponentType() {
-        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
-
         ASSERT_COMPONENT_ID_SET();
-        ASSERT_COMPONENT_TYPE_NOT_REGISTERED();
 
-        if (isComponentTypeRegistered<ComponentType>()) {
-            throw;
-        }
+        LOCK_GUARD(componentArrayMutex<ComponentType>(), threadSafe);
+
+        ASSERT_COMPONENT_TYPE_NOT_REGISTERED();
 
         componentArrays.at(id<ComponentType>()) =
             std::make_shared<ComponentArray<ComponentType>>();
@@ -63,36 +60,45 @@ class ENGINE_API ComponentManager {
     }
 
     // --------------------------------------------- Main functionality -- == //
-    template <typename ComponentType>
+    template <typename ComponentType, bool threadSafe = true>
     void add(EntityId entityId, ComponentType const& component) {
-        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+        LOCK_GUARD(componentArrayMutex<ComponentType>(), threadSafe);
 
-        components<ComponentType>()->insert(entityId, component);
+        components<ComponentType>()->insert<false>(entityId, component);
     }
 
-    template <typename ComponentType>
+    template <typename ComponentType, bool threadSafe = true>
     void remove(EntityId entityId) {
-        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+        LOCK_GUARD(componentArrayMutex<ComponentType>(), threadSafe);
 
-        components<ComponentType>()->remove(entityId);
+        components<ComponentType>()->remove<false>(entityId);
     }
 
-    template <typename ComponentType>
+    template <typename ComponentType, bool threadSafe = true>
     ComponentType& get(EntityId entityId) {
-        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+        LOCK_GUARD(componentArrayMutex<ComponentType>(), threadSafe);
 
-        return components<ComponentType>()->get(entityId);
+        return components<ComponentType>()->get<false>(entityId);
     }
 
-    template <typename ComponentType>
+    template <typename ComponentType, bool threadSafe = true>
     bool has(EntityId entityId) {
-        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
+        LOCK_GUARD(componentArrayMutex<ComponentType>(), threadSafe);
 
-        return components<ComponentType>()->contains(entityId);
+        return components<ComponentType>()->contains<false>(entityId);
     }
 
     // -------------------------------------------------------- Helpers -- == //
-    void destroyEntity(EntityId entityId);
+    template <bool threadSafe = true>
+    void destroyEntity(EntityId const entityId) {
+        LOCK_GUARD(componentManagerMutex, threadSafe);
+
+        for (auto const& components : componentArrays) {
+            if (components) {
+                components->destroyEntity(entityId);
+            }
+        }
+    }
 
   private:
     // ========================================================= Behaviour == //
@@ -108,8 +114,6 @@ class ENGINE_API ComponentManager {
 
     template <typename ComponentType>
     bool isComponentTypeRegistered() {
-        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
-
         return componentArrays.at(ComponentRegistrant::id<ComponentType>()) !=
                nullptr;
     }
@@ -117,8 +121,6 @@ class ENGINE_API ComponentManager {
     // -------------------------------------------------------- Helpers -- == //
     template <typename ComponentType>
     std::shared_ptr<ComponentArray<ComponentType>> components() {
-        std::lock_guard<std::recursive_mutex> lockGuard{mutex};
-
         ASSERT_COMPONENT_ID_SET();
         ASSERT_COMPONENT_TYPE_REGISTERED();
 
@@ -127,9 +129,14 @@ class ENGINE_API ComponentManager {
     }
 
     // ============================================================== Data == //
-    std::recursive_mutex mutex;
+    std::mutex componentManagerMutex;
 
-    size_t numberOfRegisteredComponents{0};
+    template <typename ComponentType>
+    std::mutex& componentArrayMutex() {
+        static std::mutex mutex;
+        return mutex;
+    };
+
     std::array<std::shared_ptr<IComponentArray>, MAX_COMPONENTS>
         componentArrays{};
 };

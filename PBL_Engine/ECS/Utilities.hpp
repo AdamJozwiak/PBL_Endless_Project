@@ -2,6 +2,22 @@
 
 // ///////////////////////////////////////////////////////////////// Includes //
 #include <bitset>
+#include <optional>
+
+// ////////////////////////////////////////////////////////////////// Defines //
+#define LOCK_GUARD(mutexName, threadSafe)      \
+    using Lock = std::scoped_lock<std::mutex>; \
+    std::optional<Lock> lock;                  \
+    if constexpr (threadSafe) {                \
+        lock.emplace(mutexName);               \
+    }
+
+#define RECURSIVE_LOCK_GUARD(mutexName, threadSafe)      \
+    using Lock = std::scoped_lock<std::recursive_mutex>; \
+    std::optional<Lock> lock;                            \
+    if constexpr (threadSafe) {                          \
+        lock.emplace(mutexName);                         \
+    }
 
 // ///////////////////////////////////////////////////// Usings and constants //
 using SceneId = unsigned int;
