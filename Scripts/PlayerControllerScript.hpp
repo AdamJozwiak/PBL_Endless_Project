@@ -12,6 +12,9 @@
 #include "Script.hpp"
 #include "ScriptsAPI.hpp"
 
+class PropertySystem;
+class WindowSystem;
+
 // //////////////////////////////////////////////////////////////////// Class //
 class SCRIPTS_API PlayerControllerScript : public Script {
   public:
@@ -44,6 +47,9 @@ class SCRIPTS_API PlayerControllerScript : public Script {
   private:
     // ============================================================== Data == //
     GameState currentState = GAME_LAUNCH_FADE_IN;
+
+    std::shared_ptr<PropertySystem> propertySystem;
+    std::shared_ptr<WindowSystem> windowSystem;
 
     bool (*isKeyPressed)(int const key);
     float oscilate(float input, float factor, float max, float min = 0.0f);

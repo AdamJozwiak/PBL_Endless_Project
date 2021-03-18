@@ -529,8 +529,9 @@ void GameManagerScript::update(float const deltaTime) {
 // ------------------------------------------------------------- Events -- == //
 void GameManagerScript::onCollisionEnter(OnCollisionEnter const& event) {
     if (event.a.id == playerId || event.b.id == playerId) {
-        auto other = Entity(event.a.id == playerId ? event.b.id : event.a.id);
-        auto otherTag = other.get<Properties>().tag;
+        auto const& other =
+            Entity(event.a.id == playerId ? event.b.id : event.a.id);
+        auto const& otherTag = other.get<Properties>().tag;
 
         if (otherTag == "Torch") {
             goalScoreTorches += 100;
@@ -666,7 +667,7 @@ void GameManagerScript::spawnBishops(int percentage) {
     }
 }
 
-void GameManagerScript::spawnEnemy(MovementType mt, EntityId spawnPoint,
+void GameManagerScript::spawnEnemy(MovementType mt, Entity const& spawnPoint,
                                    int percentage, bool movingSideways) {
     if (shouldHappen(percentage)) {
         std::shared_ptr<Entity> enemy;
@@ -705,11 +706,11 @@ void GameManagerScript::spawnEnemy(MovementType mt, EntityId spawnPoint,
         enemyControllerScript->setMovementType(mt, movingSideways);
 
         auto& enemyTransform = enemy->get<Transform>();
-        auto const& spawnPointTransform = Entity(spawnPoint).get<Transform>();
+        auto const& spawnPointTransform = spawnPoint.get<Transform>();
         enemyTransform.position = spawnPointTransform.position;
         enemyTransform.parent = spawnPointTransform.parent;
     }
-    registry.destroyEntity(Entity(spawnPoint));
+    registry.destroyEntity(spawnPoint);
 }
 
 bool GameManagerScript::shouldHappen(int percentage) {

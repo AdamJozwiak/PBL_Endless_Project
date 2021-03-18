@@ -25,6 +25,9 @@ PlayerControllerScript::PlayerControllerScript(Entity const& entity)
 
 // ----------------------------------------- System's virtual functions -- == //
 void PlayerControllerScript::setup() {
+    propertySystem = registry.system<PropertySystem>();
+    windowSystem = registry.system<WindowSystem>();
+
     // Set event listeners
     registry.listen<OnCollisionEnter>(
         MethodListener(PlayerControllerScript::onCollisionEnter));
@@ -43,31 +46,16 @@ void PlayerControllerScript::setup() {
     // torchLight = Entity(torch).get<Light>(); // TODO
 
     // Set the forms
-    eagleForm = registry.system<PropertySystem>()
-                    ->findEntityByName("Eagle Form")
-                    .at(0)
-                    .id;
-    humanForm = registry.system<PropertySystem>()
-                    ->findEntityByName("Human Form")
-                    .at(0)
-                    .id;
-    catForm = registry.system<PropertySystem>()
-                  ->findEntityByName("Cat Form")
-                  .at(0)
-                  .id;
+    eagleForm = propertySystem->findEntityByName("Eagle Form").at(0);
+    humanForm = propertySystem->findEntityByName("Human Form").at(0);
+    catForm = propertySystem->findEntityByName("Cat Form").at(0);
     currentForm = humanForm;
-    torch = registry.system<PropertySystem>()
-                ->findEntityByName("Player Torch")
-                .at(0)
-                .id;
+    torch = propertySystem->findEntityByName("Player Torch").at(0);
 
-    groundCheck = registry.system<PropertySystem>()
-                      ->findEntityByName("GroundCollision")
-                      .at(0)
-                      .id;
+    groundCheck = propertySystem->findEntityByName("GroundCollision").at(0);
 
-    Entity(torch).add<Light>({.pointLight = std::make_shared<PointLight>(
-                                  registry.system<WindowSystem>()->gfx())});
+    Entity(torch).add<Light>(
+        {.pointLight = std::make_shared<PointLight>(windowSystem->gfx())});
     Entity(torch).get<Light>().pointLight->setIntensity(lightValue);
 
     // Activate all forms
@@ -447,9 +435,9 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
 // ------------------------------------------------------------- Events -- == //
 void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
     if (event.a.id == groundCheck || event.b.id == groundCheck) {
-        auto other =
+        auto const& other =
             Entity(event.a.id == groundCheck ? event.b.id : event.a.id);
-        auto otherTag = other.get<Properties>().tag;
+        auto const& otherTag = other.get<Properties>().tag;
 
         if (other.id == entity.id) {
             return;
@@ -459,8 +447,9 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
     }
 
     if (event.a.id == entity.id || event.b.id == entity.id) {
-        auto other = Entity(event.a.id == entity.id ? event.b.id : event.a.id);
-        auto otherTag = other.get<Properties>().tag;
+        auto const& other =
+            Entity(event.a.id == entity.id ? event.b.id : event.a.id);
+        auto const& otherTag = other.get<Properties>().tag;
 
         if (otherTag == "EnemySpawnPoint") {
             return;
@@ -552,27 +541,16 @@ void PlayerControllerScript::transitionForms(float const deltaTime) {
 
     // Upscale the current form
     constexpr float UPSCALE_SMOOTHING = 0.1f;
-    currentTransform.scale.x = interpolate(
-        easeOutQuint, currentTransform.scale.x,
-        currentForm == humanForm ? originalScaleWolf.x : originalScaleEagle.x,
-        UPSCALE_SMOOTHING, deltaTime);
-    currentTransform.scale.y = interpolate(
-        easeOutQuint, currentTransform.scale.y,
-        currentForm == humanForm ? originalScaleWolf.y : originalScaleEagle.y,
-        UPSCALE_SMOOTHING, deltaTime);
-    currentTransform.scale.z = interpolate(
-        easeOutQuint, currentTransform.scale.z,
-        currentForm == humanForm ? originalScaleWolf.z : originalScaleEagle.z,
+    currentTransform.scale = interpolate(
+        easeOutQuint, currentTransform.scale,
+        currentForm == humanForm ? originalScaleWolf : originalScaleEagle,
         UPSCALE_SMOOTHING, deltaTime);
 
     // Downscale the other form
     constexpr float DOWNSCALE_SMOOTHING = 0.1f;
-    otherTransform.scale.x = interpolate(easeOutQuint, otherTransform.scale.x,
-                                         0.0f, DOWNSCALE_SMOOTHING, deltaTime);
-    otherTransform.scale.y = interpolate(easeOutQuint, otherTransform.scale.y,
-                                         0.0f, DOWNSCALE_SMOOTHING, deltaTime);
-    otherTransform.scale.z = interpolate(easeOutQuint, otherTransform.scale.z,
-                                         0.0f, DOWNSCALE_SMOOTHING, deltaTime);
+    otherTransform.scale = interpolate(easeOutQuint, otherTransform.scale,
+                                       DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f),
+                                       DOWNSCALE_SMOOTHING, deltaTime);
 
     // Additionally move the wolf when scaling
     if (currentForm == humanForm) {

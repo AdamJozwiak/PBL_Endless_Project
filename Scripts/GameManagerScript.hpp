@@ -72,7 +72,7 @@ class SCRIPTS_API GameManagerScript : public Script {
     void spawnTorches();
     void spawnRooks(int percentage, bool movingSideways = true);
     void spawnBishops(int percentage);
-    void spawnEnemy(MovementType mt, EntityId spawnPoint, int percentage,
+    void spawnEnemy(MovementType mt, Entity const &spawnPoint, int percentage,
                     bool movingSideways = true);
     bool shouldHappen(int percentage);
     void findSpawnPoints(MovementType mt);
