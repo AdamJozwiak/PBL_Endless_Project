@@ -8,7 +8,9 @@
 // /////////////////////////////////////////////////////////////////// System //
 // ============================================================= Behaviour == //
 
-void PhysicsSystem::filters() { filter<Active>().filter<Rigidbody>(); }
+void PhysicsSystem::filters() {
+    filter<Active>().filter<Transform>().filter<Rigidbody>();
+}
 
 void PhysicsSystem::setup() {
     gravityFactor = 9.81f;

@@ -402,6 +402,7 @@ DirectX::XMFLOAT3 ColliderSystem::CalculateSeparatingVector(
 
 void ColliderSystem::filters() {
     filter<Active>();
+    filter<Transform>();
     filter<BoxCollider>();
 }
 
