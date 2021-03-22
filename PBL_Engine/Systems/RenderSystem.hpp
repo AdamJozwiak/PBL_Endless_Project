@@ -41,7 +41,7 @@ ECS_SYSTEM(RenderSystem) {
     EntityId playerTorchId;
     DirectX::XMMATRIX normalFOV, shadowFOV;
     ImguiManager imgui;
-    Transform *mainCameraTransform;
+    EntityId mainCameraId;
     bool (*isKeyPressed)(int const key);
     std::array<AABB, MAX_ENTITIES> aabbs;
 

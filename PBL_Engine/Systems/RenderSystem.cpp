@@ -49,12 +49,8 @@ void RenderSystem::setup() {
     colliderSystem = registry.system<ColliderSystem>();
 
     window = &registry.system<WindowSystem>()->window();
-    mainCamera = propertySystem->findEntityByTag("MainCamera")
-                     .at(0)
-                     .get<MainCamera>()
-                     .camera;
-    mainCameraTransform =
-        &propertySystem->findEntityByTag("MainCamera").at(0).get<Transform>();
+    mainCameraId = propertySystem->findEntityByTag("MainCamera").at(0);
+    mainCamera = Entity(mainCameraId).get<MainCamera>().camera;
     freeCamera = std::make_shared<Camera>();
     bloom = std::make_shared<PostProcessing>(window->Gfx(), L"Bloom", 2);
     colorCorrection =
@@ -202,12 +198,13 @@ void RenderSystem::update(float deltaTime) {
     registry.system<SoundSystem>()->setListener(
         mainCamera->pos(), mainCamera->at(), {0.0f, 1.0f, 0.0f});
 
-    mainCamera->setCameraPos(mainCameraTransform->position);
+    auto const& mainCameraTransform = Entity(mainCameraId).get<Transform>();
+    mainCamera->setCameraPos(mainCameraTransform.position);
 
-    window->Gfx().SetCamera(mainCamera->GetMatrix(*mainCameraTransform));
+    window->Gfx().SetCamera(mainCamera->GetMatrix(mainCameraTransform));
     DirectX::XMFLOAT4X4 viewProjection;
     DirectX::XMStoreFloat4x4(&viewProjection,
-                             mainCamera->GetMatrix(*mainCameraTransform) *
+                             mainCamera->GetMatrix(mainCameraTransform) *
                                  window->Gfx().GetProjection());
     /* auto const& torchTransform = graphSystem->transform(
      */
