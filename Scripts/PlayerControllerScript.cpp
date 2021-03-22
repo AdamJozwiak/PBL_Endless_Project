@@ -136,7 +136,10 @@ void PlayerControllerScript::update(float const deltaTime) {
             activateEntity(eagleForm, true);
             Entity(eagleForm).get<Animator>().factor = 65.0f;
             Entity(humanForm).get<Animator>().factor = 32.5f;
-            entity.get<Transform>().position = {0.0f, 0.0f, 0.0f};
+
+            auto& transform = entity.get<Transform>();
+            { transform.position = {0.0f, 0.0f, 0.0f}; }
+            entity.set<Transform>(transform);
         } break;
         case GAME_EXIT_FADE_OUT: {
         } break;
@@ -314,21 +317,24 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
                               deltaTime);
 
     // Rotate slightly when changing the lane
-    entity.get<Transform>().euler.y = interpolate(
-        easeOutSine, entity.get<Transform>().euler.y,
-        (moveInput.z > 0.0f ? -1.0f : 1.0f) *
-            (std::min)(
-                35.0f * DirectX::XMConvertToRadians(std::abs(moveInput.z)),
-                DirectX::XMConvertToRadians(30.0f)),
-        0.004f, deltaTime);
-
-    entity.get<Transform>().euler.z =
-        interpolate(easeOutSine, entity.get<Transform>().euler.z,
-                    (moveInput.y + 0.25f > 0.0f ? 1.0f : -1.0f) *
-                        (std::min)(15.0f * DirectX::XMConvertToRadians(
-                                               std::abs(moveInput.y + 0.25f)),
-                                   DirectX::XMConvertToRadians(15.0f)),
-                    0.04f, deltaTime);
+    auto& transform = entity.get<Transform>();
+    {
+        transform.euler.y = interpolate(
+            easeOutSine, transform.euler.y,
+            (moveInput.z > 0.0f ? -1.0f : 1.0f) *
+                (std::min)(
+                    35.0f * DirectX::XMConvertToRadians(std::abs(moveInput.z)),
+                    DirectX::XMConvertToRadians(30.0f)),
+            0.004f, deltaTime);
+        transform.euler.z = interpolate(
+            easeOutSine, transform.euler.z,
+            (moveInput.y + 0.25f > 0.0f ? 1.0f : -1.0f) *
+                (std::min)(15.0f * DirectX::XMConvertToRadians(
+                                       std::abs(moveInput.y + 0.25f)),
+                           DirectX::XMConvertToRadians(15.0f)),
+            0.04f, deltaTime);
+    }
+    entity.set<Transform>(transform);
 
     if (currentForm == humanForm) {
         moveInput.y = 0.0f;
@@ -373,7 +379,8 @@ void PlayerControllerScript::doGameLogic(float const deltaTime) {
     /* currentVelocity.y = std::lerp(currentVelocity.y, 0.0f, 0.5f); */
     /* currentVelocity.z = std::lerp(currentVelocity.z, 0.0f, 0.5f); */
 
-    entity.get<Transform>().position += (currentVelocity * deltaTime);
+    transform.position += (currentVelocity * deltaTime);
+    entity.set<Transform>(transform);
 
     // Update torch range
 
@@ -535,33 +542,38 @@ void PlayerControllerScript::resetTorchLight() { lightValue = 1.0f; }
 
 void PlayerControllerScript::transitionForms(float const deltaTime) {
     auto& currentTransform = Entity(currentForm).get<Transform>();
-    auto& otherTransform =
-        Entity(currentForm == eagleForm ? humanForm : eagleForm)
-            .get<Transform>();
+    Entity otherEntity =
+        Entity(currentForm == eagleForm ? humanForm : eagleForm);
+    auto& otherTransform = otherEntity.get<Transform>();
 
-    // Upscale the current form
-    constexpr float UPSCALE_SMOOTHING = 0.1f;
-    currentTransform.scale = interpolate(
-        easeOutQuint, currentTransform.scale,
-        currentForm == humanForm ? originalScaleWolf : originalScaleEagle,
-        UPSCALE_SMOOTHING, deltaTime);
+    {  // Upscale the current form
+        constexpr float UPSCALE_SMOOTHING = 0.1f;
+        currentTransform.scale = interpolate(
+            easeOutQuint, currentTransform.scale,
+            currentForm == humanForm ? originalScaleWolf : originalScaleEagle,
+            UPSCALE_SMOOTHING, deltaTime);
 
-    // Downscale the other form
-    constexpr float DOWNSCALE_SMOOTHING = 0.1f;
-    otherTransform.scale = interpolate(easeOutQuint, otherTransform.scale,
-                                       DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f),
-                                       DOWNSCALE_SMOOTHING, deltaTime);
+        // Downscale the other form
+        constexpr float DOWNSCALE_SMOOTHING = 0.1f;
+        otherTransform.scale = interpolate(easeOutQuint, otherTransform.scale,
+                                           DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f),
+                                           DOWNSCALE_SMOOTHING, deltaTime);
 
-    // Additionally move the wolf when scaling
-    if (currentForm == humanForm) {
-        currentTransform.position.y = interpolate(
-            easeOutQuint, currentTransform.position.y,
-            currentForm == humanForm ? originalOffsetWolf : originalOffsetEagle,
-            0.1f, deltaTime);
-    } else {
-        otherTransform.position.y = interpolate(
-            easeOutQuad, otherTransform.position.y, 2.0f, 0.1f, deltaTime);
+        // Additionally move the wolf when scaling
+        if (currentForm == humanForm) {
+            currentTransform.position.y =
+                interpolate(easeOutQuint, currentTransform.position.y,
+                            currentForm == humanForm ? originalOffsetWolf
+                                                     : originalOffsetEagle,
+                            0.1f, deltaTime);
+        } else {
+            otherTransform.position.y = interpolate(
+                easeOutQuad, otherTransform.position.y, 2.0f, 0.1f, deltaTime);
+        }
     }
+
+    Entity(currentForm).set<Transform>(currentTransform);
+    Entity(otherEntity).set<Transform>(otherTransform);
 }
 
 float PlayerControllerScript::ascend(float const x, float const thrustForce) {
@@ -572,6 +584,7 @@ float PlayerControllerScript::ascend(float const x, float const thrustForce) {
 void PlayerControllerScript::activateEntity(Entity entity, bool status) {
     auto& properties = entity.get<Properties>();
     properties.active = status;
+    entity.set<Properties>(properties);
 }
 
 // ////////////////////////////////////////////////////////////////////////// //

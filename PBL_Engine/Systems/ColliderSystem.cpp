@@ -463,5 +463,7 @@ void ColliderSystem::update(float deltaTime) {
 
         transform.position -=
             boxCollider.separatingVectorSum / boxCollider.numberOfCollisions;
+
+        entity.set<Transform>(transform);
     }
 }

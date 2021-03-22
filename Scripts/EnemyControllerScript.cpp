@@ -114,32 +114,36 @@ void EnemyControllerScript::onGameStateChange(OnGameStateChange const& event) {
 
 // ------------------------------------------------------------ Methods -- == //
 void EnemyControllerScript::moveBishop(float const deltaTime) {
-    auto& position = entity.get<Transform>().position;
-    position.x = interpolate(easeOutQuad, position.x,
-                             position.x + (-angle) * deltaTime * speed, 0.01f,
-                             deltaTime);
-    position.z =
-        interpolate(easeOutQuad, position.z,
-                    position.z + ((movingLeft ? (-1.0f) : 1.0f) * angle) *
-                                     deltaTime * speed,
-                    0.01f, deltaTime);
+    auto& transform = entity.get<Transform>();
+    transform.position.x = interpolate(
+        easeOutQuad, transform.position.x,
+        transform.position.x + (-angle) * deltaTime * speed, 0.01f, deltaTime);
+    transform.position.z = interpolate(
+        easeOutQuad, transform.position.z,
+        transform.position.z +
+            ((movingLeft ? (-1.0f) : 1.0f) * angle) * deltaTime * speed,
+        0.01f, deltaTime);
+    entity.set<Transform>(transform);
 }
 
 void EnemyControllerScript::moveRook(float const deltaTime) {
     float tmp = deltaTime;
-    auto& position = entity.get<Transform>().position;
+    auto& transform = entity.get<Transform>();
     // if ((int) tmp % 3 == 0) movingSideways = !movingSideways;
     if (movingSideways) {
-        position.z = interpolate(
-            easeOutQuad, position.z,
-            position.z + ((movingLeft ? (-1.0f) : 1.0f)) * deltaTime * speed,
-            0.01f, deltaTime);
+        transform.position.z =
+            interpolate(easeOutQuad, transform.position.z,
+                        transform.position.z +
+                            ((movingLeft ? (-1.0f) : 1.0f)) * deltaTime * speed,
+                        0.01f, deltaTime);
     } else {
-        position.x = interpolate(
-            easeOutQuad, position.x,
-            position.x + ((movingLeft ? (-1.0f) : 1.0f)) * deltaTime * speed,
-            0.01f, deltaTime);
+        transform.position.x =
+            interpolate(easeOutQuad, transform.position.x,
+                        transform.position.x +
+                            ((movingLeft ? (-1.0f) : 1.0f)) * deltaTime * speed,
+                        0.01f, deltaTime);
     }
+    entity.set<Transform>(transform);
 }
 
 void EnemyControllerScript::setMovementType(MovementType mt, bool movingS) {

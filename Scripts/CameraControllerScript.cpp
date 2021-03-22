@@ -57,6 +57,8 @@ void CameraControllerScript::setup() {
         lerp(originalTransform.position, menuCameraTransform.position, 0.5f);
     middleTransform.rotation =
         lerp(originalTransform.rotation, menuCameraTransform.rotation, 0.5f);
+
+    entity.set<Transform>(entityTransform);
 };
 
 void CameraControllerScript::update(float const deltaTime) {
@@ -75,6 +77,8 @@ void CameraControllerScript::update(float const deltaTime) {
             transform.rotation =
                 interpolate(easeOutSine, transform.rotation,
                             menuCameraTransform.rotation, smooth, deltaTime);
+
+            entity.set<Transform>(transform);
         } break;
         case CHANGE_MENU_TYPE_TO_MAIN: {
         } break;
@@ -123,16 +127,21 @@ void CameraControllerScript::update(float const deltaTime) {
                 interpolate(easing, transform.rotation,
                             originalTransform.rotation, smooth, deltaTime);
 
+            entity.set<Transform>(transform);
+
             lastPosition = transform.position;
         } break;
         case GAME: {
-            auto& transform = entity.get<Transform>();
             Entity const& player = playerId;
             auto const& playerTransform = player.get<Transform>();
 
-            transform.position = interpolate(easeOutQuad, lastPosition,
-                                             playerTransform.position + offset,
-                                             smoothing, deltaTime);
+            auto& transform = entity.get<Transform>();
+            entity.set<Transform>([&] {
+                transform.position = interpolate(
+                    easeOutQuad, lastPosition,
+                    playerTransform.position + offset, smoothing, deltaTime);
+                return transform;
+            }());
 
             //! This line was in late update, may not work
             lastPosition = transform.position;
@@ -162,13 +171,14 @@ void CameraControllerScript::onGameStateChange(OnGameStateChange const& event) {
 void CameraControllerScript::setPosition() {}
 
 void CameraControllerScript::shake(float const deltaTime) {
+    auto& transform = entity.get<Transform>();
     auto const& playerTransform = Entity(playerId).get<Transform>();
     auto const& cameraPosition = entity.get<Transform>().position;
     static std::random_device rnd;
     static std::mt19937 rng(rnd());
     static std::normal_distribution<float> normalDistribution(0.0f, 0.5f);
     shakeOffset = {normalDistribution(rng), normalDistribution(rng), 0.0f};
-    entity.get<Transform>().position = DirectX::XMFLOAT3{
+    transform.position = DirectX::XMFLOAT3{
         interpolate(easeOutQuad, lastPosition.x,
                     playerTransform.position.x + offset.x + shakeOffset.x,
                     smoothing, deltaTime),
@@ -178,6 +188,7 @@ void CameraControllerScript::shake(float const deltaTime) {
         interpolate(easeOutQuad, lastPosition.z,
                     playerTransform.position.z + offset.z + shakeOffset.z,
                     smoothing, deltaTime)};
+    entity.set<Transform>(transform);
 
     //! This line was in late update, may not work
     lastPosition = entity.get<Transform>().position;

@@ -232,10 +232,15 @@ void GameManagerScript::setup() {
 };
 
 void GameManagerScript::update(float const deltaTime) {
-    Entity(menuChunk).get<Transform>().position =
+    auto& menuChunkTransform = Entity(menuChunk).get<Transform>();
+    menuChunkTransform.position =
         Entity(playerId).get<Transform>().position + menuOriginalOffset;
-    Entity(menuCamera).get<Transform>().position =
+    Entity(menuChunk).set<Transform>(menuChunkTransform);
+
+    auto& menuCameraTransform = Entity(menuCamera).get<Transform>();
+    menuCameraTransform.position =
         Entity(playerId).get<Transform>().position + menuCameraOriginalOffset;
+    Entity(menuCamera).set<Transform>(menuCameraTransform);
 
     goalScorePosition = 1.0f * Entity(playerId).get<Transform>().position.x;
     goalScore = goalScorePosition + goalScoreTorches;
@@ -712,6 +717,7 @@ void GameManagerScript::spawnEnemy(MovementType mt, Entity const& spawnPoint,
         auto const& spawnPointTransform = spawnPoint.get<Transform>();
         enemyTransform.position = spawnPointTransform.position;
         enemyTransform.parent = spawnPointTransform.parent;
+        enemy->set<Transform>(enemyTransform);
     }
     registry.destroyEntity(spawnPoint);
 }
@@ -831,18 +837,22 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
                  shouldHappen(SHAKE_PROBABILITY_UNDER_THRESHOLD));
 
         // Move the new chunk and the enemy spawn points to their place
-        chunk.get<Transform>().position.x = generatedLengthInWorldUnits;
+        auto& chunkTransform = chunk.get<Transform>();
+        chunkTransform.position.x = generatedLengthInWorldUnits;
 
         // Fix the adjacent box colliders problem by spawning the next chunk
         // slightly lower
-        chunk.get<Transform>().position.y = -VERTICAL_DELTA * spawnedChunks;
+        chunkTransform.position.y = -VERTICAL_DELTA * spawnedChunks;
+        chunk.set<Transform>(chunkTransform);
 
         // Rotate the last lanes to compensate for the lowered chunk
         auto lastLanes =
             registry.system<PropertySystem>()->findEntityByTag("LastLane");
         for (Entity& lane : lastLanes) {
-            lane.get<Transform>().position.y = -VERTICAL_DELTA / 2.0f;
-            lane.get<Transform>().euler.z = -ALPHA;
+            auto& transform = lane.get<Transform>();
+            transform.position.y = -VERTICAL_DELTA / 2.0f;
+            transform.euler.z = -ALPHA;
+            lane.set<Transform>(transform);
         }
 
         // Spawn the enemies

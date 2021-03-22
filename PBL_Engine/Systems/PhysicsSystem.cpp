@@ -39,6 +39,8 @@ void PhysicsSystem::gravity(Entity& entity, float deltaTime) {
         entity.get<Rigidbody>().velocity = maxVelocity;
     }
 
-    entity.get<Transform>().position.y +=
+    auto& transform = entity.get<Transform>();
+    transform.position.y +=
         movementFactor * entity.get<Rigidbody>().velocity * deltaTime;
+    entity.set<Transform>(transform);
 }

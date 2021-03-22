@@ -126,40 +126,50 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                 entityIdsWithTransform.insert({fileId, entity});
             }
 
-            auto &transform = Entity(entityIds.at(fileId)).get<Transform>();
-
             {
-                auto &helper = nodeTransform.at("m_LocalRotation");
-                transform.rotation.x = helper.at("x").get<float>();
-                transform.rotation.y = helper.at("y").get<float>();
-                transform.rotation.z = helper.at("z").get<float>();
-                transform.rotation.w = helper.at("w").get<float>();
-            }
+                auto entity = Entity(entityIds.at(fileId));
 
-            {
-                auto &helper = nodeTransform.at("m_LocalPosition");
-                transform.position.x = helper.at("x").get<float>();
-                transform.position.y = helper.at("y").get<float>();
-                transform.position.z = helper.at("z").get<float>();
-            }
+                entity.set<Transform>([&] {
+                    auto &transform =
+                        Entity(entityIds.at(fileId)).get<Transform>();
 
-            {
-                auto &helper = nodeTransform.at("m_LocalScale");
-                transform.scale.x = helper.at("x").get<float>();
-                transform.scale.y = helper.at("y").get<float>();
-                transform.scale.z = helper.at("z").get<float>();
-            }
+                    {
+                        auto &helper = nodeTransform.at("m_LocalRotation");
+                        transform.rotation.x = helper.at("x").get<float>();
+                        transform.rotation.y = helper.at("y").get<float>();
+                        transform.rotation.z = helper.at("z").get<float>();
+                        transform.rotation.w = helper.at("w").get<float>();
+                    }
 
-            {
-                auto &helper = nodeTransform.at("m_RootOrder");
-                transform.root_Order = helper.get<int>();
-            }
+                    {
+                        auto &helper = nodeTransform.at("m_LocalPosition");
+                        transform.position.x = helper.at("x").get<float>();
+                        transform.position.y = helper.at("y").get<float>();
+                        transform.position.z = helper.at("z").get<float>();
+                    }
 
-            {
-                auto &helper = nodeTransform.at("m_LocalEulerAnglesHint");
-                transform.euler.x = helper.at("x").get<float>();
-                transform.euler.y = helper.at("y").get<float>();
-                transform.euler.z = helper.at("z").get<float>();
+                    {
+                        auto &helper = nodeTransform.at("m_LocalScale");
+                        transform.scale.x = helper.at("x").get<float>();
+                        transform.scale.y = helper.at("y").get<float>();
+                        transform.scale.z = helper.at("z").get<float>();
+                    }
+
+                    {
+                        auto &helper = nodeTransform.at("m_RootOrder");
+                        transform.root_Order = helper.get<int>();
+                    }
+
+                    {
+                        auto &helper =
+                            nodeTransform.at("m_LocalEulerAnglesHint");
+                        transform.euler.x = helper.at("x").get<float>();
+                        transform.euler.y = helper.at("y").get<float>();
+                        transform.euler.z = helper.at("z").get<float>();
+                    }
+
+                    return transform;
+                }());
             }
         } else if (node.contains("RectTransform")) {
             auto const &nodeRectTransform = node.at("RectTransform");
@@ -556,10 +566,16 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                                       .get<FileId>();
 
             if (transformParentId != 0) {
-                Entity(prefabEntityIds[targetTransformId])
-                    .get<Transform>()
-                    .parent =
-                    std::make_optional<EntityId>(entityIds[transformParentId]);
+                Entity entity = prefabEntityIds[targetTransformId];
+                entity.set<Transform>([&] {
+                    auto &transform = Entity(prefabEntityIds[targetTransformId])
+                                          .get<Transform>();
+                    {
+                        transform.parent = std::make_optional<EntityId>(
+                            entityIds[transformParentId]);
+                    }
+                    return transform;
+                }());
             }
 
             for (auto const &i : nodePrefabInstance.at("m_Modification")
@@ -567,10 +583,9 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                 auto targetFileId = i.at("target").at("fileID").get<FileId>();
                 auto property = i.at("propertyPath").get<std::string>();
 
-                auto &transform =
-                    Entity(prefabEntityIds.at(targetFileId)).get<Transform>();
-                auto &properties =
-                    Entity(prefabEntityIds.at(targetFileId)).get<Properties>();
+                Entity entity = prefabEntityIds.at(targetFileId);
+                auto &transform = entity.get<Transform>();
+                auto &properties = entity.get<Properties>();
 
                 std::map<std::string, std::function<void()>> actions;
                 actions["m_RootOrder"] = [&]() {
@@ -625,6 +640,9 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
                 if (actions.contains(property)) {
                     actions.at(property)();
                 }
+
+                entity.set<Transform>(transform);
+                entity.set<Properties>(properties);
             }
         }
     }
@@ -648,8 +666,15 @@ std::unordered_map<FileId, EntityId> spawnPrefab(
         if (!entityIdsWithTransform.contains(parentFileId)) {
             continue;
         }
-        Entity{entityId}.get<Transform>().parent = std::make_optional<EntityId>(
-            entityIdsWithTransform.at(parentFileId));
+        Entity entity = entityId;
+        entity.set<Transform>([&] {
+            auto &transform = entity.get<Transform>();
+            {
+                transform.parent = std::make_optional<EntityId>(
+                    entityIdsWithTransform.at(parentFileId));
+            }
+            return transform;
+        }());
     }
 
     if (recursivePrefabIds) {
@@ -795,6 +820,8 @@ void LevelParser::finalizeLoading(
             transform.scale.y *= scale;
             transform.scale.z *= scale;
 
+            entity.set<Transform>(transform);
+
             meshFilter.path = replacedPath;
         }
 
@@ -840,10 +867,15 @@ void LevelParser::finalizeLoading(
         // Zero the euler angles but leave them for the coded chunk start
         if (entity.get<Properties>().tag != "ChunkStartEndProperty") {
             if (entity.has<Transform>()) {
-                auto &transform = entity.get<Transform>();
-                transform.euler.x = 0.0f;
-                transform.euler.y = 0.0f;
-                transform.euler.z = 0.0f;
+                entity.set<Transform>([&] {
+                    auto &transform = entity.get<Transform>();
+                    {
+                        transform.euler.x = 0.0f;
+                        transform.euler.y = 0.0f;
+                        transform.euler.z = 0.0f;
+                    }
+                    return transform;
+                }());
             }
         }
     }
