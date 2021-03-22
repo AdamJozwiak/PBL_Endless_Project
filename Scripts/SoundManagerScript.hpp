@@ -7,7 +7,7 @@
 #include "ScriptsAPI.hpp"
 
 // ///////////////////////////////////////////////////// Forward declarations //
-class SoundSystem;
+ECS_SYSTEM_FORWARD(SoundSystem);
 
 // //////////////////////////////////////////////////////////////////// Class //
 class SCRIPTS_API SoundManagerScript : public Script {

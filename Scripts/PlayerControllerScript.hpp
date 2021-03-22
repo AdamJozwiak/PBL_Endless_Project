@@ -12,8 +12,8 @@
 #include "Script.hpp"
 #include "ScriptsAPI.hpp"
 
-class PropertySystem;
-class WindowSystem;
+ECS_SYSTEM_FORWARD(PropertySystem);
+ECS_SYSTEM_FORWARD(WindowSystem);
 
 // //////////////////////////////////////////////////////////////////// Class //
 class SCRIPTS_API PlayerControllerScript : public Script {

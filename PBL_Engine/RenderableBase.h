@@ -1,9 +1,10 @@
 #pragma once
+#include "EngineAPI.hpp"
 #include "IndexBuffer.h"
 #include "Renderable.h"
 
 template <class T>
-class RenderableBase : public Renderable {
+class ENGINE_API RenderableBase : public Renderable {
   protected:
     bool IsStaticInitialized() noexcept { return !staticBinds.empty(); }
     static void AddStaticBind(std::unique_ptr<Bindable> bind) noexcept(

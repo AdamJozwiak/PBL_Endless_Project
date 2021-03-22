@@ -16,9 +16,9 @@
 
 // ///////////////////////////////////////////////////// Forward declarations //
 class Window;
-class GraphSystem;
-class PropertySystem;
-class ColliderSystem;
+ECS_SYSTEM_FORWARD(GraphSystem);
+ECS_SYSTEM_FORWARD(PropertySystem);
+ECS_SYSTEM_FORWARD(ColliderSystem);
 
 // /////////////////////////////////////////////////////////////////// System //
 ECS_SYSTEM(RenderSystem) {

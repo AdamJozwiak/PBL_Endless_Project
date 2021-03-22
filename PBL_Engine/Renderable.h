@@ -1,12 +1,13 @@
 #pragma once
 #include <DirectXMath.h>
 
+#include "EngineAPI.hpp"
 #include "Graphics.h"
 
 enum class PassType { normal, shadowPass, refractive };
 class Bindable;
 
-class Renderable {
+class ENGINE_API Renderable {
     template <class T>
     friend class RenderableBase;
 

@@ -123,8 +123,8 @@ class Model {
     aiNodeAnim* FindNodeAnim(aiAnimation* pAnim, std::string const& nodeName);
 
     template <typename T, typename U>
-    T interpolateKeyframes(float animationTime, float duration, int numKeys,
-                           U* keys);
+    T interpolateKeyframes(float animationTime, double duration,
+                           unsigned int numKeys, U* keys);
 
     DirectX::XMMATRIX aiMatrixToXMMATRIX(aiMatrix4x4 aiM);
     std::vector<std::pair<std::string, Bone>> getBonesMap();

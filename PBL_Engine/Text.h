@@ -4,6 +4,7 @@
 #include <dwrite_2.h>
 #include <wrl/client.h>
 
+#include "ECS/Utilities.hpp"
 #include "ExceptionHandler.h"
 #include "FontLoader.h"
 #include "Graphics.h"
@@ -15,7 +16,7 @@ namespace wrl = Microsoft::WRL;
 
 class Text {
   public:
-    friend class RenderSystem;
+    friend ECS_SYSTEM_FORWARD(RenderSystem);
     friend class Graphics;
     Text(Graphics& gfx, const WCHAR* fontFamily, float fontSize);
     Text(Graphics& gfx, const WCHAR* fontFamily, std::wstring path,

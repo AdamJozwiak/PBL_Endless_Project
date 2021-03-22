@@ -19,6 +19,8 @@
         lock.emplace(mutexName);                         \
     }
 
+#define ECS_SYSTEM_FORWARD(T) struct T
+
 // ///////////////////////////////////////////////////// Usings and constants //
 using SceneId = unsigned int;
 constexpr SceneId MAX_SCENES = 2u;

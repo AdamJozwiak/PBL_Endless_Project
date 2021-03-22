@@ -881,8 +881,8 @@ aiNodeAnim* Model::FindNodeAnim(aiAnimation* pAnim,
 }
 
 template <typename T, typename U>
-T Model::interpolateKeyframes(float animationTime, float const duration,
-                              int const numKeys, U* const keys) {
+T Model::interpolateKeyframes(float animationTime, double const duration,
+                              unsigned int const numKeys, U* const keys) {
     assert(numKeys > 0);
 
     if (numKeys == 1) {
@@ -890,7 +890,7 @@ T Model::interpolateKeyframes(float animationTime, float const duration,
     }
 
     unsigned int const& startIndex = [animationTime, numKeys, keys] {
-        for (int i = 0; i < numKeys - 1; ++i) {
+        for (unsigned int i = 0; i < numKeys - 1; ++i) {
             if (animationTime > (float)keys[i].mTime &&
                 animationTime < (float)keys[i + 1].mTime) {
                 return i;
@@ -926,9 +926,9 @@ T Model::interpolateKeyframes(float animationTime, float const duration,
 }
 
 template aiVector3D Model::interpolateKeyframes<aiVector3D, aiVectorKey>(
-    float, float, int, aiVectorKey*);
+    float, double, unsigned int, aiVectorKey*);
 template aiQuaternion Model::interpolateKeyframes<aiQuaternion, aiQuatKey>(
-    float, float, int, aiQuatKey*);
+    float, double, unsigned int, aiQuatKey*);
 
 DirectX::XMMATRIX Model::aiMatrixToXMMATRIX(aiMatrix4x4 aiM) {
     return DirectX::XMMATRIX(&aiM.a1);

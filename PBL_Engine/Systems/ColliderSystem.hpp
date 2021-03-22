@@ -11,8 +11,8 @@
 #include "ECS/System.hpp"
 
 // ///////////////////////////////////////////////////// Forward declarations //
-class GraphSystem;
-class CheckCollisionsSystem;
+ECS_SYSTEM_FORWARD(GraphSystem);
+ECS_SYSTEM_FORWARD(CheckCollisionsSystem);
 
 // /////////////////////////////////////////////////////////////////// System //
 ECS_SYSTEM(ColliderSystem) {
