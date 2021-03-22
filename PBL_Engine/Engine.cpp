@@ -51,8 +51,8 @@ Engine::Engine() : registry(Registry::instance()) {
     ECS_REGISTER_SYSTEM(WindowSystem);
 
     setupSystems = {registry.system<WindowSystem>(),
-                    registry.system<SceneSystem>(),
                     registry.system<GraphSystem>(),
+                    registry.system<SceneSystem>(),
                     registry.system<AnimatorSystem>(),
                     registry.system<LightSystem>(),
                     registry.system<RenderSystem>(),

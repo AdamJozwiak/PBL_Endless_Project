@@ -371,8 +371,6 @@ void GameManagerScript::update(float const deltaTime) {
             spawnBishops(spawnChance);
             spawnRooks(spawnChance, false);
 
-            registry.system<GraphSystem>()->rebuildGraph();
-
             registry.send(OnGameStateChange{.nextState = GAME_LAUNCH_FADE_IN});
         } break;
         case GAME_FADE_IN: {
@@ -522,8 +520,6 @@ void GameManagerScript::update(float const deltaTime) {
             spawnTorches();
             spawnBishops(spawnChance);
             spawnRooks(spawnChance, false);
-
-            registry.system<GraphSystem>()->rebuildGraph();
 
             registry.send(OnGameStateChange{.nextState = GAME_FADE_IN});
         } break;
@@ -894,8 +890,6 @@ void GameManagerScript::handleChunkSpawning(float deltaTime) {
         // Update the spawned objects if needed
         updateWaterfallRefraction();
         updateTrapRefraction();
-
-        registry.system<GraphSystem>()->rebuildGraph();
     }
     if (shake) {
         shakeCamera(deltaTime);
