@@ -368,18 +368,17 @@ Model::Model(Graphics& gfx, const std::string fileName, Renderer* renderer,
         pScene->mMetaData->Get<int>("CoordAxisSign", coordAxisSign);
 
         // Calculate the rotation matrix
-        aiVector3D upVec = upAxis == 0
-                               ? aiVector3D(upAxisSign, 0, 0)
-                               : upAxis == 1 ? aiVector3D(0, upAxisSign, 0)
-                                             : aiVector3D(0, 0, upAxisSign);
-        aiVector3D frontVec =
-            frontAxis == 0 ? aiVector3D(frontAxisSign, 0, 0)
-                           : frontAxis == 1 ? aiVector3D(0, frontAxisSign, 0)
-                                            : aiVector3D(0, 0, frontAxisSign);
-        aiVector3D coordVec =
-            coordAxis == 0 ? aiVector3D(coordAxisSign, 0, 0)
-                           : coordAxis == 1 ? aiVector3D(0, coordAxisSign, 0)
-                                            : aiVector3D(0, 0, coordAxisSign);
+        aiVector3D upVec = upAxis == 0   ? aiVector3D(upAxisSign, 0, 0)
+                           : upAxis == 1 ? aiVector3D(0, upAxisSign, 0)
+                                         : aiVector3D(0, 0, upAxisSign);
+        aiVector3D frontVec = frontAxis == 0 ? aiVector3D(frontAxisSign, 0, 0)
+                              : frontAxis == 1
+                                  ? aiVector3D(0, frontAxisSign, 0)
+                                  : aiVector3D(0, 0, frontAxisSign);
+        aiVector3D coordVec = coordAxis == 0 ? aiVector3D(coordAxisSign, 0, 0)
+                              : coordAxis == 1
+                                  ? aiVector3D(0, coordAxisSign, 0)
+                                  : aiVector3D(0, 0, coordAxisSign);
         aiMatrix4x4 mat(coordVec.x, coordVec.y, coordVec.z, 0.0f, upVec.x,
                         upVec.y, upVec.z, 0.0f, frontVec.x, frontVec.y,
                         frontVec.z, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);

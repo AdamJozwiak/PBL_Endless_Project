@@ -15,7 +15,8 @@ class ENGINE_API Renderable {
     Renderable() = default;
     Renderable(const Renderable&) = delete;
     virtual DirectX::XMMATRIX GetTransformXM() const noexcept = 0;
-    void Draw(Graphics& gfx, PassType passType = PassType::normal) const noexcept(!IS_DEBUG);
+    void Draw(Graphics& gfx, PassType passType = PassType::normal) const
+        noexcept(!IS_DEBUG);
     virtual void Update(float dt) noexcept {};
     virtual ~Renderable() = default;
 
