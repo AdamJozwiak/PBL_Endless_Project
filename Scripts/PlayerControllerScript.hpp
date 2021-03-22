@@ -97,6 +97,8 @@ class SCRIPTS_API PlayerControllerScript : public Script {
     //    mainCamera;  // TODO: Add reference to the script? may not need
     float canChangeFormTimer = 0.0f;
     float canChangeFormCooldown = 2.0f;
+
+    void activateEntity(Entity entity, bool status);
 };
 
 // ////////////////////////////////////////////////////////////////////////// //

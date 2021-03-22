@@ -59,8 +59,8 @@ void PlayerControllerScript::setup() {
     Entity(torch).get<Light>().pointLight->setIntensity(lightValue);
 
     // Activate all forms
-    Entity(humanForm).get<Properties>().active = true;
-    Entity(eagleForm).get<Properties>().active = true;
+    activateEntity(humanForm, true);
+    activateEntity(eagleForm, true);
 
     originalScaleWolf = Entity(humanForm).get<Transform>().scale;
     originalScaleEagle = Entity(eagleForm).get<Transform>().scale;
@@ -132,8 +132,8 @@ void PlayerControllerScript::update(float const deltaTime) {
             currentForm = humanForm;
             canChangeForm = true;
             Entity(torch).get<Light>().pointLight->setIntensity(lightValue);
-            Entity(humanForm).get<Properties>().active = true;
-            Entity(eagleForm).get<Properties>().active = true;
+            activateEntity(humanForm, true);
+            activateEntity(eagleForm, true);
             Entity(eagleForm).get<Animator>().factor = 65.0f;
             Entity(humanForm).get<Animator>().factor = 32.5f;
             entity.get<Transform>().position = {0.0f, 0.0f, 0.0f};
@@ -567,6 +567,11 @@ void PlayerControllerScript::transitionForms(float const deltaTime) {
 float PlayerControllerScript::ascend(float const x, float const thrustForce) {
     static constexpr float A = -1.0f, B = 4.5f, C = 0.0f;
     return thrustForce * (A * std::pow(x, 2) + B * x + C);
+}
+
+void PlayerControllerScript::activateEntity(Entity entity, bool status) {
+    auto& properties = entity.get<Properties>();
+    properties.active = status;
 }
 
 // ////////////////////////////////////////////////////////////////////////// //
