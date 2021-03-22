@@ -73,20 +73,29 @@ class ENGINE_API Registry {
     }
 
     template <typename ComponentType>
-    ComponentType& component(EntityId entityId) {
-        if (threadSafety) {
-            return component_<ComponentType, true>(entityId);
-        } else {
-            return component_<ComponentType, false>(entityId);
-        }
-    }
-
-    template <typename ComponentType>
-    ComponentType const& component(EntityId entityId) const {
+    ComponentType& getComponent(EntityId entityId) {
         if (threadSafety) {
             return componentManager.get<ComponentType, true>(entityId);
         } else {
             return componentManager.get<ComponentType, false>(entityId);
+        }
+    }
+
+    template <typename ComponentType>
+    ComponentType const& getComponent(EntityId entityId) const {
+        if (threadSafety) {
+            return componentManager.get<ComponentType, true>(entityId);
+        } else {
+            return componentManager.get<ComponentType, false>(entityId);
+        }
+    }
+
+    template <typename ComponentType>
+    void setComponent(EntityId entityId, ComponentType const& component) {
+        if (threadSafety) {
+            setComponent_<ComponentType, true>(entityId, component);
+        } else {
+            setComponent_<ComponentType, false>(entityId, component);
         }
     }
 
@@ -159,11 +168,11 @@ class ENGINE_API Registry {
     }
 
     template <typename ComponentType, bool threadSafe = true>
-    ComponentType& component_(EntityId entityId) {
+    void setComponent_(EntityId entityId, ComponentType const& component) {
         RECURSIVE_LOCK_GUARD(recursiveMutex, threadSafe);
 
+        componentManager.get<ComponentType, threadSafe>(entityId) = component;
         send(OnComponentUpdate<ComponentType>{entityId});
-        return componentManager.get<ComponentType, threadSafe>(entityId);
     }
 
     // ============================================================== Data == //

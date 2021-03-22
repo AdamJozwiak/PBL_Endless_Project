@@ -49,12 +49,12 @@ class ENGINE_API Entity {
 
     template <typename ComponentType>
     ComponentType& get() {
-        return registry.component<ComponentType>(id);
+        return registry.getComponent<ComponentType>(id);
     }
 
     template <typename ComponentType>
     ComponentType const& get() const {
-        return std::as_const(registry).component<ComponentType>(id);
+        return std::as_const(registry).getComponent<ComponentType>(id);
     }
 
     template <typename ComponentType>
@@ -64,7 +64,7 @@ class ENGINE_API Entity {
 
     template <typename ComponentType>
     Entity& set(ComponentType const& component) {
-        get<ComponentType>() = component;
+        registry.setComponent<ComponentType>(id, component);
         return *this;
     }
 
