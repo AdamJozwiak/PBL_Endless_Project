@@ -85,8 +85,9 @@ void EnemyControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
     // This should be inside onTriggerEnter handler, but maybe will work here,
     // too
     if (event.a.id == entity.id || event.b.id == entity.id) {
-        auto other = Entity(event.a.id == entity.id ? event.b.id : event.a.id);
-        auto otherTag = other.get<Properties>().tag;
+        auto const& other =
+            Entity(event.a.id == entity.id ? event.b.id : event.a.id);
+        auto const& otherTag = other.get<Properties>().tag;
 
         if (otherTag == "Boundary" && timeToBounce >= 0.3f) {
             movingLeft = !movingLeft;
