@@ -63,8 +63,8 @@ void CameraControllerScript::setup() {
 
 void CameraControllerScript::update(float const deltaTime) {
     switch (currentState) {
-        case GAME_LAUNCH_FADE_IN:
-        case MENU: {
+        case GameState::GAME_LAUNCH_FADE_IN:
+        case GameState::MENU: {
             // Get the camera to the starting menu position
             auto smooth = 0.2f;
             auto& transform = entity.get<Transform>();
@@ -80,11 +80,11 @@ void CameraControllerScript::update(float const deltaTime) {
 
             entity.set<Transform>(transform);
         } break;
-        case CHANGE_MENU_TYPE_TO_MAIN: {
+        case GameState::CHANGE_MENU_TYPE_TO_MAIN: {
         } break;
-        case CHANGE_MENU_TYPE_TO_PAUSE: {
+        case GameState::CHANGE_MENU_TYPE_TO_PAUSE: {
         } break;
-        // case MENU_TO_GAME_FADE_OUT: {
+        // case GameState::MENU_TO_GAME_FADE_OUT: {
         //     auto& transform = entity.get<Transform>();
         //     auto easing = &easeOutQuint;
         //     auto smooth = 0.1f;
@@ -110,10 +110,10 @@ void CameraControllerScript::update(float const deltaTime) {
         //         interpolate(easing, transform.rotation.w,
         //                     middleTransform.rotation.w, smooth, deltaTime);
         // } break;
-        case NEW_GAME_SETUP: {
+        case GameState::NEW_GAME_SETUP: {
         } break;
-        case MENU_TO_GAME_FADE_OUT:
-        case GAME_FADE_IN: {
+        case GameState::MENU_TO_GAME_FADE_OUT:
+        case GameState::GAME_FADE_IN: {
             auto& transform = entity.get<Transform>();
             Entity const& player = playerId;
             auto const& playerTransform = player.get<Transform>();
@@ -131,7 +131,7 @@ void CameraControllerScript::update(float const deltaTime) {
 
             lastPosition = transform.position;
         } break;
-        case GAME: {
+        case GameState::GAME: {
             Entity const& player = playerId;
             auto const& playerTransform = player.get<Transform>();
 
@@ -146,11 +146,11 @@ void CameraControllerScript::update(float const deltaTime) {
             //! This line was in late update, may not work
             lastPosition = transform.position;
         } break;
-        case DEATH_RESULTS: {
+        case GameState::DEATH_RESULTS: {
         } break;
-        case RESULTS_TO_GAME_FADE_OUT: {
+        case GameState::RESULTS_TO_GAME_FADE_OUT: {
         } break;
-        case GAME_EXIT_FADE_OUT: {
+        case GameState::GAME_EXIT_FADE_OUT: {
         } break;
         default: {
         } break;

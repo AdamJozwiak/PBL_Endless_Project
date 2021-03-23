@@ -1,6 +1,6 @@
 #pragma once
 
-enum GameState {
+enum class GameState {
     GAME_LAUNCH_FADE_IN,
     MENU,
     CHANGE_MENU_TYPE_TO_MAIN,

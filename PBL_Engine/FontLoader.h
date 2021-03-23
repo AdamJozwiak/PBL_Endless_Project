@@ -91,8 +91,8 @@ class FontContext {
 class FontGlobals {
   public:
     FontGlobals() {}
-    static unsigned int push(collection& addCollection) {
-        unsigned int ret = fontCollections.size();
+    static std::size_t push(collection& addCollection) {
+        std::size_t ret = fontCollections.size();
         fontCollections.push_back(addCollection);
         return ret;
     }

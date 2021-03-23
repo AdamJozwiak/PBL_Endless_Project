@@ -7,11 +7,12 @@
 #include "Sampler.h"
 #include "Surface.h"
 
-enum EnemyType { none = 0, pawn, rook, bishop };
+enum class EnemyType { none = 0, pawn, rook, bishop };
 
 class ENGINE_API FireParticle : public RenderableBase<FireParticle> {
   public:
-    FireParticle(Graphics& gfx, Camera* camera, EnemyType enemyType = none) {
+    FireParticle(Graphics& gfx, Camera* camera,
+                 EnemyType enemyType = EnemyType::none) {
         namespace dx = DirectX;
         if (!IsStaticInitialized()) {
             struct Vertex {
@@ -59,7 +60,7 @@ class ENGINE_API FireParticle : public RenderableBase<FireParticle> {
             SetIndexFromStatic();
         }
 
-        if (enemyType == none) {
+        if (enemyType == EnemyType::none) {
             AddBind(std::make_unique<PixelShader>(gfx, L"FireEffectPS.cso"));
 
             AddBind(std::make_unique<Texture>(
@@ -94,21 +95,21 @@ class ENGINE_API FireParticle : public RenderableBase<FireParticle> {
                 3));
 
             switch (enemyType) {
-                case pawn:
+                case EnemyType::pawn:
                     AddBind(std::make_unique<Texture>(
                         gfx,
                         std::ref(
                             Surface::FromFile(assetsPath + "enemy-albedo.png")),
                         0));
                     break;
-                case rook:
+                case EnemyType::rook:
                     AddBind(std::make_unique<Texture>(
                         gfx,
                         std::ref(Surface::FromFile(assetsPath +
                                                    "enemy-albedo1.png")),
                         0));
                     break;
-                case bishop:
+                case EnemyType::bishop:
                     AddBind(std::make_unique<Texture>(
                         gfx,
                         std::ref(Surface::FromFile(assetsPath +

@@ -261,7 +261,7 @@ void GameManagerScript::update(float const deltaTime) {
         std::to_string(int(score));
 
     switch (currentState) {
-        case GAME_LAUNCH_FADE_IN: {
+        case GameState::GAME_LAUNCH_FADE_IN: {
             // Fade from black to the menu
             screenFade =
                 interpolate(easeOutSine, screenFade, 1.0f, 0.5f, deltaTime);
@@ -270,10 +270,10 @@ void GameManagerScript::update(float const deltaTime) {
 
             // Change state
             if (screenFade > 0.8f) {
-                registry.send(OnGameStateChange{.nextState = MENU});
+                registry.send(OnGameStateChange{.nextState = GameState::MENU});
             }
         } break;
-        case MENU: {
+        case GameState::MENU: {
             // Fade from black to the menu
             screenFade =
                 interpolate(easeOutSine, screenFade, 1.0f, 0.5f, deltaTime);
@@ -304,11 +304,11 @@ void GameManagerScript::update(float const deltaTime) {
                 interpolateTextTo(entity, 0.0f, deltaTime, 0.01f);
             }
         } break;
-        case CHANGE_MENU_TYPE_TO_MAIN: {
+        case GameState::CHANGE_MENU_TYPE_TO_MAIN: {
         } break;
-        case CHANGE_MENU_TYPE_TO_PAUSE: {
+        case GameState::CHANGE_MENU_TYPE_TO_PAUSE: {
         } break;
-        case MENU_TO_GAME_FADE_OUT: {
+        case GameState::MENU_TO_GAME_FADE_OUT: {
             // Fade to black
             screenFade =
                 interpolate(easeOutQuint, screenFade, 0.0f, 0.1f, deltaTime);
@@ -337,10 +337,11 @@ void GameManagerScript::update(float const deltaTime) {
 
             // Change state
             if (screenFade < 0.25f) {
-                registry.send(OnGameStateChange{.nextState = GAME_FADE_IN});
+                registry.send(
+                    OnGameStateChange{.nextState = GameState::GAME_FADE_IN});
             }
         } break;
-        case NEW_GAME_SETUP: {
+        case GameState::NEW_GAME_SETUP: {
             spawnedChunks = 0;
             score = 0.0f;
             goalScore = goalScoreTorches = goalScorePosition = 0;
@@ -371,9 +372,10 @@ void GameManagerScript::update(float const deltaTime) {
             spawnBishops(spawnChance);
             spawnRooks(spawnChance, false);
 
-            registry.send(OnGameStateChange{.nextState = GAME_LAUNCH_FADE_IN});
+            registry.send(
+                OnGameStateChange{.nextState = GameState::GAME_LAUNCH_FADE_IN});
         } break;
-        case GAME_FADE_IN: {
+        case GameState::GAME_FADE_IN: {
             // Fade in
             screenFade =
                 interpolate(easeOutQuint, screenFade, 1.0f, 0.1f, deltaTime);
@@ -402,10 +404,10 @@ void GameManagerScript::update(float const deltaTime) {
 
             // Change state
             if (screenFade > 0.999f) {
-                registry.send(OnGameStateChange{.nextState = GAME});
+                registry.send(OnGameStateChange{.nextState = GameState::GAME});
             }
         } break;
-        case GAME: {
+        case GameState::GAME: {
             handleChunkSpawning(deltaTime);
 
             // Manage UI fades
@@ -431,11 +433,11 @@ void GameManagerScript::update(float const deltaTime) {
             auto e =
                 registry.system<WindowSystem>()->window().keyboard.ReadKey();
             if (e.IsPress() && e.GetCode() == VK_ESCAPE) {
-                registry.send(OnGameStateChange{.nextState = MENU});
+                registry.send(OnGameStateChange{.nextState = GameState::MENU});
                 registry.system<WindowSystem>()->window().keyboard.FlushKey();
             }
         } break;
-        case DEATH_RESULTS: {
+        case GameState::DEATH_RESULTS: {
             // Fade to semi-black
             screenFade =
                 interpolate(easeOutQuint, screenFade, 0.5f, 0.2f, deltaTime);
@@ -474,12 +476,12 @@ void GameManagerScript::update(float const deltaTime) {
 
                 if (isAnyKeyPressed) {
                     registry.send(OnGameStateChange{
-                        .nextState = RESULTS_TO_GAME_FADE_OUT});
+                        .nextState = GameState::RESULTS_TO_GAME_FADE_OUT});
                     resultsTimer = 0.0f;
                 }
             }
         } break;
-        case RESULTS_TO_GAME_FADE_OUT: {
+        case GameState::RESULTS_TO_GAME_FADE_OUT: {
             spawnedChunks = 0;
             score = 0.0f;
             goalScore = goalScoreTorches = goalScorePosition = 0;
@@ -521,9 +523,10 @@ void GameManagerScript::update(float const deltaTime) {
             spawnBishops(spawnChance);
             spawnRooks(spawnChance, false);
 
-            registry.send(OnGameStateChange{.nextState = GAME_FADE_IN});
+            registry.send(
+                OnGameStateChange{.nextState = GameState::GAME_FADE_IN});
         } break;
-        case GAME_EXIT_FADE_OUT: {
+        case GameState::GAME_EXIT_FADE_OUT: {
         } break;
         default: {
         } break;
@@ -543,7 +546,8 @@ void GameManagerScript::onCollisionEnter(OnCollisionEnter const& event) {
     }
 }
 void GameManagerScript::onGameStateChange(OnGameStateChange const& event) {
-    if (currentState != DEATH_RESULTS && event.nextState == DEATH_RESULTS) {
+    if (currentState != GameState::DEATH_RESULTS &&
+        event.nextState == GameState::DEATH_RESULTS) {
         resultsTimer = 0.0f;
     }
     currentState = event.nextState;
@@ -557,33 +561,33 @@ void GameManagerScript::onButtonClick(OnButtonClick const& event) {
     registry.system<SoundSystem>()->playRandomSample("ui-button-click");
 
     switch (currentState) {
-        case GAME_LAUNCH_FADE_IN: {
+        case GameState::GAME_LAUNCH_FADE_IN: {
         } break;
-        case MENU: {
+        case GameState::MENU: {
             if (isButtonClicked(menuPlayButton)) {
-                registry.send(
-                    OnGameStateChange{.nextState = MENU_TO_GAME_FADE_OUT});
+                registry.send(OnGameStateChange{
+                    .nextState = GameState::MENU_TO_GAME_FADE_OUT});
             } else if (isButtonClicked(menuExitButton)) {
                 registry.send(OnGameExit{});
             }
         } break;
-        case CHANGE_MENU_TYPE_TO_MAIN: {
+        case GameState::CHANGE_MENU_TYPE_TO_MAIN: {
         } break;
-        case CHANGE_MENU_TYPE_TO_PAUSE: {
+        case GameState::CHANGE_MENU_TYPE_TO_PAUSE: {
         } break;
-        case MENU_TO_GAME_FADE_OUT: {
+        case GameState::MENU_TO_GAME_FADE_OUT: {
         } break;
-        case NEW_GAME_SETUP: {
+        case GameState::NEW_GAME_SETUP: {
         } break;
-        case GAME_FADE_IN: {
+        case GameState::GAME_FADE_IN: {
         } break;
-        case GAME: {
+        case GameState::GAME: {
         } break;
-        case DEATH_RESULTS: {
+        case GameState::DEATH_RESULTS: {
         } break;
-        case RESULTS_TO_GAME_FADE_OUT: {
+        case GameState::RESULTS_TO_GAME_FADE_OUT: {
         } break;
-        case GAME_EXIT_FADE_OUT: {
+        case GameState::GAME_EXIT_FADE_OUT: {
         } break;
         default: {
         } break;
@@ -601,9 +605,9 @@ void GameManagerScript::onButtonHover(OnButtonHover const& event) {
         "ui-button-hover", 0.025f * (event.on ? 1.0f : 0.5f));
 
     switch (currentState) {
-        case GAME_LAUNCH_FADE_IN: {
+        case GameState::GAME_LAUNCH_FADE_IN: {
         } break;
-        case MENU: {
+        case GameState::MENU: {
             if (isButtonHovered(menuHelpButton)) {
                 fadeInHelp = isMouseOnButton(menuHelpButton);
             }
@@ -611,23 +615,23 @@ void GameManagerScript::onButtonHover(OnButtonHover const& event) {
                 fadeInAuthors = isMouseOnButton(menuAuthorsButton);
             }
         } break;
-        case CHANGE_MENU_TYPE_TO_MAIN: {
+        case GameState::CHANGE_MENU_TYPE_TO_MAIN: {
         } break;
-        case CHANGE_MENU_TYPE_TO_PAUSE: {
+        case GameState::CHANGE_MENU_TYPE_TO_PAUSE: {
         } break;
-        case MENU_TO_GAME_FADE_OUT: {
+        case GameState::MENU_TO_GAME_FADE_OUT: {
         } break;
-        case NEW_GAME_SETUP: {
+        case GameState::NEW_GAME_SETUP: {
         } break;
-        case GAME_FADE_IN: {
+        case GameState::GAME_FADE_IN: {
         } break;
-        case GAME: {
+        case GameState::GAME: {
         } break;
-        case DEATH_RESULTS: {
+        case GameState::DEATH_RESULTS: {
         } break;
-        case RESULTS_TO_GAME_FADE_OUT: {
+        case GameState::RESULTS_TO_GAME_FADE_OUT: {
         } break;
-        case GAME_EXIT_FADE_OUT: {
+        case GameState::GAME_EXIT_FADE_OUT: {
         } break;
         default: {
         } break;
@@ -658,16 +662,16 @@ void GameManagerScript::spawnTorches() {
 }
 
 void GameManagerScript::spawnRooks(int percentage, bool movingSideways) {
-    findSpawnPoints(Rook);
+    findSpawnPoints(MovementType::Rook);
     for (auto it : spawnPoints) {
-        spawnEnemy(Rook, it, percentage, movingSideways);
+        spawnEnemy(MovementType::Rook, it, percentage, movingSideways);
     }
 }
 
 void GameManagerScript::spawnBishops(int percentage) {
-    findSpawnPoints(Bishop);
+    findSpawnPoints(MovementType::Bishop);
     for (auto it : spawnPoints) {
-        spawnEnemy(Bishop, it, percentage);
+        spawnEnemy(MovementType::Bishop, it, percentage);
     }
 }
 
@@ -675,7 +679,7 @@ void GameManagerScript::spawnEnemy(MovementType mt, Entity const& spawnPoint,
                                    int percentage, bool movingSideways) {
     if (shouldHappen(percentage)) {
         std::shared_ptr<Entity> enemy;
-        if (mt == Bishop) {
+        if (mt == MovementType::Bishop) {
             enemy = std::make_shared<Entity>(
                 Registry::instance().system<SceneSystem>()->spawnPrefab(
                     "Assets\\Unity\\Prefabs\\Enemy.prefab"));
@@ -687,8 +691,8 @@ void GameManagerScript::spawnEnemy(MovementType mt, Entity const& spawnPoint,
                                        .at(0)
                                        .get<MainCamera>()
                                        .camera.get(),
-                                   bishop)});
-        } else if (mt == Rook) {
+                                   EnemyType::bishop)});
+        } else if (mt == MovementType::Rook) {
             enemy = std::make_shared<Entity>(
                 Registry::instance().system<SceneSystem>()->spawnPrefab(
                     "Assets\\Unity\\Prefabs\\EnemyRook.prefab"));
@@ -700,7 +704,7 @@ void GameManagerScript::spawnEnemy(MovementType mt, Entity const& spawnPoint,
                                        .at(0)
                                        .get<MainCamera>()
                                        .camera.get(),
-                                   rook)});
+                                   EnemyType::rook)});
         }
 
         auto const& enemyBehaviour = enemy->get<Behaviour>();
@@ -749,9 +753,9 @@ void GameManagerScript::shakeCamera(float const deltaTime) {
 
 std::string GameManagerScript::enumToString(MovementType mt) {
     switch (mt) {
-        case Rook:
+        case MovementType::Rook:
             return "Rook";
-        case Bishop:
+        case MovementType::Bishop:
             return "";
         default:
             return "Invalid enemy type";

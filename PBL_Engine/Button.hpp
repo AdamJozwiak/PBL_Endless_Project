@@ -32,8 +32,8 @@ class Button {
     bool hovered = false;
 
     float hoverR = 1.0f;
-    float hoverG = 0.65;
-    float hoverB = 0.40;
+    float hoverG = 0.65f;
+    float hoverB = 0.40f;
 
     float currentR = 1.0f;
     float currentG = 1.0f;

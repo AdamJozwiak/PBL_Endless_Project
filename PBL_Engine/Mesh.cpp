@@ -23,8 +23,8 @@ std::vector<
     cachedModels;
 
 void Mesh::VertexBoneData::AddBoneData(UINT boneID, float boneWeight) {
-    int size = sizeof(IDs) / sizeof(*IDs);
-    for (UINT i = 0; i < size; i++) {
+    auto size = sizeof(IDs) / sizeof(*IDs);
+    for (decltype(size) i = 0; i < size; i++) {
         if (weights[i] == 0.0) {
             IDs[i] = boneID;
             weights[i] = boneWeight;

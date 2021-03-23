@@ -9,7 +9,7 @@
 #include "Script.hpp"
 #include "ScriptsAPI.hpp"
 
-enum MovementType { Rook, Bishop };
+enum class MovementType { Rook, Bishop };
 
 // //////////////////////////////////////////////////////////////////// Class //
 class SCRIPTS_API EnemyControllerScript : public Script {
@@ -33,7 +33,7 @@ class SCRIPTS_API EnemyControllerScript : public Script {
 
   private:
     // ============================================================== Data == //
-    GameState currentState = GAME;
+    GameState currentState = GameState::GAME;
 
     bool (*isKeyPressed)(int const key);
 
@@ -43,7 +43,7 @@ class SCRIPTS_API EnemyControllerScript : public Script {
     /*     yield return new WaitForSeconds(1.5f); */
     /*     SceneManager.LoadScene(0); */
     /* } */
-    MovementType movementType = Bishop;
+    MovementType movementType = MovementType::Bishop;
     float speed = 30.0f;
     float angle = 0.45f;
     bool movingLeft = true;

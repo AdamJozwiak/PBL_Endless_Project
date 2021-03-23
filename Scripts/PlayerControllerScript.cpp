@@ -89,24 +89,24 @@ void PlayerControllerScript::setup() {
 
 void PlayerControllerScript::update(float const deltaTime) {
     switch (currentState) {
-        case GAME_LAUNCH_FADE_IN: {
+        case GameState::GAME_LAUNCH_FADE_IN: {
         } break;
-        case MENU: {
+        case GameState::MENU: {
         } break;
-        case CHANGE_MENU_TYPE_TO_MAIN: {
+        case GameState::CHANGE_MENU_TYPE_TO_MAIN: {
         } break;
-        case CHANGE_MENU_TYPE_TO_PAUSE: {
+        case GameState::CHANGE_MENU_TYPE_TO_PAUSE: {
         } break;
-        case MENU_TO_GAME_FADE_OUT: {
+        case GameState::MENU_TO_GAME_FADE_OUT: {
         } break;
-        case NEW_GAME_SETUP: {
+        case GameState::NEW_GAME_SETUP: {
         } break;
-        case GAME_FADE_IN: {
+        case GameState::GAME_FADE_IN: {
         } break;
-        case GAME: {
+        case GameState::GAME: {
             doGameLogic(deltaTime);
         } break;
-        case DEATH_RESULTS: {
+        case GameState::DEATH_RESULTS: {
             lightValue =
                 interpolate(easeOutSine, lightValue, -0.075f, 0.2f, deltaTime);
             aCValue = std::lerp(minC, maxC, lightValue);
@@ -124,7 +124,7 @@ void PlayerControllerScript::update(float const deltaTime) {
             wolfAnimationRate = interpolate(easeOutSine, wolfAnimationRate,
                                             10.0f, 0.2f, deltaTime);
         } break;
-        case RESULTS_TO_GAME_FADE_OUT: {
+        case GameState::RESULTS_TO_GAME_FADE_OUT: {
             currentLane = 0;
             firstThrust = false;
             lightValue = 0.6f;
@@ -141,7 +141,7 @@ void PlayerControllerScript::update(float const deltaTime) {
             { transform.position = {0.0f, 0.0f, 0.0f}; }
             entity.set<Transform>(transform);
         } break;
-        case GAME_EXIT_FADE_OUT: {
+        case GameState::GAME_EXIT_FADE_OUT: {
         } break;
         default: {
         } break;
@@ -473,7 +473,7 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
             }
             canChangeForm = false;
         } else if (otherTag == "DeathCollider") {
-            if (currentState != RESULTS_TO_GAME_FADE_OUT) {
+            if (currentState != GameState::RESULTS_TO_GAME_FADE_OUT) {
                 die();
             }
         } else if (otherTag == "Boundary") {
@@ -481,7 +481,7 @@ void PlayerControllerScript::onCollisionEnter(OnCollisionEnter const& event) {
         } else if (other.id == groundCheck) {
             return;
         } else if (otherTag == "Enemy" || otherTag == "Rook") {
-            if (currentState != RESULTS_TO_GAME_FADE_OUT) {
+            if (currentState != GameState::RESULTS_TO_GAME_FADE_OUT) {
                 die();
             }
 
@@ -522,7 +522,7 @@ void PlayerControllerScript::onGameStateChange(OnGameStateChange const& event) {
 
 // ------------------------------------------------------------ Methods -- == //
 void PlayerControllerScript::die() {
-    registry.send(OnGameStateChange{.nextState = DEATH_RESULTS});
+    registry.send(OnGameStateChange{.nextState = GameState::DEATH_RESULTS});
 }
 
 void PlayerControllerScript::changeForm(EntityId const& newForm) {

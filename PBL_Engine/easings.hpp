@@ -16,12 +16,14 @@ inline T interpolate(float (*easing)(float const), T const &a, T const &b,
 }
 
 // ------------------------------------------------------------------ Sine -- //
-inline float easeOutSine(float const x) { return sin((x * M_PI) / 2.0f); }
+inline float easeOutSine(float const x) {
+    return sin((x * static_cast<float>(M_PI)) / 2.0f);
+}
 inline float easeInSine(float const x) {
-    return 1.0f - std::cos((x * M_PI) / 2.0f);
+    return 1.0f - std::cos((x * static_cast<float>(M_PI)) / 2.0f);
 }
 inline float easeInOutSine(float const x) {
-    return -(std::cos(M_PI * x) - 1.0f) / 2.0f;
+    return -(std::cos(static_cast<float>(M_PI) * x) - 1.0f) / 2.0f;
 }
 
 // ------------------------------------------------------------------ Quad -- //
@@ -120,7 +122,7 @@ inline float easeInOutBack(float const x) {
 
 // --------------------------------------------------------------- Elastic -- //
 inline float easeOutElastic(float const x) {
-    float const c4 = (2.0f * M_PI) / 3.0f;
+    float const c4 = (2.0f * static_cast<float>(M_PI)) / 3.0f;
 
     return x == 0.0f ? 0.0f
            : x == 1.0f
@@ -129,7 +131,7 @@ inline float easeOutElastic(float const x) {
                      1.0f;
 }
 inline float easeInElastic(float const x) {
-    float const c4 = (2.0f * M_PI) / 3.0f;
+    float const c4 = (2.0f * static_cast<float>(M_PI)) / 3.0f;
 
     return x == 0.0f   ? 0.0f
            : x == 1.0f ? 1.0f
@@ -137,7 +139,7 @@ inline float easeInElastic(float const x) {
                              sin((x * 10.0f - 10.75f) * c4);
 }
 inline float easeInOutElastic(float const x) {
-    float const c5 = (2.0f * M_PI) / 4.5f;
+    float const c5 = (2.0f * static_cast<float>(M_PI)) / 4.5f;
 
     return x == 0.0f   ? 0.0f
            : x == 1.0f ? 1.0f

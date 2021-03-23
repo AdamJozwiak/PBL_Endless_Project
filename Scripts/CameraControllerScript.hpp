@@ -32,7 +32,7 @@ class SCRIPTS_API CameraControllerScript : public Script {
 
   private:
     // ============================================================== Data == //
-    GameState currentState = GAME_LAUNCH_FADE_IN;
+    GameState currentState = GameState::GAME_LAUNCH_FADE_IN;
 
     bool (*isKeyPressed)(int const key);
 

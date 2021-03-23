@@ -40,36 +40,36 @@ void EnemyControllerScript::setup() {
 
 void EnemyControllerScript::update(float const deltaTime) {
     switch (currentState) {
-        case GAME_LAUNCH_FADE_IN: {
+        case GameState::GAME_LAUNCH_FADE_IN: {
         } break;
-        case MENU: {
+        case GameState::MENU: {
         } break;
-        case CHANGE_MENU_TYPE_TO_MAIN: {
+        case GameState::CHANGE_MENU_TYPE_TO_MAIN: {
         } break;
-        case CHANGE_MENU_TYPE_TO_PAUSE: {
+        case GameState::CHANGE_MENU_TYPE_TO_PAUSE: {
         } break;
-        case MENU_TO_GAME_FADE_OUT: {
+        case GameState::MENU_TO_GAME_FADE_OUT: {
         } break;
-        case NEW_GAME_SETUP: {
+        case GameState::NEW_GAME_SETUP: {
         } break;
-        case GAME_FADE_IN: {
+        case GameState::GAME_FADE_IN: {
         } break;
-        case GAME: {
+        case GameState::GAME: {
             if (entity.get<Transform>().position.x -
                     Entity(playerId).get<Transform>().position.x <=
                 playerDistance) {
-                if (movementType == Bishop)
+                if (movementType == MovementType::Bishop)
                     moveBishop(deltaTime);
                 else
                     moveRook(deltaTime);
             }
             timeToBounce += deltaTime;
         } break;
-        case DEATH_RESULTS: {
+        case GameState::DEATH_RESULTS: {
         } break;
-        case RESULTS_TO_GAME_FADE_OUT: {
+        case GameState::RESULTS_TO_GAME_FADE_OUT: {
         } break;
-        case GAME_EXIT_FADE_OUT: {
+        case GameState::GAME_EXIT_FADE_OUT: {
         } break;
         default: {
         } break;
@@ -149,7 +149,7 @@ void EnemyControllerScript::moveRook(float const deltaTime) {
 
 void EnemyControllerScript::setMovementType(MovementType mt, bool movingS) {
     movementType = mt;
-    if (mt == Rook) {
+    if (mt == MovementType::Rook) {
         movingSideways = movingS;
     }
 }

@@ -46,7 +46,7 @@ class SCRIPTS_API PlayerControllerScript : public Script {
 
   private:
     // ============================================================== Data == //
-    GameState currentState = GAME_LAUNCH_FADE_IN;
+    GameState currentState = GameState::GAME_LAUNCH_FADE_IN;
 
     std::shared_ptr<PropertySystem> propertySystem;
     std::shared_ptr<WindowSystem> windowSystem;

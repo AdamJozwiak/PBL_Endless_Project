@@ -42,7 +42,7 @@ class SCRIPTS_API GameManagerScript : public Script {
 
   private:
     // ============================================================== Data == //
-    GameState currentState = NEW_GAME_SETUP;
+    GameState currentState = GameState::NEW_GAME_SETUP;
     float screenFade = 0.0f;
 
     float score = 0.0f;
